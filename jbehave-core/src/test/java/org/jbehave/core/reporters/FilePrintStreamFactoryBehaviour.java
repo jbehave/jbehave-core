@@ -15,31 +15,31 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class FilePrintStreamFactoryBehaviour {
+class FilePrintStreamFactoryBehaviour {
 
     @Test
-    public void shouldHandleStoryPathInClasspath() {
+    void shouldHandleStoryPathInClasspath() {
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = "org/jbehave/examples/trader/stories/my_given.story";
         ensureOutputFileIsSame(codeLocation, storyPath);
     }
 
     @Test
-    public void shouldHandleStoryPathAsURL() {
+    void shouldHandleStoryPathAsURL() {
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = codeLocation + "org/jbehave/examples/trader/stories/my_given.story";
         ensureOutputFileIsSame(codeLocation, storyPath);
     }
 
     @Test
-    public void shouldHandleStoryPathAsURLWithSpecifiedCodeSourceClass() {
+    void shouldHandleStoryPathAsURLWithSpecifiedCodeSourceClass() {
         URL codeLocation = CodeLocations.codeLocationFromClass(FilePrintStreamFactory.class);
         String storyPath = codeLocation + "org/jbehave/examples/trader/stories/my_given.story";
         ensureOutputFileIsSame(codeLocation, storyPath);
     }
     
     @Test
-    public void shouldAllowOverrideOfDefaultConfiguration(){
+    void shouldAllowOverrideOfDefaultConfiguration(){
         // Given
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = "org/jbehave/examples/trader/stories/my_given.story";
@@ -58,7 +58,7 @@ public class FilePrintStreamFactoryBehaviour {
     }
 
     @Test
-    public void shouldResolveOutputNameFromStoryLocationWithDefaultResolver() {
+    void shouldResolveOutputNameFromStoryLocationWithDefaultResolver() {
         assertThatOutputNameIs("org/jbehave/examples/trader/stories/my_given.story",
                 "org.jbehave.examples.trader.stories.my_given.ext", null);
         assertThatOutputNameIs("/org/jbehave/examples/trader/stories/my_given.story",
@@ -70,7 +70,7 @@ public class FilePrintStreamFactoryBehaviour {
     }
 
     @Test
-    public void shouldResolveOutputNameFromStoryLocationWithSimpleNameResolver() {
+    void shouldResolveOutputNameFromStoryLocationWithSimpleNameResolver() {
         FilePathResolver resolver = new ResolveToSimpleName();
         assertThatOutputNameIs("org/jbehave/examples/trader/stories/my_given.story",
                 "my_given.ext", resolver);
@@ -92,7 +92,7 @@ public class FilePrintStreamFactoryBehaviour {
     }
     
     @Test
-    public void shouldFailIfPrintStreamCannotBeCreated(){
+    void shouldFailIfPrintStreamCannotBeCreated(){
         // Given
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = "org/jbehave/examples/trader/stories/my_given.story";

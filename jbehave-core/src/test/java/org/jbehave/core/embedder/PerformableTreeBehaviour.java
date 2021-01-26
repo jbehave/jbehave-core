@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 /**
  * @author Valery Yatsynovich
  */
-public class PerformableTreeBehaviour {
+class PerformableTreeBehaviour {
 
     private static final String GIVEN_SCENARIO_FAIL = "Scenario: given scenario title\nWhen I fail";
     private static final String STORY_PATH = "path";
@@ -41,7 +41,7 @@ public class PerformableTreeBehaviour {
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
     @Test
-    public void shouldAddNotAllowedPerformableScenariosToPerformableStory() {
+    void shouldAddNotAllowedPerformableScenariosToPerformableStory() {
         Scenario scenario = new Scenario("scenario title", Meta.createMeta("@skip", new Keywords()));
         Story story = new Story(STORY_PATH, Collections.singletonList(scenario));
         List<Story> stories = Collections.singletonList(story);
@@ -75,28 +75,28 @@ public class PerformableTreeBehaviour {
     }
 
     @Test
-    public void shouldNotSkipStoryWhenGivenStoryIsFailed() {
+    void shouldNotSkipStoryWhenGivenStoryIsFailed() {
         RunContext context = performStoryRun(false, GIVEN_SCENARIO_FAIL);
         assertThat(context.failureOccurred(), is(false));
         assertThat(context.configuration().storyControls().skipStoryIfGivenStoryFailed(), is(false));
     }
 
     @Test
-    public void shouldSkipStoryWhenGivenStoryIsFailed() {
+    void shouldSkipStoryWhenGivenStoryIsFailed() {
         RunContext context = performStoryRun(true, GIVEN_SCENARIO_FAIL);
         assertThat(context.failureOccurred(), is(true));
         assertThat(context.configuration().storyControls().skipStoryIfGivenStoryFailed(), is(true));
     }
 
     @Test
-    public void shouldNotSkipStoryWhenGivenStoryIsPassed() {
+    void shouldNotSkipStoryWhenGivenStoryIsPassed() {
         RunContext context = performStoryRun(true, "Scenario: given scenario title");
         assertThat(context.failureOccurred(), is(false));
         assertThat(context.configuration().storyControls().skipStoryIfGivenStoryFailed(), is(true));
     }
 
     @Test
-    public void shouldReplaceParameters() {
+    void shouldReplaceParameters() {
         ParameterControls parameterControls = new ParameterControls();
         PerformableTree performableTree = new PerformableTree();
         Configuration configuration = mock(Configuration.class);
@@ -222,7 +222,7 @@ public class PerformableTreeBehaviour {
     }
 
     @Test
-    public void performStoryIfDryRunTrue() {
+    void performStoryIfDryRunTrue() {
         Scenario scenario = new Scenario("scenario title", Meta.EMPTY);
         Story story = new Story(STORY_PATH, null, null, null, null,
                 Collections.singletonList(scenario));
@@ -249,7 +249,7 @@ public class PerformableTreeBehaviour {
     }
 
     @Test
-    public void shouldNotResetFailuresBetweenStories() {
+    void shouldNotResetFailuresBetweenStories() {
         Scenario scenario = new Scenario("base scenario title", Meta.EMPTY);
         Story story1 = new Story("path1", null, null, null, new GivenStories("given/path1"),
                 Collections.singletonList(scenario));
@@ -277,7 +277,7 @@ public class PerformableTreeBehaviour {
     }
 
     @Test
-    public void shouldResetFailuresOnReRun() {
+    void shouldResetFailuresOnReRun() {
         Scenario scenario = new Scenario("base scenario title", Meta.EMPTY);
         Story story = new Story(STORY_PATH, null, null, null, new GivenStories("given/path"),
                 Collections.singletonList(scenario));
@@ -303,21 +303,21 @@ public class PerformableTreeBehaviour {
     }
 
     @Test
-    public void shouldNotShareStoryStateBetweenThreads() throws Throwable {
+    void shouldNotShareStoryStateBetweenThreads() throws Throwable {
         RunContext context = runStoryInContext(EMPTY_STORY);
         assertThat(context.state().getClass().getSimpleName(), is("FineSoFar"));
         assertReturnsNullInAnotherThread(context::state);
     }
 
     @Test
-    public void shouldNotShareStoryPathBetweenThreads() throws Throwable {
+    void shouldNotShareStoryPathBetweenThreads() throws Throwable {
         RunContext context = runStoryInContext(EMPTY_STORY);
         assertThat(context.path(), is(STORY_PATH));
         assertReturnsNullInAnotherThread(context::path);
     }
 
     @Test
-    public void shouldNotShareStoryReporterBetweenThreads() throws Throwable {
+    void shouldNotShareStoryReporterBetweenThreads() throws Throwable {
         RunContext context = runStoryInContext(EMPTY_STORY);
         assertThat(context.reporter(), instanceOf(StoryReporter.class));
         assertReturnsNullInAnotherThread(context::reporter);

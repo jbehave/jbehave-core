@@ -77,10 +77,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-public class EmbedderBehaviour {
+class EmbedderBehaviour {
 
     @Test
-    public void shouldMapStoriesAsEmbeddables() {
+    void shouldMapStoriesAsEmbeddables() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         OutputStream out = new ByteArrayOutputStream();
@@ -108,7 +108,7 @@ public class EmbedderBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldMapStoriesAsPaths() {
+    void shouldMapStoriesAsPaths() {
         // Given
         StoryMapper mapper = mock(StoryMapper.class);
         PerformableTree performableTree = mock(PerformableTree.class);
@@ -149,7 +149,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldRunStoriesAsEmbeddables() {
+    void shouldRunStoriesAsEmbeddables() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
@@ -186,7 +186,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldNotRunStoriesAsEmbeddablesIfAbstract() {
+    void shouldNotRunStoriesAsEmbeddablesIfAbstract() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
@@ -215,7 +215,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldNotRunStoriesAsEmbeddablesIfSkipFlagIsSet() {
+    void shouldNotRunStoriesAsEmbeddablesIfSkipFlagIsSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doSkip(true);
@@ -244,7 +244,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureInStoriesFlagIsNotSet() {
+    void shouldThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureInStoriesFlagIsNotSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
@@ -268,7 +268,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldNotThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureFlagsAreSet() {
+    void shouldNotThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureFlagsAreSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInStories(true)
@@ -298,7 +298,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldRunStoriesAsEmbeddablesInBatchIfBatchFlagIsSet() {
+    void shouldRunStoriesAsEmbeddablesInBatchIfBatchFlagIsSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true);
@@ -327,7 +327,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldThrowExceptionUponFailingStoriesAsEmbeddablesInBatchIfIgnoreFailureInStoriesFlagIsNotSet() {
+    void shouldThrowExceptionUponFailingStoriesAsEmbeddablesInBatchIfIgnoreFailureInStoriesFlagIsNotSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true);
@@ -351,7 +351,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldRunFailingStoriesAsEmbeddablesInBatchIfBatchFlagIsSet() {
+    void shouldRunFailingStoriesAsEmbeddablesInBatchIfBatchFlagIsSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true).doIgnoreFailureInStories(true)
@@ -382,7 +382,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldNotGenerateViewWhenRunningStoriesAsEmbeddablesIfGenerateViewAfterStoriesFlagIsNotSet() {
+    void shouldNotGenerateViewWhenRunningStoriesAsEmbeddablesIfGenerateViewAfterStoriesFlagIsNotSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
@@ -412,7 +412,7 @@ public class EmbedderBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldRunStoriesAsPaths() {
+    void shouldRunStoriesAsPaths() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
@@ -467,7 +467,7 @@ public class EmbedderBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldRunStoriesApplyingFilter() {
+    void shouldRunStoriesApplyingFilter() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
@@ -518,7 +518,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldProcessSystemProperties() {
+    void shouldProcessSystemProperties() {
 
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
@@ -550,7 +550,7 @@ public class EmbedderBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldNotRunStoriesIfSkipFlagIsSet() {
+    void shouldNotRunStoriesIfSkipFlagIsSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doSkip(true);
@@ -591,7 +591,7 @@ public class EmbedderBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldNotThrowExceptionUponFailingStoriesAsPathsIfIgnoreFailureInStoriesFlagIsSet() throws Throwable {
+    void shouldNotThrowExceptionUponFailingStoriesAsPathsIfIgnoreFailureInStoriesFlagIsSet() throws Throwable {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInStories(true);
@@ -636,7 +636,7 @@ public class EmbedderBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldRunStoriesAsPathsInBatchIfBatchFlagIsSet() {
+    void shouldRunStoriesAsPathsInBatchIfBatchFlagIsSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true);
@@ -678,7 +678,7 @@ public class EmbedderBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldRunFailingStoriesAsPathsInBatchIfBatchFlagIsSet() {
+    void shouldRunFailingStoriesAsPathsInBatchIfBatchFlagIsSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true).doIgnoreFailureInStories(true);
@@ -725,7 +725,7 @@ public class EmbedderBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldNotGenerateViewWhenRunningStoriesAsPathsIfGenerateViewAfterStoriesFlagIsNotSet() {
+    void shouldNotGenerateViewWhenRunningStoriesAsPathsIfGenerateViewAfterStoriesFlagIsNotSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
@@ -766,7 +766,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldRunStoriesWithAnnotatedEmbedderRunnerIfEmbeddable() {
+    void shouldRunStoriesWithAnnotatedEmbedderRunnerIfEmbeddable() {
         // Given
         Embedder embedder = new Embedder();
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
@@ -778,7 +778,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldNotRunStoriesWithAnnotatedEmbedderRunnerIfNotEmbeddable() {
+    void shouldNotRunStoriesWithAnnotatedEmbedderRunnerIfNotEmbeddable() {
         // Given
         Embedder embedder = new Embedder();
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
@@ -790,7 +790,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldRethowFailuresWhenRunningWithAnnotatedEmbedderRunner() {
+    void shouldRethowFailuresWhenRunningWithAnnotatedEmbedderRunner() {
         // Given
         Embedder embedder = new Embedder();
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
@@ -801,7 +801,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldFailWhenRunningInexistingStoriesWithAnnotatedEmbedderRunner() {
+    void shouldFailWhenRunningInexistingStoriesWithAnnotatedEmbedderRunner() {
         // Given
         Embedder embedder = new Embedder();
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
@@ -812,7 +812,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldGenerateReportsViewFromExistingReports() {
+    void shouldGenerateReportsViewFromExistingReports() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
@@ -835,7 +835,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldFailWhenGeneratingReportsViewWithFailedSteps() {
+    void shouldFailWhenGeneratingReportsViewWithFailedSteps() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
@@ -860,7 +860,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldFailWhenGeneratingReportsViewWithPendingSteps() {
+    void shouldFailWhenGeneratingReportsViewWithPendingSteps() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
@@ -884,7 +884,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldNotGenerateViewIfSkipFlagIsSet() {
+    void shouldNotGenerateViewIfSkipFlagIsSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doSkip(true);
@@ -908,7 +908,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldThrowExceptionIfViewGenerationFails() {
+    void shouldThrowExceptionIfViewGenerationFails() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
@@ -930,7 +930,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldThrowExceptionIfScenariosFailedAndIgnoreFlagIsNotSet() {
+    void shouldThrowExceptionIfScenariosFailedAndIgnoreFlagIsNotSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
@@ -950,7 +950,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldThrowExceptionIfNoScenariosRunForStoriesAndIgnoreFlagIsNotSet() {
+    void shouldThrowExceptionIfNoScenariosRunForStoriesAndIgnoreFlagIsNotSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
@@ -970,7 +970,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldNotThrowExceptionIfScenariosFailedAndIgnoreFlagIsSet() {
+    void shouldNotThrowExceptionIfScenariosFailedAndIgnoreFlagIsSet() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInView(true);
@@ -992,7 +992,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldHandleFailuresAccordingToStrategy() {
+    void shouldHandleFailuresAccordingToStrategy() {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
@@ -1018,7 +1018,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldAllowOverrideOfDefaultDependencies() {
+    void shouldAllowOverrideOfDefaultDependencies() {
         // Given
         PerformableTree performableTree = new PerformableTree();
         EmbedderControls embedderControls = new EmbedderControls();
@@ -1052,7 +1052,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldFindAndReportMatchingSteps() {
+    void shouldFindAndReportMatchingSteps() {
         // Given
         Embedder embedder = new Embedder();
         embedder.useCandidateSteps(asList((CandidateSteps) new MySteps()));
@@ -1069,7 +1069,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldReportNoMatchingStepdocsFoundWithStepProvided() {
+    void shouldReportNoMatchingStepdocsFoundWithStepProvided() {
         // Given
         Embedder embedder = new Embedder();
         embedder.useCandidateSteps(asList((CandidateSteps) new MySteps()));
@@ -1085,7 +1085,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldReportNoMatchingStepdocsFoundWhenNoStepsProvided() {
+    void shouldReportNoMatchingStepdocsFoundWhenNoStepsProvided() {
         // Given
         Embedder embedder = new Embedder();
         embedder.useCandidateSteps(asList(new CandidateSteps[] {}));
@@ -1101,7 +1101,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldReportAllStepdocs() {
+    void shouldReportAllStepdocs() {
         // Given
         Embedder embedder = new Embedder();
         embedder.useCandidateSteps(asList((CandidateSteps) new MySteps()));
@@ -1123,7 +1123,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldAllowStringRepresentationOfEmbedder() {
+    void shouldAllowStringRepresentationOfEmbedder() {
         // Given
         Embedder embedder = new Embedder();
         assertThat(embedder.configuration(), instanceOf(MostUsefulConfiguration.class));

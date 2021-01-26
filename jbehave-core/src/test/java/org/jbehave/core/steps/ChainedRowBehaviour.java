@@ -11,10 +11,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class ChainedRowBehaviour {
+class ChainedRowBehaviour {
 
     @Test
-    public void shouldChainRowValuesWithoutOverwritingAlreadyExisting() {
+    void shouldChainRowValuesWithoutOverwritingAlreadyExisting() {
         Map<String,String> map1 = new HashMap<>();
         map1.put("one", "11");
         Map<String,String> map2 = new HashMap<>();

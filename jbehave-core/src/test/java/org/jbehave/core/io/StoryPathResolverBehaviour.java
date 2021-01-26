@@ -8,45 +8,45 @@ import org.jbehave.core.Embeddable;
 import org.jbehave.core.junit.JUnitStory;
 import org.junit.jupiter.api.Test;
 
-public class StoryPathResolverBehaviour {
+class StoryPathResolverBehaviour {
 
     @Test
-    public void shouldResolveClassNamePreservingCase() {
+    void shouldResolveClassNamePreservingCase() {
         StoryPathResolver resolver = new CasePreservingResolver();
         assertThat(resolver.resolve(CamelCase.class),
                 equalTo("org/jbehave/core/io/CamelCase.story"));
     }
 
     @Test
-    public void shouldResolveClassNamePreservingCaseWithNumbers() {
+    void shouldResolveClassNamePreservingCaseWithNumbers() {
         StoryPathResolver resolver = new CasePreservingResolver(".story");
         assertThat(resolver.resolve(CamelCaseWithA3Qualifier.class),
                 equalTo("org/jbehave/core/io/CamelCaseWithA3Qualifier.story"));
     }
     
 	@Test
-	public void shouldResolveCamelCasedClassNameToCasePreservingName() {
+	void shouldResolveCamelCasedClassNameToCasePreservingName() {
 		StoryPathResolver resolver = new CasePreservingResolver("");
 		assertThat(resolver.resolve(CamelCaseStory.class),
 				equalTo("org/jbehave/core/io/CamelCaseStory"));
 	}
 
 	@Test
-	public void shouldResolveCamelCasedClassNameToCasePreservingNameWithExtension() {
+	void shouldResolveCamelCasedClassNameToCasePreservingNameWithExtension() {
 		StoryPathResolver resolver = new CasePreservingResolver(".story");
 		assertThat(resolver.resolve(CamelCaseStory.class),
 				equalTo("org/jbehave/core/io/CamelCaseStory.story"));
 	}
 
 	@Test
-	public void shouldResolveCamelCasedClassNameToUnderscoredNameWithDefaultExtension() {
+	void shouldResolveCamelCasedClassNameToUnderscoredNameWithDefaultExtension() {
 		StoryPathResolver resolver = new UnderscoredCamelCaseResolver();
 		assertThat(resolver.resolve(CamelCase.class),
 				equalTo("org/jbehave/core/io/camel_case.story"));
 	}
 
 	@Test
-	public void shouldResolveCamelCasedClassNameToUnderscoredNameWithExtension() {
+	void shouldResolveCamelCasedClassNameToUnderscoredNameWithExtension() {
 		StoryPathResolver resolver = new UnderscoredCamelCaseResolver(".story");
 		assertThat(resolver.resolve(CamelCase.class),
 				equalTo("org/jbehave/core/io/camel_case.story"));
@@ -57,7 +57,7 @@ public class StoryPathResolverBehaviour {
 	 * co-mingle with tests and match with *Story
 	 */
 	@Test
-	public void shouldResolveCamelCasedClassNameToUnderscoredNameWithExtensionStrippingExtraneousWord() {
+	void shouldResolveCamelCasedClassNameToUnderscoredNameWithExtensionStrippingExtraneousWord() {
 		StoryPathResolver resolver = new UnderscoredCamelCaseResolver(".story")
 				.removeFromClassName("Story");
 		assertThat(resolver.resolve(CamelCaseStory.class),
@@ -65,7 +65,7 @@ public class StoryPathResolverBehaviour {
 	}
 
 	@Test
-	public void shouldResolveCamelCasedClassNameWithNumbersTreatedAsLowerCaseLetters() {
+	void shouldResolveCamelCasedClassNameWithNumbersTreatedAsLowerCaseLetters() {
 		StoryPathResolver resolver = new UnderscoredCamelCaseResolver("");
 		assertThat(resolver.resolve(CamelCaseWithA3Qualifier.class),
 				equalTo("org/jbehave/core/io/camel_case_with_a3_qualifier"));
@@ -74,7 +74,7 @@ public class StoryPathResolverBehaviour {
 	}
 
 	@Test
-	public void shouldResolveCamelCasedClassNameWithNumbersTreatedAsUpperCaseLetters() {
+	void shouldResolveCamelCasedClassNameWithNumbersTreatedAsUpperCaseLetters() {
 		StoryPathResolver resolver = new UnderscoredCamelCaseResolver("",
 				NUMBERS_AS_UPPER_CASE_LETTERS_PATTERN);
 		assertThat(resolver.resolve(CamelCaseWithA3Qualifier.class),
@@ -84,7 +84,7 @@ public class StoryPathResolverBehaviour {
 	}
 	
     @Test
-    public void shouldResolveDefaultPackageClassName() {
+    void shouldResolveDefaultPackageClassName() {
         StoryPathResolver resolver = new CasePreservingResolver();
         assertThat(resolver.resolve(load("DefaultPackageEmbeddable")),
                 equalTo("DefaultPackageEmbeddable.story"));

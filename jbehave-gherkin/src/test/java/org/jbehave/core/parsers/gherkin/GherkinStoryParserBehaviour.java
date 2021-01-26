@@ -14,12 +14,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
-public class GherkinStoryParserBehaviour {
+class GherkinStoryParserBehaviour {
 
 	private StoryParser storyParser = new GherkinStoryParser();
 	
 	@Test
-	public void shouldParseStoryWithTabularParameter() {
+	void shouldParseStoryWithTabularParameter() {
 		String storyAsText = "Feature: Hello Car\n"
 					+ "Scenario: Car can drive\n"
 					+ "Given I have a car\n"
@@ -47,7 +47,7 @@ public class GherkinStoryParserBehaviour {
     }
 
 	@Test
-	public void shouldParseStoryWithExamples() {
+	void shouldParseStoryWithExamples() {
 		String storyAsText = "Feature: Hello Car\n"
 		            + "@scenarioOutline\n"
 					+ "Scenario Outline: Car can drive\n"
@@ -82,7 +82,7 @@ public class GherkinStoryParserBehaviour {
     }
 	
 	@Test
-	public void shouldParseStoryWithNarrative() {
+	void shouldParseStoryWithNarrative() {
 		String storyAsText = "Feature: Hello Car\n"
 				    + "Narrative:\n"
 				    + "In order to feel safer\n"
@@ -100,7 +100,7 @@ public class GherkinStoryParserBehaviour {
     }
 
 	@Test
-	public void shouldParseStoryWithAlternativeNarrative() {
+	void shouldParseStoryWithAlternativeNarrative() {
 		String storyAsText = "Feature: Hello Car\n"
 				    + "Narrative:\n"
 				    + "As a car driver\n"
@@ -118,7 +118,7 @@ public class GherkinStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseStoryWithBackground() {
+    void shouldParseStoryWithBackground() {
         String storyAsText = "Feature: Hello Car\n\n"
                     + "Background:\n"
                     + "Given I have a license\n\n"
@@ -132,7 +132,7 @@ public class GherkinStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseStoryWithTags() {
+    void shouldParseStoryWithTags() {
         String storyAsText = "@feature\n"
                     + "Feature: Hello Car\n\n"
                     + "Background:\n"

@@ -12,10 +12,10 @@ import org.junit.runners.model.InitializationError;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 
-public class WeldAnnotatedEmbedderRunnerBehaviour {
+class WeldAnnotatedEmbedderRunnerBehaviour {
 
     @Test
-    public void shouldCreateWithGuiceAnnotatedBuilder() throws InitializationError{
+    void shouldCreateWithGuiceAnnotatedBuilder() throws InitializationError{
         AnnotatedEmbedderRunner runner = new WeldAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
     
         assertThat(runner.annotationBuilder(), instanceOf(WeldAnnotationBuilder.class));

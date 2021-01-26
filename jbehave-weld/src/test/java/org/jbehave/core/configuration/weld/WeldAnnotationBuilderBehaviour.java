@@ -40,10 +40,10 @@ import org.jbehave.core.steps.Steps;
 import org.junit.jupiter.api.Test;
 
 
-public class WeldAnnotationBuilderBehaviour {
+class WeldAnnotationBuilderBehaviour {
 
     @Test
-    public void shouldBuildConfigurationFromAnnotations() {
+    void shouldBuildConfigurationFromAnnotations() {
         AnnotationBuilder builder = createBuilder(AnnotatedUsingWeld.class);
         Configuration configuration = builder.buildConfiguration();
 
@@ -69,7 +69,7 @@ public class WeldAnnotationBuilderBehaviour {
     }
     
     @Test
-    public void shouldBuildConfigurationFromAnnotationsUsingConfigureAndConverters() {
+    void shouldBuildConfigurationFromAnnotationsUsingConfigureAndConverters() {
         
         AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingConfigureAndConverters.class);
         
@@ -79,14 +79,14 @@ public class WeldAnnotationBuilderBehaviour {
     }
     
     @Test
-    public void shouldBuildDefaultConfigurationIfAnnotationNotPresent() {
+    void shouldBuildDefaultConfigurationIfAnnotationNotPresent() {
 
         AnnotationBuilder builderNotAnnotated = createBuilder(NotAnnotated.class);
         assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(), new MostUsefulConfiguration());
     }
     
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingWeld() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingWeld() {
         AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingWeld.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         
@@ -94,7 +94,7 @@ public class WeldAnnotationBuilderBehaviour {
     }
     
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndWeldSteps() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndWeldSteps() {
         AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingWeldWithSteps.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         
@@ -102,7 +102,7 @@ public class WeldAnnotationBuilderBehaviour {
     }
     
     @Test
-    public void shouldBuildOnlyWeldStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
+    void shouldBuildOnlyWeldStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
         AnnotationBuilder builderNotAnnotated = createBuilder(NotAnnotated.class);
         Configuration configuration = builderNotAnnotated.buildConfiguration();
         
@@ -110,7 +110,7 @@ public class WeldAnnotationBuilderBehaviour {
     }
     
     @Test
-    public void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
+    void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
 
         AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingWeld.class);
         Configuration configuration = builderAnnotated.buildConfiguration();

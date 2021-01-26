@@ -11,10 +11,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ScalaStepsFactoryBehaviour {
+class ScalaStepsFactoryBehaviour {
 
     @Test
-    public void shouldCreateStepsInstancesFromScalaWhenAnnotated() {
+    void shouldCreateStepsInstancesFromScalaWhenAnnotated() {
         ScalaContext context = new ScalaContext("AnnotatedSteps", "NonAnnotatedSteps");
         ScalaStepsFactory factory = new ScalaStepsFactory(new MostUsefulConfiguration(), context);
         List<Class<?>> types = factory.stepsTypes();
@@ -25,12 +25,12 @@ public class ScalaStepsFactoryBehaviour {
     }
 
     @Test
-    public void shouldNotCreateStepsInstancesFromScalaWhenContextInvalid() {
+    void shouldNotCreateStepsInstancesFromScalaWhenContextInvalid() {
         assertThrows(ScalaInstanceNotFound.class, () -> new ScalaContext("UnexistentSteps"));
     }
 
     @Test
-    public void shouldNotCreateStepsInstancesFromScalaWhenNotFound() {
+    void shouldNotCreateStepsInstancesFromScalaWhenNotFound() {
         ScalaStepsFactory factory = new ScalaStepsFactory(new MostUsefulConfiguration(), new ScalaContext());
         assertThrows(ScalaInstanceNotFound.class, () -> factory.createInstanceOfType(NonScalaType.class));
     }

@@ -16,10 +16,10 @@ import static org.hamcrest.Matchers.*;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class GroovyStepsFactoryBehaviour {
+class GroovyStepsFactoryBehaviour {
 
     @Test
-    public void shouldCreateStepsInstancesFromGroovyWhenAnnotated() {
+    void shouldCreateStepsInstancesFromGroovyWhenAnnotated() {
         GroovyResourceFinder resourceFinder = new GroovyResourceFinder(codeLocationFromClass(this.getClass()),
                 "**/steps/groovy/*.groovy", "**/invalidSteps.groovy");
         GroovyStepsFactory factory = new GroovyStepsFactory(new MostUsefulConfiguration(), new GroovyContext(resourceFinder));
@@ -29,7 +29,7 @@ public class GroovyStepsFactoryBehaviour {
     }
 
     @Test
-    public void shouldNotCreateStepsInstancesFromGroovyWhenResourceInvalid() {
+    void shouldNotCreateStepsInstancesFromGroovyWhenResourceInvalid() {
         assertThrows(GroovyClassInstantiationFailed.class,
                 () -> new GroovyContext(asList("/org/jbehave/core/steps/groovy/invalidSteps.groovy")));
     }

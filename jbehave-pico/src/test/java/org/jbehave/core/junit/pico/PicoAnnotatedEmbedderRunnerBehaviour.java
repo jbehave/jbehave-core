@@ -12,10 +12,10 @@ import org.junit.runners.model.InitializationError;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 
-public class PicoAnnotatedEmbedderRunnerBehaviour {
+class PicoAnnotatedEmbedderRunnerBehaviour {
 
     @Test
-    public void shouldCreateWithPicoAnnotatedBuilder() throws InitializationError{
+    void shouldCreateWithPicoAnnotatedBuilder() throws InitializationError{
         AnnotatedEmbedderRunner runner = new PicoAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
         assertThat(runner.annotationBuilder(), instanceOf(PicoAnnotationBuilder.class));
     }

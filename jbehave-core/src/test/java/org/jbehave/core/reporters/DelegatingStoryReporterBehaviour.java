@@ -19,10 +19,10 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
-public class DelegatingStoryReporterBehaviour {
+class DelegatingStoryReporterBehaviour {
 
     @Test
-    public void shouldDelegateReporterEvents() {
+    void shouldDelegateReporterEvents() {
         // Given
         StoryReporter delegate = mock(StoryReporter.class);
         DelegatingStoryReporter delegator = new DelegatingStoryReporter(delegate);

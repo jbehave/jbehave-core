@@ -63,10 +63,10 @@ import com.google.inject.Module;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 
-public class GuiceAnnotationBuilderBehaviour {
+class GuiceAnnotationBuilderBehaviour {
 
     @Test
-    public void shouldBuildConfigurationFromAnnotations() {
+    void shouldBuildConfigurationFromAnnotations() {
         AnnotationBuilder builder = new GuiceAnnotationBuilder(AnnotatedUsingGuice.class);
         Configuration configuration = builder.buildConfiguration();
         assertThat(configuration.storyControls().dryRun(), is(true));
@@ -90,7 +90,7 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildConfigurationFromAnnotationsUsingConfigureAndGuiceConverters() {
+    void shouldBuildConfigurationFromAnnotationsUsingConfigureAndGuiceConverters() {
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatCustomObjectIsConverted(configuration.parameterConverters());
@@ -99,7 +99,7 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildConfigurationFromAnnotationsUsingInjectorWithoutParent() {
+    void shouldBuildConfigurationFromAnnotationsUsingInjectorWithoutParent() {
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class){
 
             @Override
@@ -135,7 +135,7 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
+    void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
         AnnotationBuilder builderNotAnnotated = new GuiceAnnotationBuilder(NotAnnotated.class);
         assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(), new MostUsefulConfiguration());
         AnnotationBuilder builderAnnotatedWithoutModules = new GuiceAnnotationBuilder(AnnotatedWithoutModules.class);
@@ -158,7 +158,7 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingGuice() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingGuice() {
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingGuice.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class,
@@ -166,28 +166,28 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuice() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuice() {
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingStepsAndGuice.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndInheritingGuiceFromParent() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndInheritingGuiceFromParent() {
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(InheritingAnnotatedUsingSteps.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuiceAndConverters() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuiceAndConverters() {
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
     }
 
     @Test
-    public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
+    void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
         AnnotationBuilder builderNotAnnotated = new GuiceAnnotationBuilder(NotAnnotated.class);
         assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
         AnnotationBuilder builderAnnotatedWithoutLocations = new GuiceAnnotationBuilder(AnnotatedWithoutModules.class);
@@ -202,7 +202,7 @@ public class GuiceAnnotationBuilderBehaviour {
     }
     
     @Test
-    public void shouldNotBuildContainerIfModuleNotInstantiable() {
+    void shouldNotBuildContainerIfModuleNotInstantiable() {
         AnnotationMonitor annotationMonitor = mock(AnnotationMonitor.class);
         AnnotationBuilder builderPrivateModule = new GuiceAnnotationBuilder(AnnotatedWithPrivateModule.class, annotationMonitor);
         assertThatStepsInstancesAre(builderPrivateModule.buildCandidateSteps());
@@ -210,7 +210,7 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
+    void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
         GuiceAnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingStepsAndGuice.class);
         builderAnnotated.buildConfiguration();
         Injector injector = builderAnnotated.injector();

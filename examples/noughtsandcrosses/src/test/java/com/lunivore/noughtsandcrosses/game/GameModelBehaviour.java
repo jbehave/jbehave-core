@@ -6,10 +6,10 @@ import static org.mockito.Mockito.*;
 
 
 
-public class GameModelBehaviour {
+class GameModelBehaviour {
 
     @org.junit.Test
-    public void shouldStartEmptyAndTellObserver() {
+    void shouldStartEmptyAndTellObserver() {
         GameModel game = new GameModel();
         GameObserver observer = mock(GameObserver.class);
         game.addObserver(observer);
@@ -24,7 +24,7 @@ public class GameModelBehaviour {
     }
     
     @org.junit.Test
-    public void shouldPlaceTokenForCurrentPlayerInTheGivenColumnAndRowStartingWithX() {
+    void shouldPlaceTokenForCurrentPlayerInTheGivenColumnAndRowStartingWithX() {
         GameModel game = new GameModel();
         GameObserver observer = mock(GameObserver.class);
         game.addObserver(observer);
@@ -40,7 +40,7 @@ public class GameModelBehaviour {
     }
     
     @org.junit.Test
-    public void shouldNotifyObserverWhenTheCurrentPlayerWins() {
+    void shouldNotifyObserverWhenTheCurrentPlayerWins() {
         // Given a game which X is about to win
         GameModel game = new GameModel();
         game.playerActsAt(0, 0);

@@ -9,10 +9,10 @@ import java.net.URL;
 
 import org.junit.jupiter.api.Test;
 
-public class StoryLocationBehaviour {
+class StoryLocationBehaviour {
 
     @Test
-    public void shouldAllowClasspathResources() {
+    void shouldAllowClasspathResources() {
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = "org/jbehave/core/io/stories/my_pending_story";
 		StoryLocation storyLocation = new StoryLocation(codeLocation, storyPath);
@@ -24,7 +24,7 @@ public class StoryLocationBehaviour {
     }
 
     @Test
-    public void shouldAllowURLResources() {
+    void shouldAllowURLResources() {
         assertThatStoryLocationAllowsStoryPathAsURL(CodeLocations.codeLocationFromPath("src/test/java/"));
         assertThatStoryLocationAllowsStoryPathAsURL(CodeLocations.codeLocationFromURL("http://company.com/stories/"));
     }

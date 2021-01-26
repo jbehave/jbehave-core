@@ -11,10 +11,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class OutcomesTableBehaviour {
+class OutcomesTableBehaviour {
 
     @Test
-    public void shouldDoNothingIfOutcomesVerified() {
+    void shouldDoNothingIfOutcomesVerified() {
         OutcomesTable table = new OutcomesTable();
         Object one = "one";
         boolean two = true;
@@ -26,7 +26,7 @@ public class OutcomesTableBehaviour {
     }
 
     @Test
-    public void shouldThrowExceptionIfOutcomesFail() {
+    void shouldThrowExceptionIfOutcomesFail() {
         OutcomesTable table = new OutcomesTable();
         Object one = "one";
         Boolean two = true;
@@ -48,7 +48,7 @@ public class OutcomesTableBehaviour {
     }
 
     @Test
-    public void shouldAllowStringRepresentationOfOutcomes() {
+    void shouldAllowStringRepresentationOfOutcomes() {
         OutcomesTable table = new OutcomesTable();
         Object one = "one";
         Boolean two = true;

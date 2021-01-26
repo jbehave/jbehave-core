@@ -11,10 +11,10 @@ import org.apache.commons.io.IOUtils;
 import org.jbehave.core.io.rest.Resource;
 import org.junit.jupiter.api.Test;
 
-public class IndexFromRedmineBehaviour {
+class IndexFromRedmineBehaviour {
 
     @Test
-    public void canIndexFromRedmine() {
+    void canIndexFromRedmine() {
         IndexFromRedmine indexer = new IndexFromRedmine();
         String rootPath = "http://redmine.org/wiki";
         String entity = read("redmine-index.json");

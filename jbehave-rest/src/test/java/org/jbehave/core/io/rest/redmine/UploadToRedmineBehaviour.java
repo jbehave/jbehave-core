@@ -12,10 +12,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
 
-public class UploadToRedmineBehaviour {
+class UploadToRedmineBehaviour {
 
 	@Test
-	public void canFormatURIForJSON() {
+	void canFormatURIForJSON() {
 	    UploadToRedmine uploader = new UploadToRedmine(Type.JSON);
 		String resourcePath = "http://demo.redmine.org/project/jbehave/wiki/some_story";
 		String text = uploader.uri(resourcePath, Type.JSON);
@@ -23,7 +23,7 @@ public class UploadToRedmineBehaviour {
 	}
 
 	@Test
-	public void canFormatAsJSON() {
+	void canFormatAsJSON() {
 	    UploadToRedmine uploader = new UploadToRedmine(Type.JSON);
 		String resourcePath = "http://demo.redmine.org/project/jbehave/wiki/some_story";
 		String text = read("redmine.json");

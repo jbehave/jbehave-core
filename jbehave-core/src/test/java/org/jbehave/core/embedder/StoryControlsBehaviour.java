@@ -19,7 +19,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class StoryControlsBehaviour {
+class StoryControlsBehaviour {
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
     private static final String NEW_VALUE = "newValue";
     private static final String EMPTY = "";
@@ -43,7 +43,7 @@ public class StoryControlsBehaviour {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void shouldPrioritizeCurrentStoryControls(Function<StoryControls, Object> getter,
+    void shouldPrioritizeCurrentStoryControls(Function<StoryControls, Object> getter,
             BiFunction<StoryControls, Object, Object> setter, List<Object> values) throws Throwable
     {
         Object defaultValue = values.get(0);
@@ -64,7 +64,7 @@ public class StoryControlsBehaviour {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void shouldResetToCommonStoryControls(Function<StoryControls, Object> getter,
+    void shouldResetToCommonStoryControls(Function<StoryControls, Object> getter,
             BiFunction<StoryControls, Object, Object> setter, List<Object> values) throws Throwable {
         Object defaultValue = values.get(0);
         Object threadLocalValue = values.get(1);

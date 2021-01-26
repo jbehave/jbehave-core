@@ -9,10 +9,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 
-public class WinningScenarioBehaviour {
+class WinningScenarioBehaviour {
 
     @Test
-    public void shouldFindWinningGameWhenCoordsAreAllTheSamePlayer() {
+    void shouldFindWinningGameWhenCoordsAreAllTheSamePlayer() {
         Map<Coord, Player> game = new HashMap<>();
         game.put(new Coord(0,0), Player.X);
         game.put(new Coord(1,0), Player.X);

@@ -11,10 +11,10 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class EmbedderControlsBehaviour {
+class EmbedderControlsBehaviour {
         
     @Test
-    public void shouldAllowPropertyBasedControls() {
+    void shouldAllowPropertyBasedControls() {
         EmbedderControls embedderControls = new PropertyBasedEmbedderControls();
 
         assertThat(embedderControls.toString(), containsString(PropertyBasedEmbedderControls.class.getSimpleName()));
@@ -59,7 +59,7 @@ public class EmbedderControlsBehaviour {
     }
     
     @Test
-    public void shouldNotAllowModificationOfUnmodifiableControls() throws Throwable {
+    void shouldNotAllowModificationOfUnmodifiableControls() throws Throwable {
         EmbedderControls delegate = new EmbedderControls();
         EmbedderControls embedderControls = new UnmodifiableEmbedderControls(delegate);
         assertThat(embedderControls.toString(), containsString(UnmodifiableEmbedderControls.class.getSimpleName()));

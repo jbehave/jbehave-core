@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.jbehave.core.configuration.PropertyBasedConfiguration.FAIL_ON_PENDING;
 import static org.jbehave.core.configuration.PropertyBasedConfiguration.SILENT_SUCCESS;
 
-public class PropertyBasedConfigurationBehaviour {
+class PropertyBasedConfigurationBehaviour {
 
     private String originalFailOnPending;
     private String originalSilentSuccess;
@@ -41,25 +41,25 @@ public class PropertyBasedConfigurationBehaviour {
     }
     
     @Test
-    public void shouldUsePassingPendingStepStrategyByDefault() {
+    void shouldUsePassingPendingStepStrategyByDefault() {
         System.clearProperty(FAIL_ON_PENDING);
         assertThat(new PropertyBasedConfiguration().pendingStepStrategy(), instanceOf(PassingUponPendingStep.class));
     }
     
     @Test
-    public void shouldUseFailingPendingStepStrategyWhenConfiguredToDoSo() {
+    void shouldUseFailingPendingStepStrategyWhenConfiguredToDoSo() {
         System.setProperty(FAIL_ON_PENDING, "true");
         assertThat(new PropertyBasedConfiguration().pendingStepStrategy(), instanceOf(FailingUponPendingStep.class));
     }
     
     @Test
-    public void shouldOuputToConsoleByDefault() {
+    void shouldOuputToConsoleByDefault() {
         System.clearProperty(SILENT_SUCCESS);
         assertThat(new PropertyBasedConfiguration().defaultStoryReporter(), instanceOf(ConsoleOutput.class));
     }
     
     @Test
-    public void shouldUseSilentSuccessFilterConfiguredToDoSo() {
+    void shouldUseSilentSuccessFilterConfiguredToDoSo() {
         System.setProperty(SILENT_SUCCESS, "true");
         assertThat(new PropertyBasedConfiguration().defaultStoryReporter(), instanceOf(SilentSuccessFilter.class));
     }

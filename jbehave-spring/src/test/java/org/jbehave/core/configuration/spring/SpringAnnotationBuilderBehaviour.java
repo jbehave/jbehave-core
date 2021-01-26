@@ -30,10 +30,10 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class SpringAnnotationBuilderBehaviour {
+class SpringAnnotationBuilderBehaviour {
 
 	@Test
-	public void shouldBuildConfigurationFromAnnotations() {
+	void shouldBuildConfigurationFromAnnotations() {
 		SpringAnnotationBuilder builder = new SpringAnnotationBuilder(
 				AnnotatedUsingSpring.class);
 		Configuration configuration = builder.buildConfiguration();
@@ -84,7 +84,7 @@ public class SpringAnnotationBuilderBehaviour {
 	}
 
 	@Test
-	public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
+	void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
 		SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(
 				NotAnnotated.class);
 		assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(),
@@ -118,7 +118,7 @@ public class SpringAnnotationBuilderBehaviour {
 	}
 
 	@Test
-	public void shouldBuildCandidateStepsFromAnnotationsUsingSpring() {
+	void shouldBuildCandidateStepsFromAnnotationsUsingSpring() {
 		SpringAnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(
 				AnnotatedUsingSpring.class);
 		Configuration configuration = builderAnnotated.buildConfiguration();
@@ -128,7 +128,7 @@ public class SpringAnnotationBuilderBehaviour {
 	}
 
 	@Test
-	public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndSpring() {
+	void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndSpring() {
 		SpringAnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(
 				AnnotatedUsingStepsAndSpring.class);
 		Configuration configuration = builderAnnotated.buildConfiguration();
@@ -138,7 +138,7 @@ public class SpringAnnotationBuilderBehaviour {
 	}
 
 	@Test
-	public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndInheritingPicoFromParent() {
+	void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndInheritingPicoFromParent() {
 		AnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(
 				InheritingAnnotatedUsingSteps.class);
 		Configuration configuration = builderAnnotated.buildConfiguration();
@@ -148,7 +148,7 @@ public class SpringAnnotationBuilderBehaviour {
 	}
 
 	@Test
-	public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
+	void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
 		SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(
 				NotAnnotated.class);
 		assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
@@ -186,7 +186,7 @@ public class SpringAnnotationBuilderBehaviour {
 	}
 
 	@Test
-	public void shouldNotBuildContainerIfResourceNotLoadable() {
+	void shouldNotBuildContainerIfResourceNotLoadable() {
 		AnnotationMonitor annotationMonitor = mock(AnnotationMonitor.class);
 		AnnotationBuilder builderUnloadableResource = new SpringAnnotationBuilder(
 				AnnotatedWithUnloadableResource.class, annotationMonitor);
@@ -202,7 +202,7 @@ public class SpringAnnotationBuilderBehaviour {
 	}
 
 	@Test
-	public void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
+	void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
 		SpringAnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(
 				AnnotatedUsingStepsAndSpring.class);
 		builderAnnotated.buildConfiguration();

@@ -28,14 +28,14 @@ import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
 import org.junit.jupiter.api.Test;
 
-public class MarkUnmatchedStepsAsPendingBehaviour {
+class MarkUnmatchedStepsAsPendingBehaviour {
 
     private MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
 
     private Map<String, String> parameters = new HashMap<>();
 
     @Test
-    public void shouldCreateExecutableStepsWhenCandidatesAreMatched() {
+    void shouldCreateExecutableStepsWhenCandidatesAreMatched() {
         // Given
         StepCandidate candidate = mock(StepCandidate.class);
         Step executableStep = mock(Step.class);
@@ -55,7 +55,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldCreateExecutableStepsOnlyFromPreviousNonAndStep() {
+    void shouldCreateExecutableStepsOnlyFromPreviousNonAndStep() {
         // Given
         StepCandidate candidate = mock(StepCandidate.class, "candidate");
         StepCandidate andCandidate = mock(StepCandidate.class, "andCandidate");
@@ -80,7 +80,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldCreateExecutableStepsUponOutcome() {
+    void shouldCreateExecutableStepsUponOutcome() {
         // Given
         StepCandidate anyCandidate = mock(StepCandidate.class, "anyCandidate");
         StepCandidate successCandidate = mock(StepCandidate.class, "successCandidate");
@@ -118,7 +118,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldCreateExecutableStepsUponOutcomeAndScope() {
+    void shouldCreateExecutableStepsUponOutcomeAndScope() {
         // Given
         StepCandidate anyCandidate = mock(StepCandidate.class, "anyCandidate");
         StepCandidate successCandidate = mock(StepCandidate.class, "successCandidate");
@@ -157,7 +157,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldAddPrioritizedComposedStepsWhenACompositeIsMatched() {
+    void shouldAddPrioritizedComposedStepsWhenACompositeIsMatched() {
         // Given
         StepCandidate compositeCandidate = mock(StepCandidate.class, "compositeCandidate");
         StepCandidate composedCandidate1 = mock(StepCandidate.class, "composedCandidate1");
@@ -184,7 +184,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldCreatePendingStepsWhenCandidatesAreNotFound() {
+    void shouldCreatePendingStepsWhenCandidatesAreNotFound() {
         // Given
         String givenPendingStep = "Given a pending step";
         String andGivenPendingStep = "And a given pending step";
@@ -205,7 +205,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldCreatePendingStepsWhenCandidatesAreNotMatched() {
+    void shouldCreatePendingStepsWhenCandidatesAreNotMatched() {
         // Given
         String givenPendingStep = "Given a pending step";
         String andGivenPendingStep = "And a given pending step";
@@ -245,7 +245,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldCreateIgnorableSteps() {
+    void shouldCreateIgnorableSteps() {
         // Given
         StepCandidate candidate = mock(StepCandidate.class);
 
@@ -262,7 +262,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldCreateComment() {
+    void shouldCreateComment() {
         // Given
         StepCandidate candidate = mock(StepCandidate.class);
 
@@ -279,7 +279,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldCollectBeforeAndAfterScenarioAnnotatedSteps() {
+    void shouldCollectBeforeAndAfterScenarioAnnotatedSteps() {
         assertThatBeforeAndAfterScenarioAnnotatedStepsCanBeCollectedForGivenType(ScenarioType.NORMAL);
         assertThatBeforeAndAfterScenarioAnnotatedStepsCanBeCollectedForGivenType(ScenarioType.EXAMPLE);
         assertThatBeforeAndAfterScenarioAnnotatedStepsCanBeCollectedForGivenType(ScenarioType.ANY);
@@ -323,7 +323,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
 
     @Test
-    public void shouldCollectBeforeAndAfterStoryAnnotatedSteps() {
+    void shouldCollectBeforeAndAfterStoryAnnotatedSteps() {
         // Given some candidate steps classes with before and after story
         // methods
         Story story = new Story();
@@ -364,7 +364,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldCollectBeforeAndAfterStoriesAnnotatedSteps() {
+    void shouldCollectBeforeAndAfterStoriesAnnotatedSteps() {
         // Given some candidate steps classes with before and after stories
         // methods
         CandidateSteps steps1 = mock(Steps.class);
@@ -399,7 +399,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldSortCandidateStepsByPriorityByDefault() {
+    void shouldSortCandidateStepsByPriorityByDefault() {
         // Given some candidate steps classes
         // and some methods split across them
         CandidateSteps steps1 = mock(Steps.class);
@@ -439,7 +439,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldPrioritiseCandidateStepsByInjectableStrategy() {
+    void shouldPrioritiseCandidateStepsByInjectableStrategy() {
         // Given some candidate steps classes
         // and some methods split across them
         CandidateSteps steps1 = mock(Steps.class);
@@ -479,7 +479,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void afterScenarioStepsShouldBeInReverseOrder() {
+    void afterScenarioStepsShouldBeInReverseOrder() {
         List<CandidateSteps> steps = new ArrayList<>();
         steps.add(new ClassWithMethodsAandB());
         steps.add(new ClassWithMethodsCandD());
@@ -499,7 +499,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterScenarioWithParameter() {
+    void shouldInvokeBeforeOrAfterScenarioWithParameter() {
         BeforeOrAfterScenarioWithParameterSteps steps = new BeforeOrAfterScenarioWithParameterSteps();
         Meta meta = beforeAndAfterMeta();
 
@@ -516,7 +516,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterScenarioWithParameterAndException() {
+    void shouldInvokeBeforeOrAfterScenarioWithParameterAndException() {
         BeforeOrAfterScenarioWithParameterAndExceptionSteps steps = new BeforeOrAfterScenarioWithParameterAndExceptionSteps();
         Meta meta = beforeAndAfterMeta();
 
@@ -538,7 +538,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterStoryWithParameter() {
+    void shouldInvokeBeforeOrAfterStoryWithParameter() {
         BeforeOrAfterStoryWithParameter steps = new BeforeOrAfterStoryWithParameter();
         Story story = mock(Story.class);
         when(story.getMeta()).thenReturn(beforeAndAfterMeta());
@@ -555,7 +555,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterStoryWithParameterAndException() {
+    void shouldInvokeBeforeOrAfterStoryWithParameterAndException() {
         BeforeOrAfterStoryWithParameterAndExceptionSteps steps = new BeforeOrAfterStoryWithParameterAndExceptionSteps();
         Story story = mock(Story.class);
         when(story.getMeta()).thenReturn(beforeAndAfterMeta());

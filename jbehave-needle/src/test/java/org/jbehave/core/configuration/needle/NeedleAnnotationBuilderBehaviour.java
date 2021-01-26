@@ -32,10 +32,10 @@ import org.jbehave.core.steps.needle.NeedleStepsFactoryBehaviour.FooStepsWithDep
 import org.jbehave.core.steps.needle.ValueGetter;
 import org.junit.jupiter.api.Test;
 
-public class NeedleAnnotationBuilderBehaviour {
+class NeedleAnnotationBuilderBehaviour {
 
     @Test
-    public void shouldBuildConfigurationFromAnnotationsUsingConfigureAndGuiceConverters() {
+    void shouldBuildConfigurationFromAnnotationsUsingConfigureAndGuiceConverters() {
         final AnnotationBuilder builderAnnotated = new NeedleAnnotationBuilder(
                 AnnotatedUsingConfigureAndNeedleConverters.class);
         final Configuration configuration = builderAnnotated
@@ -74,7 +74,7 @@ public class NeedleAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
+    void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
         final AnnotationBuilder builderNotAnnotated = new NeedleAnnotationBuilder(
                 NotAnnotated.class);
         assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(),
@@ -109,7 +109,7 @@ public class NeedleAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingNeedle() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingNeedle() {
         final AnnotationBuilder builderAnnotated = new NeedleAnnotationBuilder(
                 AnnotatedUsingNeedle.class);
         final Configuration configuration = builderAnnotated
@@ -119,7 +119,7 @@ public class NeedleAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndNeedle() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndNeedle() {
         final AnnotationBuilder builderAnnotated = new NeedleAnnotationBuilder(
                 AnnotatedUsingStepsAndNeedle.class);
         final Configuration configuration = builderAnnotated
@@ -130,7 +130,7 @@ public class NeedleAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuiceAndConverters() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuiceAndConverters() {
         final AnnotationBuilder builderAnnotated = new NeedleAnnotationBuilder(
                 AnnotatedUsingConfigureAndNeedleConverters.class);
         final Configuration configuration = builderAnnotated
@@ -141,7 +141,7 @@ public class NeedleAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
+    void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
         final AnnotationBuilder builderNotAnnotated = new NeedleAnnotationBuilder(
                 NotAnnotated.class);
         assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
@@ -153,7 +153,7 @@ public class NeedleAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildStepsList() {
+    void shouldBuildStepsList() {
         final AnnotationBuilder builderAnnotated = new NeedleAnnotationBuilder(
                 AnnotatedMultipleSteps.class);
         final List<CandidateSteps> actual = builderAnnotated
@@ -163,7 +163,7 @@ public class NeedleAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
+    void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
         final NeedleAnnotationBuilder builderAnnotated = new NeedleAnnotationBuilder(
                 AnnotatedUsingStepsAndNeedle.class);
         builderAnnotated.buildConfiguration();
@@ -172,7 +172,7 @@ public class NeedleAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldSupplyInjectors() {
+    void shouldSupplyInjectors() {
         final NeedleAnnotationBuilder builderAnnotated = new NeedleAnnotationBuilder(
                 AnnotatedWithStepsWithDependency.class);
         final List<CandidateSteps> buildCandidateSteps = builderAnnotated

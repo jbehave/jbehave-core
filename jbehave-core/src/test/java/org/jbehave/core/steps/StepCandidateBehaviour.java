@@ -45,7 +45,7 @@ import static org.jbehave.core.steps.StepType.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class StepCandidateBehaviour {
+class StepCandidateBehaviour {
 
     private Map<String, String> namedParameters = new HashMap<>();
     private Paranamer paranamer = new CachingParanamer(new BytecodeReadingParanamer());
@@ -65,14 +65,14 @@ public class StepCandidateBehaviour {
     }
     
     @Test
-    public void shouldMatchStepWithoutParameters() throws Exception {
+    void shouldMatchStepWithoutParameters() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
         StepCandidate candidate = candidateWith("I laugh", GIVEN, method, new SomeSteps());
         assertThat(candidate.matches("Given I laugh"), is(true));
     }
 
     @Test
-    public void shouldMatchStepWithParameters() throws Exception {
+    void shouldMatchStepWithParameters() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
         StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, new SomeSteps());
         assertThat(candidate.matches("When windows on the 1st floor"), is(true));
@@ -80,7 +80,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldMatchAndStepOnlyWithPreviousStep() throws Exception {
+    void shouldMatchAndStepOnlyWithPreviousStep() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
         StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, new SomeSteps());
         assertThat(candidate.matches("And windows on the 1st floor"), is(not(true)));
@@ -88,14 +88,14 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldMatchMultilineStep() throws Exception {
+    void shouldMatchMultilineStep() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
         StepCandidate candidate = candidateWith("the grid should look like $grid", THEN, method, new SomeSteps());
         assertThat(candidate.matches("Then the grid should look like \n....\n....\n"), is(true));
     }
 
     @Test
-    public void shouldMatchStepWithEmptyParameters() throws Exception {
+    void shouldMatchStepWithEmptyParameters() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
         SomeSteps someSteps = new SomeSteps();
         StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, someSteps);
@@ -108,7 +108,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldMatchStepWithEmptyExamplesTableParameter() throws Exception {
+    void shouldMatchStepWithEmptyExamplesTableParameter() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethodWithExamplesTable", ExamplesTable.class);
         SomeSteps someSteps = new SomeSteps();
         StepCandidate candidate = candidateWith("windows attributes:$attrs", WHEN, method, someSteps);
@@ -121,21 +121,21 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldIgnoreStep() throws Exception {
+    void shouldIgnoreStep() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
         StepCandidate candidate = candidateWith("", IGNORABLE, method, new SomeSteps());
         assertThat(candidate.ignore("!-- Then ignore me"), is(true));
     }
 
     @Test
-    public void shouldComment() throws Exception {
+    void shouldComment() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
         StepCandidate candidate = candidateWith("", IGNORABLE, method, new SomeSteps());
         assertThat(candidate.comment("!-- comment"), is(true));
     }
 
     @Test
-    public void shouldNotMatchOrIgnoreStepWhenStartingWordNotFound() throws Exception {
+    void shouldNotMatchOrIgnoreStepWhenStartingWordNotFound() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
         Keywords keywords = new LocalizedKeywords(){            
             
@@ -155,14 +155,14 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldProvideStepPriority() throws Exception {
+    void shouldProvideStepPriority() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
         StepCandidate candidate = candidateWith("I laugh", GIVEN, method, new SomeSteps());
         assertThat(candidate.getPriority(), equalTo(0));
     }
 
     @Test
-    public void shouldCreatePerformableStepUsingTheMatchedString() throws Exception {
+    void shouldCreatePerformableStepUsingTheMatchedString() throws Exception {
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
         StepCandidate candidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
@@ -171,7 +171,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldCreatePerformableStepUsingTheMatchedStringAndNamedParameterWithPartialValue() throws Exception {
+    void shouldCreatePerformableStepUsingTheMatchedStringAndNamedParameterWithPartialValue() throws Exception {
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
         StepCandidate candidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
@@ -181,7 +181,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldCreatePerformableStepUsingTheMatchedStringAndMultilinedNamedParameterWithPartialValue()
+    void shouldCreatePerformableStepUsingTheMatchedStringAndMultilinedNamedParameterWithPartialValue()
             throws Exception {
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
@@ -195,7 +195,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldCreatePerformableStepWithResultThatDescribesTheStepPerformed() throws Exception {
+    void shouldCreatePerformableStepWithResultThatDescribesTheStepPerformed() throws Exception {
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
         StepCandidate candidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
@@ -210,7 +210,7 @@ public class StepCandidateBehaviour {
     }
     
     @Test
-    public void shouldConvertStringParameterValueToUseSystemNewline() throws Exception {
+    void shouldConvertStringParameterValueToUseSystemNewline() throws Exception {
         String windowsNewline = "\r\n";
         String unixNewline = "\n";
         String systemNewline = System.getProperty("line.separator");
@@ -222,7 +222,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldConvertParameterToNumber() throws Exception {
+    void shouldConvertParameterToNumber() throws Exception {
         assertThatNumberIsConverted(int.class, 14);
         assertThatNumberIsConverted(long.class, 14L);
         assertThatNumberIsConverted(float.class, 14f);
@@ -238,7 +238,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldConvertParameterToListOfNumbersOrStrings() throws Exception {
+    void shouldConvertParameterToListOfNumbersOrStrings() throws Exception {
         assertThatListIsConverted("aMethodWithListOfIntegers", "1,2,3", asList(1, 2, 3));
         assertThatListIsConverted("aMethodWithListOfLongs", "1,2,3", asList(1L, 2L, 3L));
         assertThatListIsConverted("aMethodWithListOfFloats", "1.1,2.2,3.3", asList(1.1f, 2.2f, 3.3f));
@@ -255,7 +255,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldMatchMethodParametersByAnnotatedNamesInNaturalOrder() throws Exception {
+    void shouldMatchMethodParametersByAnnotatedNamesInNaturalOrder() throws Exception {
         AnnotationNamedParameterSteps steps = new AnnotationNamedParameterSteps();
         String patternAsString = "I live on the $ith floor but some call it the $nth";
         Method method = stepMethodFor("methodWithNamedParametersInNaturalOrder", AnnotationNamedParameterSteps.class);
@@ -266,7 +266,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldMatchMethodParametersByAnnotatedNamesInverseOrder() throws Exception {
+    void shouldMatchMethodParametersByAnnotatedNamesInverseOrder() throws Exception {
         AnnotationNamedParameterSteps steps = new AnnotationNamedParameterSteps();
         String patternAsString = "I live on the $ith floor but some call it the $nth";
         Method method = stepMethodFor("methodWithNamedParametersInInverseOrder", AnnotationNamedParameterSteps.class);
@@ -277,7 +277,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldCreateStepFromTableValuesViaAnnotations() throws Exception {
+    void shouldCreateStepFromTableValuesViaAnnotations() throws Exception {
         AnnotationNamedParameterSteps steps = new AnnotationNamedParameterSteps();
         namedParameters.put("ith", "first");
         namedParameters.put("nth", "ground");
@@ -297,7 +297,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldCreateStepFromTableValuesViaAnnotationsWithCustomParameterDelimiters() throws Exception {
+    void shouldCreateStepFromTableValuesViaAnnotationsWithCustomParameterDelimiters() throws Exception {
         AnnotationNamedParameterSteps steps = new AnnotationNamedParameterSteps();
         namedParameters.put("ith", "first");
         namedParameters.put("nth", "ground");
@@ -318,7 +318,7 @@ public class StepCandidateBehaviour {
 
 
     @Test
-    public void shouldMatchMethodParametersByAnnotatedNamesInNaturalOrderForJsr330Named() throws Exception {
+    void shouldMatchMethodParametersByAnnotatedNamesInNaturalOrderForJsr330Named() throws Exception {
         Jsr330AnnotationNamedParameterSteps steps = new Jsr330AnnotationNamedParameterSteps();
         String patternAsString = "I live on the $ith floor but some call it the $nth";
         Method method = stepMethodFor("methodWithNamedParametersInNaturalOrder",
@@ -330,7 +330,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldMatchMethodParametersByAnnotatedNamesInverseOrderForJsr330Named() throws Exception {
+    void shouldMatchMethodParametersByAnnotatedNamesInverseOrderForJsr330Named() throws Exception {
         Jsr330AnnotationNamedParameterSteps steps = new Jsr330AnnotationNamedParameterSteps();
         String patternAsString = "I live on the $ith floor but some call it the $nth";
         Method method = stepMethodFor("methodWithNamedParametersInInverseOrder",
@@ -342,7 +342,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldCreateStepFromTableValuesViaAnnotationsForJsr330Named() throws Exception {
+    void shouldCreateStepFromTableValuesViaAnnotationsForJsr330Named() throws Exception {
         Jsr330AnnotationNamedParameterSteps steps = new Jsr330AnnotationNamedParameterSteps();
         namedParameters.put("ith", "first");
         namedParameters.put("nth", "ground");
@@ -356,12 +356,12 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldMatchMethodParametersByParanamerNamesInNaturalOrder() throws Exception {
+    void shouldMatchMethodParametersByParanamerNamesInNaturalOrder() throws Exception {
         shouldMatchMethodParametersByParanamerSomeOrder("methodWithNamedParametersInNaturalOrder");
     }
 
     @Test
-    public void shouldMatchMethodParametersByParanamerInverseOrder() throws Exception {
+    void shouldMatchMethodParametersByParanamerInverseOrder() throws Exception {
         shouldMatchMethodParametersByParanamerSomeOrder("methodWithNamedParametersInInverseOrder");
     }
 
@@ -377,7 +377,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldCreateStepFromTableValuesViaParanamer() throws Exception {
+    void shouldCreateStepFromTableValuesViaParanamer() throws Exception {
         ParanamerNamedParameterSteps steps = new ParanamerNamedParameterSteps();
         namedParameters.put("ith", "first");
         namedParameters.put("nth", "ground");
@@ -391,7 +391,7 @@ public class StepCandidateBehaviour {
     }
     
     @Test
-    public void shouldCreateStepFromTableValuesWhenHeadersDoNotMatchParameterNames() throws Exception {
+    void shouldCreateStepFromTableValuesWhenHeadersDoNotMatchParameterNames() throws Exception {
         AnnotationNamedParameterSteps steps = new AnnotationNamedParameterSteps();
         // I speak LolCatz and mispell headerz
         namedParameters.put("itz", "first");
@@ -413,7 +413,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldCreateStepsOfDifferentTypesWithSameMatchingPattern() {
+    void shouldCreateStepsOfDifferentTypesWithSameMatchingPattern() {
         NamedTypeSteps steps = new NamedTypeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(2));
@@ -436,7 +436,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldCaptureOutcomeFailures() {
+    void shouldCaptureOutcomeFailures() {
         FailingSteps steps = new FailingSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(1));
@@ -451,7 +451,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldRestart() {
+    void shouldRestart() {
         RestartingSteps steps = new RestartingSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(1));
@@ -468,7 +468,7 @@ public class StepCandidateBehaviour {
     }
 
     @Test
-    public void shouldPerformStepsInDryRunMode() {
+    void shouldPerformStepsInDryRunMode() {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.storyControls().doDryRun(true);
         NamedTypeSteps steps = new NamedTypeSteps(configuration);
@@ -496,7 +496,7 @@ public class StepCandidateBehaviour {
     }
     
     @Test
-    public void shouldMatchAndIdentifyPendingAnnotatedSteps() {
+    void shouldMatchAndIdentifyPendingAnnotatedSteps() {
         PendingSteps steps = new PendingSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(2));
@@ -509,7 +509,7 @@ public class StepCandidateBehaviour {
     }
 
 	@Test
-    public void shouldNotCreateStepOfWrongType() {
+    void shouldNotCreateStepOfWrongType() {
         NamedTypeSteps steps = new NamedTypeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(2));

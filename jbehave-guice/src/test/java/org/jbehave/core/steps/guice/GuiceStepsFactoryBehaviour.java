@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class GuiceStepsFactoryBehaviour {
 
     @Test
-    public void assertThatStepsCanBeCreated() {
+    void assertThatStepsCanBeCreated() {
         // Given
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
@@ -36,7 +36,7 @@ public class GuiceStepsFactoryBehaviour {
 
 
     @Test
-    public void assertThatStepsWithStepsWithDependencyCanBeCreated() {
+    void assertThatStepsWithStepsWithDependencyCanBeCreated() {
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
@@ -67,7 +67,7 @@ public class GuiceStepsFactoryBehaviour {
     }
 
     @Test
-    public void assertThatStepsWithMissingDependenciesCannotBeCreated() {
+    void assertThatStepsWithMissingDependenciesCannotBeCreated() {
         AbstractModule module = new AbstractModule() {
             @Override
             protected void configure() {

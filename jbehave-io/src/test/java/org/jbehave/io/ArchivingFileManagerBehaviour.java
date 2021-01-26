@@ -19,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-public class ArchivingFileManagerBehaviour {
+class ArchivingFileManagerBehaviour {
 
 	private FileManager manager;
 	private File upload;
@@ -48,7 +48,7 @@ public class ArchivingFileManagerBehaviour {
 	}
 
 	@Test
-	public void canListFilesThatAreNotDirectories() throws IOException {
+	void canListFilesThatAreNotDirectories() throws IOException {
 		assertThat(listFiles(), is(asList(zip, file1, file2)));
 	}
 
@@ -62,7 +62,7 @@ public class ArchivingFileManagerBehaviour {
 	}
 
 	@Test
-	public void canDeleteFilesAndDirectories() throws IOException {
+	void canDeleteFilesAndDirectories() throws IOException {
 		assertThat(listFiles(), is(asList(zip, file1, file2)));
 		manager.delete(asList(file1));
 		assertThat(listFiles(), is(asList(zip, file2)));
@@ -71,7 +71,7 @@ public class ArchivingFileManagerBehaviour {
 	}
 
 	@Test
-	public void canWriteFileItems() throws Exception {
+	void canWriteFileItems() throws Exception {
 		List<String> errors = new ArrayList<String>();
 		FileItem file2FileItem = mock(FileItem.class, "file2");
 		FileItem zipFileItem = mock(FileItem.class, "zip");
@@ -87,7 +87,7 @@ public class ArchivingFileManagerBehaviour {
 	}
 
 	@Test
-	public void cannotUnarchiveMissingFile() throws Exception {
+	void cannotUnarchiveMissingFile() throws Exception {
 		List<String> errors = new ArrayList<String>();
         FileItem file2FileItem = mock(FileItem.class, "file2");
         FileItem zipFileItem = mock(FileItem.class, "zip");
@@ -106,7 +106,7 @@ public class ArchivingFileManagerBehaviour {
 	}
 
 	@Test
-	public void canIgnoreWritingFileItemsWithBlankNames() throws Exception {
+	void canIgnoreWritingFileItemsWithBlankNames() throws Exception {
 		List<String> errors = new ArrayList<String>();
         FileItem file2FileItem = mock(FileItem.class, "file2");
         FileItem zipFileItem = mock(FileItem.class, "zip");
@@ -117,7 +117,7 @@ public class ArchivingFileManagerBehaviour {
 	}
 
 	@Test
-	public void cannotWriteFileItemsThatFail() throws Exception {
+	void cannotWriteFileItemsThatFail() throws Exception {
 		List<String> errors = new ArrayList<String>();
         FileItem file2FileItem = mock(FileItem.class, "file2");
         FileItem zipFileItem = mock(FileItem.class, "zip");

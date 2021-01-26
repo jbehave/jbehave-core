@@ -17,10 +17,10 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.junit.jupiter.api.Test;
 
-public class InstanceStepsFactoryBehaviour {
+class InstanceStepsFactoryBehaviour {
 
     @Test
-    public void shouldCreateCandidateSteps() {
+    void shouldCreateCandidateSteps() {
         InjectableStepsFactory factory = new InstanceStepsFactory(new MostUsefulConfiguration(), new MySteps());
         List<CandidateSteps> candidateSteps = factory.createCandidateSteps();
         assertThat(candidateSteps.size(), equalTo(1));
@@ -30,7 +30,7 @@ public class InstanceStepsFactoryBehaviour {
     }
 
     @Test
-    public void shouldCreateCompositeCandidateSteps() {
+    void shouldCreateCompositeCandidateSteps() {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useCompositePaths(Collections.singleton("composite.steps"));
         InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
@@ -40,14 +40,14 @@ public class InstanceStepsFactoryBehaviour {
     }
 
     @Test
-    public void shouldDetermineIfStepsInstanceHasAnnotatedMethods() {
+    void shouldDetermineIfStepsInstanceHasAnnotatedMethods() {
         InstanceStepsFactory factory = new InstanceStepsFactory(new MostUsefulConfiguration());
         assertThat(factory.hasAnnotatedMethods(MySteps.class), is(true));
         assertThat(factory.hasAnnotatedMethods(NoAnnotatedMethods.class), is(false));
     } 
 
     @Test
-    public void shouldAllowGenericList() {
+    void shouldAllowGenericList() {
         List<? super MyInterface> list = new ArrayList<>();
         list.add(new MyStepsAWithInterface());
         list.add(new MyStepsBWithInterface());

@@ -9,12 +9,12 @@ import org.jbehave.core.model.TableTransformers;
 import org.junit.jupiter.api.Test;
 
 
-public class TransformingStoryParserBehaviour {
+class TransformingStoryParserBehaviour {
 
     private static final String NL = "\n";
 
     @Test
-    public void shouldTransformAndParseStory() {
+    void shouldTransformAndParseStory() {
         StoryParser delegate = new RegexStoryParser(new LoadFromClasspath(), new TableTransformers());
         StoryTransformer transformer = new StoryTransformer() {            
             @Override

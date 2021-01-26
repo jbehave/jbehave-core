@@ -25,7 +25,7 @@ public class PicoStepsFactoryBehaviour {
     }
 
     @Test
-    public void assertThatStepsCanBeCreated() {
+    void assertThatStepsCanBeCreated() {
         // Given
         MutablePicoContainer parent = createPicoContainer();
         parent.as(Characteristics.USE_NAMES).addComponent(FooSteps.class);
@@ -38,7 +38,7 @@ public class PicoStepsFactoryBehaviour {
 
 
     @Test
-    public void assertThatStepsWithStepsWithDependencyCanBeCreated() {
+    void assertThatStepsWithStepsWithDependencyCanBeCreated() {
         MutablePicoContainer parent = createPicoContainer();
         parent.as(Characteristics.USE_NAMES).addComponent(FooStepsWithDependency.class);
         parent.addComponent(Integer.class, 42);
@@ -64,7 +64,7 @@ public class PicoStepsFactoryBehaviour {
     }
 
     @Test
-    public void assertThatStepsWithMissingDependenciesCannotBeCreated() {
+    void assertThatStepsWithMissingDependenciesCannotBeCreated() {
         MutablePicoContainer parent = createPicoContainer();
         parent.as(Characteristics.USE_NAMES).addComponent(FooStepsWithDependency.class);
         PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulConfiguration(), parent);

@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.model.ExamplesTable.TableRows;
 
-public class TableParsersBehaviour {
+class TableParsersBehaviour {
 
     private final TableParsers tableParsers = new TableParsers();
 
     @Test
-    public void shouldParseTableUsingProperties() {
+    void shouldParseTableUsingProperties() {
         // Given
         String table = "!key-1  !key-2  !\n"
                      + "|val-1-1|val-1-2|\n"

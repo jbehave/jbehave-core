@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class NullStoryReporterBehaviour {
+class NullStoryReporterBehaviour {
 
     private final String NL = System.getProperty("line.separator");
 
     @Test
-    public void shouldOnlyReportOverriddenMethods() {
+    void shouldOnlyReportOverriddenMethods() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         final PrintStream printStream = new PrintStream(out);
         StoryReporter reporter = new NullStoryReporter(){

@@ -23,10 +23,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
-public class StepResultBehaviour {
+class StepResultBehaviour {
     
     @Test
-    public void shouldDescribeResultToReporter() {
+    void shouldDescribeResultToReporter() {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
 
@@ -62,7 +62,7 @@ public class StepResultBehaviour {
     }
     
     @Test
-    public void shouldDescribeResultToReporterWithParameterValuesWhenAvailable() {
+    void shouldDescribeResultToReporterWithParameterValuesWhenAvailable() {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
 
@@ -85,7 +85,7 @@ public class StepResultBehaviour {
     }
 
     @Test
-    public void shouldDescribeResultToString() {
+    void shouldDescribeResultToString() {
         // Given        
         String stepPattern = "Given that a step is $pending or $failing";
         String successful = "Given that a step is pending or failing";

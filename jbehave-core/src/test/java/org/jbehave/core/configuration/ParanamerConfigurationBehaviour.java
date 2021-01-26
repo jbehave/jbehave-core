@@ -8,10 +8,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.instanceOf;
 
-public class ParanamerConfigurationBehaviour {
+class ParanamerConfigurationBehaviour {
 
     @Test
-    public void shouldUseCachingParanamer() {
+    void shouldUseCachingParanamer() {
         assertThat(new ParanamerConfiguration().paranamer(), instanceOf(CachingParanamer.class));
     }
     

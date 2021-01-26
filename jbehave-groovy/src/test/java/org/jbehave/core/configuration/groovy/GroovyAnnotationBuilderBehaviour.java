@@ -16,16 +16,16 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
 import org.junit.jupiter.api.Test;
 
-public class GroovyAnnotationBuilderBehaviour {
+class GroovyAnnotationBuilderBehaviour {
 
     @Test
-    public void shouldBuildConfigurationFromAnnotations() {
+    void shouldBuildConfigurationFromAnnotations() {
         GroovyAnnotationBuilder builder = new GroovyAnnotationBuilder(AnnotatedUsingGroovy.class);
         assertThatConfigurationIs(builder.buildConfiguration(), new MostUsefulConfiguration());
     }
 
     @Test
-    public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
+    void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
         GroovyAnnotationBuilder builderNotAnnotated = new GroovyAnnotationBuilder(NotAnnotated.class);
         assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(), new MostUsefulConfiguration());
     }
@@ -46,7 +46,7 @@ public class GroovyAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingGroovy() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingGroovy() {
         GroovyAnnotationBuilder builderAnnotated = new GroovyAnnotationBuilder(AnnotatedUsingGroovy.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), "FooSteps");

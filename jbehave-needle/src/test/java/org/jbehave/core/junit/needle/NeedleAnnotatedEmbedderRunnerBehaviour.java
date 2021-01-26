@@ -24,10 +24,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
-public class NeedleAnnotatedEmbedderRunnerBehaviour {
+class NeedleAnnotatedEmbedderRunnerBehaviour {
 
 	@Test
-	public void shouldCreateWithGuiceAnnotatedBuilder() throws InitializationError {
+	void shouldCreateWithGuiceAnnotatedBuilder() throws InitializationError {
 		AnnotatedEmbedderRunner runner = new NeedleAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
 		assertThat(runner.annotationBuilder(), instanceOf(NeedleAnnotationBuilder.class));
 	}

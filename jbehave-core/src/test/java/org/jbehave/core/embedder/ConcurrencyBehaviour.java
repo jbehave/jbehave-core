@@ -36,10 +36,10 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.Format.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ConcurrencyBehaviour {
+class ConcurrencyBehaviour {
 
     @Test
-    public void shouldCompleteXmlReportWhenStoryIsCancelled() {
+    void shouldCompleteXmlReportWhenStoryIsCancelled() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("1");
         try {
@@ -53,7 +53,7 @@ public class ConcurrencyBehaviour {
     }
 
     @Test
-    public void shouldCompleteTextReportWhenStoryIsFinishedSuccessfully() {
+    void shouldCompleteTextReportWhenStoryIsFinishedSuccessfully() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("4");
         embedder.embedderControls().useThreads(2);
@@ -64,7 +64,7 @@ public class ConcurrencyBehaviour {
     }
 
     @Test
-    public void shouldAllowStoriesToBeCancelled() {
+    void shouldAllowStoriesToBeCancelled() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("1");
         List<String> classNames = singletonList(ThreadsStories.class.getName());
@@ -72,7 +72,7 @@ public class ConcurrencyBehaviour {
     }
 
     @Test
-    public void shouldAllowStoriesToBeCancelledByPaths() {
+    void shouldAllowStoriesToBeCancelledByPaths() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("**/*.story:1");
         List<String> classNames = singletonList(ThreadsStories.class.getName());
@@ -80,14 +80,14 @@ public class ConcurrencyBehaviour {
     }
 
     @Test
-    public void shouldAllowStoriesToBeTimed() {
+    void shouldAllowStoriesToBeTimed() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("10").useThreads(2).doVerboseFailures(true);
         embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
     }
 
     @Test
-    public void shouldFailOnTimeout() {
+    void shouldFailOnTimeout() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("1")
                 .doFailOnStoryTimeout(true);
@@ -101,7 +101,7 @@ public class ConcurrencyBehaviour {
     }
 
      @Test
-     public void shouldFailOnTimeoutWhenSpecifiedByPath() {
+     void shouldFailOnTimeoutWhenSpecifiedByPath() {
          Embedder embedder = new Embedder();
          embedder.embedderControls().useStoryTimeouts("**/*.story:1").doFailOnStoryTimeout(true);
          try {
@@ -114,7 +114,7 @@ public class ConcurrencyBehaviour {
      }
 
      @Test
-     public void shouldUseDefaultTimeoutWhenNoTimeoutsAreSpecified() {
+     void shouldUseDefaultTimeoutWhenNoTimeoutsAreSpecified() {
          OutputStream out = new ByteArrayOutputStream();
          Embedder embedder = new Embedder(embedderMonitor(out));
          ThreadsStories.setCustomStoryPath("**/a_short.story");
@@ -124,7 +124,7 @@ public class ConcurrencyBehaviour {
      }
 
      @Test
-     public void shouldUseTimeoutByPathIfSpecifiedOrDefaultOtherwise() {
+     void shouldUseTimeoutByPathIfSpecifiedOrDefaultOtherwise() {
          OutputStream out = new ByteArrayOutputStream();
          Embedder embedder = new Embedder(embedderMonitor(out));
          try {
@@ -139,7 +139,7 @@ public class ConcurrencyBehaviour {
      }
 
      @Test
-     public void shouldUseTheTimeoutTypeSpecified() {
+     void shouldUseTheTimeoutTypeSpecified() {
          OutputStream out = new ByteArrayOutputStream();
          Embedder embedder = new Embedder(embedderMonitor(out));
          try {
@@ -154,7 +154,7 @@ public class ConcurrencyBehaviour {
      }
 
      @Test
-     public void shouldHandleBothTimeoutTypesSpecifiedAsTheSame() {
+     void shouldHandleBothTimeoutTypesSpecifiedAsTheSame() {
          OutputStream out = new ByteArrayOutputStream();
          Embedder embedder = new Embedder(embedderMonitor(out));
          ThreadsStories.setCustomStoryPath("**/a_short.story");
@@ -165,7 +165,7 @@ public class ConcurrencyBehaviour {
      }
 
      @Test
-     public void shouldAllowTimeoutByPathToBeZeroMeaningNoTimeLimit() {
+     void shouldAllowTimeoutByPathToBeZeroMeaningNoTimeLimit() {
          OutputStream out = new ByteArrayOutputStream();
          Embedder embedder = new Embedder(embedderMonitor(out));
          ThreadsStories.setCustomStoryPath("**/another_long.story");
@@ -176,7 +176,7 @@ public class ConcurrencyBehaviour {
      }
 
      @Test
-     public void shouldUseDefaultTimeoutWhenTimeoutByPathIsEmpty() {
+     void shouldUseDefaultTimeoutWhenTimeoutByPathIsEmpty() {
          OutputStream out = new ByteArrayOutputStream();
          Embedder embedder = new Embedder(embedderMonitor(out));
          ThreadsStories.setCustomStoryPath("**/a_short.story");
@@ -187,7 +187,7 @@ public class ConcurrencyBehaviour {
      }
 
      @Test
-     public void shouldAllowMultipleTimeoutsByPathToBeSpecified() {
+     void shouldAllowMultipleTimeoutsByPathToBeSpecified() {
          OutputStream out = new ByteArrayOutputStream();
          Embedder embedder = new Embedder(embedderMonitor(out));
 
@@ -202,7 +202,7 @@ public class ConcurrencyBehaviour {
      }
 
      @Test
-     public void shouldNotAllowTimeoutByPathToBeInvalidFormats() {
+     void shouldNotAllowTimeoutByPathToBeInvalidFormats() {
          assertThatStoryTimeoutIsInvalid("**/a_long.story:adhgaldsh");
          assertThatStoryTimeoutIsInvalid("**/a_long.story:       ");
      }
@@ -220,7 +220,7 @@ public class ConcurrencyBehaviour {
     }
 
      @Test
-     public void shouldHandleRepeatedTimeoutsByPath() {
+     void shouldHandleRepeatedTimeoutsByPath() {
          OutputStream out = new ByteArrayOutputStream();
          Embedder embedder = new Embedder(embedderMonitor(out));
          ThreadsStories.setCustomStoryPath("**/a_short.story");

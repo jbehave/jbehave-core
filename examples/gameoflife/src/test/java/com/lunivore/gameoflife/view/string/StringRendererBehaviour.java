@@ -8,12 +8,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class StringRendererBehaviour {
+class StringRendererBehaviour {
 
     private static final String NL = System.getProperty("line.separator");
 
     @Test
-    public void shouldRenderCellsAsCrosses() {
+    void shouldRenderCellsAsCrosses() {
         StringRenderer renderer = new StringRenderer();
         Grid grid = mock(Grid.class);
         when(grid.getWidth()).thenReturn(5);

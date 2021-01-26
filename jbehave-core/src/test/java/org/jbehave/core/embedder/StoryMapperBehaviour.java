@@ -15,10 +15,10 @@ import org.jbehave.core.model.StoryMap;
 import org.jbehave.core.model.StoryMaps;
 import org.junit.jupiter.api.Test;
 
-public class StoryMapperBehaviour {
+class StoryMapperBehaviour {
 
     @Test
-    public void shouldMapStoriesAllowedByFilter() {
+    void shouldMapStoriesAllowedByFilter() {
         // Given
         Meta meta1 = mock(Meta.class, "meta1");
         Story story1 = new Story("/path/to/story1", Description.EMPTY, meta1, Narrative.EMPTY, asList(new Scenario("scenario1", meta1)));

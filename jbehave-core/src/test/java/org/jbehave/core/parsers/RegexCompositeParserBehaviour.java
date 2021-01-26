@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Valery Yatsynovich
  */
-public class RegexCompositeParserBehaviour {
+class RegexCompositeParserBehaviour {
 
     private static final String NL = "\n";
     private static final String CRLF = "\r\n";
@@ -25,13 +25,13 @@ public class RegexCompositeParserBehaviour {
     private CompositeParser parser = new RegexCompositeParser();
 
     @Test
-    public void shouldParseEmptySteps() {
+    void shouldParseEmptySteps() {
         List<Composite> composites = parser.parseComposites(EMPTY);
         assertThat(composites, equalTo(Collections.<Composite>emptyList()));
     }
 
     @Test
-    public void shouldParseCompositeStepWithEmptyComposedSteps() {
+    void shouldParseCompositeStepWithEmptyComposedSteps() {
         String compositesAsText = "Composite: Given an empty composite step";
         List<Composite> composites = parser.parseComposites(compositesAsText);
         assertThat(composites.size(), equalTo(1));
@@ -39,7 +39,7 @@ public class RegexCompositeParserBehaviour {
     }
 
     @Test
-    public void shouldParseCompositeStepWithEmptyComposedStepsEndingWithLineBreak() {
+    void shouldParseCompositeStepWithEmptyComposedStepsEndingWithLineBreak() {
         String compositesAsText = "Composite: Given an empty composite step" + NL;
         List<Composite> composites = parser.parseComposites(compositesAsText);
         assertThat(composites.size(), equalTo(1));
@@ -47,7 +47,7 @@ public class RegexCompositeParserBehaviour {
     }
 
     @Test
-    public void shouldParseCompositeStepWithEmptyComposedStepsEndingWithSpaceAndLineBreaks() {
+    void shouldParseCompositeStepWithEmptyComposedStepsEndingWithSpaceAndLineBreaks() {
         String compositesAsText = "Composite: Given an empty composite step " + NL + " " + NL;
         List<Composite> composites = parser.parseComposites(compositesAsText);
         assertThat(composites.size(), equalTo(1));
@@ -55,7 +55,7 @@ public class RegexCompositeParserBehaviour {
     }
 
     @Test
-    public void shouldParseSingleCompositeStep() {
+    void shouldParseSingleCompositeStep() {
         String compositeStepsAsText = "Composite: Given a composite step" + NL+
                 "Given a step" + NL +
                 "Then another step";
@@ -66,7 +66,7 @@ public class RegexCompositeParserBehaviour {
     }
 
     @Test
-    public void shouldParseCompositeStepWithPriority() {
+    void shouldParseCompositeStepWithPriority() {
         String compositeStepsAsText = "Composite: Given a composite step" + NL+
                 "Priority: 1" + NL +
                 "Given a step" + NL +
@@ -78,7 +78,7 @@ public class RegexCompositeParserBehaviour {
     }
 
     @Test
-    public void shouldParseCompositeStepWithLineBreaks() {
+    void shouldParseCompositeStepWithLineBreaks() {
         String compositeStepsAsText = "Composite: Given a composite step with UNIX separators" + NL+
                 "Given a step" + NL + NL +
                 "Then another step" + NL +
@@ -94,7 +94,7 @@ public class RegexCompositeParserBehaviour {
     }
 
     @Test
-    public void shouldParseTwoCompositeStep() {
+    void shouldParseTwoCompositeStep() {
         String compositeStepsAsText = "Composite: Given the first composite step" + NL+
                 "Given a step" + NL +
                 "Composite: When the second composite step" + NL+
@@ -108,7 +108,7 @@ public class RegexCompositeParserBehaviour {
     }
 
     @Test
-    public void shouldParseTwoCompositeStepWithCRLF() {
+    void shouldParseTwoCompositeStepWithCRLF() {
         String compositeStepsAsText = "Composite: Given the first composite step" + CRLF+
                 "Given a step" + CRLF +
                 "Composite: When the second composite step" + CRLF+
@@ -122,7 +122,7 @@ public class RegexCompositeParserBehaviour {
     }
 
     @Test
-    public void shouldParseCompositeStepWithCustomLocale() {
+    void shouldParseCompositeStepWithCustomLocale() {
         String compositeStepsAsText = "Композитный: Дано композитный шаг" + NL+
                 "Дано шаг";
         CompositeParser localizedParser = new RegexCompositeParser(new LocalizedKeywords(new Locale("ru")));

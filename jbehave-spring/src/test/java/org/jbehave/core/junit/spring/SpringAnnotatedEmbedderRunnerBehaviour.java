@@ -12,10 +12,10 @@ import org.junit.runners.model.InitializationError;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 
-public class SpringAnnotatedEmbedderRunnerBehaviour {
+class SpringAnnotatedEmbedderRunnerBehaviour {
 
     @Test
-    public void shouldCreateWithSpringAnnotatedBuilder() throws InitializationError{
+    void shouldCreateWithSpringAnnotatedBuilder() throws InitializationError{
         AnnotatedEmbedderRunner runner = new SpringAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
         assertThat(runner.annotationBuilder(), instanceOf(SpringAnnotationBuilder.class));
     }

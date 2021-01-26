@@ -17,10 +17,10 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class PerformableTreeConversionBehaviour {
+class PerformableTreeConversionBehaviour {
 
     @Test
-    public void shouldConvertParameters() {
+    void shouldConvertParameters() {
         SharpParameterConverters sharpParameterConverters = new SharpParameterConverters();
         ParameterControls parameterControls = new ParameterControls();
         PerformableTree performableTree = new PerformableTree();

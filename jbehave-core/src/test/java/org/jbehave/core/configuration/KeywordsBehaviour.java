@@ -11,10 +11,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class KeywordsBehaviour {
+class KeywordsBehaviour {
 
     @Test
-    public void shouldHaveAllKeywordsSetByDefault() {
+    void shouldHaveAllKeywordsSetByDefault() {
         Keywords keywords = new Keywords();
         assertThat(keywords.narrative(), equalTo("Narrative:"));
         assertThat(keywords.scenario(), equalTo("Scenario:"));
@@ -36,7 +36,7 @@ public class KeywordsBehaviour {
     }
 
     @Test
-    public void shouldFailIfSomeKeywordIsMissingInMapConstructor() {
+    void shouldFailIfSomeKeywordIsMissingInMapConstructor() {
         Map<String, String> keywords = new HashMap<>();
         assertThrows(KeywordNotFound.class, () -> new Keywords(keywords));
     }

@@ -16,9 +16,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class StoryMapsBehaviour {
+class StoryMapsBehaviour {
     @Test
-    public void shouldMapStoriesByFilterInLanes() {
+    void shouldMapStoriesByFilterInLanes() {
         // Given
         String storyPath1 = "/path/to/story_one.story"; 
         String storyPath2 = "/path/to/story_two.story";

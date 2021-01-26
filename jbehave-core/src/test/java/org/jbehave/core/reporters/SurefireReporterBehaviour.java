@@ -20,10 +20,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 
-public class SurefireReporterBehaviour {
+class SurefireReporterBehaviour {
 
     @Test
-    public void shouldProduceXmlReportWithSimpleNamingStrategy() throws Exception {
+    void shouldProduceXmlReportWithSimpleNamingStrategy() throws Exception {
 
         // Given
         String reportName = "surefire-simple";
@@ -42,7 +42,7 @@ public class SurefireReporterBehaviour {
     }
 
     @Test
-    public void shouldProduceXmlReportWithBreadcrumbNamingStrategy() throws Exception {
+    void shouldProduceXmlReportWithBreadcrumbNamingStrategy() throws Exception {
 
         // Given
         String reportName = "surefire-breadcrumb";

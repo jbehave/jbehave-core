@@ -8,10 +8,10 @@ import java.net.URL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class LoadFromRelativeFileBehaviour {
+class LoadFromRelativeFileBehaviour {
 
     @Test
-    public void testLoadFromRelativeFile() throws MalformedURLException {
+    void testLoadFromRelativeFile() throws MalformedURLException {
         URL baseLocation = CodeLocations.codeLocationFromClass(LoadFromRelativeFileBehaviour.class);
         URL subdir=new URL(baseLocation.toString()+"/test+dir");
         LoadFromRelativeFile load = new LoadFromRelativeFile(subdir);

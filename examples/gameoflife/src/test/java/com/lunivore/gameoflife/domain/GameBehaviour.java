@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class GameBehaviour {
+class GameBehaviour {
 
     private static final String NL = System.getProperty("line.separator");
 
     @Test
-    public void shouldStartEmpty() {
+    void shouldStartEmpty() {
         StringRenderer renderer = new StringRenderer();
         Game game = new Game(6, 4);
         game.setObserver(renderer);
@@ -23,7 +23,7 @@ public class GameBehaviour {
     }
     
     @Test
-    public void shouldAllowUsersToToggleCells() {
+    void shouldAllowUsersToToggleCells() {
         StringRenderer renderer = new StringRenderer();
         Game game = new Game(6, 4);
         game.setObserver(renderer);

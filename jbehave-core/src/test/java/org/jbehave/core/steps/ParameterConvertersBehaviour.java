@@ -79,7 +79,7 @@ import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 
-public class ParameterConvertersBehaviour {
+class ParameterConvertersBehaviour {
 
     private static String NAN = new DecimalFormatSymbols().getNaN();
     private static String POSITIVE_INFINITY = new DecimalFormatSymbols().getInfinity();
@@ -90,7 +90,7 @@ public class ParameterConvertersBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldDefineDefaultConverters() {
+    void shouldDefineDefaultConverters() {
         Keywords keywords = new LocalizedKeywords();
         LoadFromClasspath resourceLoader = new LoadFromClasspath();
         TableParsers tableParsers = new TableParsers();
@@ -127,14 +127,14 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertValuesToNumbersWithDefaultNumberFormat() {
+    void shouldConvertValuesToNumbersWithDefaultNumberFormat() {
         NumberConverter converter = new NumberConverter();
         assertThatAllNumberTypesAreAccepted(converter);
         assertThatAllNumbersAreConverted(converter, ParameterConverters.DEFAULT_NUMBER_FORMAT_LOCAL);
     }
 
     @Test
-    public void shouldConvertValuesToNumbersWithEnglishNumberFormat() {
+    void shouldConvertValuesToNumbersWithEnglishNumberFormat() {
         Locale locale = Locale.ENGLISH;
         ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         assertConverterForLocale(converter, locale);
@@ -152,7 +152,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertValuesToNumbersWithEnglishNumberFormatInMultipleThreads() {
+    void shouldConvertValuesToNumbersWithEnglishNumberFormatInMultipleThreads() {
         final Locale locale = Locale.ENGLISH;
         final int threads = 3;
         final ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
@@ -193,7 +193,7 @@ public class ParameterConvertersBehaviour {
 
     }
     @Test
-    public void shouldConvertValuesToNumbersWithFrenchNumberFormat() {
+    void shouldConvertValuesToNumbersWithFrenchNumberFormat() {
         Locale locale = Locale.FRENCH;
         ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         assertThatAllNumberTypesAreAccepted(converter);
@@ -203,7 +203,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertValuesToNumbersWithGermanNumberFormat() {
+    void shouldConvertValuesToNumbersWithGermanNumberFormat() {
         Locale locale = Locale.GERMAN;
         ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         assertThatAllNumberTypesAreAccepted(converter);
@@ -262,7 +262,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldFailToConvertInvalidNumbersWithNumberFormat() {
+    void shouldFailToConvertInvalidNumbersWithNumberFormat() {
         NumberConverter converter = new NumberConverter();
         ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
                 () -> converter.convertValue("abc", Long.class));
@@ -270,7 +270,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldFailToConvertInvalidNumbersWithNumberFormat2()  {
+    void shouldFailToConvertInvalidNumbersWithNumberFormat2()  {
         NumberConverter converter = new NumberConverter();
         ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
                 () -> converter.convertValue("12.34.56", BigDecimal.class));
@@ -278,7 +278,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertNaNAndInfinityValuesToNumbers() {
+    void shouldConvertNaNAndInfinityValuesToNumbers() {
         ParameterConverter<Number> converter = new NumberConverter();
         assertThat(converter.convertValue(NAN, Float.class), is((Number) Float.NaN));
         assertThat(converter.convertValue(POSITIVE_INFINITY, Float.class), is((Number) Float.POSITIVE_INFINITY));
@@ -289,7 +289,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertCommaSeparatedValuesToListOfNumbersWithDefaultFormat() {
+    void shouldConvertCommaSeparatedValuesToListOfNumbersWithDefaultFormat() {
         ParameterConverter<List<Number>> converter = new NumberListConverter();
         Type listOfNumbers = new TypeLiteral<List<Number>>(){}.getType();
         Type setOfNumbers = new TypeLiteral<Set<Number>>(){}.getType();
@@ -300,7 +300,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertCommaSeparatedValuesToSetOfNumbersWithDefaultFormat() {
+    void shouldConvertCommaSeparatedValuesToSetOfNumbersWithDefaultFormat() {
         ParameterConverters parameterConverters = new ParameterConverters();
         Type setOfNumbers = new TypeLiteral<Set<Number>>(){}.getType();
         Set<Number> set = (Set<Number>)parameterConverters.convert("3, 0.5, 6.1, 8.00", setOfNumbers);
@@ -308,7 +308,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertCommaSeparatedValuesToListOfNumbersWithCustomFormat() {
+    void shouldConvertCommaSeparatedValuesToListOfNumbersWithCustomFormat() {
         ParameterConverter<List<Number>> converter = new NumberListConverter(new DecimalFormat("#,####"), " ");
         Type type = new TypeLiteral<List<Number>>(){}.getType();
         List<Number> list = converter.convertValue("3,000 0.5 6.1f 8.00", type);
@@ -317,7 +317,7 @@ public class ParameterConvertersBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldConvertCommaSeparatedValuesOfSpecificNumberTypes() {
+    void shouldConvertCommaSeparatedValuesOfSpecificNumberTypes() {
         ParameterConverter converter = new NumberListConverter();
 
         Type doubleType = new TypeLiteral<List<Double>>(){}.getType();
@@ -340,19 +340,19 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertCommaSeparatedValuesToArrayWithDefaultFormat() {
+    void shouldConvertCommaSeparatedValuesToArrayWithDefaultFormat() {
         ParameterConverters converters = new ParameterConverters();
         assertThat(converters.convert("1,2,3", int[].class), is(new int[] {1, 2, 3}));
     }
 
     @Test
-    public void shouldConvertEmptyStringToEmptyArray() {
+    void shouldConvertEmptyStringToEmptyArray() {
         ParameterConverters converters = new ParameterConverters();
         assertThat(converters.convert("", int[].class), is(new int[0]));
     }
 
     @Test
-    public void shouldFailToConvertToArrayOfCustomObjectsIfNoConverterFound() {
+    void shouldFailToConvertToArrayOfCustomObjectsIfNoConverterFound() {
         ParameterConverters converters = new ParameterConverters();
         ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
                 () -> converters.convert("foo", Bar[].class));
@@ -361,14 +361,14 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldFailToConvertCommaSeparatedValuesOfInvalidNumbers() {
+    void shouldFailToConvertCommaSeparatedValuesOfInvalidNumbers() {
         NumberListConverter converter = new NumberListConverter();
         assertThrows(ParameterConversionFailed.class,
                 () -> converter.convertValue("3x, x.5", new TypeLiteral<List<Number>>(){}.getType()));
     }
 
     @Test
-    public void shouldConvertCommaSeparatedValuesToListOfStrings() {
+    void shouldConvertCommaSeparatedValuesToListOfStrings() {
         ParameterConverter<List<String>> converter = new StringListConverter();
         Type listOfStrings = new TypeLiteral<List<String>>(){}.getType();
         Type listOfNumbers = new TypeLiteral<List<Number>>(){}.getType();
@@ -381,7 +381,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertDateWithDefaultFormat() throws ParseException {
+    void shouldConvertDateWithDefaultFormat() throws ParseException {
         ParameterConverter<Date> converter = new DateConverter();
         Type type = Date.class;
         assertThatTypesAreAccepted(converter, type);
@@ -390,7 +390,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertDateWithCustomFormat() throws ParseException {
+    void shouldConvertDateWithCustomFormat() throws ParseException {
         DateFormat customFormat = new SimpleDateFormat("yyyy-MM-dd");
         ParameterConverter<Date> converter = new DateConverter(customFormat);
         Type type = Date.class;
@@ -400,13 +400,13 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldFailToConvertDateWithInvalidFormat() {
+    void shouldFailToConvertDateWithInvalidFormat() {
         DateConverter dateConverter = new DateConverter();
         assertThrows(ParameterConversionFailed.class, () -> dateConverter.convertValue("dd+MM+yyyy", Date.class));
     }
 
     @Test
-    public void shouldConvertCurrency() {
+    void shouldConvertCurrency() {
         CurrencyConverter converter = new CurrencyConverter();
         Type type = Currency.class;
         assertThatTypesAreAccepted(converter, type);
@@ -414,7 +414,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertPattern() {
+    void shouldConvertPattern() {
         PatternConverter converter = new PatternConverter();
         Type type = Pattern.class;
         assertThatTypesAreAccepted(converter, type);
@@ -422,7 +422,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertFile() {
+    void shouldConvertFile() {
         FileConverter converter = new FileConverter();
         Type type = File.class;
         assertThatTypesAreAccepted(converter, type);
@@ -430,7 +430,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertMultilineTable() {
+    void shouldConvertMultilineTable() {
         ParameterConverter<ExamplesTable> converter = new ExamplesTableConverter(
                 new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
         Type type = ExamplesTable.class;
@@ -447,7 +447,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertMultilineTableToParameters() {
+    void shouldConvertMultilineTableToParameters() {
         ParameterConverter converter = new ExamplesTableParametersConverter(
                 new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
         Type type = new TypeLiteral<List<MyParameters>>(){}.getType();
@@ -465,7 +465,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertSinglelineTableToParameters() {
+    void shouldConvertSinglelineTableToParameters() {
         ParameterConverter converter = new ExamplesTableParametersConverter(
                 new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
         Type type = MyParameters.class;
@@ -477,7 +477,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertParameterFromMethodReturningValue() throws IntrospectionException {
+    void shouldConvertParameterFromMethodReturningValue() throws IntrospectionException {
         Method method = SomeSteps.methodFor("aMethodReturningExamplesTable");
         ParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
         assertThatTypesAreAccepted(converter, method.getReturnType());
@@ -493,7 +493,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldFailToConvertParameterFromFailingMethodReturningValue() throws IntrospectionException {
+    void shouldFailToConvertParameterFromFailingMethodReturningValue() throws IntrospectionException {
         Method method = SomeSteps.methodFor("aFailingMethodReturningExamplesTable");
         ParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
@@ -501,13 +501,13 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldFailToConvertToUnknownType() {
+    void shouldFailToConvertToUnknownType() {
         ParameterConverters converters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
         assertThrows(ParameterConversionFailed.class, () -> converters.convert("abc", WrongType.class));
     }
 
     @Test
-    public void shouldConvertEnum() {
+    void shouldConvertEnum() {
         ParameterConverter<Enum<?>> converter = new EnumConverter();
         Type type = SomeEnum.class;
         assertThatTypesAreAccepted(converter, type);
@@ -515,7 +515,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertEnumFluently() {
+    void shouldConvertEnumFluently() {
         ParameterConverter<Enum<?>> converter = new FluentEnumConverter();
         Type type = SomeEnum.class;
         assertThat(converter.accept(type), is(true));
@@ -523,13 +523,13 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldFailToConvertEnumForValueNotDefined() {
+    void shouldFailToConvertEnumForValueNotDefined() {
         EnumConverter enumConverter = new EnumConverter();
         assertThrows(ParameterConversionFailed.class, () -> enumConverter.convertValue("FOUR", SomeEnum.class));
     }
 
     @Test
-    public void shouldConvertEnumList() {
+    void shouldConvertEnumList() {
         ParameterConverter converter = new EnumListConverter();
         Type type = new TypeLiteral<List<SomeEnum>>(){}.getType();
 
@@ -539,7 +539,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertBoolean() {
+    void shouldConvertBoolean() {
         ParameterConverter<Boolean> converter = new BooleanConverter();
         Type type = Boolean.TYPE;
         assertThatTypesAreAccepted(converter, type, Boolean.class);
@@ -549,7 +549,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertBooleanWithCustomValues() {
+    void shouldConvertBooleanWithCustomValues() {
         ParameterConverter<Boolean> converter = new BooleanConverter("ON", "OFF");
         Type type = Boolean.TYPE;
         assertThatTypesAreAccepted(converter, type, Boolean.class);
@@ -559,7 +559,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertBooleanList() {
+    void shouldConvertBooleanList() {
         ParameterConverter<List<Boolean>> converter = new BooleanListConverter();
         Type type = new TypeLiteral<List<Boolean>>(){}.getType();
         assertThat(converter.accept(type), is(true));
@@ -568,21 +568,21 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldNotModifyListOfConvertersFromOriginalParameterConvertersWhenCreatingNewInstance() {
+    void shouldNotModifyListOfConvertersFromOriginalParameterConvertersWhenCreatingNewInstance() {
         ParameterConverters original = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
         original.newInstanceAdding(new FooToBarParameterConverter());
         assertThrows(ParameterConversionFailed.class, () -> original.convert("foo", Bar.class));
     }
 
     @Test
-    public void shouldConvertToCustomObjectUsingCustomConverter() {
+    void shouldConvertToCustomObjectUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         assertThat((Bar)parameterConverters.convert("foo", Bar.class), is(Bar.INSTANCE));
     }
 
     @Test
-    public void shouldConvertToListOfCustomObjectsUsingCustomConverter() {
+    void shouldConvertToListOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<List<Bar>>(){}.getType();
@@ -592,7 +592,7 @@ public class ParameterConvertersBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldConvertToLinkedListOfCustomObjectsUsingCustomConverter() {
+    void shouldConvertToLinkedListOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<LinkedList<Bar>>(){}.getType();
@@ -601,7 +601,7 @@ public class ParameterConvertersBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldConvertToSortedSetOfCustomObjectsUsingCustomConverter() {
+    void shouldConvertToSortedSetOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<SortedSet<Bar>>(){}.getType();
@@ -611,7 +611,7 @@ public class ParameterConvertersBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldConvertToNavigableSetOfCustomObjectsUsingCustomConverter() {
+    void shouldConvertToNavigableSetOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<NavigableSet<Bar>>(){}.getType();
@@ -620,7 +620,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldNotConvertToAnyCollectionOfCustomObjectsUsingCustomConverter() {
+    void shouldNotConvertToAnyCollectionOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<Collection<Bar>>(){}.getType();
@@ -631,7 +631,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldNotConvertToListOfCustomObjectsWhenElementConverterIsNotAdded() {
+    void shouldNotConvertToListOfCustomObjectsWhenElementConverterIsNotAdded() {
         ParameterConverters parameterConverters = new ParameterConverters(new TableTransformers());
         Type type = new TypeLiteral<List<Bar>>(){}.getType();
         ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
@@ -642,7 +642,7 @@ public class ParameterConvertersBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldConvertEmptyStringToEmptyCollection() {
+    void shouldConvertEmptyStringToEmptyCollection() {
         ParameterConverters parameterConverters = new ParameterConverters();
         Type type = new TypeLiteral<List<Boolean>>(){}.getType();
         List<Boolean> list = (List<Boolean>) parameterConverters.convert("", type);
@@ -651,7 +651,7 @@ public class ParameterConvertersBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldConvertBlankStringToEmptyCollection() {
+    void shouldConvertBlankStringToEmptyCollection() {
         ParameterConverters parameterConverters = new ParameterConverters();
         Type type = new TypeLiteral<Set<Number>>(){}.getType();
         Set<Number> set = (Set<Number>) parameterConverters.convert(" \t\n\r", type);
@@ -659,7 +659,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldCreateJsonFromStringInput() {
+    void shouldCreateJsonFromStringInput() {
         // Given
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 
@@ -671,7 +671,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldCreateJsonFromResourceInput() {
+    void shouldCreateJsonFromResourceInput() {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory(resourceLoader);
@@ -686,7 +686,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldMapJsonToType() {
+    void shouldMapJsonToType() {
         // Given
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 
@@ -702,7 +702,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldMapListOfJsonsToType() {
+    void shouldMapListOfJsonsToType() {
         // Given
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 
@@ -721,7 +721,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldPutNullsIfValuesOfObjectNotFoundInJson() {
+    void shouldPutNullsIfValuesOfObjectNotFoundInJson() {
         // Given
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 
@@ -737,7 +737,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldPutAllNullsIfNoJsonArgumentsMatched() {
+    void shouldPutAllNullsIfNoJsonArgumentsMatched() {
         // Given
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 
@@ -753,7 +753,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldNotBeEqualJsonWithWhitespaces() {
+    void shouldNotBeEqualJsonWithWhitespaces() {
         // Given
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 
@@ -767,7 +767,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldBeEqualDtosConvertedFromJsonWithWhitespaces() {
+    void shouldBeEqualDtosConvertedFromJsonWithWhitespaces() {
         // Given
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 
@@ -785,7 +785,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldAceeptParameterizedTypesAutomatically () {
+    void shouldAceeptParameterizedTypesAutomatically () {
         ParameterConverter<Set<Bar>> parameterizedTypeConverter = new AbstractParameterConverter<Set<Bar>>() {
             @Override
             public Set<Bar> convertValue(String value, Type type) {
@@ -799,89 +799,89 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertDuration() {
+    void shouldConvertDuration() {
         assertThat(new ParameterConverters().convert("PT1S", Duration.class), is(Duration.ofSeconds(1)));
     }
 
     @Test
-    public void shouldConvertInstant() {
+    void shouldConvertInstant() {
         assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.00Z", Instant.class),
                 is(Instant.ofEpochSecond(1562277035)));
     }
 
     @Test
-    public void shouldConvertLocalDateTime() {
+    void shouldConvertLocalDateTime() {
         assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.123", LocalDateTime.class),
                 is(LocalDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000)));
     }
 
     @Test
-    public void shouldConvertLocalDate() {
+    void shouldConvertLocalDate() {
         assertThat(new ParameterConverters().convert("2019-07-04", LocalDate.class), is(LocalDate.of(2019, 7, 4)));
     }
 
     @Test
-    public void shouldConvertLocalTime() {
+    void shouldConvertLocalTime() {
         assertThat(new ParameterConverters().convert("21:50:35.123", LocalTime.class),
                 is(LocalTime.of(21, 50, 35, 123_000_000)));
     }
 
     @Test
-    public void shouldConvertMonthDay() {
+    void shouldConvertMonthDay() {
         assertThat(new ParameterConverters().convert("--07-04", MonthDay.class), is(MonthDay.of(7, 4)));
     }
 
     @Test
-    public void shouldConvertOffsetDateTime() {
+    void shouldConvertOffsetDateTime() {
         assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.123Z", OffsetDateTime.class),
                 is(OffsetDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000, ZoneOffset.UTC)));
     }
 
     @Test
-    public void shouldConvertOffsetTime() {
+    void shouldConvertOffsetTime() {
         assertThat(new ParameterConverters().convert("21:50:35.123Z", OffsetTime.class),
                 is(OffsetTime.of(21, 50, 35, 123_000_000, ZoneOffset.UTC)));
     }
 
     @Test
-    public void shouldConvertPeriod() {
+    void shouldConvertPeriod() {
         assertThat(new ParameterConverters().convert("P1Y2M3D", Period.class), is(Period.of(1, 2, 3)));
     }
 
     @Test
-    public void shouldConvertYearMonth() {
+    void shouldConvertYearMonth() {
         assertThat(new ParameterConverters().convert("2019-07", YearMonth.class), is(YearMonth.of(2019, 7)));
     }
 
     @Test
-    public void shouldConvertYear() {
+    void shouldConvertYear() {
         assertThat(new ParameterConverters().convert("2019", Year.class), is(Year.of(2019)));
     }
 
     @Test
-    public void shouldConvertZonedDateTime() {
+    void shouldConvertZonedDateTime() {
         assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.123Z", ZonedDateTime.class),
                 is(ZonedDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000, ZoneOffset.UTC)));
     }
 
     @Test
-    public void shouldConvertZoneId() {
+    void shouldConvertZoneId() {
         assertThat(new ParameterConverters().convert("Europe/Minsk", ZoneId.class), is(ZoneId.of("Europe/Minsk")));
     }
 
     @Test
-    public void shouldConvertZoneOffset() {
+    void shouldConvertZoneOffset() {
         assertThat(new ParameterConverters().convert("+03:00", ZoneOffset.class), is(ZoneOffset.ofHours(3)));
     }
 
     @Test
-    public void shouldConvertEnumWithFluentEnumConverter() {
+    void shouldConvertEnumWithFluentEnumConverter() {
         ParameterConverters converters = new ParameterConverters().addConverters(new FluentEnumConverter());
         assertThat(converters.convert("ONE", SomeEnum.class), is(SomeEnum.ONE));
     }
 
     @Test
-    public void shouldConvertStringViaChainOfConverters() {
+    void shouldConvertStringViaChainOfConverters() {
         ParameterConverters converters = new ParameterConverters();
         converters.addConverters(new FirstParameterConverter(), new SecondParameterConverter(),
                 new ThirdParameterConverter());
@@ -893,7 +893,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertFromStringUsingChainableParameterConverterIfDefaultDoesNotExist() {
+    void shouldConvertFromStringUsingChainableParameterConverterIfDefaultDoesNotExist() {
         ParameterConverters converters = new ParameterConverters();
         converters.addConverters(new StringContainerConverter());
         String inputValue = "string value";

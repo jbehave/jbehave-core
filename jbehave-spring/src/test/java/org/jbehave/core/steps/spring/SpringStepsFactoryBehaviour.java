@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 public class SpringStepsFactoryBehaviour {
 
     @Test
-    public void stepsCanBeCreated() {
+    void stepsCanBeCreated() {
         // Given
         ApplicationContext context = createApplicationContext("org/jbehave/core/steps/spring/steps.xml");
         SpringStepsFactory factory = new SpringStepsFactory(
@@ -35,7 +35,7 @@ public class SpringStepsFactoryBehaviour {
     }
 
     @Test
-    public void annotationStepsCanBeCreated() {
+    void annotationStepsCanBeCreated() {
         // Given
         ApplicationContext context = createApplicationContext(StepsAnnotationConfiguration.class
                 .getName());
@@ -48,7 +48,7 @@ public class SpringStepsFactoryBehaviour {
     }
 
     @Test
-    public void stepsWithDependenciesCanBeCreated() {
+    void stepsWithDependenciesCanBeCreated() {
         // Given
         ApplicationContext context = createApplicationContext("org/jbehave/core/steps/spring/steps-with-dependency.xml");
         // When
@@ -61,7 +61,7 @@ public class SpringStepsFactoryBehaviour {
     }
 
     @Test
-    public void annotationStepsWithDependenciesCanBeCreated() {
+    void annotationStepsWithDependenciesCanBeCreated() {
         // Given
         ApplicationContext context = createApplicationContext(StepsWithDependencyAnnotationConfiguration.class
                 .getName());
@@ -95,7 +95,7 @@ public class SpringStepsFactoryBehaviour {
     }
 
     @Test
-    public void stepsWithMissingDependenciesCannotBeCreated() {
+    void stepsWithMissingDependenciesCannotBeCreated() {
         // When
         assertThrows(BeanDefinitionStoreException.class,
                 () -> createApplicationContext("org/jbehave/core/steps/spring/steps-with-missing-depedency.xml"));
@@ -103,7 +103,7 @@ public class SpringStepsFactoryBehaviour {
     }
 
     @Test
-    public void beansWithUndefinedTypeOrCannotBeCreatedWillBeIgnored() {
+    void beansWithUndefinedTypeOrCannotBeCreatedWillBeIgnored() {
         // Given
         ApplicationContext context = mock(ApplicationContext.class);
         SpringStepsFactory factory = new SpringStepsFactory(

@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.InitializationError;
 
-public class GroovyAnnotatedEmbedderRunnerBehaviour {
+class GroovyAnnotatedEmbedderRunnerBehaviour {
 
     @Test
-    public void shouldCreateWithSpringAnnotatedBuilder() throws InitializationError{
+    void shouldCreateWithSpringAnnotatedBuilder() throws InitializationError{
         AnnotatedEmbedderRunner runner = new GroovyAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
         assertThat(runner.annotationBuilder(), instanceOf(GroovyAnnotationBuilder.class));
     }

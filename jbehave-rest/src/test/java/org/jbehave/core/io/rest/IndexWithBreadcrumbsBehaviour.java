@@ -9,10 +9,10 @@ import java.util.Map;
 import org.jbehave.core.io.rest.xwiki.IndexFromXWiki;
 import org.junit.jupiter.api.Test;
 
-public class IndexWithBreadcrumbsBehaviour {
+class IndexWithBreadcrumbsBehaviour {
 
 	@Test
-	public void canIndexFromPaths() {
+	void canIndexFromPaths() {
 		IndexWithBreadcrumbs indexer = new IndexFromXWiki();
 		String rootURI = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages";
 		String syntax = "jbehave/3.0";
@@ -40,7 +40,7 @@ public class IndexWithBreadcrumbsBehaviour {
 	}
 
 	@Test
-	public void canIndexFromPathsWithDefaultSyntax() {
+	void canIndexFromPathsWithDefaultSyntax() {
 		IndexWithBreadcrumbs indexer = new IndexFromXWiki();
 		String rootURI = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages";
 		String syntax = null;

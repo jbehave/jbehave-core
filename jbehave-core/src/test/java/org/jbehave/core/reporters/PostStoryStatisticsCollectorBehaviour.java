@@ -23,7 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 
-public class PostStoryStatisticsCollectorBehaviour {
+class PostStoryStatisticsCollectorBehaviour {
     private OutputStream out;
     private PrintStream printStream;
 
@@ -37,7 +37,7 @@ public class PostStoryStatisticsCollectorBehaviour {
     }
 
     @Test
-    public void shouldCollectStoryStatistics() {
+    void shouldCollectStoryStatistics() {
         // When
         narrateAnInterestingStory();
 
@@ -70,7 +70,7 @@ public class PostStoryStatisticsCollectorBehaviour {
     }
 
     @Test
-    public void shouldCollectStoryStatisticsWhenStoryNotAllowedByFilter() {
+    void shouldCollectStoryStatisticsWhenStoryNotAllowedByFilter() {
         // When
         StoryNarrator.narrateAnInterestingStoryNotAllowedByFilter(reporter, true);
 
@@ -80,7 +80,7 @@ public class PostStoryStatisticsCollectorBehaviour {
     }
 
     @Test
-    public void shouldCollectStoryStatisticsWhenScenariosNotAllowedByFilter() {
+    void shouldCollectStoryStatisticsWhenScenariosNotAllowedByFilter() {
         // When
         StoryNarrator.narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
         
@@ -96,7 +96,7 @@ public class PostStoryStatisticsCollectorBehaviour {
     }
 
     @Test
-    public void shouldNotCountFailedScenariosIfExceptionsAreNull() {
+    void shouldNotCountFailedScenariosIfExceptionsAreNull() {
         // Given
         OutputStream out = new ByteArrayOutputStream();
         StoryReporter reporter = new PostStoryStatisticsCollector(new PrintStream(out));

@@ -21,10 +21,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ImportToFilesystemMojoBehaviour {
+class ImportToFilesystemMojoBehaviour {
 
     @Test
-    public void canImportToFilesystem() throws IOException, MojoExecutionException {
+    void canImportToFilesystem() throws IOException, MojoExecutionException {
 
         // Given
         final ResourceIndexer indexer = mock(ResourceIndexer.class);

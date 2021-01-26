@@ -12,10 +12,10 @@ import org.apache.commons.io.IOUtils;
 import org.jbehave.core.io.rest.RESTClient;
 import org.junit.jupiter.api.Test;
 
-public class LoadFromConfluenceBehaviour {
+class LoadFromConfluenceBehaviour {
 
     @Test
-    public void shouldLoadFromConfluence() {
+    void shouldLoadFromConfluence() {
         // given
         LoadFromConfluence loader = new LoadFromConfluence(new MockRESTClient());
 

@@ -25,12 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class StepsBehaviour {
+class StepsBehaviour {
 
     private Map<String, String> tableRow = new HashMap<>();
 
     @Test
-    public void shouldListCandidateStepsFromAnnotatedMethodsWithSingleAlias() {
+    void shouldListCandidateStepsFromAnnotatedMethodsWithSingleAlias() {
         SingleAliasSteps steps = new SingleAliasSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(6));
@@ -48,7 +48,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldListCandidateStepsFromAnnotatedMethodsWithMultipleAliases() {
+    void shouldListCandidateStepsFromAnnotatedMethodsWithMultipleAliases() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(9));
@@ -69,7 +69,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldListCandidateStepsFromAnnotatedMethodsInPojo() {
+    void shouldListCandidateStepsFromAnnotatedMethodsInPojo() {
         PojoSteps steps = new PojoSteps();
         Configuration configuration = new MostUsefulConfiguration();
         List<StepCandidate> candidates = new InstanceStepsFactory(configuration, steps).createCandidateSteps().get(0).listCandidates();
@@ -104,7 +104,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldListStepsToBePerformedBeforeAndAfterStories() {
+    void shouldListStepsToBePerformedBeforeAndAfterStories() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
 
         List<BeforeOrAfterStep> beforeAfterStories = steps.listBeforeOrAfterStories();
@@ -121,7 +121,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldListStepsToBePerformedBeforeAndAfterStory() {
+    void shouldListStepsToBePerformedBeforeAndAfterStory() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
 
         List<BeforeOrAfterStep> beforeAfterStory = steps.listBeforeOrAfterStory(false);
@@ -144,7 +144,7 @@ public class StepsBehaviour {
     }
     
     @Test
-    public void shouldProvideStepsToBePerformedBeforeAndAfterScenariosWithFailureOccuring() {
+    void shouldProvideStepsToBePerformedBeforeAndAfterScenariosWithFailureOccuring() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
         ScenarioType scenarioType = ScenarioType.NORMAL;
         List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario(scenarioType);
@@ -168,7 +168,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldProvideStepsToBePerformedBeforeAndAfterScenariosWithNoFailureOccuring() {
+    void shouldProvideStepsToBePerformedBeforeAndAfterScenariosWithNoFailureOccuring() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
         ScenarioType scenarioType = ScenarioType.NORMAL;
         List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario(scenarioType);
@@ -193,7 +193,7 @@ public class StepsBehaviour {
     }
         
     @Test
-    public void shouldProvideStepsToBeNotPerformedAfterScenarioUponOutcome() {
+    void shouldProvideStepsToBeNotPerformedAfterScenarioUponOutcome() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
         ScenarioType scenarioType = ScenarioType.NORMAL;
         List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario(scenarioType);
@@ -218,7 +218,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldProvideStepsToBePerformedBeforeAndAfterScenariosParametrisedByExample() {
+    void shouldProvideStepsToBePerformedBeforeAndAfterScenariosParametrisedByExample() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
         ScenarioType scenarioType = ScenarioType.EXAMPLE;
         List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario(scenarioType);
@@ -233,7 +233,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldProvideStepsToBePerformedBeforeAndAfterAnyScenario() {
+    void shouldProvideStepsToBePerformedBeforeAndAfterAnyScenario() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
         ScenarioType scenarioType = ScenarioType.ANY;
         List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario(scenarioType);
@@ -248,7 +248,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldAllowBeforeOrAfterStepsToUseSpecifiedStepMonitor() {
+    void shouldAllowBeforeOrAfterStepsToUseSpecifiedStepMonitor() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
         List<BeforeOrAfterStep> beforeAfterStory = steps.listBeforeOrAfterStory(false);
         BeforeOrAfterStep step = beforeAfterStory.get(0);
@@ -258,7 +258,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldAllowLocalizationOfSteps(){
+    void shouldAllowLocalizationOfSteps(){
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
         LocalizedSteps steps = new LocalizedSteps(configuration);
@@ -275,12 +275,12 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldReportFailuresInBeforeMethods() {
+    void shouldReportFailuresInBeforeMethods() {
         assertFailureReturnedOnStepsPerformed(new BeforeSteps());
     }
 
     @Test
-    public void shouldReportFailuresInAfterMethods() {
+    void shouldReportFailuresInAfterMethods() {
         assertFailureReturnedOnStepsPerformed(new AfterSteps());
     }
 
@@ -294,19 +294,19 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldFailIfDuplicateStepsAreEncountered() {
+    void shouldFailIfDuplicateStepsAreEncountered() {
         DuplicateSteps steps = new DuplicateSteps();
         assertThrows(DuplicateCandidateFound.class, steps::listCandidates);
     }
 
     @Test
-    public void shouldFailIfDuplicateStepsWithDifferentParamsNamesAreEncountered() {
+    void shouldFailIfDuplicateStepsWithDifferentParamsNamesAreEncountered() {
         DuplicateStepsWithParameters steps = new DuplicateStepsWithParameters();
         assertThrows(DuplicateCandidateFound.class, steps::listCandidates);
     }
 
     @Test
-    public void shouldNotFailWithDuplicateCandidateFoundExceptionIfStepsWordingsDoNotMatchEachOther() {
+    void shouldNotFailWithDuplicateCandidateFoundExceptionIfStepsWordingsDoNotMatchEachOther() {
         StepsWithParameters steps = new StepsWithParameters();
         Configuration configuration = new MostUsefulConfiguration();
         List<StepCandidate> candidates = new InstanceStepsFactory(configuration, steps).createCandidateSteps().get(0).listCandidates();
@@ -319,7 +319,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldNotCreateStepIfStartingWordNotFound(){
+    void shouldNotCreateStepIfStartingWordNotFound(){
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
         LocalizedSteps steps = new LocalizedSteps(configuration);
@@ -334,7 +334,7 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldListBeforeAndAfterStoriesAccordingToTheirOrder() {
+    void shouldListBeforeAndAfterStoriesAccordingToTheirOrder() {
         OrderedSteps steps = new OrderedSteps();
         List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterStories();
         assertThat(beforeAfterScenario.size(), equalTo(6));

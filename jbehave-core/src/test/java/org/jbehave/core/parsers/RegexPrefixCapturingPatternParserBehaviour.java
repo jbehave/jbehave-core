@@ -8,12 +8,12 @@ import static org.hamcrest.Matchers.is;
 import org.jbehave.core.steps.StepType;
 import org.junit.jupiter.api.Test;
 
-public class RegexPrefixCapturingPatternParserBehaviour {
+class RegexPrefixCapturingPatternParserBehaviour {
 
     private StepPatternParser parser = new RegexPrefixCapturingPatternParser();
 
     @Test
-    public void shouldMatchStepWithPatterns() {
+    void shouldMatchStepWithPatterns() {
         assertThatPatternMatchesStep(parser, "a house with $numberOfDoors doors and $some windows",
                 "a house with 3 doors and 4 windows", true, "numberOfDoors", "some");
         assertThatPatternMatchesStep(parser, "the house on $street", "the house on Easy Street", true, "street");
@@ -26,19 +26,19 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
 
     @Test
-    public void shouldMatchStepWithPatternsUsingUnderscoresInParameterNames() {
+    void shouldMatchStepWithPatternsUsingUnderscoresInParameterNames() {
         assertThatPatternMatchesStep(parser, "a house with $number_of_1st_floor_doors doors and $facing_to windows",
                 "a house with 3 doors and 4 windows", true, "number_of_1st_floor_doors", "facing_to");
     }
 
     @Test
-    public void shouldMatchStepWithPatternsUsingNumbersInParameterNames() {
+    void shouldMatchStepWithPatternsUsingNumbersInParameterNames() {
         assertThatPatternMatchesStep(parser, "a house with $numberOf1stFloorDoors doors and $facing2 windows",
                 "a house with 3 doors and 4 windows", true, "numberOf1stFloorDoors", "facing2");
     }
 
     @Test
-    public void shouldMatchStepWithPatternsUsingAccentsInParameterNames() {
+    void shouldMatchStepWithPatternsUsingAccentsInParameterNames() {
         assertThatPatternMatchesStep(parser, "une maison avec $numérosDesPortes portes et $quelques fenêtres",
                 "une maison avec 3 portes et 4 fenêtres", true, "numérosDesPortes", "quelques");
         assertThatPatternMatchesStep(parser, "ein Haus mit $anzahlDerTüren Türen und $einige Fenster",
@@ -46,7 +46,7 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
     
     @Test
-    public void shouldMatchStepWithPatternsUsingCustomPrefix() {
+    void shouldMatchStepWithPatternsUsingCustomPrefix() {
     	RegexPrefixCapturingPatternParser parser = new RegexPrefixCapturingPatternParser("%");
         assertThat(parser.getPrefix(), equalTo("%"));
         assertThat(parser.toString(), containsString("prefix=%"));
@@ -62,7 +62,7 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
 
     @Test
-    public void shouldMatchStepWithPatternsUsingCustomCharacterClass() {
+    void shouldMatchStepWithPatternsUsingCustomCharacterClass() {
     	RegexPrefixCapturingPatternParser parserAllowingOnlyLettersInParameterNames = new RegexPrefixCapturingPatternParser("$", "[\\p{L}]");
         assertThatPatternMatchesStep(parserAllowingOnlyLettersInParameterNames, "a house with $numberOfFirstFloorDoors doors and $facing windows",
                 "a house with 3 doors and 4 windows", true, "numberOfFirstFloorDoors", "facing");
@@ -71,7 +71,7 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
 
     @Test
-    public void shouldEscapeRegexPunctuationUsedInPatterns() {
+    void shouldEscapeRegexPunctuationUsedInPatterns() {
         StepMatcher matcherWithAllTheRegexPunctuation = parser
                 .parseStep(StepType.GIVEN, "$regexp should not be confused by []{}?^.*()+\\");
         assertThat(matcherWithAllTheRegexPunctuation.matches("[]{}?^.*()+\\ should not be confused by []{}?^.*()+\\"),
@@ -80,7 +80,7 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
     
     @Test
-    public void shouldMatchStepWithPatternContainingRegexPunctuation() {
+    void shouldMatchStepWithPatternContainingRegexPunctuation() {
         assertThatPatternMatchesStep(parser, "a house with no. $number",
                 "a house with no. 3", true, "number");
         assertThatPatternMatchesStep(parser, "a hotel with $number *",
@@ -95,7 +95,7 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
 
     @Test
-    public void shouldNotCareSoMuchAboutWhitespace() {
+    void shouldNotCareSoMuchAboutWhitespace() {
         StepMatcher stepMatcher = parser.parseStep(StepType.GIVEN, "The grid looks like $grid");
 
         // Given an argument on a new line
@@ -112,7 +112,7 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
 
     @Test
-    public void shouldExtractParameterNamesFromStepPattern() {
+    void shouldExtractParameterNamesFromStepPattern() {
         String[] names = parser.parseStep(StepType.GIVEN, "The grid $name looks like $grid").parameterNames();
         assertThat(names.length, equalTo(2));
         assertThat(names[0], equalTo("name"));
@@ -120,7 +120,7 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
     
     @Test
-    public void shouldExtractParameterNamesWithoutQuotes() {
+    void shouldExtractParameterNamesWithoutQuotes() {
         String[] names = parser.parseStep(StepType.GIVEN, "The grid \"$name\" looks like \"$grid\"").parameterNames();
         assertThat(names.length, equalTo(2));
         assertThat(names[0], equalTo("name"));

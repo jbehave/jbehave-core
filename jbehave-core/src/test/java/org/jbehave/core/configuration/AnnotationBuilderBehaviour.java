@@ -28,10 +28,10 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class AnnotationBuilderBehaviour {
+class AnnotationBuilderBehaviour {
 
     @Test
-    public void shouldReturnDependencies() {
+    void shouldReturnDependencies() {
         AnnotationBuilder annotated = new AnnotationBuilder(Annotated.class);
         assertThat(annotated.annotatedClass().getName(), equalTo(Annotated.class.getName()));
         assertThat(annotated.annotationFinder(), instanceOf(AnnotationFinder.class));
@@ -39,13 +39,13 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildDefaultEmbedderIfAnnotationNotPresent() {
+    void shouldBuildDefaultEmbedderIfAnnotationNotPresent() {
         AnnotationBuilder notAnnotated = new AnnotationBuilder(NotAnnotated.class);
         assertThat(notAnnotated.buildEmbedder(), is(notNullValue()));
     }
 
     @Test
-    public void shouldBuildEmbedderWithAnnotatedControls() {
+    void shouldBuildEmbedderWithAnnotatedControls() {
         AnnotationBuilder annotated = new AnnotationBuilder(AnnotedEmbedderControls.class);
         EmbedderControls embedderControls = annotated.buildEmbedder().embedderControls();
         assertThat(embedderControls.batch(), is(true));
@@ -61,19 +61,19 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithCustomConfiguration() {
+    void shouldBuildWithCustomConfiguration() {
         AnnotationBuilder annotated = new AnnotationBuilder(AnnotatedCustomConfiguration.class);
         assertThat(annotated.buildConfiguration(), instanceOf(MyConfiguration.class));
     }
 
     @Test
-    public void shouldBuildCandidateSteps() {
+    void shouldBuildCandidateSteps() {
         AnnotationBuilder annotated = new AnnotationBuilder(Annotated.class);
         assertThatStepsInstancesAre(annotated.buildCandidateSteps(), MySteps.class, MyOtherSteps.class);
     }
 
     @Test
-    public void shouldBuildCandidateStepsAsEmptyListIfAnnotationOrAnnotatedValuesNotPresent() {
+    void shouldBuildCandidateStepsAsEmptyListIfAnnotationOrAnnotatedValuesNotPresent() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         AnnotationBuilder notAnnotated = new AnnotationBuilder(NotAnnotated.class, new PrintStreamAnnotationMonitor(
                 new PrintStream(baos)));
@@ -85,20 +85,20 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldInheritStepsInstances() {
+    void shouldInheritStepsInstances() {
         AnnotationBuilder annotated = new AnnotationBuilder(AnnotatedInheriting.class);
         assertThatStepsInstancesAre(annotated.buildCandidateSteps(), MyOtherOtherSteps.class, MySteps.class,
                 MyOtherSteps.class);
     }
 
     @Test
-    public void shouldNotInheritStepsInstances() {
+    void shouldNotInheritStepsInstances() {
         AnnotationBuilder builderAnnotated = new AnnotationBuilder(AnnotatedNotInheriting.class);
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), MyOtherOtherSteps.class);
     }
 
     @Test
-    public void shouldNotIgnoreFailingStepsInstances() {
+    void shouldNotIgnoreFailingStepsInstances() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         AnnotationBuilder annotatedFailing = new AnnotationBuilder(AnnotatedFailing.class,
                 new PrintStreamAnnotationMonitor(new PrintStream(baos)));
@@ -125,7 +125,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldCreateEmbeddableInstanceFromInjectableEmbedder() {
+    void shouldCreateEmbeddableInstanceFromInjectableEmbedder() {
         AnnotationBuilder annotatedInjectable = new AnnotationBuilder(AnnotedInjectable.class);
         Object instance = annotatedInjectable.embeddableInstance();
         assertThat(instance, Matchers.instanceOf(InjectableEmbedder.class));
@@ -138,7 +138,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldCreateEmbeddableInstanceFromInjectableEmbedderWithoutStepsFactory() {
+    void shouldCreateEmbeddableInstanceFromInjectableEmbedderWithoutStepsFactory() {
         AnnotationBuilder annotatedInjectable = new AnnotationBuilder(AnnotedInjectableWithoutStepsFactory.class);
         Object instance = annotatedInjectable.embeddableInstance();
         assertThat(instance, Matchers.instanceOf(InjectableEmbedder.class));
@@ -149,7 +149,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldCreateEmbeddableInstanceFromConfigurableEmbedder() {
+    void shouldCreateEmbeddableInstanceFromConfigurableEmbedder() {
         AnnotationBuilder annotatedConfigurable = new AnnotationBuilder(AnnotedConfigurable.class);
         Object instance = annotatedConfigurable.embeddableInstance();
         assertThat(instance, Matchers.instanceOf(ConfigurableEmbedder.class));
@@ -160,7 +160,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldCreateEmbeddableInstanceFromConfigurableEmbedderWithoutStepsFactory() {
+    void shouldCreateEmbeddableInstanceFromConfigurableEmbedderWithoutStepsFactory() {
         AnnotationBuilder annotatedConfigurable = new AnnotationBuilder(AnnotedConfigurableWithoutStepsFactory.class);
         Object instance = annotatedConfigurable.embeddableInstance();
         assertThat(instance, Matchers.instanceOf(ConfigurableEmbedder.class));
@@ -171,13 +171,13 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldFindStoryPaths() {
+    void shouldFindStoryPaths() {
         assertThat(new AnnotationBuilder(AnnotatedWithPaths.class).findPaths().size(), greaterThan(0));
         assertThat(new AnnotationBuilder(AnnotedConfigurable.class).findPaths().size(), equalTo(0));
     }
 
     @Test
-    public void shouldNotCreateEmbeddableInstanceForAnnotatedClassThatIsNotInstantiable() {
+    void shouldNotCreateEmbeddableInstanceForAnnotatedClassThatIsNotInstantiable() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         AnnotationBuilder annotatedPrivate = new AnnotationBuilder(AnnotatedPrivate.class,
                 new PrintStreamAnnotationMonitor(new PrintStream(baos)));
@@ -192,7 +192,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromPackages() {
+    void shouldBuildCandidateStepsFromPackages() {
         AnnotationBuilder annotatedWithPackages = new AnnotationBuilder(AnnotatedWithPackages.class);
         List<CandidateSteps> candidateSteps = annotatedWithPackages.buildCandidateSteps();
 		assertThatStepsInstancesAre(candidateSteps, GivenOnly.class, GivenWhen.class, GivenWhenThen.class);

@@ -6,10 +6,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 
-public class StepFailureBehaviour {
+class StepFailureBehaviour {
 	
 	@Test
-	public void shouldAppendStepNameToFailure() {
+	void shouldAppendStepNameToFailure() {
 		// Given
 		Throwable cause = new IllegalArgumentException(
 				"Can't we all just get along?");
@@ -25,7 +25,7 @@ public class StepFailureBehaviour {
 	}
 
 	@Test
-	public void shouldKeepOriginalExceptionAsCause() {
+	void shouldKeepOriginalExceptionAsCause() {
 		// Given
 		Throwable originalCause = new IllegalArgumentException(
 				"Can't we all just get along?");

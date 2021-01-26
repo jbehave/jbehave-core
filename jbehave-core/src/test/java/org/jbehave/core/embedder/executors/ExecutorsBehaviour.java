@@ -9,10 +9,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.instanceOf;
 
-public class ExecutorsBehaviour {
+class ExecutorsBehaviour {
 
     @Test
-    public void shouldCreateExecutors() {
+    void shouldCreateExecutors() {
         assertThat(new FixedThreadExecutors().create(new EmbedderControls()), instanceOf(ExecutorService.class));
         assertThat(new DirectExecutorService().create(new EmbedderControls()), instanceOf(ExecutorService.class));
         assertThat(new SameThreadExecutors().create(new EmbedderControls()), instanceOf(ExecutorService.class));

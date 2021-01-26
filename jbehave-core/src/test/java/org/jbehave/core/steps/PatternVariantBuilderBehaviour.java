@@ -8,10 +8,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class PatternVariantBuilderBehaviour {
+class PatternVariantBuilderBehaviour {
 	
 	@Test
-	public void shouldReturnItselfForNoPatternString() {
+	void shouldReturnItselfForNoPatternString() {
 		PatternVariantBuilder builder = new PatternVariantBuilder("No variants");
         assertThat(builder.getInput(), equalTo("No variants"));
         Set<String> variants = builder.allVariants();
@@ -20,7 +20,7 @@ public class PatternVariantBuilderBehaviour {
     }
 
 	@Test
-	public void shouldReturnTwoVariantsForOnePattern() {
+	void shouldReturnTwoVariantsForOnePattern() {
 		PatternVariantBuilder builder = new PatternVariantBuilder("There are {Two|One} variants");
         assertThat(builder.getInput(), equalTo("There are {Two|One} variants"));
         Set<String> result = builder.allVariants();
@@ -30,7 +30,7 @@ public class PatternVariantBuilderBehaviour {
     }
 
 	@Test
-	public void shouldReturnFourVariantsForTwoPatterns() {
+	void shouldReturnFourVariantsForTwoPatterns() {
 		PatternVariantBuilder builder = new PatternVariantBuilder("There are {Two|One} variants, {hooray|alas}!");
         Set<String> result = builder.allVariants();
         assertThat(result.size(), equalTo(4));
@@ -41,7 +41,7 @@ public class PatternVariantBuilderBehaviour {
     }
 
 	@Test
-	public void shouldReturnFourVariantsForTwoPatternsWithOptionElements() {
+	void shouldReturnFourVariantsForTwoPatternsWithOptionElements() {
 		PatternVariantBuilder builder = new PatternVariantBuilder("There are {One|} variants{, hooray|}!");
         Set<String> result = builder.allVariants();
         assertThat(result.size(), equalTo(4));
@@ -52,7 +52,7 @@ public class PatternVariantBuilderBehaviour {
     }
 
 	@Test
-	public void shouldReturnFourVariantsForTwoPatternsWithOptionElementsWithWhitespaceCompression() {
+	void shouldReturnFourVariantsForTwoPatternsWithOptionElementsWithWhitespaceCompression() {
 		PatternVariantBuilder builder = new PatternVariantBuilder("There are {One|} variants{, hooray|}!");
 		Set<String> result = builder.allVariants(true); // collapse whitespaces to 1
         assertThat(result.size(), equalTo(4));
@@ -63,7 +63,7 @@ public class PatternVariantBuilderBehaviour {
     }
 	
 	@Test
-	public void shouldHandleSpecialCharacters() {
+	void shouldHandleSpecialCharacters() {
 		PatternVariantBuilder builder = new PatternVariantBuilder("When $A {+|plus|is added to} $B");
 		Set<String> result = builder.allVariants();
         assertThat(result.size(), equalTo(3));
@@ -73,7 +73,7 @@ public class PatternVariantBuilderBehaviour {
     }
 
 	@Test
-	public void hasUnclosedBracket() {
+	void hasUnclosedBracket() {
 		PatternVariantBuilder builder = new PatternVariantBuilder("When $A {+|plus|is added to $B");
 		Set<String> result = builder.allVariants();
         assertThat(result.size(), equalTo(1));
@@ -81,7 +81,7 @@ public class PatternVariantBuilderBehaviour {
     }
 
 	@Test
-	public void hasUnclosedBrackets() {
+	void hasUnclosedBrackets() {
         PatternVariantBuilder builder = new PatternVariantBuilder("When $A {+|plus|is added to} $B and }{$C");
         Set<String> result = builder.allVariants();
         assertThat(result.size(), equalTo(3));

@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;
 
-public class ConcurrencyBehaviour {
+class ConcurrencyBehaviour {
 
     @Test
-    public void shouldAllowConcurrentAdditionOfParameterConvertersInThreadSafeMode() {
+    void shouldAllowConcurrentAdditionOfParameterConvertersInThreadSafeMode() {
 
         final ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath(),
                 new ParameterControls(), new TableTransformers(), true);

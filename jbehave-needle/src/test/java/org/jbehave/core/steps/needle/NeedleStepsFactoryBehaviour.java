@@ -22,7 +22,7 @@ import org.needle4j.injection.InjectionProvider;
 public class NeedleStepsFactoryBehaviour {
 
 	@Test
-	public void stepsShouldBeCreated() {
+	void stepsShouldBeCreated() {
 		// Given
 		final InjectableStepsFactory factory = new NeedleStepsFactory(new MostUsefulConfiguration(), FooSteps.class);
 		// When
@@ -37,7 +37,7 @@ public class NeedleStepsFactoryBehaviour {
 	}
 
 	@Test
-	public void stepsShouldContainInjectedDependencies() {
+	void stepsShouldContainInjectedDependencies() {
 		// Given
 		final InjectableStepsFactory factory = new NeedleStepsFactory(new MostUsefulConfiguration(),
 				FooStepsWithDependency.class);

@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class StackTraceFormatterBehaviour {
+class StackTraceFormatterBehaviour {
 
     @Test
-    public void stackTracesShouldBeCompressible() {
+    void stackTracesShouldBeCompressible() {
 
         StackTraceFormatter formatter = new StackTraceFormatter(true);
 
@@ -96,7 +96,7 @@ public class StackTraceFormatterBehaviour {
     }
 
     @Test
-    public void exceptionShouldBeCompressible() {
+    void exceptionShouldBeCompressible() {
         // Given a compressing formatter
         StackTraceFormatter formatter = new StackTraceFormatter(true);
 
@@ -113,7 +113,7 @@ public class StackTraceFormatterBehaviour {
     }
 
     @Test
-    public void UUIDExecptionShouldBeUnwrapped() {
+    void UUIDExecptionShouldBeUnwrapped() {
         StackTraceFormatter formatter = new StackTraceFormatter(false);
         Exception ex=new Exception();
         Exception wrapEx=new UUIDExceptionWrapper(ex);

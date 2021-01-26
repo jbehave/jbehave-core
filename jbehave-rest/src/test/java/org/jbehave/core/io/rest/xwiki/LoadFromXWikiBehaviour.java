@@ -11,10 +11,10 @@ import org.apache.commons.io.IOUtils;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.junit.jupiter.api.Test;
 
-public class LoadFromXWikiBehaviour {
+class LoadFromXWikiBehaviour {
 
 	@Test
-	public void canFormatURIForJSON() {
+	void canFormatURIForJSON() {
 		LoadFromXWiki loader = new LoadFromXWiki(Type.JSON);
 		String url = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story";
 		String uri = loader.uri(url, Type.JSON);
@@ -22,7 +22,7 @@ public class LoadFromXWikiBehaviour {
 	}
 
 	@Test
-	public void canFormatURIForXML() {
+	void canFormatURIForXML() {
 		LoadFromXWiki loader = new LoadFromXWiki(Type.XML);
 		String url = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story";
 		String uri = loader.uri(url, Type.XML);
@@ -30,7 +30,7 @@ public class LoadFromXWikiBehaviour {
 	}
 
 	@Test
-	public void canReadFromXWikiAsJSON() {
+	void canReadFromXWikiAsJSON() {
 		LoadFromXWiki loader = new LoadFromXWiki(Type.JSON);
 		String entity = read("xwiki.json");
 		String text = loader.text(entity, Type.JSON);
@@ -38,7 +38,7 @@ public class LoadFromXWikiBehaviour {
 	}
 
 	@Test
-	public void canReadFromXWikiAsXML() {
+	void canReadFromXWikiAsXML() {
 		LoadFromXWiki loader = new LoadFromXWiki(Type.XML);
 		String entity = read("xwiki.xml");
 		String text = loader.text(entity, Type.XML);

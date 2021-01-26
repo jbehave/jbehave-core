@@ -11,10 +11,10 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 
-public class BytecodeGroovyClassLoaderBehaviour {
+class BytecodeGroovyClassLoaderBehaviour {
 
     @Test
-    public void shouldCacheBytes() throws IOException {
+    void shouldCacheBytes() throws IOException {
         GroovyClassLoader classLoader = new BytecodeGroovyClassLoader();
         assertThat((Class<?>) classLoader.parseClass("class Hello { }"), is(notNullValue()));
         InputStream bytecode = classLoader.getResourceAsStream("Hello.class");

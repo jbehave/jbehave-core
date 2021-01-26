@@ -33,12 +33,12 @@ import static org.jbehave.core.steps.AbstractStepResult.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class StoryRunnerBehaviour {
+class StoryRunnerBehaviour {
 
     private Map<String, String> parameters = new HashMap<>();
 
     @Test
-    public void shouldRunStepsBeforeAndAfterStories() {
+    void shouldRunStepsBeforeAndAfterStories() {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step beforeStep = mock(Step.class, "beforeStep");
@@ -64,7 +64,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldReportFailuresInStepsBeforeAndAfterStories() {
+    void shouldReportFailuresInStepsBeforeAndAfterStories() {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step beforeStep = mock(Step.class, "beforeStep");
@@ -92,7 +92,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldRunStepsInStoryAndReportResultsToReporter() throws Throwable {
+    void shouldRunStepsInStoryAndReportResultsToReporter() throws Throwable {
         // Given
         Scenario scenario1 = new Scenario("my title 1", asList("failingStep",
                 "successfulStep"));
@@ -144,7 +144,7 @@ public class StoryRunnerBehaviour {
     }
     
     @Test
-    public void shouldRunGivenStoriesAtStoryAndScenarioLevel() throws Throwable {
+    void shouldRunGivenStoriesAtStoryAndScenarioLevel() throws Throwable {
         // Given
         GivenStories storyGivenStories = new GivenStories("/path/to/given/story1");
         GivenStories scenarioGivenStories = new GivenStories("/path/to/given/story1");
@@ -195,7 +195,7 @@ public class StoryRunnerBehaviour {
 
     
     @Test
-	public void shouldIgnoreMetaFilteringInGivenStoriesIfConfigured() {
+	void shouldIgnoreMetaFilteringInGivenStoriesIfConfigured() {
 		// Given
 		Scenario scenario = new Scenario("scenario", new Meta(
 				asList("run false")), new GivenStories("/path/to/given/story"),
@@ -224,7 +224,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldNotPerformStepsAfterFailedOrPendingSteps() throws Throwable {
+    void shouldNotPerformStepsAfterFailedOrPendingSteps() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step firstStepNormal = mockSuccessfulStep(reporter, "Given I succeed");
@@ -261,7 +261,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldNotPerformStepsAfterRestaringScenarioFailure() throws Throwable {
+    void shouldNotPerformStepsAfterRestaringScenarioFailure() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step firstStepNormal = mockSuccessfulStep(reporter, "Given I succeed");
@@ -310,7 +310,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldReportStoryCancellation(){
+    void shouldReportStoryCancellation(){
         // Given
         Configuration configuration = mock(Configuration.class,Mockito.RETURNS_DEEP_STUBS);
         when(configuration.storyControls().dryRun()).thenReturn(false);
@@ -341,7 +341,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldReportAnyFailuresAndHandleThemAfterStory() throws Throwable {
+    void shouldReportAnyFailuresAndHandleThemAfterStory() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step firstStepExceptional = mock(Step.class);
@@ -379,7 +379,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldAllowToSkipScenariosAfterFailedScenario() throws Throwable {
+    void shouldAllowToSkipScenariosAfterFailedScenario() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step failedStep = mock(Step.class);
@@ -411,7 +411,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldAllowToSkipBeforeAndAfterScenarioStepsIfGivenStory() throws Throwable {
+    void shouldAllowToSkipBeforeAndAfterScenarioStepsIfGivenStory() throws Throwable {
         // Given
         Scenario scenario1 = new Scenario("scenario 1", asList("successfulStep"));
         GivenStories givenStories = new GivenStories("/path/to/given/story1");
@@ -464,7 +464,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldResetStateBeforeScenario() throws Throwable {
+    void shouldResetStateBeforeScenario() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step pendingStep = mock(Step.class);
@@ -492,7 +492,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldAllowToNotResetStateBeforeScenario() throws Throwable {
+    void shouldAllowToNotResetStateBeforeScenario() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step pendingStep = mock(Step.class);
@@ -520,7 +520,7 @@ public class StoryRunnerBehaviour {
     }    
     
     @Test
-    public void shouldAllowToNotResetStateBeforeStory() throws Throwable {
+    void shouldAllowToNotResetStateBeforeStory() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step failedStep = mock(Step.class, "failedStep");
@@ -549,7 +549,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldRunBeforeAndAfterStorySteps() throws Throwable {
+    void shouldRunBeforeAndAfterStorySteps() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step beforeStep = mockSuccessfulStep(reporter, "beforeStep");
@@ -572,7 +572,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldHandlePendingStepsAccordingToStrategy() throws Throwable {
+    void shouldHandlePendingStepsAccordingToStrategy() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step pendingStep = mock(Step.class);
@@ -596,7 +596,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldFailWithFailingUponPendingStepsStrategy() {
+    void shouldFailWithFailingUponPendingStepsStrategy() {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step pendingStep = mock(Step.class);
@@ -619,7 +619,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldRunScenarioWithExamplesTable() throws Throwable {
+    void shouldRunScenarioWithExamplesTable() throws Throwable {
         // Given
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         Map<String, String> tableRow = examplesTable.getRow(0);
@@ -657,7 +657,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldRunScenarioAndLifecycleStepsInCorrectOrderWithExamplesTable() throws Throwable{
+    void shouldRunScenarioAndLifecycleStepsInCorrectOrderWithExamplesTable() throws Throwable{
         // Given
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n|3|4|\n");
         Map<String, String> tableRow1 = examplesTable.getRow(0);
@@ -717,7 +717,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldRunAfterAndBeforeScenarioSteps() throws Throwable{
+    void shouldRunAfterAndBeforeScenarioSteps() throws Throwable{
         // Given
         Scenario scenario1 = new Scenario("my title 1", Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY, asList("step"));
         Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1));
@@ -755,7 +755,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldRunStepsInDryRunMode() throws Throwable {
+    void shouldRunStepsInDryRunMode() throws Throwable {
         // Given
         Scenario scenario1 = new Scenario("my title 1", asList("failingStep",
                 "successfulStep"));
@@ -812,7 +812,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldNotRunStoriesNotAllowedByFilter() throws Throwable {
+    void shouldNotRunStoriesNotAllowedByFilter() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
@@ -837,7 +837,7 @@ public class StoryRunnerBehaviour {
     }
     
     @Test
-    public void shouldNotRunStoriesNotAllowedByFilterOnStoryElement() throws Throwable {
+    void shouldNotRunStoriesNotAllowedByFilterOnStoryElement() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
@@ -863,7 +863,7 @@ public class StoryRunnerBehaviour {
     }
     
     @Test
-    public void shouldNotRunScenariosNotAllowedByFilter() throws Throwable {
+    void shouldNotRunScenariosNotAllowedByFilter() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
@@ -889,7 +889,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldNotRunScenariosNotAllowedByFilterOnScenarioElement() throws Throwable {
+    void shouldNotRunScenariosNotAllowedByFilterOnScenarioElement() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector collector = mock(StepCollector.class);

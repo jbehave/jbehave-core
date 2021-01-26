@@ -11,10 +11,10 @@ import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.Resource;
 import org.junit.jupiter.api.Test;
 
-public class UploadToXWikiBehaviour {
+class UploadToXWikiBehaviour {
 
 	@Test
-	public void canFormatAsJSONWithDefaultSyntax() {
+	void canFormatAsJSONWithDefaultSyntax() {
 	    UploadToXWiki uploader = new UploadToXWiki(Type.JSON);
 		String resourcePath = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story";
 		String content = read("xwiki.json");
@@ -26,7 +26,7 @@ public class UploadToXWikiBehaviour {
 	}
 
 	@Test
-	public void canFormatAsJSONWithGivenSyntax() {
+	void canFormatAsJSONWithGivenSyntax() {
 	    UploadToXWiki uploader = new UploadToXWiki(Type.JSON);
 		String resourcePath = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story";
 		String content = read("xwiki.json");

@@ -28,10 +28,10 @@ import static org.hamcrest.Matchers.is;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class UnmodifiableConfigurationBehaviour {
+class UnmodifiableConfigurationBehaviour {
 
     @Test
-    public void shouldProvideDelegateConfigurationElements() {
+    void shouldProvideDelegateConfigurationElements() {
         Configuration delegate = new MostUsefulConfiguration();
         String storyPath = "path";
         Configuration unmodifiable = new UnmodifiableConfiguration(delegate);
@@ -58,7 +58,7 @@ public class UnmodifiableConfigurationBehaviour {
     }
 
     @Test
-    public void shouldNotAllowModificationOfConfigurationElements() throws NoSuchMethodException,
+    void shouldNotAllowModificationOfConfigurationElements() throws NoSuchMethodException,
             IllegalAccessException {
         Configuration delegate = new MostUsefulConfiguration();
         Configuration unmodifiable = new UnmodifiableConfiguration(delegate);
@@ -105,7 +105,7 @@ public class UnmodifiableConfigurationBehaviour {
     }
 
     @Test
-    public void shouldReportDelegateInToString() {
+    void shouldReportDelegateInToString() {
         assertThat(new UnmodifiableConfiguration(new MostUsefulConfiguration()).toString(), Matchers
                 .containsString(MostUsefulConfiguration.class.getName()));
     }

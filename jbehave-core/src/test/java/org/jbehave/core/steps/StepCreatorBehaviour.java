@@ -35,7 +35,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
-public class StepCreatorBehaviour {
+class StepCreatorBehaviour {
 
     private ParameterConverters parameterConverters = mock(ParameterConverters.class);
 
@@ -49,7 +49,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldHandleTargetInvocationFailureInBeforeOrAfterStep() throws IntrospectionException {
+    void shouldHandleTargetInvocationFailureInBeforeOrAfterStep() throws IntrospectionException {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         MostUsefulConfiguration configuration = new MostUsefulConfiguration();
@@ -73,7 +73,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldHandleTargetInvocationFailureInParametrisedStep() throws IntrospectionException {
+    void shouldHandleTargetInvocationFailureInParametrisedStep() throws IntrospectionException {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
@@ -93,7 +93,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldHandleFailureInParametrisedStep() {
+    void shouldHandleFailureInParametrisedStep() {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
@@ -113,7 +113,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldFailIfMatchedParametersAreNotFound() {
+    void shouldFailIfMatchedParametersAreNotFound() {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
@@ -129,7 +129,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldCreatePendingAsStepResults() {
+    void shouldCreatePendingAsStepResults() {
         // When
         String stepAsString = "When I'm pending";
         Step pendingStep = StepCreator.createPendingStep(stepAsString, null);
@@ -141,7 +141,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldCreateIgnorableAsStepResults() {
+    void shouldCreateIgnorableAsStepResults() {
         // When
         String stepAsString = "!-- Then ignore me";
         Step ignorableStep = StepCreator.createIgnorableStep(stepAsString);
@@ -153,7 +153,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldCreateCommentAsStepResults() {
+    void shouldCreateCommentAsStepResults() {
         // When
         String stepAsString = "!-- A comment";
         Step comment = StepCreator.createComment(stepAsString);
@@ -165,7 +165,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldCreateParametrisedStepWithParsedParametersValues() throws Exception {
+    void shouldCreateParametrisedStepWithParsedParametersValues() throws Exception {
         assertThatParametrisedStepHasMarkedParsedParametersValues("shopping cart", "book");
         assertThatParametrisedStepHasMarkedParsedParametersValues("bookreading", "book");
         assertThatParametrisedStepHasMarkedParsedParametersValues("book", "bookreading");
@@ -194,7 +194,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldCreateParametrisedStepWithNamedParametersValues() throws Exception {
+    void shouldCreateParametrisedStepWithNamedParametersValues() throws Exception {
         assertThatParametrisedStepHasMarkedNamedParameterValues("shopping cart", "book");
         assertThatParametrisedStepHasMarkedNamedParameterValues("bookreading", "book");
         assertThatParametrisedStepHasMarkedNamedParameterValues("book", "bookreading");
@@ -229,7 +229,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterStepMethodWithExpectedParametersFromMeta() throws Exception {
+    void shouldInvokeBeforeOrAfterStepMethodWithExpectedParametersFromMeta() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
@@ -253,7 +253,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterStepMethodWithMetaUsingParanamer() throws Exception {
+    void shouldInvokeBeforeOrAfterStepMethodWithMetaUsingParanamer() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
@@ -272,7 +272,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldHandleFailureInBeforeOrAfterStepWithMeta() throws Exception {
+    void shouldHandleFailureInBeforeOrAfterStepWithMeta() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
@@ -288,7 +288,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldInvokeAfterStepUponAnyOutcomeMethodWithExpectedParametersFromMeta() throws Exception {
+    void shouldInvokeAfterStepUponAnyOutcomeMethodWithExpectedParametersFromMeta() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
@@ -312,7 +312,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldNotInvokeAfterStepUponSuccessOutcomeMethodIfFailureOccurred() throws Exception {
+    void shouldNotInvokeAfterStepUponSuccessOutcomeMethodIfFailureOccurred() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
@@ -327,7 +327,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldInvokeAfterStepUponSuccessOutcomeMethodIfNoFailureOccurred() throws Exception {
+    void shouldInvokeAfterStepUponSuccessOutcomeMethodIfNoFailureOccurred() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
@@ -351,7 +351,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldNotInvokeAfterStepUponFailureOutcomeMethodIfNoFailureOccurred() throws Exception {
+    void shouldNotInvokeAfterStepUponFailureOutcomeMethodIfNoFailureOccurred() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
@@ -366,7 +366,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldInvokeAfterStepUponFailureOutcomeMethodIfFailureOccurred() throws Exception {
+    void shouldInvokeAfterStepUponFailureOutcomeMethodIfFailureOccurred() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
@@ -390,7 +390,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterStepMethodWithExpectedConvertedParametersFromMeta() throws Exception {
+    void shouldInvokeBeforeOrAfterStepMethodWithExpectedConvertedParametersFromMeta() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
@@ -408,7 +408,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldInjectExceptionThatHappenedIfTargetMethodExpectsIt() throws Exception {
+    void shouldInjectExceptionThatHappenedIfTargetMethodExpectsIt() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         parameterConverters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
@@ -426,7 +426,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldInjectNoFailureIfNoExceptionHappenedAndTargetMethodExpectsIt() throws Exception {
+    void shouldInjectNoFailureIfNoExceptionHappenedAndTargetMethodExpectsIt() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         parameterConverters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
@@ -444,7 +444,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldMatchParametersByDelimitedNameWithNoNamedAnnotations() throws Exception {
+    void shouldMatchParametersByDelimitedNameWithNoNamedAnnotations() throws Exception {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
@@ -469,7 +469,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldNotConvertParametersForCompositeSteps() {
+    void shouldNotConvertParametersForCompositeSteps() {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
@@ -493,7 +493,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldMatchParametersByDelimitedNameInKebabCase() throws Exception {
+    void shouldMatchParametersByDelimitedNameInKebabCase() throws Exception {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
@@ -519,7 +519,7 @@ public class StepCreatorBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldMatchParametersByDelimitedNameWithDistinctNamedAnnotations() throws Exception {
+    void shouldMatchParametersByDelimitedNameWithDistinctNamedAnnotations() throws Exception {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
@@ -550,7 +550,7 @@ public class StepCreatorBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldMatchParametersByDelimitedNameWithDistinctNamedAnnotationsWithStoryExampleVariable() throws Exception {
+    void shouldMatchParametersByDelimitedNameWithDistinctNamedAnnotationsWithStoryExampleVariable() throws Exception {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
@@ -581,7 +581,7 @@ public class StepCreatorBehaviour {
     }
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldMatchParametersByNamedAnnotationsIfConfiguredToNotUseDelimiterNamedParamters() throws Exception {
+    void shouldMatchParametersByNamedAnnotationsIfConfiguredToNotUseDelimiterNamedParamters() throws Exception {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
@@ -611,19 +611,19 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldStoreAndReadObjectsInContext() throws IntrospectionException {
+    void shouldStoreAndReadObjectsInContext() throws IntrospectionException {
         Method methodStoring = SomeSteps.methodFor("aMethodStoringAString");
         shouldStoreAndReadObjects(methodStoring, true);
     }
 
     @Test
-    public void shouldStoreInScenarioAndReadObjectsInContext() throws IntrospectionException {
+    void shouldStoreInScenarioAndReadObjectsInContext() throws IntrospectionException {
         Method methodStoring = SomeSteps.methodFor("aMethodStoringAStringInScenario");
         shouldStoreAndReadObjects(methodStoring, true);
     }
 
     @Test
-    public void shouldStoreInStoryAndReadObjectsInContext() throws IntrospectionException {
+    void shouldStoreInStoryAndReadObjectsInContext() throws IntrospectionException {
         Method methodStoring = SomeSteps.methodFor("aMethodStoringAStringInStory");
         shouldStoreAndReadObjects(methodStoring, true);
     }
@@ -660,7 +660,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldHandleObjectNotStoredFailure() throws IntrospectionException {
+    void shouldHandleObjectNotStoredFailure() throws IntrospectionException {
         // Given
         setupContext();
         SomeSteps stepsInstance = new SomeSteps();
@@ -685,13 +685,13 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldHandleObjectAlreadyStoredFailureInSameLevel() throws IntrospectionException {
+    void shouldHandleObjectAlreadyStoredFailureInSameLevel() throws IntrospectionException {
         Method method = SomeSteps.methodFor("aMethodStoringAString");
         shouldHandleObjectAlreadyStoredFailure(method);
     }
 
     @Test
-    public void shouldHandleObjectAlreadyStoredFailureInDifferentLevel() throws IntrospectionException {
+    void shouldHandleObjectAlreadyStoredFailureInDifferentLevel() throws IntrospectionException {
         Method method = SomeSteps.methodFor("aMethodStoringAStringInStory");
         shouldHandleObjectAlreadyStoredFailure(method);
     }
@@ -725,7 +725,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldResetKeysBetweenExamples() throws IntrospectionException {
+    void shouldResetKeysBetweenExamples() throws IntrospectionException {
         setupContext();
         Method methodStoring = SomeSteps.methodFor("aMethodStoringAString");
 

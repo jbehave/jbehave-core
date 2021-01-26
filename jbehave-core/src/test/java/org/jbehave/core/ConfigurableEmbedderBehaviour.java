@@ -23,10 +23,10 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class ConfigurableEmbedderBehaviour {
+class ConfigurableEmbedderBehaviour {
 
     @Test
-    public void shouldRunASingleStory() {
+    void shouldRunASingleStory() {
         // Given
         Embedder embedder = mock(Embedder.class);
         Configuration configuration = mock(Configuration.class);
@@ -51,7 +51,7 @@ public class ConfigurableEmbedderBehaviour {
 
 
     @Test
-    public void shouldRunMultipleStories() {
+    void shouldRunMultipleStories() {
         // Given
         Embedder embedder = mock(Embedder.class);
         Configuration configuration = mock(Configuration.class);
@@ -67,7 +67,7 @@ public class ConfigurableEmbedderBehaviour {
     }
 
 	@Test
-    public void shouldAllowOverrideOfDefaultConfiguration() {
+    void shouldAllowOverrideOfDefaultConfiguration() {
         // Given
         Embedder embedder = mock(Embedder.class);
         Configuration configuration = mock(Configuration.class);
@@ -94,7 +94,7 @@ public class ConfigurableEmbedderBehaviour {
     }
 
 	@Test
-    public void shouldAllowAdditionOfSteps() {
+    void shouldAllowAdditionOfSteps() {
         // Given
         Embedder embedder = mock(Embedder.class);
         Configuration configuration = mock(Configuration.class);

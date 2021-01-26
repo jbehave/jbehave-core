@@ -19,39 +19,39 @@ import static org.hamcrest.Matchers.*;
 import static org.jbehave.core.configuration.Keywords.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class LocalizedKeywordsBehaviour {
+class LocalizedKeywordsBehaviour {
 
     @Test
-    public void shouldAllowKeywordsInEnglishAsDefault() throws IOException {
+    void shouldAllowKeywordsInEnglishAsDefault() throws IOException {
         ensureKeywordsAreLocalisedFor(null);
     }
 
     @Test
-    public void shouldUseEnglishAsBaseLocaleIfKeywordIsNotFound() throws IOException {
+    void shouldUseEnglishAsBaseLocaleIfKeywordIsNotFound() throws IOException {
         ensureKeywordsAreLocalisedFor(new Locale("mk"));
     }
 
     @Test
-    public void shouldUseConfiguredBaseLocaleIfKeywordIsNotFound() throws IOException {
+    void shouldUseConfiguredBaseLocaleIfKeywordIsNotFound() throws IOException {
         ensureKeywordsAreLocalisedFor(new Locale("mk"),  Locale.ENGLISH);
     }
 
     @Test
-    public void shouldAllowSynonymsToOverrideABaseLocale() {
+    void shouldAllowSynonymsToOverrideABaseLocale() {
         Keywords keywords = new LocalizedKeywords(new Locale("sy"), Locale.ENGLISH);
         assertThat(keywords.given(), equalTo("Given|Giveth"));
         assertThat(keywords.and(), equalTo("And|With"));
     }
 
     @Test
-    public void shouldAllowSynonymsToOverrideABaseBundleForSameLocale() {
+    void shouldAllowSynonymsToOverrideABaseBundleForSameLocale() {
         Keywords keywords = new LocalizedKeywords(new Locale("en"), "i18n/synonyms", "i18n/keywords" );
         assertThat(keywords.given(), equalTo("Given|Giveth"));
         assertThat(keywords.and(), equalTo("And|With"));
     }
 
     @Test
-    public void shouldAllowKeywordsInDifferentLocales() throws IOException {
+    void shouldAllowKeywordsInDifferentLocales() throws IOException {
         ensureKeywordsAreLocalisedFor(new Locale("de"));
         ensureKeywordsAreLocalisedFor(new Locale("en"));
         ensureKeywordsAreLocalisedFor(new Locale("es"));
@@ -71,7 +71,7 @@ public class LocalizedKeywordsBehaviour {
     }
 
     @Test
-    public void shouldShowKeywordsInToStringRepresentations() {
+    void shouldShowKeywordsInToStringRepresentations() {
         LocalizedKeywords it = keywordsFor(new Locale("it"));
         LocalizedKeywords pt = keywordsFor(new Locale("pt"));
         assertThat(it.toString(), not(equalTo(pt.toString())));
@@ -79,13 +79,13 @@ public class LocalizedKeywordsBehaviour {
 
     
     @Test
-    public void shouldFailIfResourceBundleIsNotFound() {
+    void shouldFailIfResourceBundleIsNotFound() {
         Locale locale = new Locale("en");
         assertThrows(ResourceBundleNotFound.class, () -> ensureKeywordsAreLocalisedFor(locale, "unknown"));
     }
 
     @Test
-    public void shouldProvideClassLoaderPathInMessageIfResourceBundleIsNotFound() throws IOException {
+    void shouldProvideClassLoaderPathInMessageIfResourceBundleIsNotFound() throws IOException {
         try {
             ensureKeywordsAreLocalisedFor(new Locale("en"), "unknown");
         } catch ( ResourceBundleNotFound e ){
@@ -95,7 +95,7 @@ public class LocalizedKeywordsBehaviour {
     }
 
     @Test
-    public void shouldAllowKeywordsToBeConfigured() {
+    void shouldAllowKeywordsToBeConfigured() {
         Configuration configuration = new MostUsefulConfiguration();
         ensureKeywordsAreLocalised(configuration, new Locale("en"));
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));

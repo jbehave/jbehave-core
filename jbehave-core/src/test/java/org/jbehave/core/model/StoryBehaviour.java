@@ -12,10 +12,10 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import java.util.Arrays;
 import java.util.List;
 
-public class StoryBehaviour {
+class StoryBehaviour {
 
     @Test
-    public void shouldCloneWithScenarios() {
+    void shouldCloneWithScenarios() {
         Scenario scenario = mock(Scenario.class);
         Meta meta = mock(Meta.class);
         Description description = mock(Description.class);

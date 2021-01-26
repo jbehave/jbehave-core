@@ -7,10 +7,10 @@ import static org.mockito.Mockito.verify;
 import org.jbehave.core.embedder.Embedder;
 import org.junit.jupiter.api.Test;
 
-public class InjectableEmbedderBehaviour {
+class InjectableEmbedderBehaviour {
 
 	@Test
-    public void shouldRunStoriesAsPathsUsingInjected() {
+    void shouldRunStoriesAsPathsUsingInjected() {
         // Given
         Embedder embedder = mock(Embedder.class);
 

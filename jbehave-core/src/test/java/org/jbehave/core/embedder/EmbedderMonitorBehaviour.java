@@ -28,10 +28,10 @@ import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class EmbedderMonitorBehaviour {
+class EmbedderMonitorBehaviour {
 
     @Test
-    public void shouldNotPrintWithSilentMonitor() {
+    void shouldNotPrintWithSilentMonitor() {
         OutputStream out = new ByteArrayOutputStream();
         SilentEmbedderMonitor monitor = new SilentEmbedderMonitor();
         monitor.print("a message");
@@ -40,7 +40,7 @@ public class EmbedderMonitorBehaviour {
     }
 
     @Test
-    public void shouldOnlyPrintFailuresWithReportingFailuresMonitor() {
+    void shouldOnlyPrintFailuresWithReportingFailuresMonitor() {
         OutputStream out = new ByteArrayOutputStream();
         ReportingFailuresEmbedderMonitor monitor = new ReportingFailuresEmbedderMonitor(new PrintStream(out));
         monitor.runningEmbeddable("embeddable");
@@ -54,14 +54,14 @@ public class EmbedderMonitorBehaviour {
    }
 
     @Test
-    public void shouldDelegateOutput() {
+    void shouldDelegateOutput() {
         EmbedderMonitor monitor = new ReportingFailuresEmbedderMonitor();
         assertThat(monitor.toString(), containsString(ReportingFailuresEmbedderMonitor.class.getSimpleName()+"[output="));
    }
 
 
     @Test
-    public void shouldAllowDecorationOfDelegate() {
+    void shouldAllowDecorationOfDelegate() {
         // Given
         EmbedderMonitor delegate = mock(EmbedderMonitor.class);
         EmbedderMonitor monitor = new EmbedderMonitorDecorator(delegate);

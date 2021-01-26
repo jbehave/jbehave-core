@@ -18,10 +18,10 @@ import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.io.LoadFromRelativeFile.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class StoryLoaderBehaviour {
+class StoryLoaderBehaviour {
 
     @Test
-    public void shouldLoadStoryFromClasspath() {
+    void shouldLoadStoryFromClasspath() {
         // Given
         String storyPath = "org/jbehave/core/io/stories/my_pending_story";
         String storyAsText = "Given my step";
@@ -36,13 +36,13 @@ public class StoryLoaderBehaviour {
     }
 
     @Test
-    public void shouldNotLoadStoryFromClasspathIfNotFound() {
+    void shouldNotLoadStoryFromClasspathIfNotFound() {
         StoryLoader loader = new LoadFromClasspath(StoryLoaderBehaviour.class);
         assertThrows(StoryResourceNotFound.class, () -> loader.loadStoryAsText("unexistent.story"));
     }
 
     @Test
-    public void shouldNotLoadStoryFromClasspathIfClassloaderNotValid() {
+    void shouldNotLoadStoryFromClasspathIfClassloaderNotValid() {
         StoryLoader loader = new LoadFromClasspath(new InvalidClassLoader());
         assertThat(loader.toString(), Matchers.containsString(InvalidClassLoader.class.getName()));
         assertThrows(InvalidStoryResource.class, () -> loader.loadStoryAsText("unexistent.story"));
@@ -70,7 +70,7 @@ public class StoryLoaderBehaviour {
 
 
     @Test
-    public void shouldLoadStoryFromURL() {
+    void shouldLoadStoryFromURL() {
         String storyPath = CodeLocations.codeLocationFromClass(this.getClass()) + "org/jbehave/core/io/stories/my_pending_story";
         String storyAsText = "Given my step";
  
@@ -83,7 +83,7 @@ public class StoryLoaderBehaviour {
     }
 
     @Test
-    public void shouldNotLoadStoryFromURLIfNotFound() {
+    void shouldNotLoadStoryFromURLIfNotFound() {
         String storyPath = CodeLocations.codeLocationFromClass(this.getClass()) + "inexistent_story";
 
         // When
@@ -94,7 +94,7 @@ public class StoryLoaderBehaviour {
     }
 
     @Test
-    public void shouldLoadStoryFromRelativeFilePaths() {
+    void shouldLoadStoryFromRelativeFilePaths() {
         // Given
         String storyPath = "org/jbehave/core/io/stories/MyPendingStory.txt";
         String storyAsText = "Given my step";
@@ -112,7 +112,7 @@ public class StoryLoaderBehaviour {
     }
 
     @Test
-    public void shouldLoadStoryFromDefaultRelativeFilePaths() {
+    void shouldLoadStoryFromDefaultRelativeFilePaths() {
         // Given
         String storyPath = "org/jbehave/core/io/stories/MyPendingStory.txt";
         String storyAsText = "Given my step";
@@ -126,7 +126,7 @@ public class StoryLoaderBehaviour {
     }
     
     @Test
-    public void shouldNotLoadStoryFromRelativeFileWhenNoPathsAreProvided() {
+    void shouldNotLoadStoryFromRelativeFileWhenNoPathsAreProvided() {
         // Given
         String storyPath = "org/jbehave/core/io/stories/MyPendingStory.txt";
 
@@ -138,7 +138,7 @@ public class StoryLoaderBehaviour {
     }
     
     @Test
-    public void shouldNotLoadStoryFromRelativeFileWhenNotFound() {
+    void shouldNotLoadStoryFromRelativeFileWhenNotFound() {
         // Given
         String storyPath = "org/jbehave/core/io/stories/MyInexistentStory";
 
@@ -150,7 +150,7 @@ public class StoryLoaderBehaviour {
     }
 
     @Test
-    public void shouldNotLoadStoryFromRelativeFileWhenPathInvalid() {
+    void shouldNotLoadStoryFromRelativeFileWhenPathInvalid() {
         // Given
         String storyPath = null;
 
@@ -162,12 +162,12 @@ public class StoryLoaderBehaviour {
     }
 
     @Test
-    public void shouldLoadStoryFromRelativeFilePathsWithSpace() throws MalformedURLException, URISyntaxException {
+    void shouldLoadStoryFromRelativeFilePathsWithSpace() throws MalformedURLException, URISyntaxException {
         shouldWorkForPath("/org/jbehave/core/io/stories/foldername has spaces");
     }
 
     @Test
-    public void shouldLoadStoryFromRelativeFilePathsWithBizarreName() throws MalformedURLException, URISyntaxException {
+    void shouldLoadStoryFromRelativeFilePathsWithBizarreName() throws MalformedURLException, URISyntaxException {
         shouldWorkForPath("/org/jbehave/core/io/stories/[mage_hg]");
     }
 

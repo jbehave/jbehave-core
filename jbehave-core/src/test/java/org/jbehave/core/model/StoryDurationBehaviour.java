@@ -7,17 +7,17 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-public class StoryDurationBehaviour {
+class StoryDurationBehaviour {
 	
 	@Test
-	public void shouldTimeout(){
+	void shouldTimeout(){
 		StoryDuration duration = new StoryDuration(1);
 		sleep(2);
 		assertThat(duration.update().timedOut(), is(true));
 	}
 
 	@Test
-	public void shouldNotTimeout(){
+	void shouldNotTimeout(){
 		StoryDuration duration = new StoryDuration(0);
 		sleep(2);
 		assertThat(duration.update().timedOut(), is(false));

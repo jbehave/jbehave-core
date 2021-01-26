@@ -37,10 +37,10 @@ import static org.hamcrest.Matchers.*;
 import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 
-public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
+class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
     @Test
-    public void shouldOutputStoryToTxt() throws IOException {
+    void shouldOutputStoryToTxt() throws IOException {
         // Given
         String name = "stream-story.txt";
         File file = newFile("target/" +name);
@@ -55,7 +55,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
 
     @Test
-    public void shouldOutputStoryToTxtWhenNotAllowedByFilter() throws IOException {
+    void shouldOutputStoryToTxtWhenNotAllowedByFilter() throws IOException {
         // Given
         String name = "stream-story-not-allowed.txt";
         File file = newFile("target/"+ name);
@@ -70,7 +70,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldOutputStoryToTxtUsingCustomPatterns() throws IOException {
+    void shouldOutputStoryToTxtUsingCustomPatterns() throws IOException {
         // Given
         String name = "stream-story-custom-patterns.txt";
         File file = newFile("target/"+ name);
@@ -89,7 +89,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldOutputStoryToHtml() throws IOException {
+    void shouldOutputStoryToHtml() throws IOException {
         // Given
         String name = "stream-story.html";
         File file = newFile("target/" + name);
@@ -103,7 +103,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldOutputStoryToHtmlWhenNotAllowedByFilter() throws IOException {
+    void shouldOutputStoryToHtmlWhenNotAllowedByFilter() throws IOException {
         // Given
         String name = "stream-story-not-allowed.html";
         File file = newFile("target/" + name);
@@ -118,7 +118,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldOutputStoryToHtmlUsingCustomPatterns() throws IOException {
+    void shouldOutputStoryToHtmlUsingCustomPatterns() throws IOException {
         // Given
         String name = "stream-story-custom-patterns.html";
         File file = newFile("target/" + name);
@@ -136,7 +136,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldOutputStoryToXml() throws IOException, SAXException {
+    void shouldOutputStoryToXml() throws IOException, SAXException {
         // Given
         String name = "stream-story.xml";
         File file = newFile("target/" + name);
@@ -151,7 +151,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldOutputStoryToXmlWhenNotAllowedByFilter() throws IOException {
+    void shouldOutputStoryToXmlWhenNotAllowedByFilter() throws IOException {
         // Given
         String name = "stream-story-not-allowed.xml";
         File file = newFile("target/" + name);
@@ -166,7 +166,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldOutputStoryToXmlUsingCustomPatterns() throws IOException {
+    void shouldOutputStoryToXmlUsingCustomPatterns() throws IOException {
         // Given
         String name = "stream-story-custom-patterns.xml";
         File file = newFile("target/" + name);
@@ -184,7 +184,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldOutputStoryJson() throws IOException, SAXException {
+    void shouldOutputStoryJson() throws IOException, SAXException {
         // Given
         String name = "stream-story.json";
         File file = new File("target/" + name);
@@ -199,7 +199,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldReportEventsToJsonOutputScenarioNestedGivenStoriesWithMultipleExamplesAndLifecycles() throws IOException
+    void shouldReportEventsToJsonOutputScenarioNestedGivenStoriesWithMultipleExamplesAndLifecycles() throws IOException
     {
         ExamplesTable examplesTable = new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|");
         Lifecycle lifecycle = new Lifecycle(new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|"));
@@ -301,7 +301,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldReportEventsToJsonOutputIfScenarioIsEmptyWithLifecycleExamplesTable() throws IOException
+    void shouldReportEventsToJsonOutputIfScenarioIsEmptyWithLifecycleExamplesTable() throws IOException
     {
         ExamplesTable examplesTable = new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|");
         Lifecycle lifecycle = new Lifecycle(new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|"));
@@ -345,7 +345,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldNotSuppressStackTraceForNotKnownFailure() {
+    void shouldNotSuppressStackTraceForNotKnownFailure() {
 
         // Given
         final OutputStream out = new ByteArrayOutputStream();
@@ -371,7 +371,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldSuppressStackTraceForKnownFailure() {
+    void shouldSuppressStackTraceForKnownFailure() {
         // Given
         final OutputStream out = new ByteArrayOutputStream();
         PrintStreamFactory factory = new PrintStreamFactory() {
@@ -393,7 +393,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldReportFailureTraceWhenToldToDoSo() {
+    void shouldReportFailureTraceWhenToldToDoSo() {
         // Given
         UUIDExceptionWrapper exception = new UUIDExceptionWrapper(new RuntimeException("Leave my money alone!"));
         OutputStream stackTrace = new ByteArrayOutputStream();
@@ -443,7 +443,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldReportEventsToIdeOnlyConsoleOutput() {
+    void shouldReportEventsToIdeOnlyConsoleOutput() {
         // When
         StoryNarrator.narrateAnInterestingStory(new IdeOnlyConsoleOutput(), false);
         StoryNarrator.narrateAnInterestingStory(new IdeOnlyConsoleOutput(new LocalizedKeywords()), false);
@@ -451,7 +451,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldReportEventsToPrintStreamInItalian() {
+    void shouldReportEventsToPrintStreamInItalian() {
         // Given
         UUIDExceptionWrapper exception = new UUIDExceptionWrapper(new RuntimeException("Lasciate in pace i miei soldi!"));
         OutputStream out = new ByteArrayOutputStream();
@@ -479,7 +479,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldCreateAndWriteToFilePrintStreamForStoryLocation() throws IOException {
+    void shouldCreateAndWriteToFilePrintStreamForStoryLocation() throws IOException {
 
         // Given
         String storyPath = storyPath(MyStory.class);
@@ -499,7 +499,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldReportEventsToFilePrintStreamsAndGenerateView() throws IOException {
+    void shouldReportEventsToFilePrintStreamsAndGenerateView() throws IOException {
         final String storyPath = storyPath(MyStory.class);
         File outputDirectory = new File("target/output");
         StoryReporter reporter = new StoryReporterBuilder().withRelativeDirectory(outputDirectory.getName())
@@ -518,7 +518,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldReportEventsToFilePrintStreamsAndGenerateViewWithoutDecoratingNonHtml() throws IOException {
+    void shouldReportEventsToFilePrintStreamsAndGenerateViewWithoutDecoratingNonHtml() throws IOException {
         final String storyPath = storyPath(MyStory.class);
         File outputDirectory = new File("target/output");
         StoryReporter reporter = new StoryReporterBuilder().withRelativeDirectory(outputDirectory.getName())
@@ -540,7 +540,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
     
     @Test
-    public void shouldBuildPrintStreamReportersAndOverrideDefaultForAGivenFormat() throws IOException {
+    void shouldBuildPrintStreamReportersAndOverrideDefaultForAGivenFormat() throws IOException {
         final String storyPath = storyPath(MyStory.class);
         final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(CodeLocations.codeLocationFromClass(this.getClass()), storyPath));
         StoryReporter reporter = new StoryReporterBuilder() {
@@ -576,7 +576,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldUseCustomDateFormatInOutcomesTable() {
+    void shouldUseCustomDateFormatInOutcomesTable() {
         // Given
         OutputStream out = new ByteArrayOutputStream();
         StoryReporter reporter = new TxtOutput(new PrintStream(out));
@@ -601,7 +601,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldReportEventsToJsonOutputEmptyScenarioLifecycle() {
+    void shouldReportEventsToJsonOutputEmptyScenarioLifecycle() {
         // Given
         OutputStream out = new ByteArrayOutputStream();
         StoryReporter reporter = new JsonOutput(new PrintStream(out), new Properties(), new LocalizedKeywords());

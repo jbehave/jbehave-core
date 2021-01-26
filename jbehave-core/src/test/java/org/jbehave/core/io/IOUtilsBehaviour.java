@@ -12,10 +12,10 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class IOUtilsBehaviour {
+class IOUtilsBehaviour {
 
     @Test
-    public void shouldProcessReader() throws IOException {
+    void shouldProcessReader() throws IOException {
         assertThat(IOUtils.toString(new StringReader(""), true), equalTo(""));
         assertThat(IOUtils.toString(new StringReader("a"), true), equalTo("a"));
         assertThat(IOUtils.toString(new StringReader("asdf"), true), equalTo("asdf"));
@@ -35,14 +35,14 @@ public class IOUtilsBehaviour {
     }
 
     @Test
-    public void shouldHandleReaderNull() {
+    void shouldHandleReaderNull() {
         // this causes a NPE in the apache-commons code, no point
         // in changing the logic in our implementation, I guess
         assertThrows(NullPointerException.class, () -> IOUtils.toString((Reader) null, true));
     }
 
     @Test
-    public void shouldCloseReader() throws IOException {
+    void shouldCloseReader() throws IOException {
         Reader reader = mock(Reader.class);
         when(reader.read(isA(char[].class))).thenReturn(-1);
         IOUtils.toString(reader, true);
@@ -50,7 +50,7 @@ public class IOUtilsBehaviour {
     }
 
     @Test
-    public void shouldNotCloseReader() throws IOException {
+    void shouldNotCloseReader() throws IOException {
         Reader reader = mock(Reader.class);
         when(reader.read(isA(char[].class))).thenReturn(-1);
         IOUtils.toString(reader, false);
@@ -58,7 +58,7 @@ public class IOUtilsBehaviour {
     }
 
     @Test
-    public void shouldCloseReaderException() throws IOException {
+    void shouldCloseReaderException() throws IOException {
         Reader reader = mock(Reader.class);
         when(reader.read(isA(char[].class))).thenThrow(new IOException());
         assertThrows(IOException.class, () -> IOUtils.toString(reader, true));
@@ -67,7 +67,7 @@ public class IOUtilsBehaviour {
 
     // same for InputStream
     @Test
-    public void shouldProcessInputStream() throws IOException {
+    void shouldProcessInputStream() throws IOException {
         assertThat(IOUtils.toString(new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8)), true), equalTo(""));
         assertThat(IOUtils.toString(new ByteArrayInputStream("a".getBytes(StandardCharsets.UTF_8)), true), equalTo("a"));
         assertThat(IOUtils.toString(new ByteArrayInputStream("asdf".getBytes(StandardCharsets.UTF_8)), true), equalTo("asdf"));
@@ -85,14 +85,14 @@ public class IOUtilsBehaviour {
     }
 
     @Test
-    public void shouldHandleInputStreamNull() {
+    void shouldHandleInputStreamNull() {
         // this causes a NPE in the apache-commons code, no point
         // in changing the logic in our implementation, I guess
         assertThrows(NullPointerException.class, () -> IOUtils.toString((InputStream) null, true));
     }
 
     @Test
-    public void shouldCloseInputStream() throws IOException {
+    void shouldCloseInputStream() throws IOException {
         InputStream stream = mock(InputStream.class);
         when(stream.read(isA(byte[].class), anyInt(), anyInt())).thenReturn(-1);
         IOUtils.toString(stream, true);
@@ -100,7 +100,7 @@ public class IOUtilsBehaviour {
     }
 
     @Test
-    public void shouldNotCloseInputStream() throws IOException {
+    void shouldNotCloseInputStream() throws IOException {
         InputStream stream = mock(InputStream.class);
         when(stream.read(isA(byte[].class), anyInt(), anyInt())).thenReturn(-1);
         IOUtils.toString(stream, false);
@@ -108,7 +108,7 @@ public class IOUtilsBehaviour {
     }
 
     @Test
-    public void shouldCloseInputStreamException() throws IOException {
+    void shouldCloseInputStreamException() throws IOException {
         InputStream stream = mock(InputStream.class);
         when(stream.read(isA(byte[].class), anyInt(), anyInt())).thenThrow(new IOException());
         try {

@@ -11,9 +11,9 @@ import static org.jbehave.core.steps.StepCollector.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class BeforeOrAfterStepBehaviour {
+class BeforeOrAfterStepBehaviour {
     @Test
-    public void shouldPassMetaToStepCreatorWhenCreatingStepWithMeta() throws Exception {
+    void shouldPassMetaToStepCreatorWhenCreatingStepWithMeta() throws Exception {
         StepCreator stepCreator = mock(StepCreator.class);
 
         Method method = methodFor("aMethodWith");
@@ -26,7 +26,7 @@ public class BeforeOrAfterStepBehaviour {
     }
 
     @Test
-    public void shouldPassMetaToStepCreatorWhenCreatingStepUponOutcomeWithMeta() throws Exception {
+    void shouldPassMetaToStepCreatorWhenCreatingStepUponOutcomeWithMeta() throws Exception {
         StepCreator stepCreator = mock(StepCreator.class);
 
         Method method = methodFor("aMethodWith");

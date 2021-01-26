@@ -26,10 +26,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
-public class SpringStepsFactoryAOPBehaviour {
+class SpringStepsFactoryAOPBehaviour {
 
 	@Test
-	public void aopEnvelopedStepsCanBeCreated() {
+	void aopEnvelopedStepsCanBeCreated() {
 		// Given
 		ApplicationContext context = createApplicationContext(StepsWithAOPAnnotationConfiguration.class
 				.getName());

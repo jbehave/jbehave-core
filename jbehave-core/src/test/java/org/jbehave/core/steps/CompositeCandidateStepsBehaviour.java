@@ -21,16 +21,16 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.jbehave.core.steps.StepCandidateBehaviour.candidateMatchingStep;
 import static org.mockito.Mockito.mock;
 
-public class CompositeCandidateStepsBehaviour {
+class CompositeCandidateStepsBehaviour {
 
     @Test
-    public void shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters() {
+    void shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters() {
         CandidateSteps compositeSteps = new SimpleCompositeSteps();
         shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters(compositeSteps);
     }
 
     @Test
-    public void shouldMatchCompositesFromFileAndCreateComposedStepsUsingMatchedParameters() {
+    void shouldMatchCompositesFromFileAndCreateComposedStepsUsingMatchedParameters() {
         CandidateSteps compositeSteps = new CompositeCandidateSteps(new MostUsefulConfiguration(),
                 Collections.singleton("composite.steps"));
         shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters(compositeSteps);
@@ -84,7 +84,7 @@ public class CompositeCandidateStepsBehaviour {
 
 
     @Test
-    public void shouldMatchCompositesAndCreateComposedStepsUsingNamedParameters() {
+    void shouldMatchCompositesAndCreateComposedStepsUsingNamedParameters() {
         CompositeStepsUsingNamedParameters steps = new CompositeStepsUsingNamedParameters();
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidateMatchingStep(candidates, "Given <customer> has previously bough a <product>");
@@ -127,7 +127,7 @@ public class CompositeCandidateStepsBehaviour {
 
     @Test
     @Disabled("fails as perhaps Paranamer not peer of @named in respect of @composite")
-    public void shouldMatchCompositesAndCreateComposedStepsUsingParanamerNamedParameters() {
+    void shouldMatchCompositesAndCreateComposedStepsUsingParanamerNamedParameters() {
         CompositeStepsWithoutNamedAnnotation steps = new CompositeStepsWithoutNamedAnnotation();
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidates.get(0);
@@ -170,7 +170,7 @@ public class CompositeCandidateStepsBehaviour {
     }
     
     @Test
-    public void shouldMatchCompositesAndCreateComposedNestedSteps() {
+    void shouldMatchCompositesAndCreateComposedNestedSteps() {
         NestedCompositeSteps steps = new NestedCompositeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         // find main step
@@ -228,7 +228,7 @@ public class CompositeCandidateStepsBehaviour {
     }
 
     @Test
-    public void shouldMatchCompositesWhenStepParameterIsProvided(){
+    void shouldMatchCompositesWhenStepParameterIsProvided(){
         CompositeStepsWithParameterMatching steps = new CompositeStepsWithParameterMatching();
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidateMatchingStep(candidates, "When I login");
@@ -259,7 +259,7 @@ public class CompositeCandidateStepsBehaviour {
     }
     
     @Test
-    public void recursiveCompositesShouldWorkWithSomeMissingParameters(){
+    void recursiveCompositesShouldWorkWithSomeMissingParameters(){
         String userName = "someUserName";
         CompositeStepsWithParameterMissing steps = new CompositeStepsWithParameterMissing();
         List<StepCandidate> candidates = steps.listCandidates();
@@ -316,7 +316,7 @@ public class CompositeCandidateStepsBehaviour {
     }
 
     @Test
-    public void shouldIgnoreCompositesIgnorableStep(){
+    void shouldIgnoreCompositesIgnorableStep(){
         CompositeWithIgnorableStep steps = new CompositeWithIgnorableStep();
         List<StepCandidate> candidates = steps.listCandidates();
         String compositeName = "When ignore my step";
@@ -344,7 +344,7 @@ public class CompositeCandidateStepsBehaviour {
     }
 
     @Test
-    public void shouldCommentCompositesComment(){
+    void shouldCommentCompositesComment(){
         CompositeWithComment steps = new CompositeWithComment();
         List<StepCandidate> candidates = steps.listCandidates();
         String compositeName = "When comment my comment";

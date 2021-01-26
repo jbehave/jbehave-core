@@ -51,10 +51,10 @@ import org.junit.jupiter.api.Test;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.PicoContainer;
 
-public class PicoAnnotationBuilderBehaviour {
+class PicoAnnotationBuilderBehaviour {
 
     @Test
-    public void shouldBuildConfigurationFromAnnotations() {
+    void shouldBuildConfigurationFromAnnotations() {
         PicoAnnotationBuilder builder = new PicoAnnotationBuilder(AnnotatedUsingPico.class);
         Configuration configuration = builder.buildConfiguration();
         assertThat(configuration.storyControls().dryRun(), is(true));
@@ -86,7 +86,7 @@ public class PicoAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
+    void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
         PicoAnnotationBuilder builderNotAnnotated = new PicoAnnotationBuilder(NotAnnotated.class);
         assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(), new MostUsefulConfiguration());
         PicoAnnotationBuilder builderAnnotatedWithoutLocations = new PicoAnnotationBuilder(
@@ -110,7 +110,7 @@ public class PicoAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingPico() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingPico() {
         PicoAnnotationBuilder builderAnnotated = new PicoAnnotationBuilder(AnnotatedUsingPico.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class,
@@ -118,21 +118,21 @@ public class PicoAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndPico() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndPico() {
         PicoAnnotationBuilder builderAnnotated = new PicoAnnotationBuilder(AnnotatedUsingStepsAndPico.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndInheritingPicoFromParent() {
+    void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndInheritingPicoFromParent() {
         AnnotationBuilder builderAnnotated = new PicoAnnotationBuilder(InheritingAnnotatedUsingSteps.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
     }
 
     @Test
-    public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
+    void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
         PicoAnnotationBuilder builderNotAnnotated = new PicoAnnotationBuilder(NotAnnotated.class);
         assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
         PicoAnnotationBuilder builderAnnotatedWithoutModules = new PicoAnnotationBuilder(AnnotatedWithoutModules.class);
@@ -140,7 +140,7 @@ public class PicoAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldNotBuildContainerIfModuleNotInstantiable() {
+    void shouldNotBuildContainerIfModuleNotInstantiable() {
         AnnotationMonitor annotationMonitor = mock(AnnotationMonitor.class);
         PicoAnnotationBuilder builderPrivateModule = new PicoAnnotationBuilder(AnnotatedWithPrivateModule.class,
                 annotationMonitor);
@@ -149,7 +149,7 @@ public class PicoAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
+    void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
         PicoAnnotationBuilder builderAnnotated = new PicoAnnotationBuilder(AnnotatedUsingStepsAndPico.class);
         builderAnnotated.buildConfiguration();
         PicoContainer picoContainer = builderAnnotated.picoContainer();

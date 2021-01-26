@@ -16,12 +16,12 @@ import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.junit.jupiter.api.Test;
 
-public class StepFinderBehaviour {
+class StepFinderBehaviour {
 
     private StepFinder finder = new StepFinder();
     
     @Test
-    public void shouldFindStepdocs() {
+    void shouldFindStepdocs() {
         MySteps mySteps = new MySteps();
         List<Stepdoc> stepdocs = finder.stepdocs(new InstanceStepsFactory(new MostUsefulConfiguration(), mySteps).createCandidateSteps());
         Collections.sort(stepdocs);

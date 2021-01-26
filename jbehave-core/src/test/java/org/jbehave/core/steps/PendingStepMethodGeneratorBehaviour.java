@@ -11,12 +11,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 
-public class PendingStepMethodGeneratorBehaviour {
+class PendingStepMethodGeneratorBehaviour {
 
     private PendingStepMethodGenerator generator = new PendingStepMethodGenerator(new LocalizedKeywords());
 
     @Test
-    public void shouldGenerateMethodForNonAndPendingStep() {
+    void shouldGenerateMethodForNonAndPendingStep() {
         // When
         PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("When I am pending", null);
 
@@ -31,7 +31,7 @@ public class PendingStepMethodGeneratorBehaviour {
     }
 
     @Test
-    public void shouldGenerateMethodForAndPendingStepWithPreviousNonAndStep() {
+    void shouldGenerateMethodForAndPendingStepWithPreviousNonAndStep() {
 
         // When
         PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("And I am pending", "Given I was pending");
@@ -47,7 +47,7 @@ public class PendingStepMethodGeneratorBehaviour {
     }
 
     @Test
-    public void shouldNormaliseStepPatternToJavaCompatibleMethodNameAndString() {
+    void shouldNormaliseStepPatternToJavaCompatibleMethodNameAndString() {
         // When
         String pattern = "I'm searching for \".*\", and for others chars such as :;!|, and I look for <this>: $ \\ / () {} [] ";
         PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("When "+pattern, null);

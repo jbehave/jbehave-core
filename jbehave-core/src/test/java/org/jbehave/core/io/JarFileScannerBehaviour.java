@@ -8,10 +8,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JarFileScannerBehaviour {
+class JarFileScannerBehaviour {
 
     @Test
-    public void shouldScanJarFromPath() {
+    void shouldScanJarFromPath() {
         List<String> paths = scan("src/test/resources/stories.jar", "**/*.story", "**/*_search.story");
         assertThat(paths.size(), equalTo(2));
         assertThat(paths, hasItems("etsy_browse.story", "etsy_cart.story"));
@@ -19,7 +19,7 @@ public class JarFileScannerBehaviour {
     }
 
     @Test
-    public void shouldScanJarFromPathWithNoExcludes() {
+    void shouldScanJarFromPathWithNoExcludes() {
         List<String> emptyExcludes = scan("src/test/resources/stories.jar", "**/*.story", "");
         assertThat(emptyExcludes, hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story"));
         assertThat(emptyExcludes, not(hasItems("etsy_steps.xml")));
@@ -29,7 +29,7 @@ public class JarFileScannerBehaviour {
     }
 
     @Test
-    public void shouldScanJarFromPathWithNoIncludes() {
+    void shouldScanJarFromPathWithNoIncludes() {
         List<String> emptyIncludes = scan("src/test/resources/stories.jar", "", "**/*.story");
         assertThat(emptyIncludes, not(hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story", "etsy_steps.xml")));
         List<String> nullIncludes = scan("src/test/resources/stories.jar", null, "**/*.story");
@@ -37,14 +37,14 @@ public class JarFileScannerBehaviour {
     }
 
     @Test
-    public void shouldScanJarFromPathWithNullIncludesNorExcludes() {
+    void shouldScanJarFromPathWithNullIncludesNorExcludes() {
         List<String> nullIncludesAndExcludes = scan("src/test/resources/stories.jar", (List<String>) null, null);
         assertThat(nullIncludesAndExcludes,
                 hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story", "etsy-steps.xml"));
     }
 
     @Test
-    public void shouldThrowIllegalStateException() {
+    void shouldThrowIllegalStateException() {
         assertThrows(IllegalStateException.class, () -> scan("nonexistent.jar", "", ""));
     }
 

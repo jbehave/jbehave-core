@@ -16,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class FreemarkerViewGeneratorBehaviour {
+class FreemarkerViewGeneratorBehaviour {
 
     @Test
-    public void shouldCountEvents(){
+    void shouldCountEvents(){
         // Given
         FreemarkerViewGenerator generator = new FreemarkerViewGenerator();
 
@@ -38,7 +38,7 @@ public class FreemarkerViewGeneratorBehaviour {
     }
 
     @Test
-    public void shouldFindIndexedReportFiles(){
+    void shouldFindIndexedReportFiles(){
         // Given
         FreemarkerViewGenerator generator = new FreemarkerViewGenerator();
 
@@ -53,7 +53,7 @@ public class FreemarkerViewGeneratorBehaviour {
     }
 
     @Test
-    public void shouldHandleMissingOutputDirectory(){
+    void shouldHandleMissingOutputDirectory(){
         // Given
         FreemarkerViewGenerator generator = new FreemarkerViewGenerator();
 
@@ -64,7 +64,7 @@ public class FreemarkerViewGeneratorBehaviour {
     
     
     @Test
-    public void shouldHandleInvalidReportFile(){
+    void shouldHandleInvalidReportFile(){
         // Given
         Map<String, File> filesByFormat = new HashMap<>();
         filesByFormat.put("format", null);
@@ -80,7 +80,7 @@ public class FreemarkerViewGeneratorBehaviour {
 
     
     @Test
-    public void shouldFailToCreateReportsFromInvalidFiles(){
+    void shouldFailToCreateReportsFromInvalidFiles(){
         // Given
         FreemarkerViewGenerator generator = new FreemarkerViewGenerator();
 
@@ -93,7 +93,7 @@ public class FreemarkerViewGeneratorBehaviour {
     }
     
     @Test
-    public void shouldFormatTimeDurantionInMillis(){
+    void shouldFormatTimeDurantionInMillis(){
         long s = 1000;
         long m = 60 * s;
         long h = 60 * m;

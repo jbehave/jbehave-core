@@ -18,12 +18,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 
-public class MetaFilterBehaviour {
+class MetaFilterBehaviour {
 
 	MetaBuilder metaBuilder = new MetaBuilder();
 
     @Test
-    public void shouldParseIncludesAndExcludesUsingDefaultMetaMatcher() {
+    void shouldParseIncludesAndExcludesUsingDefaultMetaMatcher() {
         String filterAsString = "+author Mauro -theme smoke testing +map *API -skip +defect-4321 -defect-1234";
         MetaFilter filter = filter(filterAsString);
         assertThat(filter.asString(), equalTo(filterAsString));
@@ -35,18 +35,18 @@ public class MetaFilterBehaviour {
     }
 
     @Test
-    public void shouldFilterByNameAndValue() {
+    void shouldFilterByNameAndValue() {
         assertFilterAllowsProperty("+theme smoke testing", "theme smoke testing", true);
         assertFilterAllowsProperty("+theme smoke testing", "theme testing", false);
     }
 
     @Test
-    public void shouldFilterByNameOnly() {
+    void shouldFilterByNameOnly() {
         assertFilterAllowsProperty("-skip", "skip", false);
     }
     
     @Test
-    public void shouldFilterWithBothIncludeAndExclude() {
+    void shouldFilterWithBothIncludeAndExclude() {
         assertFilterAllowsProperty("+theme smoke testing -skip", "theme smoke testing", true);
         assertFilterAllowsProperty("+theme smoke testing -skip", "skip", false);
         assertFilterAllowsProperty("+theme smoke testing", "theme smoke testing", true);
@@ -58,18 +58,18 @@ public class MetaFilterBehaviour {
     }
 
     @Test
-    public void shouldFilterWithIncludeWinningOverExclude() {
+    void shouldFilterWithIncludeWinningOverExclude() {
         assertFilterAllowsProperty("+theme smoke testing -theme UI", "theme smoke testing", true);
         assertFilterAllowsProperty("+theme smoke testing -theme UI", "theme UI", false);
     }
 
     @Test
-    public void shouldFilterByValueWithAsterisk() {
+    void shouldFilterByValueWithAsterisk() {
         assertFilterAllowsProperty("+map *API", "map Service API", true);
     }
 
     @Test
-    public void shouldTreatNullFiltersAsEmptyFilters() {
+    void shouldTreatNullFiltersAsEmptyFilters() {
         assertFilterAllowsProperty(null, "skip", true);
         assertFilterAllowsProperty("", "skip", true);
     }
@@ -79,7 +79,7 @@ public class MetaFilterBehaviour {
     }
     
     @Test
-    public void shouldFilterByAdditiveBooleanExpressionsUsingGroovy() {
+    void shouldFilterByAdditiveBooleanExpressionsUsingGroovy() {
         MetaFilter filter = filter("groovy: (a == '11' | a == '22') && b == '33'");
         assertThat(filter.allow(metaBuilder.clear().a(11).b(33).build()), is(true));
         assertThat(filter.allow(metaBuilder.clear().a(22).b(33).build()), is(true));
@@ -91,14 +91,14 @@ public class MetaFilterBehaviour {
     }
 
     @Test
-    public void shouldFilterByNegativeBooleanExpressionsUsingGroovy() {
+    void shouldFilterByNegativeBooleanExpressionsUsingGroovy() {
         MetaFilter filter = filter("groovy: a != '11' && b != '22'");
         assertThat(filter.allow(metaBuilder.clear().a(11).b(33).build()), is(false));
         assertThat(filter.allow(metaBuilder.clear().a(33).b(33).build()), is(true));
     }
 
     @Test
-    public void shouldFilterByPresenceOfPropertyUsingGroovy() {
+    void shouldFilterByPresenceOfPropertyUsingGroovy() {
         MetaFilter filter = filter("groovy: d");
         assertThat(filter.allow(metaBuilder.clear().a(11).build()), is(false));
         assertThat(filter.allow(metaBuilder.clear().a(11).d("").build()), is(true));
@@ -106,14 +106,14 @@ public class MetaFilterBehaviour {
     }
 
     @Test
-    public void shouldFilterByNonPresenceOfPropertyUsingGroovy() {
+    void shouldFilterByNonPresenceOfPropertyUsingGroovy() {
         MetaFilter filter = filter("groovy: !d");
         assertThat(filter.allow(metaBuilder.clear().a(11).build()), is(true));
         assertThat(filter.allow(metaBuilder.clear().a(11).d("").build()), is(false));
     }
 
     @Test
-    public void shouldFilterByRegexUsingGroovy() {
+    void shouldFilterByRegexUsingGroovy() {
         MetaFilter filter = filter("groovy: d ==~ /.*\\d+.*/");
         assertThat(filter.allow(metaBuilder.clear().d("fr3ddie").build()), is(true));
         assertThat(filter.allow(metaBuilder.clear().d("mercury").build()), is(false));
@@ -121,7 +121,7 @@ public class MetaFilterBehaviour {
 
     @Test
     @Ignore("Run on-demand depending when the env allows it")
-    public void shouldBeFastUsingGroovy() {
+    void shouldBeFastUsingGroovy() {
         MetaFilter filter = filter("groovy: a != '11' && b != '22'");
         long start = System.currentTimeMillis();
         for (int i = 0; i < 1000; i++) {
@@ -141,7 +141,7 @@ public class MetaFilterBehaviour {
     }
 
     @Test
-    public void shouldFilterUsingCustomMetaMatcher() {
+    void shouldFilterUsingCustomMetaMatcher() {
         String filterAsString = "custom: anything goes";
 		Map<String, MetaMatcher> metaMatchers = new HashMap<>();
 		metaMatchers.put("custom:", new AnythingGoesMetaMatcher());

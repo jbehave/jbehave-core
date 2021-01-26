@@ -12,17 +12,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CodeLocationsBehaviour {
+class CodeLocationsBehaviour {
 
     @Test
-    public void shouldCreateCodeLocationFromPath() {
+    void shouldCreateCodeLocationFromPath() {
         String path = "target/classes/";
         URL codeLocation = CodeLocations.codeLocationFromPath(path);
         assertThat(codeLocation.getFile(), endsWith(path));
     }
 
     @Test
-    public void shouldCreateCodeLocationFromURL() {
+    void shouldCreateCodeLocationFromURL() {
         String url = "http://company.com/stories/";
         URL codeLocation = CodeLocations.codeLocationFromURL(url);
         assertThat(codeLocation.toString(), equalTo(url));
@@ -30,7 +30,7 @@ public class CodeLocationsBehaviour {
     }
 
     @Test
-    public void shouldCreateCodeLocationFromJarClass() {
+    void shouldCreateCodeLocationFromJarClass() {
         // wrong output looks like this:
         // "C:/Projects/jbehave/file:/C:/Users/Name/.m2/repository/junit/junit-dep/4.8.2/junit-dep-4.8.2.jar!"
         assertThat(CodeLocations.codeLocationFromClass(this.getClass()).getFile(), not(containsString("/file:")));
@@ -42,22 +42,22 @@ public class CodeLocationsBehaviour {
     }
 
     @Test
-    public void shouldNotCreateCodeLocationFromPathIfInvalid() {
+    void shouldNotCreateCodeLocationFromPathIfInvalid() {
         assertThrows(InvalidCodeLocation.class, () -> CodeLocations.codeLocationFromPath(null));
     }
 
     @Test
-    public void shouldNotCreateCodeLocationFromURLIfInvalid() {
+    void shouldNotCreateCodeLocationFromURLIfInvalid() {
         assertThrows(InvalidCodeLocation.class, () -> CodeLocations.codeLocationFromURL("htp://company.com/stories/"));
     }
 
     @Test
-    public void shouldAllowInstantiation() {
+    void shouldAllowInstantiation() {
         assertThat(new CodeLocations(), is(notNullValue()));
     }
 
     @Test
-    public void shouldHandleSpacesAndSpecialChars() throws MalformedURLException {
+    void shouldHandleSpacesAndSpecialChars() throws MalformedURLException {
         assertThat(CodeLocations.getPathFromURL(CodeLocations.codeLocationFromPath("some Path")), not(containsString("%20")));
         assertThat(CodeLocations.getPathFromURL(pathToURL("c:/a b c+++/")), endsWith("/c:/a b c+++"));
         assertThat(CodeLocations.getPathFromURL(pathToURL("/home/user/foo bar/+++/")), endsWith("/home/user/foo bar/+++"));

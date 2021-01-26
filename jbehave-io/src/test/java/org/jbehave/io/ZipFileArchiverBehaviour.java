@@ -15,7 +15,7 @@ import static org.apache.commons.io.FilenameUtils.separatorsToUnix;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class ZipFileArchiverBehaviour {
+class ZipFileArchiverBehaviour {
 
     private File dir;
     private FileArchiver archiver = new ZipFileArchiver();
@@ -27,7 +27,7 @@ public class ZipFileArchiverBehaviour {
     }
 
     @Test
-    public void canArchiveZip() throws IOException {
+    void canArchiveZip() throws IOException {
         File zip = createFile("archive.zip");
         archiver.archive(zip, dir);
     }
@@ -41,7 +41,7 @@ public class ZipFileArchiverBehaviour {
     }
 
     @Test
-    public void canResolveFileRelativeToDirectoryUsingUnixSeparators() {
+    void canResolveFileRelativeToDirectoryUsingUnixSeparators() {
         assertRelativeFileUsesUnixSeparators("target/dir", "archive/file.txt");
         assertRelativeFileUsesUnixSeparators("/tmp/dir", "archive/file.txt");
         assertRelativeFileUsesUnixSeparators("\\\\UNC\\share\\dir", "archive\\file.txt");
@@ -58,7 +58,7 @@ public class ZipFileArchiverBehaviour {
     }
 
     @Test
-    public void canUnarchiveZip() throws IOException {
+    void canUnarchiveZip() throws IOException {
         File zip = resourceFile("archive.zip");
         assertThat(archiver.isArchive(zip), is(true));
         clearDir(dir);
@@ -67,7 +67,7 @@ public class ZipFileArchiverBehaviour {
     }
 
     @Test
-    public void canListFileContentOfUnarchiveZip() throws IOException {
+    void canListFileContentOfUnarchiveZip() throws IOException {
         File zip = resourceFile("archive.zip");
         assertThat(archiver.isArchive(zip), is(true));
         archiver.unarchive(zip, dir);

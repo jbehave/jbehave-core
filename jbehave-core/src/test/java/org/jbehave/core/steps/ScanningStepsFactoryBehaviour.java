@@ -8,10 +8,10 @@ import org.hamcrest.Matchers;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.junit.jupiter.api.Test;
 
-public class ScanningStepsFactoryBehaviour {
+class ScanningStepsFactoryBehaviour {
 
 	@Test
-	public void shouldScanStepsFromRootClass() {
+	void shouldScanStepsFromRootClass() {
 		InjectableStepsFactory factory = new ScanningStepsFactory(
 				new MostUsefulConfiguration(), this.getClass());
 		List<CandidateSteps> candidateSteps = factory.createCandidateSteps();
@@ -19,7 +19,7 @@ public class ScanningStepsFactoryBehaviour {
 	}
 
 	@Test
-	public void shouldScanStepsFromPackagesAndIgnoreClassesNotAnnotated() {
+	void shouldScanStepsFromPackagesAndIgnoreClassesNotAnnotated() {
 		InjectableStepsFactory factory = new ScanningStepsFactory(
 				new MostUsefulConfiguration(), "org.jbehave.core.steps.scan",
 				"org.jbehave.core.steps.scan2");
@@ -28,7 +28,7 @@ public class ScanningStepsFactoryBehaviour {
 	}
 
 	@Test
-	public void shouldNotFindAnyStepsFromNonAnnotatedClasses() {
+	void shouldNotFindAnyStepsFromNonAnnotatedClasses() {
 		InjectableStepsFactory factory = new ScanningStepsFactory(
 				new MostUsefulConfiguration(), "org.jbehave.core.steps.scan2");
 		List<CandidateSteps> candidateSteps = factory.createCandidateSteps();
@@ -36,7 +36,7 @@ public class ScanningStepsFactoryBehaviour {
 	}
 
 	@Test
-	public void shouldScanStepsFromPackagesAndFilterMatchingNames() {
+	void shouldScanStepsFromPackagesAndFilterMatchingNames() {
 		InjectableStepsFactory factory = new ScanningStepsFactory(
 				new MostUsefulConfiguration(), "org.jbehave.core.steps.scan")
 				.matchingNames(".*GivenWhen.*").notMatchingNames(".*GivenWhenThen");
@@ -45,7 +45,7 @@ public class ScanningStepsFactoryBehaviour {
 	}
 
 	@Test
-	public void shouldNotFindAnyStepsFromInexistingPackage() {
+	void shouldNotFindAnyStepsFromInexistingPackage() {
 		InjectableStepsFactory factory = new ScanningStepsFactory(
 				new MostUsefulConfiguration(), "org.jbehave.inexisting");
 		List<CandidateSteps> candidateSteps = factory.createCandidateSteps();

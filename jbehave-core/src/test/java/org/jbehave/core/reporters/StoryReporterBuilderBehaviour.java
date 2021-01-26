@@ -37,10 +37,10 @@ import static org.jbehave.core.reporters.Format.STATS;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
 
-public class StoryReporterBuilderBehaviour {
+class StoryReporterBuilderBehaviour {
 
     @Test
-    public void shouldBuildWithStatsByDefault() {
+    void shouldBuildWithStatsByDefault() {
         // Given
         StoryReporterBuilder builder = new StoryReporterBuilder();
         String storyPath = storyPath(MyStory.class);
@@ -58,7 +58,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithCustomRelativeDirectory() {
+    void shouldBuildWithCustomRelativeDirectory() {
         // Given
         StoryReporterBuilder builder = new StoryReporterBuilder();
         String storyPath = storyPath(MyStory.class);
@@ -73,7 +73,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithCustomPathResolver() {
+    void shouldBuildWithCustomPathResolver() {
         // Given
         StoryReporterBuilder builder = new StoryReporterBuilder();
         String storyPath = storyPath(MyStory.class);
@@ -88,7 +88,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithReportingOfFailureTrace() {
+    void shouldBuildWithReportingOfFailureTrace() {
         // Given
         StoryReporterBuilder builder = new StoryReporterBuilder();
         String storyPath = storyPath(MyStory.class);
@@ -109,7 +109,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithCustomCodeLocation() {
+    void shouldBuildWithCustomCodeLocation() {
         // Given
         StoryReporterBuilder builder = new StoryReporterBuilder();
         String storyPath = storyPath(MyStory.class);
@@ -126,7 +126,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithCustomViewResources() {
+    void shouldBuildWithCustomViewResources() {
         // Given
         String storyPath = storyPath(MyStory.class);
         StoryReporterBuilder builder = new StoryReporterBuilder();
@@ -141,7 +141,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithCustomKeywords() {
+    void shouldBuildWithCustomKeywords() {
         // Given
         String storyPath = storyPath(MyStory.class);
         Keywords keywords = new LocalizedKeywords(new Locale("it"));
@@ -172,7 +172,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithReporterOfDifferentFormatsForSingleThreaded() {
+    void shouldBuildWithReporterOfDifferentFormatsForSingleThreaded() {
 
         StoryReporterBuilder builder = new StoryReporterBuilder().withMultiThreading(false);
         shouldBuildWithReporterOfDifferentFormats(builder);
@@ -180,7 +180,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithReporterOfDifferentFormatsForMultiThreaded() {
+    void shouldBuildWithReporterOfDifferentFormatsForMultiThreaded() {
 
         StoryReporterBuilder builder = new StoryReporterBuilder().withMultiThreading(true);
         shouldBuildWithReporterOfDifferentFormats(builder);
@@ -215,7 +215,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithCustomReporterForAGivenFormat() {
+    void shouldBuildWithCustomReporterForAGivenFormat() {
         // Given
         String storyPath = storyPath(MyStory.class);
         final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(
@@ -247,7 +247,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithCustomReportersAsProvidedFormat() {
+    void shouldBuildWithCustomReportersAsProvidedFormat() {
         // Given
         String storyPath = storyPath(MyStory.class);
         FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(

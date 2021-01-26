@@ -10,10 +10,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class MetaBehaviour {
+class MetaBehaviour {
 
     @Test
-    public void shouldInheritFromParentStartingFromEmpty() {
+    void shouldInheritFromParentStartingFromEmpty() {
         // Given
         Meta parent = new Meta(asList("one One"));
 
@@ -29,7 +29,7 @@ public class MetaBehaviour {
     }
 
     @Test
-    public void shouldInheritFromParentStartingFromNonEmpty() {
+    void shouldInheritFromParentStartingFromNonEmpty() {
         // Given
         Meta parent = new Meta(asList("one One"));
 
@@ -46,14 +46,14 @@ public class MetaBehaviour {
     }
     
     @Test
-    public void shouldAllowFilteringBySingleExclusion() {
+    void shouldAllowFilteringBySingleExclusion() {
       Meta meta = new Meta(asList("environment all", "skip"));
       MetaFilter filter = new MetaFilter("-skip");
       assertThat("should not be allowed", filter.allow(meta), is(false));
     }
 
     @Test
-    public void shouldAllowFilteringByMultipleExclusions() {
+    void shouldAllowFilteringByMultipleExclusions() {
       Meta meta = new Meta(asList("environment all", "skip"));
       MetaFilter filter = new MetaFilter("-environment preview -skip");
       assertThat("should not be allowed", filter.allow(meta), is(false));

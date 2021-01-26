@@ -13,10 +13,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
 
-public class LoadFromRedmineBehaviour {
+class LoadFromRedmineBehaviour {
 
 	@Test
-	public void canFormatURIForJSON() {
+	void canFormatURIForJSON() {
 		LoadFromRedmine loader = new LoadFromRedmine(Type.JSON);
 		String url = "http://demo.redmine.org/project/jbehave/wiki/some_story";
 		String text = loader.uri(url, Type.JSON);
@@ -24,7 +24,7 @@ public class LoadFromRedmineBehaviour {
 	}
 
 	@Test
-	public void canReadFromRedmineAsJSON() {
+	void canReadFromRedmineAsJSON() {
 		LoadFromRedmine loader = new LoadFromRedmine(Type.JSON);
 		String entity = read("redmine.json");
 		String text = loader.text(entity, Type.JSON);
@@ -32,7 +32,7 @@ public class LoadFromRedmineBehaviour {
 	}
 
 	@Test
-	public void canFormatURIForXML() {
+	void canFormatURIForXML() {
 		LoadFromRedmine loader = new LoadFromRedmine(Type.XML);
 		String url = "http://demo.redmine.org/project/jbehave/wiki/some_story";
 		String text = loader.uri(url, Type.XML);
@@ -40,7 +40,7 @@ public class LoadFromRedmineBehaviour {
 	}
 
 	@Test
-	public void canReadFromRedmineAsXML() {
+	void canReadFromRedmineAsXML() {
 		LoadFromRedmine loader = new LoadFromRedmine(Type.XML);
 		String entity = read("redmine.xml");
 		String text = loader.text(entity, Type.XML);

@@ -12,10 +12,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-public class LoadFromRESTBehaviour {
+class LoadFromRESTBehaviour {
 
 	@Test
-	public void canLoadFromREST() {
+	void canLoadFromREST() {
 	    RESTClient client = mock(RESTClient.class);
 	    when(client.getType()).thenReturn(Type.JSON);
 	    String url = "http://wiki/page";

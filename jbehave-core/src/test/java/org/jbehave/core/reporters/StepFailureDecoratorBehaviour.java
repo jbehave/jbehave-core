@@ -21,7 +21,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class StepFailureDecoratorBehaviour {
+class StepFailureDecoratorBehaviour {
 
     @Mock
     private StoryReporter delegate;
@@ -30,7 +30,7 @@ public class StepFailureDecoratorBehaviour {
     private StepFailureDecorator decorator;
 
     @Test
-    public void shouldJustDelegateAllReportingMethodsOtherThanFailure() {
+    void shouldJustDelegateAllReportingMethodsOtherThanFailure() {
         // Given
         Story story = new Story();
         boolean givenStory = false;
@@ -75,7 +75,7 @@ public class StepFailureDecoratorBehaviour {
     }
 
     @Test
-    public void shouldProvideFailureCauseWithMessageDescribingStep() {
+    void shouldProvideFailureCauseWithMessageDescribingStep() {
         // Given
         Throwable t = new UUIDExceptionWrapper(new IllegalArgumentException("World Peace for everyone"));
         // When
@@ -89,7 +89,7 @@ public class StepFailureDecoratorBehaviour {
     }
 
     @Test
-    public void shouldRethrowFailureCauseAfterStory() {
+    void shouldRethrowFailureCauseAfterStory() {
         // Given
         Throwable t = new UUIDExceptionWrapper(new IllegalArgumentException("World Peace for everyone"));
         String stepAsString = "When I have a bad idea";

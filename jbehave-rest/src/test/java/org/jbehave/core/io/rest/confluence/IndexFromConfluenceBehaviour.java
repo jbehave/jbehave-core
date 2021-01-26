@@ -12,10 +12,10 @@ import org.jbehave.core.io.rest.RESTClient;
 import org.jbehave.core.io.rest.Resource;
 import org.junit.jupiter.api.Test;
 
-public class IndexFromConfluenceBehaviour {
+class IndexFromConfluenceBehaviour {
 
     @Test
-    public void shouldIndexFromConfluence() {
+    void shouldIndexFromConfluence() {
         // given
         IndexFromConfluence indexer = new IndexFromConfluence(new MockRESTClient());
 

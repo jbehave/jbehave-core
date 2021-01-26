@@ -50,14 +50,14 @@ public class ExamplesTableBehaviour {
             + "|-- Another comment --|\n" + "|21|22|\n";
 
     @Test
-    public void shouldParseTableWithDefaultSeparators() {
+    void shouldParseTableWithDefaultSeparators() {
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
     }
 
     @Test
-    public void shouldParseTableWithDifferentSeparators() {
+    void shouldParseTableWithDifferentSeparators() {
         String headerSeparator = "||";
         String valueSeparator = "|";
         String tableWithCustomSeparator = wikiTableAsString;
@@ -74,7 +74,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithDifferentCustomSeparators() {
+    void shouldParseTableWithDifferentCustomSeparators() {
         String headerSeparator = "!!";
         String valueSeparator = "!";
         String tableWithCustomSeparator = wikiTableAsString.replace("|", "!");
@@ -91,7 +91,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldTrimTableBeforeParsing() {
+    void shouldTrimTableBeforeParsing() {
         String untrimmedTableAsString = "\n    \n" + tableAsString + "\n    \n";
         ExamplesTable table = new ExamplesTable(untrimmedTableAsString);
         ensureColumnOrderIsPreserved(table);
@@ -99,7 +99,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithCommentsInValues() {
+    void shouldParseTableWithCommentsInValues() {
         String tableWithEmptyValues = "{commentSeparator=#}\n|one #comment|two|\n |11 #comment|12 #comment|\n |21|22|\n";
         ExamplesTable table = new ExamplesTable(tableWithEmptyValues);
         assertThat(table.getRowCount(), equalTo(2));
@@ -114,7 +114,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithUntrimmedCommentsInValues() {
+    void shouldParseTableWithUntrimmedCommentsInValues() {
         String tableWithEmptyValues = "{commentSeparator=#, trim=false}\n|one #comment|two|\n |11 #comment|12 #comment|\n |21|22|\n";
         ExamplesTable table = new ExamplesTable(tableWithEmptyValues);
         assertThat(table.getRowCount(), equalTo(2));
@@ -129,7 +129,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseEmptyTable() {
+    void shouldParseEmptyTable() {
         String tableAsString = "";
         ExamplesTable table = new ExamplesTable(tableAsString);
         assertThat(table.getHeaders().size(), equalTo(0));
@@ -139,7 +139,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithBlankValues() {
+    void shouldParseTableWithBlankValues() {
         String tableWithEmptyValues = "|one|two|\n |||\n | ||\n || |\n";
         ExamplesTable table = new ExamplesTable(tableWithEmptyValues);
         assertThat(table.getRowCount(), equalTo(3));
@@ -154,7 +154,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithoutLeftBoundarySeparator() {
+    void shouldParseTableWithoutLeftBoundarySeparator() {
         String tableAsString = "one|two|\n 11|12|\n 21|22|\n";
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
@@ -162,7 +162,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithoutRightBoundarySeparator() {
+    void shouldParseTableWithoutRightBoundarySeparator() {
         String tableAsString = "|one|two\n |11|12\n |21|22\n";
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
@@ -170,7 +170,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithoutAnyBoundarySeparators() {
+    void shouldParseTableWithoutAnyBoundarySeparators() {
         String tableAsString = "one|two\n 11|12\n 21|22\n";
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
@@ -178,7 +178,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTablePreservingWhitespace() {
+    void shouldParseTablePreservingWhitespace() {
         String tableWithProperties = "{trim=false}\n" + tableWithSpacesAsString;
         ExamplesTable table = new ExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
@@ -188,7 +188,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithSeparatorsSpecifiedViaProperties() {
+    void shouldParseTableWithSeparatorsSpecifiedViaProperties() {
         String tableWithProperties = "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!}\n"
                 + tableWithCommentsAsString.replace("|", "!");
         ExamplesTable table = new ExamplesTable(tableWithProperties);
@@ -200,7 +200,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableAsLandscape() {
+    void shouldParseTableAsLandscape() {
         String tableWithProperties = "{transformer=FROM_LANDSCAPE}\n" + landscapeTableAsString;
         ExamplesTableFactory factory = createFactory();
         ExamplesTable table = factory.createExamplesTable(tableWithProperties);
@@ -210,7 +210,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithCustomTransformerSpecifiedViaProperties() {
+    void shouldParseTableWithCustomTransformerSpecifiedViaProperties() {
         String tableWithProperties = "{transformer=myTransformer, trim=false}\n" + tableWithCommentsAsString;
         TableTransformers tableTransformers = new TableTransformers();
         tableTransformers.useTransformer("myTransformer", new TableTransformer() {
@@ -229,7 +229,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithCustomNestedTransformers() {
+    void shouldParseTableWithCustomNestedTransformers() {
         String tableWithProperties = "{transformer=myTransformer, trim=false, " +
                 "table=\\{transformer=NESTED_TRANSFORMER\\, parameter=value\\}}\n" + tableWithCommentsAsString;
         TableTransformers tableTransformers = new TableTransformers();
@@ -250,7 +250,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithSequenceOfTransformers() {
+    void shouldParseTableWithSequenceOfTransformers() {
         String tableWithProperties =
                         "{transformer=REPLACING, replacing=33, replacement=22}\n"
                       + "{transformer=MODIFYING_PROPERTIES}\n"
@@ -306,7 +306,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldConvertParameterValuesOfTableRow() throws Exception {
+    void shouldConvertParameterValuesOfTableRow() throws Exception {
         // Given
         ExamplesTableFactory factory = createFactory(new MethodReturningConverter(methodFor("convertDate"), this));
 
@@ -324,7 +324,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldConvertParameterValuesOfTableRowWithDefaults() throws Exception {
+    void shouldConvertParameterValuesOfTableRowWithDefaults() throws Exception {
         // Given
         ExamplesTableFactory factory = createFactory(new MethodReturningConverter(methodFor("convertDate"), this));
 
@@ -362,7 +362,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldReplaceNamedParameterValues() {
+    void shouldReplaceNamedParameterValues() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -380,7 +380,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldReplaceNamedParameterValuesInValuePart() {
+    void shouldReplaceNamedParameterValuesInValuePart() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -403,7 +403,7 @@ public class ExamplesTableBehaviour {
      * @see {@link String#replaceAll(String, String)} to see why are not present in values the '\' and '$' characters.
      */
     @Test
-    public void shouldKeepExactValueInReplacedNamedParameterValues() {
+    void shouldKeepExactValueInReplacedNamedParameterValues() {
         // Given
         ExamplesTableFactory factory = createFactory();
         String problematicNamedParameterValueCharacters = "value having the \\ backslash and the $ dollar character";
@@ -423,7 +423,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldMapParametersToType() {
+    void shouldMapParametersToType() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -444,7 +444,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldMapParametersToTypeWithFieldMappings() {
+    void shouldMapParametersToTypeWithFieldMappings() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -468,7 +468,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldMapParametersToTypeWithAnnotatedFields() {
+    void shouldMapParametersToTypeWithAnnotatedFields() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -486,7 +486,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldThrowExceptionIfValuesOrRowsAreNotFound() {
+    void shouldThrowExceptionIfValuesOrRowsAreNotFound() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -513,7 +513,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldAllowAdditionAndModificationOfRowValues() {
+    void shouldAllowAdditionAndModificationOfRowValues() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -541,7 +541,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldAllowBuildingOfTableFromContent() {
+    void shouldAllowBuildingOfTableFromContent() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -558,7 +558,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldAllowBuildingOfTableFromEmptyContent() {
+    void shouldAllowBuildingOfTableFromEmptyContent() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -572,7 +572,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldAllowOutputToPrintStream() {
+    void shouldAllowOutputToPrintStream() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -588,7 +588,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldIgnoreEmptyLines() {
+    void shouldIgnoreEmptyLines() {
         // ignore blank line
         String tableWithEmptyLine = "|one|two|\n|a|b|\n\n|c|d|\n";
         ExamplesTable table = new ExamplesTable(tableWithEmptyLine);
@@ -597,7 +597,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldIgnoreAllCommentLines() {
+    void shouldIgnoreAllCommentLines() {
         // ignore comment lines
         ExamplesTable table = new ExamplesTable(tableWithCommentsAsString);
         ensureColumnOrderIsPreserved(table);
@@ -605,7 +605,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldHandleWrongNumberOfColumns() {
+    void shouldHandleWrongNumberOfColumns() {
         assertTableAsString("|a|b|\n|a|\n", "|a|b|\n|a||\n");
         assertTableAsString("|a|b|\n|a|b|c|\n", "|a|b|\n|a|b|\n");
     }

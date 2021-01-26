@@ -16,10 +16,10 @@ import org.jbehave.core.io.rest.ResourceIndexer;
 import org.jbehave.core.io.rest.ResourceUploader;
 import org.junit.jupiter.api.Test;
 
-public class ExportFromFilesystemBehaviour {
+class ExportFromFilesystemBehaviour {
 
     @Test
-    public void canExportFromFilesystem() throws IOException {
+    void canExportFromFilesystem() throws IOException {
 
         // Given
         ResourceIndexer indexer = mock(ResourceIndexer.class);

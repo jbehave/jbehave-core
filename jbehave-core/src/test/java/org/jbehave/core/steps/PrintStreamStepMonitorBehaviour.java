@@ -15,13 +15,13 @@ import org.jbehave.core.annotations.Then;
 import org.jbehave.core.model.StepPattern;
 import org.junit.jupiter.api.Test;
 
-public class PrintStreamStepMonitorBehaviour {
+class PrintStreamStepMonitorBehaviour {
 
     private final OutputStream out = new ByteArrayOutputStream();
     private final StepMonitor monitor = new PrintStreamStepMonitor(new PrintStream(out));
 
     @Test
-    public void shouldReportStepMatchesType() {
+    void shouldReportStepMatchesType() {
         // When
         monitor.stepMatchesType("When another step", "Given my step", false, StepType.GIVEN, null, null);
 
@@ -31,7 +31,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportStepMatchesPattern() throws NoSuchMethodException {
+    void shouldReportStepMatchesPattern() throws NoSuchMethodException {
         MySteps steps = new MySteps();
         Method method = MySteps.class.getMethod("thenFoo", String.class);
         // When
@@ -46,7 +46,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportConvertedValueOfType() {
+    void shouldReportConvertedValueOfType() {
         // When
         monitor.convertedValueOfType("1", int.class, 1, ParameterConverters.NumberConverter.class);
 
@@ -56,7 +56,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportConvertedValueOfTypeWithConverters() {
+    void shouldReportConvertedValueOfTypeWithConverters() {
         // When
         Queue<Class<?>> convertersQueue = new LinkedList<>(Arrays.asList(ParameterConverters.NumberConverter.class,
                 ParameterConverters.ExamplesTableConverter.class, ParameterConverters.EnumListConverter.class));
@@ -70,7 +70,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportBeforePerformingStep() {
+    void shouldReportBeforePerformingStep() {
         // When
         monitor.beforePerforming("a step", false, null);
 
@@ -79,7 +79,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportNothingAfterBeforePerformingStep() {
+    void shouldReportNothingAfterBeforePerformingStep() {
         // When
         monitor.afterPerforming("a step", false, null);
 
@@ -88,7 +88,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportUsingAnnotatedNameForParameter() {
+    void shouldReportUsingAnnotatedNameForParameter() {
         // When
         monitor.usingAnnotatedNameForParameter("name", 0);
 
@@ -97,7 +97,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportUsingParameterNameForParameter() {
+    void shouldReportUsingParameterNameForParameter() {
         // When
         monitor.usingParameterNameForParameter("name", 0);
 
@@ -106,7 +106,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportUsingTableAnnotatedNameForParameter() {
+    void shouldReportUsingTableAnnotatedNameForParameter() {
         // When
         monitor.usingTableAnnotatedNameForParameter("name", 0);
 
@@ -115,7 +115,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportUsingTableParameterNameForParameter() {
+    void shouldReportUsingTableParameterNameForParameter() {
         // When
         monitor.usingTableParameterNameForParameter("name", 0);
 
@@ -124,7 +124,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportUsingNaturalOrderForParameter() {
+    void shouldReportUsingNaturalOrderForParameter() {
         // When
         monitor.usingNaturalOrderForParameter(0);
 
@@ -133,7 +133,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportFoundParameter() {
+    void shouldReportFoundParameter() {
         // When
         monitor.foundParameter("parameter", 0);
 
@@ -142,7 +142,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportUsingStepsContextParameter() {
+    void shouldReportUsingStepsContextParameter() {
         // When
         monitor.usingStepsContextParameter("fromContext");
 

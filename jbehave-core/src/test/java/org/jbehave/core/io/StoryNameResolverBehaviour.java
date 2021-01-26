@@ -7,10 +7,10 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 
-public class StoryNameResolverBehaviour {
+class StoryNameResolverBehaviour {
 
     @Test
-    public void shouldResolveUnderscoredToCapitalized() {
+    void shouldResolveUnderscoredToCapitalized() {
         StoryNameResolver resolver = new UnderscoredToCapitalized();
         assertThat(resolver.resolveName("org/jbehave/core/io/camel_case.story"), equalTo("Camel Case"));
         assertThat(resolver.resolveName("/org/jbehave/core/io/camel_case.story"), equalTo("Camel Case"));
@@ -21,7 +21,7 @@ public class StoryNameResolverBehaviour {
     }
 
     @Test
-    public void shouldResolveUnderscoredToCapitalizedWithCustomExtension() {
+    void shouldResolveUnderscoredToCapitalizedWithCustomExtension() {
         StoryNameResolver resolver = new UnderscoredToCapitalized(".ext");
         assertThat(resolver.resolveName("org/jbehave/core/io/camel_case.ext"), equalTo("Camel Case"));
         assertThat(resolver.resolveName("/org/jbehave/core/io/camel_case.ext"), equalTo("Camel Case"));
@@ -32,19 +32,19 @@ public class StoryNameResolverBehaviour {
     }
 
     @Test
-    public void shouldResolveAncestorWithDefaultAncestors() {
+    void shouldResolveAncestorWithDefaultAncestors() {
         StoryNameResolver resolver = new AncestorDelegatingResolver();
         assertThat(resolver.resolveName("org/jbehave/core/io/camel_case.story"), equalTo("Io Camel Case"));
     }
 
     @Test
-    public void shouldResolveAncestorWithCustomAncestors() {
+    void shouldResolveAncestorWithCustomAncestors() {
         StoryNameResolver resolver = new AncestorDelegatingResolver(2);
         assertThat(resolver.resolveName("org/jbehave/core/io/camel_case.story"), equalTo("Core Io Camel Case"));
     }
 
     @Test
-    public void shouldResolveAncestorWithCustomDelegate() {
+    void shouldResolveAncestorWithCustomDelegate() {
         StoryNameResolver delegate = mock(StoryNameResolver.class);
 		when(delegate.resolveName("io")).thenReturn("IO");
 		when(delegate.resolveName("camel_case.story")).thenReturn("CC");

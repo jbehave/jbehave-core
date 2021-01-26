@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ExamplesTableFactoryBehaviour {
+class ExamplesTableFactoryBehaviour {
 
     private static final String TABLE_AS_STRING = "|one|two|\n|11|22|\n";
 
@@ -32,7 +32,7 @@ public class ExamplesTableFactoryBehaviour {
             + "!value m1!value m2!....!value mn!\n";
 
     @Test
-    public void shouldCreateExamplesTableFromTableInput() {
+    void shouldCreateExamplesTableFromTableInput() {
         // Given
         ExamplesTableFactory factory = new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers());
         
@@ -44,7 +44,7 @@ public class ExamplesTableFactoryBehaviour {
     }
 
     @Test
-    public void shouldCreateExamplesTableFromResourceInput() {
+    void shouldCreateExamplesTableFromResourceInput() {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
         ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
@@ -58,7 +58,7 @@ public class ExamplesTableFactoryBehaviour {
     }
 
     @Test
-    public void shouldCreateExamplesTableWithParametersFromResourceInput() {
+    void shouldCreateExamplesTableWithParametersFromResourceInput() {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
         ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
@@ -72,7 +72,7 @@ public class ExamplesTableFactoryBehaviour {
     }
 
     @Test
-    public void shouldCreateExamplesTableFromResourceInputWithPreceedingLineBreaks() {
+    void shouldCreateExamplesTableFromResourceInputWithPreceedingLineBreaks() {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
         ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
@@ -86,7 +86,7 @@ public class ExamplesTableFactoryBehaviour {
     }
 
     @Test
-    public void shouldCreateExamplesTableFromTableInputWithInlinedSeparators() {
+    void shouldCreateExamplesTableFromTableInputWithInlinedSeparators() {
         // Given
         ExamplesTableFactory factory = new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers());
 
@@ -98,7 +98,7 @@ public class ExamplesTableFactoryBehaviour {
     }
 
     @Test
-    public void shouldCreateExamplesTableFromTableInputWithInlinedSeparatorsHavingSpacesAtStart() {
+    void shouldCreateExamplesTableFromTableInputWithInlinedSeparatorsHavingSpacesAtStart() {
         // Given
         ExamplesTableFactory factory = new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers());
 

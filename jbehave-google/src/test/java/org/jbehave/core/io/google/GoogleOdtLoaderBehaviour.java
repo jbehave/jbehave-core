@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GoogleOdtLoaderBehaviour {
+class GoogleOdtLoaderBehaviour {
 
     @Test
-    public void shouldGetResourceFromDocsService() throws IOException, ServiceException {
+    void shouldGetResourceFromDocsService() throws IOException, ServiceException {
         DocsService service = mock(DocsService.class);
         DocumentListFeed feed = mock(DocumentListFeed.class);
         DocumentListEntry entry = mock(DocumentListEntry.class);
@@ -57,14 +57,14 @@ public class GoogleOdtLoaderBehaviour {
     }
 
     @Test
-    public void shouldNotLoadInexistingResourceFromGoogleDocs() {
+    void shouldNotLoadInexistingResourceFromGoogleDocs() {
         LoadOdtFromGoogle googleOdtLoader = new LoadOdtFromGoogle("user", "password",
                 "https://docs.google.com/feeds/default/private/full/", mock(DocsService.class));
         assertThrows(InvalidStoryResource.class, () -> googleOdtLoader.loadStoryAsText("an_unexisting_story"));
     }
 
     @Test
-    public void shouldNotAllowInvalidAccess() {
+    void shouldNotAllowInvalidAccess() {
         assertThrows(GoogleAccessFailed.class, () -> new LoadOdtFromGoogle("DUMMY", "DUMMY"));
     }
 

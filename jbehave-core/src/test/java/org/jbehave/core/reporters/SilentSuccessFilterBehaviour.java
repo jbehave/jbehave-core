@@ -24,7 +24,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class SilentSuccessFilterBehaviour {
+class SilentSuccessFilterBehaviour {
 
     @Mock
     private StoryReporter delegate;
@@ -33,7 +33,7 @@ public class SilentSuccessFilterBehaviour {
     private SilentSuccessFilter filter;
 
     @Test
-    public void shouldPassSilentlyOutputFromSuccessfulScenariosWithDeprecatedBeforeScenario() {
+    void shouldPassSilentlyOutputFromSuccessfulScenariosWithDeprecatedBeforeScenario() {
         // Given
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         UUIDExceptionWrapper anException = new UUIDExceptionWrapper(new IllegalArgumentException());
@@ -125,7 +125,7 @@ public class SilentSuccessFilterBehaviour {
     }
 
     @Test
-    public void shouldPassSilentlyOutputFromSuccessfulScenarios() {
+    void shouldPassSilentlyOutputFromSuccessfulScenarios() {
         // Given
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         UUIDExceptionWrapper anException = new UUIDExceptionWrapper(new IllegalArgumentException());
@@ -221,7 +221,7 @@ public class SilentSuccessFilterBehaviour {
     }
 
     @Test
-    public void shouldNotPassSilentlyOutputNotAllowedByMetaFilter() {
+    void shouldNotPassSilentlyOutputNotAllowedByMetaFilter() {
         // Given
         Story story = new Story();
         Scenario scenario = new Scenario();

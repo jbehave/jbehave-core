@@ -10,20 +10,20 @@ import org.jbehave.core.model.Story;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class StoryTimeoutsBehaviour {
+class StoryTimeoutsBehaviour {
 
 	private EmbedderMonitor embedderMonitor = new NullEmbedderMonitor();
 	private EmbedderControls embedderControls = new EmbedderControls();
 	private Story story = mock(Story.class);
 
 	@Test
-	public void shouldAllowADefaultTimeout() {
+	void shouldAllowADefaultTimeout() {
 		when(story.getPath()).thenReturn("/any/path.story");
 		assertThat(timeouts().getTimeoutInSecs(story), is(300L));
 	}
 
 	@Test
-	public void shouldAllowTimeoutByPathUsingAntPatterns() {
+	void shouldAllowTimeoutByPathUsingAntPatterns() {
 		embedderControls.useStoryTimeouts("**/*short*:50,**/*long*:500");
 		when(story.getPath()).thenReturn("/path/to/a_short_and_sweet.story");
 		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
@@ -32,7 +32,7 @@ public class StoryTimeoutsBehaviour {
 	}
 
 	@Test
-	public void shouldAllowTimeoutByPathUsingRegexPatterns() {
+	void shouldAllowTimeoutByPathUsingRegexPatterns() {
 		embedderControls
 				.useStoryTimeouts("/[a-z]+/.*short.*:50,/[a-z]+/.*long.*:500");
 		when(story.getPath()).thenReturn("/path/to/a_short_and_sweet.story");
@@ -42,7 +42,7 @@ public class StoryTimeoutsBehaviour {
 	}
 
 	@Test
-	public void shouldAllowTimeoutByPathUsingMixedPatterns() {
+	void shouldAllowTimeoutByPathUsingMixedPatterns() {
 		embedderControls.useStoryTimeouts("/[a-z]+/.*short.*:50,**/*long*:500");
 		when(story.getPath()).thenReturn("/path/to/a_short_and_sweet.story");
 		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
@@ -51,7 +51,7 @@ public class StoryTimeoutsBehaviour {
 	}
 
 	@Test
-	public void shouldAllowTimeoutToBeSpecifiedyBySimpleTextualFormat() {
+	void shouldAllowTimeoutToBeSpecifiedyBySimpleTextualFormat() {
 		embedderControls.useStoryTimeouts("50");
 		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
 		embedderControls.useStoryTimeouts("50s");
@@ -65,7 +65,7 @@ public class StoryTimeoutsBehaviour {
 	}
 
 	@Test
-	public void shouldAllowTimeoutByPathUsingMixedFormats() {
+	void shouldAllowTimeoutByPathUsingMixedFormats() {
 		embedderControls.useStoryTimeouts("**/.*short.*:50,**/*long*:5m");
 		when(story.getPath()).thenReturn("/path/to/a_short_and_sweet.story");
 		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
@@ -74,7 +74,7 @@ public class StoryTimeoutsBehaviour {
 	}
 	
 	@Test
-	public void shouldAllowCustomTimeoutParser() {
+	void shouldAllowCustomTimeoutParser() {
 		TimeoutParser timeoutParser = mock(TimeoutParser.class);
 		when(timeoutParser.isValid(Mockito.anyString())).thenReturn(true);
 		when(timeoutParser.asSeconds(Mockito.anyString())).thenReturn(1L);

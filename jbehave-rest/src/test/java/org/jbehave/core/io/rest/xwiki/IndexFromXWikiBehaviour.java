@@ -11,10 +11,10 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class IndexFromXWikiBehaviour {
+class IndexFromXWikiBehaviour {
 
     @Test
-    public void canIndexFromXWiki() {
+    void canIndexFromXWiki() {
     	IndexFromXWiki indexer = new IndexFromXWiki();
         String rootPath = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages";
         String entity = read("xwiki-index.json");

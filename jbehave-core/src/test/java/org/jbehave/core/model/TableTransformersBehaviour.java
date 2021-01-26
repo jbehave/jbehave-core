@@ -7,7 +7,7 @@ import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.junit.jupiter.api.Test;
 
-public class TableTransformersBehaviour {
+class TableTransformersBehaviour {
 
     private static final TableProperties PROPERTIES = createExamplesTableProperties();
 
@@ -28,14 +28,14 @@ public class TableTransformersBehaviour {
     }
 
     @Test
-    public void shouldNotTransformTableIfTransformerNotFound() {
+    void shouldNotTransformTableIfTransformerNotFound() {
         TableTransformers tableTransformers = new TableTransformers();
         String transformed = tableTransformers.transform("inexistentTransformer", tableAsString, tableParsers, PROPERTIES);
         assertThat(transformed, equalTo(tableAsString));
     }
 
     @Test
-    public void shouldTransformTableFromLandscape() {
+    void shouldTransformTableFromLandscape() {
         TableTransformers tableTransformers = new TableTransformers();
         String transformed = tableTransformers.transform(TableTransformers.FROM_LANDSCAPE, landscapeTableAsString,
                 tableParsers, PROPERTIES);
@@ -44,7 +44,7 @@ public class TableTransformersBehaviour {
 
 
     @Test
-    public void shouldTransformTableByFormatting() {
+    void shouldTransformTableByFormatting() {
         TableTransformers tableTransformers = new TableTransformers();
         String transformed = tableTransformers.transform(TableTransformers.FORMATTING, unformattedTableAsString,
                 tableParsers, PROPERTIES);
@@ -52,7 +52,7 @@ public class TableTransformersBehaviour {
     }
 
     @Test
-    public void shouldTransformTableByReplacement() {
+    void shouldTransformTableByReplacement() {
         TableTransformers tableTransformers = new TableTransformers();
         TableProperties properties = createExamplesTableProperties();
         properties.getProperties().setProperty("replacing", "|");
@@ -62,14 +62,14 @@ public class TableTransformersBehaviour {
     }
 
     @Test
-    public void shouldTransformNotTableByReplacementIfPropertiesNotFound() {
+    void shouldTransformNotTableByReplacementIfPropertiesNotFound() {
         TableTransformers tableTransformers = new TableTransformers();
         String transformed = tableTransformers.transform(TableTransformers.REPLACING, tableAsString, tableParsers, PROPERTIES);
         assertThat(transformed, equalTo(tableAsString));
     }
 
     @Test
-    public void shouldTransformTableWithCustomTransformer() {
+    void shouldTransformTableWithCustomTransformer() {
         TableTransformers tableTransformers = new TableTransformers();
         tableTransformers.useTransformer("myTransformer", new TableTransformer(){
 

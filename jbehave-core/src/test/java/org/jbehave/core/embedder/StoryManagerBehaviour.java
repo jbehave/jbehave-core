@@ -17,7 +17,7 @@ import org.jbehave.core.embedder.StoryManager.RunningStory;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.junit.jupiter.api.Test;
 
-public class StoryManagerBehaviour {
+class StoryManagerBehaviour {
 
 	private PerformableTree performableTree = new PerformableTree();
 	private EmbedderMonitor embedderMonitor = new NullEmbedderMonitor(); 
@@ -26,7 +26,7 @@ public class StoryManagerBehaviour {
 	private InjectableStepsFactory stepsFactory = mock(InjectableStepsFactory.class);
 
 	@Test
-	public void shouldEnsureStoryReportOutputDirectoryExistsWhenWritingStoryDurations() throws IOException{
+	void shouldEnsureStoryReportOutputDirectoryExistsWhenWritingStoryDurations() throws IOException{
 		Configuration configuration = new MostUsefulConfiguration();
 		configuration.storyReporterBuilder().withRelativeDirectory("inexistent");
 		File outputDirectory = configuration.storyReporterBuilder().outputDirectory();

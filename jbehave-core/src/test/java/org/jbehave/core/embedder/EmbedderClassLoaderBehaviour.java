@@ -16,22 +16,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class EmbedderClassLoaderBehaviour {
+class EmbedderClassLoaderBehaviour {
 
     @Test
-    public void shouldInstantiateNewEmbedder() {
+    void shouldInstantiateNewEmbedder() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThatIsInstantiated(classLoader, MyEmbedder.class.getName(), MyEmbedder.class);
     }
 
     @Test
-    public void shouldInstantiateNewStory() {
+    void shouldInstantiateNewStory() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }
 
     @Test
-    public void shouldIdentifyIfStoryIsAbstract() {
+    void shouldIdentifyIfStoryIsAbstract() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThat(classLoader.isAbstract(MyStory.class.getName()), is(false));
         assertThat(classLoader.isAbstract(MyAbstractStory.class.getName()), is(true));
@@ -39,14 +39,14 @@ public class EmbedderClassLoaderBehaviour {
     }
 
     @Test
-    public void shouldIgnoreIfListOfClasspathElementsIsNull() {
+    void shouldIgnoreIfListOfClasspathElementsIsNull() {
         List<String> elements = null;
         EmbedderClassLoader classLoader = new EmbedderClassLoader(elements);
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }
 
     @Test
-    public void shouldNotIgnoreAnIndividualClasspathElementThatIsNull(){
+    void shouldNotIgnoreAnIndividualClasspathElementThatIsNull(){
         List<String> elements = asList("target/classes", null);
         assertThrows(EmbedderClassLoader.InvalidClasspathElement.class, () -> new EmbedderClassLoader(elements));
     }
@@ -59,7 +59,7 @@ public class EmbedderClassLoaderBehaviour {
     }
 
     @Test
-    public void shouldProvideShortJarPathUrlContentAsString() throws MalformedURLException {
+    void shouldProvideShortJarPathUrlContentAsString() throws MalformedURLException {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.asList("/path/to/one.jar",
                 "/target/classes"));
         List<String> expectedPaths = classLoader.asShortPaths(new File("one.jar").toURI().toURL(), new File("/target/classes").toURI().toURL());
@@ -70,7 +70,7 @@ public class EmbedderClassLoaderBehaviour {
     }
 
     @Test
-    public void shouldNotInstantiateClassWithInexistentName() {
+    void shouldNotInstantiateClassWithInexistentName() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThrows(InstantiationFailed.class, () -> classLoader.newInstance(Embeddable.class, "UnexistentClass"));
     }
