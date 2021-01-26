@@ -5,7 +5,7 @@ if [ "$ACTION" == "" ] ; then
   exit;
 fi
   
-PLUGIN="org.jbehave:jbehave-rest:3.10-SNAPSHOT"
+PLUGIN="org.jbehave:jbehave-rest:5.0-SNAPSHOT"
 PARAMS="-Djbehave.rest.rootURI=http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages -Djbehave.rest.username=jbehave -Djbehave.rest.password=jbehave"
 
 if [ "$ACTION" == "export" ] ; then

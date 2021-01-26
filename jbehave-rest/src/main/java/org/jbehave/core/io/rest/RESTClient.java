@@ -1,8 +1,11 @@
 package org.jbehave.core.io.rest;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientResponse;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
 import static java.text.MessageFormat.format;
 
@@ -35,21 +38,25 @@ public class RESTClient {
     }
 
     public String get(String uri) {
-        return client().resource(uri).accept(format(APPLICATION_TYPE, type.name().toLowerCase()))
-                .get(ClientResponse.class).getEntity(String.class);
+        return client().target(uri).request(mediaType(type))
+                .get(ClientResponse.class).getEntity().toString();
     }
 
     public void put(String uri, String entity) {
-        client().resource(uri).type(format(APPLICATION_TYPE, type.name().toLowerCase()))
-                .put(ClientResponse.class, entity);
+        client().target(uri).request(mediaType(type))
+                .put(Entity.entity(entity, mediaType(type)));
+    }
+
+    private String mediaType(Type type) {
+        return format(APPLICATION_TYPE, type.name().toLowerCase());
     }
 
     private Client client() {
-        Client client = Client.create();
+        ClientConfig clientConfig = new ClientConfig();
         if (username != null) {
-            client.addFilter(new HTTPBasicAuthFilter(username, password));
+            clientConfig.register(HttpAuthenticationFeature.basic(username, password));
         }
-        return client;
+        return ClientBuilder.newClient(clientConfig);
     }
 
 }
