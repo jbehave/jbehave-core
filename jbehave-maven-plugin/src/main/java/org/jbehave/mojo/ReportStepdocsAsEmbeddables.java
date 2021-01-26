@@ -1,6 +1,8 @@
 package org.jbehave.mojo;
 
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
@@ -10,9 +12,8 @@ import org.jbehave.core.steps.CandidateSteps;
  * Mojo to report stepdocs for the {@link Embeddable} instances provided (more
  * specifically instances of {@link ConfiguredEmbedder} which provides both
  * {@link Configuration} and {@link CandidateSteps}).
- * 
- * @goal report-stepdocs-as-embeddables
  */
+@Mojo(name = "report-stepdocs-as-embeddables", requiresDependencyResolution = ResolutionScope.TEST)
 public class ReportStepdocsAsEmbeddables extends AbstractEmbedderMojo {
 
     @Override

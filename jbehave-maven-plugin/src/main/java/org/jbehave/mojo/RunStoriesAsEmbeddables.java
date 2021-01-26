@@ -1,13 +1,14 @@
 package org.jbehave.mojo;
 
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.jbehave.core.embedder.Embedder;
 
 /**
  * Mojo to run stories as Embeddables
- * 
- * @goal run-stories-as-embeddables
  */
+@Mojo(name = "run-stories-as-embeddables", requiresDependencyResolution = ResolutionScope.TEST)
 public class RunStoriesAsEmbeddables extends AbstractEmbedderMojo {
 
     @Override

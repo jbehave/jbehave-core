@@ -46,7 +46,6 @@
                 <include>${embeddables}</include>
               </includes>
               <excludes />
-              <skip>${skip}</skip>
               <batch>false</batch>
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>${ignore.failure.in.stories}</ignoreFailureInStories>

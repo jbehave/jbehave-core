@@ -1,13 +1,14 @@
 package org.jbehave.mojo;
 
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.jbehave.core.embedder.Embedder;
 
 /**
  * Mojo to report stepdocs given a fully configured {@link Embedder} instance.
- * 
- * @goal report-stepdocs
  */
+@Mojo(name = "report-stepdocs", requiresDependencyResolution = ResolutionScope.TEST)
 public class ReportStepdocs extends AbstractEmbedderMojo {
 
     @Override

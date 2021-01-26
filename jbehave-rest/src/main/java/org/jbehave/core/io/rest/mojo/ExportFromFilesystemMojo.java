@@ -1,6 +1,8 @@
 package org.jbehave.core.io.rest.mojo;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.jbehave.core.io.rest.ResourceExporter;
 import org.jbehave.core.io.rest.ResourceIndexer;
 import org.jbehave.core.io.rest.ResourceUploader;
@@ -8,26 +10,20 @@ import org.jbehave.core.io.rest.filesystem.ExportFromFilesystem;
 
 /**
  * Mojo to export resources to REST root path from filesystem.
- * 
- * @goal export-from-filesystem
- * @requiresProject false
  */
+@Mojo(name="export-from-filesystem", requiresProject = false)
 public class ExportFromFilesystemMojo extends AbstractFilesystemMojo {
 
 	/**
 	 * The includes pattern of the resources
-	 * 
-	 * @parameter default-value="**"
-	 *            expression="${jbehave.rest.resourcesIncludes}
 	 */
+	@Parameter(property = "jbehave.rest.resourcesIncludes", defaultValue = "**")
 	String resourcesIncludes;
 
 	/**
 	 * The syntax of the resources
-	 * 
-	 * @parameter default-value=""
-	 * 			  expression="${jbehave.rest.resourcesSyntax}
 	 */
+	@Parameter(property = "jbehave.rest.resourcesSyntax", defaultValue = "")
 	String resourcesSyntax;
 
 	@Override

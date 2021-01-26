@@ -43,7 +43,6 @@
                 <include>${embeddables}</include>
               </includes>
               <excludes />
-              <skip>${skip}</skip>
               <batch>false</batch>
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>true</ignoreFailureInStories>

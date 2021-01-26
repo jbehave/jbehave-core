@@ -1,13 +1,8 @@
 package org.jbehave.mojo;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -15,51 +10,38 @@ import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelecto
 import org.codehaus.plexus.util.StringUtils;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Mojo to unpack resources to view directory, whose location is derived from
- * the configured StoryReporterBuilder accessible from the Embedder.
- * 
- * @goal unpack-view-resources
- * @phase process-resources
- * @requiresDependencyResolution test
+ * the configured {@link StoryReporterBuilder} accessible from the {@link Embedder}.
  */
+@Mojo(name = "unpack-view-resources", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, requiresDependencyResolution = ResolutionScope.TEST)
 public class UnpackViewResources extends AbstractEmbedderMojo {
 
-    /**
-     * @parameter expression="${project}"
-     * @readonly
-     * @required
-     */
-    MavenProject project;
-
-    /**
-     * @component
-     */
+    @Component
     ArchiverManager archiverManager;
 
-    /**
-     * @parameter
-     */
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
+    MavenProject project;
+
+    @Parameter
     String[] resourceArtifactIds = new String[] { "jbehave-site-resources", "jbehave-core" };
 
-    /**
-     * @parameter
-     */
+    @Parameter
     String[] resourceTypes = new String[] { "zip" };
 
-    /**
-     * @parameter
-     */
+    @Parameter
     String resourceIncludes;
 
-    /**
-     * @parameter
-     */
+    @Parameter
     String resourcesExcludes;
 
-    /**
-     * @parameter
-     */
+    @Parameter
     File viewDirectory;
 
     @Override

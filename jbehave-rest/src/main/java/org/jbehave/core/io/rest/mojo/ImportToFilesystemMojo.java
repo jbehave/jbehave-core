@@ -1,6 +1,7 @@
 package org.jbehave.core.io.rest.mojo;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.rest.ResourceImporter;
 import org.jbehave.core.io.rest.ResourceIndexer;
@@ -8,10 +9,8 @@ import org.jbehave.core.io.rest.filesystem.ImportToFilesystem;
 
 /**
  * Mojo to import resources from REST root path to filesystem.
- * 
- * @goal import-to-filesystem
- * @requiresProject false
  */
+@Mojo(name="import-to-filesystem", requiresProject = false)
 public class ImportToFilesystemMojo extends AbstractFilesystemMojo {
 
 	@Override

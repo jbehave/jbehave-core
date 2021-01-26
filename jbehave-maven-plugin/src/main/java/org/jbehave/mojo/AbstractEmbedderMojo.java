@@ -1,6 +1,16 @@
 package org.jbehave.mojo;
 
-import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.jbehave.core.ConfigurableEmbedder;
+import org.jbehave.core.InjectableEmbedder;
+import org.jbehave.core.embedder.*;
+import org.jbehave.core.embedder.executors.ExecutorServiceFactory;
+import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.io.StoryFinder;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.model.*;
+import org.jbehave.core.reporters.ReportsCount;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -10,239 +20,178 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.jbehave.core.ConfigurableEmbedder;
-import org.jbehave.core.InjectableEmbedder;
-import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.embedder.EmbedderClassLoader;
-import org.jbehave.core.embedder.EmbedderControls;
-import org.jbehave.core.embedder.EmbedderMonitor;
-import org.jbehave.core.embedder.MetaFilter;
-import org.jbehave.core.embedder.NullEmbedderMonitor;
-import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
-import org.jbehave.core.embedder.executors.ExecutorServiceFactory;
-import org.jbehave.core.failures.BatchFailures;
-import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.AnnotatedEmbedderRunner;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
-import org.jbehave.core.model.StoryMaps;
-import org.jbehave.core.reporters.ReportsCount;
+import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
  * stories.
- * 
- * @requiresDependencyResolution test
  */
 public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
     static final String TEST_SCOPE = "test";
 
-    /**
-     * @parameter expression="${project.build.sourceDirectory}"
-     * @required
-     */
+    @Parameter(defaultValue = "${project.build.sourceDirectory}", required = true)
     String sourceDirectory;
 
-    /**
-     * @parameter expression="${project.build.testSourceDirectory}"
-     * @required
-     */
+    @Parameter(defaultValue = "${project.build.testSourceDirectory}", required = true)
     String testSourceDirectory;
 
-    /**
-     * @parameter expression="${project.build.outputDirectory}"
-     * @required
-     */
+    @Parameter(defaultValue = "${project.build.outputDirectory}", required = true)
     String outputDirectory;
 
-    /**
-     * @parameter expression="${project.build.testOutputDirectory}"
-     * @required
-     */
+    @Parameter(defaultValue = "${project.build.testOutputDirectory}", required = true)
     String testOutputDirectory;
 
     /**
      * The scope of the mojo classpath, either "compile" or "test"
-     * 
-     * @parameter default-value="compile"
      */
+    @Parameter(defaultValue = "compile")
     String scope;
 
     /**
      * Include filters, relative to the root source directory determined by the
      * scope
-     * 
-     * @parameter
      */
+    @Parameter
     List<String> includes;
 
     /**
      * Exclude filters, relative to the root source directory determined by the
      * scope
-     * 
-     * @parameter
      */
+    @Parameter
     List<String> excludes;
 
     /**
      * Compile classpath.
-     * 
-     * @parameter expression="${project.compileClasspathElements}"
-     * @required
-     * @readonly
      */
+    @Parameter(defaultValue = "${project.compileClasspathElements}", required = true, readonly = true)
     List<String> compileClasspathElements;
 
     /**
      * Test classpath.
-     * 
-     * @parameter expression="${project.testClasspathElements}"
-     * @required
-     * @readonly
      */
+    @Parameter(defaultValue = "${project.testClasspathElements}", required = true, readonly = true)
     List<String> testClasspathElements;
 
     /**
      * The boolean flag to skip stories
-     * 
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     boolean skip = false;
 
     /**
      * The boolean flag to run in batch mode
-     * 
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     boolean batch = false;
 
     /**
      * The boolean flag to ignore failure in stories
-     * 
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     boolean ignoreFailureInStories = false;
 
     /**
      * The boolean flag to ignore failure in view
-     * 
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     boolean ignoreFailureInView = false;
 
     /**
      * The boolean flag to generate view after stories are run
-     * 
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue = "true")
     boolean generateViewAfterStories = true;
 
     /**
      * The boolean flag to output failures in verbose mode
-     * 
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     boolean verboseFailures = false;
 
     /**
      * The boolean flag to output filtering in verbose mode
-     * 
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     boolean verboseFiltering = false;
 
     /**
      * The story timeouts
-     * 
-     * @parameter
      */
+    @Parameter
     String storyTimeouts;
 
     /**
      * The story timeout in secs
-     * 
-     * @parameter
      * @deprecated Use storyTimeouts
      */
     @Deprecated
+    @Parameter
     long storyTimeoutInSecs;
     
     /**
      * The story timeout in secs by path
-     * 
-     * @parameter
      * @deprecated Use storyTimeouts
      */
     @Deprecated
+    @Parameter
     String storyTimeoutInSecsByPath;
 
     /**
      * The boolean flag to fail on story timeout
-     * 
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     boolean failOnStoryTimeout = false;
 
     /**
      * The number of threads
-     * 
-     * @parameter default-value="1"
      */
+    @Parameter(defaultValue = "1")
     int threads = 1;
 
     /**
      * The embedder class
-     * 
-     * @parameter default-value="org.jbehave.core.embedder.Embedder"
      */
+    @Parameter(defaultValue = "org.jbehave.core.embedder.Embedder")
     String embedderClass = Embedder.class.getName();
 
     /**
      * The implementation class of the {@link ExecutorServiceFactory}
-     * 
-     * @parameter
      */
+    @Parameter
     String executorsClass;
 
     /**
      * The class that is injected with the embedder
-     * 
-     * @parameter
      */
+    @Parameter
     String injectableEmbedderClass;
 
     /**
      * The annotated embedder runner class
-     * 
-     * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedderRunner"
      * @deprecated Obsolete
      */
     @Deprecated
+    @Parameter(defaultValue = "org.jbehave.core.junit.AnnotatedEmbedderRunner")
     String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
 
     /**
      * Used to find story paths and class names
-     * 
-     * @parameter
      */
+    @Parameter
     String storyFinderClass = StoryFinder.class.getName();
 
     /**
      * The meta filter
-     * 
-     * @parameter
      */
+    @Parameter
     String[] metaFilters;
 
     /**
      * The system properties
-     * 
-     * @parameter
      */
+    @Parameter
     Properties systemProperties = new Properties();
 
     /**

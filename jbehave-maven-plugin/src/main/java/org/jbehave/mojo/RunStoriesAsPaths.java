@@ -1,13 +1,14 @@
 package org.jbehave.mojo;
 
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.jbehave.core.embedder.Embedder;
 
 /**
  * Mojo to run stories as paths
- * 
- * @goal run-stories-as-paths
  */
+@Mojo(name = "run-stories-as-paths", requiresDependencyResolution = ResolutionScope.TEST)
 public class RunStoriesAsPaths extends AbstractEmbedderMojo {
 
     @Override

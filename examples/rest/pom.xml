@@ -45,7 +45,6 @@
                 <include>${embeddables}</include>
               </includes>
               <excludes />
-              <skip>${skip}</skip>
               <batch>false</batch>
               <threads>${threads}</threads>
               <generateViewAfterStories>true</generateViewAfterStories>

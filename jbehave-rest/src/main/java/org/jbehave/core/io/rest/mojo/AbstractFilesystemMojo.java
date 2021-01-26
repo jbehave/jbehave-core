@@ -1,6 +1,7 @@
 package org.jbehave.core.io.rest.mojo;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.ResourceIndexer;
@@ -25,46 +26,38 @@ public abstract class AbstractFilesystemMojo extends AbstractMojo {
 
     /**
      * The REST provider.  Currently supported are "redmine" and "xwiki".  Also supported is "confluence" for import only.
-     *
-     * @parameter default-value="xwiki" expression="${jbehave.rest.provider}
      */
+    @Parameter(property = "jbehave.rest.provider", defaultValue = "xwiki")
     String restProvider;
 
     /**
      * The root URI of the REST API
-     *
-     * @parameter expression="${jbehave.rest.rootURI}
-     * @required
      */
+    @Parameter(property = "jbehave.rest.rootURI", required = true)
     String restRootURI;
 
     /**
      * The username to access the REST API. May be null if no security enabled.
-     *
-     * @parameter expression="${jbehave.rest.username}
      */
+    @Parameter(property = "jbehave.rest.username")
     String restUsername;
 
     /**
      * The password to access the REST API. May be null if no security enabled.
-     *
-     * @parameter expression="${jbehave.rest.password}
      */
+    @Parameter(property = "jbehave.rest.password")
     String restPassword;
 
     /**
 	 * The path of the filesystem in which the resources are found
-	 *
-	 * @parameter default-value="src/main/resources/stories"
-	 *            expression="${jbehave.rest.resourcesPath}
 	 */
+    @Parameter(property = "jbehave.rest.resourcesPath", defaultValue = "src/main/resources/stories")
 	String resourcesPath;
 
 	/**
 	 * The extension of the resources
-	 *
-	 * @parameter default-value=".story" expression="${jbehave.rest.resourcesExt}
 	 */
+    @Parameter(property = "jbehave.rest.resourcesExt", defaultValue = ".story")
 	String resourcesExt;
 
     ResourceIndexer newResourceIndexer() {
