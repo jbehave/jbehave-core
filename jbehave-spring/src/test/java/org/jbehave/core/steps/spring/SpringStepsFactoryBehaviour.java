@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class SpringStepsFactoryBehaviour {
@@ -99,11 +100,7 @@ public class SpringStepsFactoryBehaviour {
 		SpringStepsFactory factory = new SpringStepsFactory(
 				new MostUsefulConfiguration(), context);
 		// When
-		try {
-			factory.createCandidateSteps();
-		} catch (Exception e) {
-			assertThat(e, is(instanceOf(BeanDefinitionStoreException.class)));
-		}
+		assertThrows(BeanDefinitionStoreException.class, factory::createCandidateSteps);
 		// Then ... expected exception is thrown
 	}
 

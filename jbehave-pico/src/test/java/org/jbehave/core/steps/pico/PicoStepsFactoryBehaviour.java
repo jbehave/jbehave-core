@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PicoStepsFactoryBehaviour {
 
@@ -68,11 +69,8 @@ public class PicoStepsFactoryBehaviour {
         parent.as(Characteristics.USE_NAMES).addComponent(FooStepsWithDependency.class);
         PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulConfiguration(), parent);
         // When
-        try {
-            factory.createInstanceOfType(FooStepsWithDependency.class);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(AbstractInjector.UnsatisfiableDependenciesException.class)));
-        }
+        assertThrows(AbstractInjector.UnsatisfiableDependenciesException.class,
+                () -> factory.createInstanceOfType(FooStepsWithDependency.class));
         // Then ... expected exception is thrown        
     }
 

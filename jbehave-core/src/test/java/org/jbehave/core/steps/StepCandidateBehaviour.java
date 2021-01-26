@@ -41,6 +41,7 @@ import static org.hamcrest.Matchers.*;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.jbehave.core.steps.StepType.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class StepCandidateBehaviour {
@@ -520,11 +521,7 @@ public class StepCandidateBehaviour {
         verify(reporter).beforeStep(stepAsString0);
         String stepAsString1 = "Then foo named xyz";
         step.createMatchedStep(stepAsString1, namedParameters, Collections.emptyList()).perform(reporter, null);
-        try {
-            verify(reporter).beforeStep(stepAsString1);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(StartingWordNotFound.class)));
-        }
+        assertThrows(StartingWordNotFound.class, () -> verify(reporter).beforeStep(stepAsString1));
     }
 
     static class NamedTypeSteps extends Steps {

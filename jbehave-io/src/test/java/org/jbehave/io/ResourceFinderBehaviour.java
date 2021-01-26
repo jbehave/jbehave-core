@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ResourceFinderBehaviour {
 
@@ -48,23 +49,15 @@ public class ResourceFinderBehaviour {
     }
 
     @Test
-    public void cannotFindResourceFromInexistentClasspathDirectory() throws IOException {
-        ResourceFinder finder = new ResourceFinder("classpath:inexistent");
-        try {
-            finder.resourceAsString("resource.txt");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(ResourceNotFoundException.class)));
-        }
+    public void cannotFindResourceFromInexistentClasspathDirectory() {
+        ResourceFinder finder = new ResourceFinder("classpath:unexistent");
+        assertThrows(ResourceNotFoundException.class, () -> finder.resourceAsString("resource.txt"));
     }
 
     @Test
-    public void cannotFindResourceFromInexistentFileDirectory() throws IOException {
-        ResourceFinder finder = new ResourceFinder("/inexistent");
-        try {
-            finder.resourceAsString("resource.txt");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(ResourceNotFoundException.class)));
-        }
+    public void cannotFindResourceFromInexistentFileDirectory() {
+        ResourceFinder finder = new ResourceFinder("/unexistent");
+        assertThrows(ResourceNotFoundException.class, () -> finder.resourceAsString("resource.txt"));
     }
 
 }

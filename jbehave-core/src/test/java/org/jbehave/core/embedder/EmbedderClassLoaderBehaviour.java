@@ -15,6 +15,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EmbedderClassLoaderBehaviour {
 
@@ -48,12 +49,7 @@ public class EmbedderClassLoaderBehaviour {
     @Test
     public void shouldNotIgnoreAnIndividualClasspathElementThatIsNull(){
         List<String> elements = asList("target/classes", null);
-        try {
-            EmbedderClassLoader classLoader = new EmbedderClassLoader(elements);
-            assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(EmbedderClassLoader.InvalidClasspathElement.class)));
-        }
+        assertThrows(EmbedderClassLoader.InvalidClasspathElement.class, () -> new EmbedderClassLoader(elements));
     }
 
     private <T> void assertThatIsInstantiated(EmbedderClassLoader classLoader, String className, Class<T> type) {
@@ -77,11 +73,7 @@ public class EmbedderClassLoaderBehaviour {
     @Test
     public void shouldNotInstantiateClassWithInexistentName() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
-        try {
-            classLoader.newInstance(Embeddable.class, "InexistentClass");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(InstantiationFailed.class)));
-        }
+        assertThrows(InstantiationFailed.class, () -> classLoader.newInstance(Embeddable.class, "UnexistentClass"));
     }
 
     public static class MyEmbedder extends Embedder {

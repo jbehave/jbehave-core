@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class EmbedderMojoBehaviour {
@@ -393,11 +394,7 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).runAsEmbeddables(classNames);
-        try {
-            mojo.execute();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(MojoFailureException.class)));
-        }
+        assertThrows(MojoFailureException.class, mojo::execute);
         // Then fail as expected
     }
 
@@ -461,11 +458,7 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).mapStoriesAsPaths(storyPaths);
-        try {
-            mojo.execute();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(MojoFailureException.class)));
-        }
+        assertThrows(MojoFailureException.class, mojo::execute);
         // Then fail as expected
     }
 
@@ -516,11 +509,7 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).reportStepdocs();
-        try {
-            mojo.execute();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(MojoFailureException.class)));
-        }
+        assertThrows(MojoFailureException.class, mojo::execute);
         // Then fail as expected
     }
 
@@ -581,11 +570,7 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).runAsEmbeddables(classNames);
-        try {
-            mojo.execute();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(MojoFailureException.class)));
-        }
+        assertThrows(MojoFailureException.class, mojo::execute);
         // Then fail as expected
     }
 
@@ -646,11 +631,7 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).runStoriesAsPaths(storyPaths);
-        try {
-            mojo.execute();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(MojoFailureException.class)));
-        }
+        assertThrows(MojoFailureException.class, mojo::execute);
         // Then fail as expected
     }
 
@@ -713,11 +694,7 @@ public class EmbedderMojoBehaviour {
         doThrow(new RuntimeException()).when(embedder).runStoriesWithAnnotatedEmbedderRunner(classNames);
         mojo.execute();
 
-        try {
-            mojo.execute();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(MojoFailureException.class)));
-        }
+        assertThrows(MojoFailureException.class, mojo::execute);
         // Then fail as expected
     }
 
@@ -864,11 +841,7 @@ public class EmbedderMojoBehaviour {
         when(archiveManager.getUnArchiver(siteFile)).thenReturn(siteArchiver);
         Mockito.doThrow(new ArchiverException("bum")).when(siteArchiver).extract();
 
-        try {
-            mojo.execute();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(MojoExecutionException.class)));
-        }
+        assertThrows(MojoFailureException.class, mojo::execute);
         // Then
         verify(coreArchiver).extract();
         // and fail as expected ...

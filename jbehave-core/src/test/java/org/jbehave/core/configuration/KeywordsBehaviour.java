@@ -4,9 +4,11 @@ import org.jbehave.core.configuration.Keywords.KeywordNotFound;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class KeywordsBehaviour {
 
@@ -34,11 +36,8 @@ public class KeywordsBehaviour {
 
     @Test
     public void shouldFailIfSomeKeywordIsMissingInMapConstructor() {
-        try {
-            new Keywords(new HashMap<String, String>());
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(KeywordNotFound.class)));
-        }
+        Map<String, String> keywords = new HashMap<>();
+        assertThrows(KeywordNotFound.class, () -> new Keywords(keywords));
     }
 
 }

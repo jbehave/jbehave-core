@@ -9,6 +9,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class IOUtilsBehaviour {
@@ -34,14 +35,10 @@ public class IOUtilsBehaviour {
     }
 
     @Test
-    public void shouldHandleReaderNull() throws IOException {
+    public void shouldHandleReaderNull() {
         // this causes a NPE in the apache-commons code, no point
         // in changing the logic in our implementation, I guess
-        try {
-            IOUtils.toString((Reader)null, true);
-        } catch (IOException e) {
-            assertThat(e, is(instanceOf(NullPointerException.class)));
-        }
+        assertThrows(NullPointerException.class, () -> IOUtils.toString((Reader) null, true));
     }
 
     @Test
@@ -64,13 +61,8 @@ public class IOUtilsBehaviour {
     public void shouldCloseReaderException() throws IOException {
         Reader reader = mock(Reader.class);
         when(reader.read(isA(char[].class))).thenThrow(new IOException());
-        try {
-            IOUtils.toString(reader, true);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(IOException.class)));
-        } finally {
-            verify(reader).close();
-        }
+        assertThrows(IOException.class, () -> IOUtils.toString(reader, true));
+        verify(reader).close();
     }
 
     // same for InputStream
@@ -93,14 +85,10 @@ public class IOUtilsBehaviour {
     }
 
     @Test
-    public void shouldHandleInputStreamNull() throws IOException {
+    public void shouldHandleInputStreamNull() {
         // this causes a NPE in the apache-commons code, no point
         // in changing the logic in our implementation, I guess
-        try {
-            IOUtils.toString((InputStream)null, true);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(NullPointerException.class)));
-        }
+        assertThrows(NullPointerException.class, () -> IOUtils.toString((InputStream) null, true));
     }
 
     @Test

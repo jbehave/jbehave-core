@@ -11,10 +11,9 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.net.URL;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FilePrintStreamFactoryBehaviour {
 
@@ -105,11 +104,7 @@ public class FilePrintStreamFactoryBehaviour {
             }
         };
         // When
-        try {
-            factory.createPrintStream();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(PrintStreamCreationFailed.class)));
-        }
+        assertThrows(PrintStreamCreationFailed.class, factory::createPrintStream);
         // Then fail as expected
     }
 

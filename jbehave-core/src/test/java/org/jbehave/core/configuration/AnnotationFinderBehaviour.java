@@ -7,6 +7,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AnnotationFinderBehaviour {
 
@@ -26,13 +27,10 @@ public class AnnotationFinderBehaviour {
     }
 
     @Test
-    public void shouldFailIfAnnotationIsNotFound(){
-        try {
-            AnnotationFinder notAnnotated = new AnnotationFinder(NotAnnotated.class);
-            assertThat(notAnnotated.getAnnotatedValue(MyAnnotationWithMembers.class, boolean.class, "flag"), equalTo(false));
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(AnnotationRequired.class)));
-        }
+    public void shouldFailIfAnnotationIsNotFound() {
+        AnnotationFinder notAnnotated = new AnnotationFinder(NotAnnotated.class);
+        assertThrows(AnnotationRequired.class,
+                () -> notAnnotated.getAnnotatedValue(MyAnnotationWithMembers.class, boolean.class, "flag"));
     }
 
     @Test

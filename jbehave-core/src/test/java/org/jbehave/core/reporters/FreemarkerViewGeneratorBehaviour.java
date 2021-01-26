@@ -10,10 +10,9 @@ import java.io.File;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -88,11 +87,7 @@ public class FreemarkerViewGeneratorBehaviour {
         // When
         Map<String, List<File>> files = new HashMap<>();
         files.put("name", asList((File)null));
-        try {
-            generator.createReports(files);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(ReportCreationFailed.class)));
-        }
+        assertThrows(ReportCreationFailed.class, () -> generator.createReports(files));
         // Then .. fail as expected
         
     }

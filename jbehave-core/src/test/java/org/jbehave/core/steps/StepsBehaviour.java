@@ -1,6 +1,5 @@
 package org.jbehave.core.steps;
 
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.*;
 import org.jbehave.core.configuration.Configuration;
@@ -22,6 +21,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -296,21 +296,13 @@ public class StepsBehaviour {
     @Test
     public void shouldFailIfDuplicateStepsAreEncountered() {
         DuplicateSteps steps = new DuplicateSteps();
-        try {
-            steps.listCandidates();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(DuplicateCandidateFound.class)));
-        }
+        assertThrows(DuplicateCandidateFound.class, steps::listCandidates);
     }
 
     @Test
     public void shouldFailIfDuplicateStepsWithDifferentParamsNamesAreEncountered() {
         DuplicateStepsWithParameters steps = new DuplicateStepsWithParameters();
-        try {
-            steps.listCandidates();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(DuplicateCandidateFound.class)));
-        }
+        assertThrows(DuplicateCandidateFound.class, steps::listCandidates);
     }
 
     @Test
@@ -335,11 +327,10 @@ public class StepsBehaviour {
         assertThat(candidates.size(), equalTo(3));
 
         // misspelled starting word 
-        try {
-            candidates.get(0).createMatchedStep("Dado che un dato che", tableRow, Collections.<Step>emptyList());
-        } catch (Exception e) {
-            assertThat(e, is(CoreMatchers.instanceOf(StartingWordNotFound.class)));
-        }
+        StepCandidate stepCandidate = candidates.get(0);
+        List<Step> composedSteps = Collections.emptyList();
+        assertThrows(StartingWordNotFound.class,
+                () -> stepCandidate.createMatchedStep("Dado che un dato che", tableRow, composedSteps));
     }
 
     @Test

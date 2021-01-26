@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GuiceStepsFactoryBehaviour {
 
@@ -74,11 +75,7 @@ public class GuiceStepsFactoryBehaviour {
           });
         AbstractStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
         // When
-        try {
-            factory.createCandidateSteps();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(CreationException.class)));
-        }
+        assertThrows(CreationException.class, factory::createCandidateSteps);
         // Then ... expected exception is thrown        
     }
 

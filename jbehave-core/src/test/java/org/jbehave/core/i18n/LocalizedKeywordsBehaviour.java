@@ -14,10 +14,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jbehave.core.configuration.Keywords.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LocalizedKeywordsBehaviour {
 
@@ -79,12 +79,9 @@ public class LocalizedKeywordsBehaviour {
 
     
     @Test
-    public void shouldFailIfResourceBundleIsNotFound() throws IOException {
-        try {
-            ensureKeywordsAreLocalisedFor(new Locale("en"), "unknown");
-        } catch (IOException e) {
-            assertThat(e, is(instanceOf(ResourceBundleNotFound.class)));
-        }
+    public void shouldFailIfResourceBundleIsNotFound() {
+        Locale locale = new Locale("en");
+        assertThrows(ResourceBundleNotFound.class, () -> ensureKeywordsAreLocalisedFor(locale, "unknown"));
     }
 
     @Test

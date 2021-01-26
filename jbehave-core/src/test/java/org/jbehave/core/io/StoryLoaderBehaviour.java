@@ -12,11 +12,11 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.io.LoadFromRelativeFile.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class StoryLoaderBehaviour {
 
@@ -38,23 +38,14 @@ public class StoryLoaderBehaviour {
     @Test
     public void shouldNotLoadStoryFromClasspathIfNotFound() {
         StoryLoader loader = new LoadFromClasspath(StoryLoaderBehaviour.class);
-        try {
-            loader.loadStoryAsText("inexistent.story");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(StoryResourceNotFound.class)));
-
-        }
+        assertThrows(StoryResourceNotFound.class, () -> loader.loadStoryAsText("unexistent.story"));
     }
 
     @Test
     public void shouldNotLoadStoryFromClasspathIfClassloaderNotValid() {
         StoryLoader loader = new LoadFromClasspath(new InvalidClassLoader());
         assertThat(loader.toString(), Matchers.containsString(InvalidClassLoader.class.getName()));
-        try {
-            loader.loadStoryAsText("inexistent.story");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
-        }
+        assertThrows(InvalidStoryResource.class, () -> loader.loadStoryAsText("unexistent.story"));
     }
 
     static class InvalidClassLoader extends ClassLoader {
@@ -97,12 +88,7 @@ public class StoryLoaderBehaviour {
 
         // When
         StoryLoader loader = new LoadFromURL();
-        try {
-            loader.loadStoryAsText(storyPath);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
-
-        }
+        assertThrows(InvalidStoryResource.class, () -> loader.loadStoryAsText(storyPath));
 
         // Then fail as expected
     }
@@ -148,11 +134,7 @@ public class StoryLoaderBehaviour {
         StoryLoader loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class), new StoryFilePath[]{});
 
         // Then fail as expected
-        try {
-            loader.loadStoryAsText(storyPath);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(StoryResourceNotFound.class)));
-        }
+        assertThrows(StoryResourceNotFound.class, () -> loader.loadStoryAsText(storyPath));
     }
     
     @Test
@@ -164,12 +146,7 @@ public class StoryLoaderBehaviour {
         StoryLoader loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class));
 
         // Then fail as expected
-        try {
-            loader.loadStoryAsText(storyPath);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(StoryResourceNotFound.class)));
-        }
-
+        assertThrows(StoryResourceNotFound.class, () -> loader.loadStoryAsText(storyPath));
     }
 
     @Test
@@ -181,11 +158,7 @@ public class StoryLoaderBehaviour {
         LoadFromRelativeFile loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class));
 
         // Then fail as expected
-        try {
-            loader.loadContent(storyPath);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
-        }
+        assertThrows(InvalidStoryResource.class, () -> loader.loadContent(storyPath));
     }
 
     @Test

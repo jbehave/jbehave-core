@@ -27,13 +27,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.Format.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ConcurrencyBehaviour {
 
@@ -66,22 +67,16 @@ public class ConcurrencyBehaviour {
     public void shouldAllowStoriesToBeCancelled() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("1");
-        try {
-            embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(RunningEmbeddablesFailed.class)));
-        }
+        List<String> classNames = singletonList(ThreadsStories.class.getName());
+        assertThrows(RunningEmbeddablesFailed.class, () -> embedder.runAsEmbeddables(classNames));
     }
 
     @Test
     public void shouldAllowStoriesToBeCancelledByPaths() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("**/*.story:1");
-        try {
-            embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(RunningEmbeddablesFailed.class)));
-        }
+        List<String> classNames = singletonList(ThreadsStories.class.getName());
+        assertThrows(RunningEmbeddablesFailed.class, () -> embedder.runAsEmbeddables(classNames));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package org.jbehave.core.embedder;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -9,6 +10,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -262,12 +264,9 @@ public class EmbedderBehaviour {
         // When
         Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
-        try {
-            embedder.runAsEmbeddables(classNames);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(RunningEmbeddablesFailed.class)));
-        }
+
         // Then fail as expected
+        assertThrows(RunningEmbeddablesFailed.class, () -> embedder.runAsEmbeddables(classNames));
     }
 
     @Test
@@ -348,13 +347,9 @@ public class EmbedderBehaviour {
         // When
         Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
-        try {
-            embedder.runAsEmbeddables(classNames);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(RunningEmbeddablesFailed.class)));
-        }
-        // Then fail as expected
 
+        // Then fail as expected
+        assertThrows(RunningEmbeddablesFailed.class, () -> embedder.runAsEmbeddables(classNames));
     }
 
     @Test
@@ -801,13 +796,9 @@ public class EmbedderBehaviour {
         // Given
         Embedder embedder = new Embedder();
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
-        String runWithEmbedderRunner = FailingWithAnnotatedEmbedderRunner.class.getName();
+        List<String> classNames = singletonList(FailingWithAnnotatedEmbedderRunner.class.getName());
         // When
-        try {
-            embedder.runStoriesWithAnnotatedEmbedderRunner(asList(runWithEmbedderRunner));
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(RuntimeException.class)));
-        }
+        assertThrows(RuntimeException.class, () -> embedder.runStoriesWithAnnotatedEmbedderRunner(classNames));
         // Then fail as expected
     }
 
@@ -816,13 +807,9 @@ public class EmbedderBehaviour {
         // Given
         Embedder embedder = new Embedder();
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
-        String runWithEmbedderRunner = "InexistingRunner";
+        List<String> classNames = asList("UnexistingRunner");
         // When
-        try {
-            embedder.runStoriesWithAnnotatedEmbedderRunner(asList(runWithEmbedderRunner));
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(ClassLoadingFailed.class)));
-        }
+        assertThrows(ClassLoadingFailed.class, () -> embedder.runStoriesWithAnnotatedEmbedderRunner(classNames));
         // Then fail as expected
     }
 
@@ -865,15 +852,13 @@ public class EmbedderBehaviour {
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 0, 2, 1, 0, 0, 1));
-        embedder.generateReportsView(outputDirectory, formats, viewResources);
+
+        assertThrows(RunningStoriesFailed.class,
+                () -> embedder.generateReportsView(outputDirectory, formats, viewResources));
 
         // Then
-        try {
-            verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
-            assertThatReportsViewGenerated(out);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(RunningStoriesFailed.class)));
-        }
+        verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
+        assertThatReportsViewGenerated(out);
     }
 
     @Test
@@ -892,15 +877,12 @@ public class EmbedderBehaviour {
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 1, 2, 0, 0, 1, 0));
-        embedder.generateReportsView(outputDirectory, formats, viewResources);
+        assertThrows(RunningStoriesFailed.class,
+                () -> embedder.generateReportsView(outputDirectory, formats, viewResources));
 
         // Then
-        try {
-            verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
-            assertThatReportsViewGenerated(out);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(RunningStoriesFailed.class)));
-        }
+        verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
+        assertThatReportsViewGenerated(out);
     }
 
     @Test
@@ -944,11 +926,8 @@ public class EmbedderBehaviour {
         Properties viewResources = new Properties();
         doThrow(new RuntimeException()).when(viewGenerator)
                 .generateReportsView(outputDirectory, formats, viewResources);
-        try {
-            embedder.generateReportsView(outputDirectory, formats, viewResources);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(ViewGenerationFailed.class)));
-        }
+        assertThrows(ViewGenerationFailed.class,
+                () -> embedder.generateReportsView(outputDirectory, formats, viewResources));
         // Then fail as expected
     }
 
@@ -967,11 +946,8 @@ public class EmbedderBehaviour {
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 1, 2, 1, 1, 1, 1));
-        try {
-            embedder.generateReportsView(outputDirectory, formats, viewResources);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(RunningStoriesFailed.class)));
-        }
+        assertThrows(RunningStoriesFailed.class,
+                () -> embedder.generateReportsView(outputDirectory, formats, viewResources));
         // Then fail as expected
     }
 
@@ -990,11 +966,8 @@ public class EmbedderBehaviour {
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 0, 0, 0, 0, 0, 1));
-        try {
-            embedder.generateReportsView(outputDirectory, formats, viewResources);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(RunningStoriesFailed.class)));
-        }
+        assertThrows(RunningStoriesFailed.class,
+                () -> embedder.generateReportsView(outputDirectory, formats, viewResources));
         // Then fail as expected
     }
 

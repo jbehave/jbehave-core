@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JarFileScannerBehaviour {
 
@@ -45,11 +45,7 @@ public class JarFileScannerBehaviour {
 
     @Test
     public void shouldThrowIllegalStateException() {
-        try {
-            scan("nonexistent.jar", "", "");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(IllegalStateException.class)));
-        }
+        assertThrows(IllegalStateException.class, () -> scan("nonexistent.jar", "", ""));
     }
 
     private List<String> scan(String jarPath, String includes, String excludes) {

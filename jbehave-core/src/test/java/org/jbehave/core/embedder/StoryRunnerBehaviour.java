@@ -30,6 +30,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.steps.AbstractStepResult.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class StoryRunnerBehaviour {
@@ -330,15 +331,12 @@ public class StoryRunnerBehaviour {
         long durationInSecs = 2;
         long timeoutInSecs = 1;
         StoryDuration storyDuration = new StoryDuration(timeoutInSecs);
-        try {
-            StoryRunner runner = new StoryRunner();
-            runner.cancelStory(story, storyDuration);
-            runner.run(configuration, stepsFactory, story, metaFilter, state);
-            throw new AssertionError("A exception should be thrown");
-        } catch (Throwable e) {
+        StoryRunner runner = new StoryRunner();
+        runner.cancelStory(story, storyDuration);
+        Throwable throwable = assertThrows(Throwable.class,
+                () -> runner.run(configuration, stepsFactory, story, metaFilter, state));
         //Then
-            assertThat(e.equals(expected), is(true));
-        }        
+        assertThat(throwable.equals(expected), is(true));
         verify(reporter).storyCancelled(story, storyDuration);
     }
 
@@ -598,7 +596,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldFailWithFailingUpongPendingStepsStrategy() throws Throwable {
+    public void shouldFailWithFailingUponPendingStepsStrategy() {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step pendingStep = mock(Step.class);
@@ -607,20 +605,16 @@ public class StoryRunnerBehaviour {
         PendingStepStrategy strategy = new FailingUponPendingStep();
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
-        when(collector.collectScenarioSteps(eq(asList(mySteps)), any(), eq(parameters))).thenReturn(
+        List<CandidateSteps> candidateSteps = asList(mySteps);
+        when(collector.collectScenarioSteps(eq(candidateSteps), any(), eq(parameters))).thenReturn(
                 asList(pendingStep));
         Story story = new Story(asList(new Scenario()));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
 
         // When
         StoryRunner runner = new StoryRunner();
-        try {
-            runner.run(configurationWithPendingStrategy(collector, reporter,
-                    strategy), asList(mySteps), story);
-        } catch (Throwable throwable) {
-            assertThat(throwable, is(instanceOf(PendingStepFound.class)));
-        }
-
+        Configuration configuration = configurationWithPendingStrategy(collector, reporter, strategy);
+        assertThrows(PendingStepFound.class, () -> runner.run(configuration, candidateSteps, story));
         // Then ... fail as expected
     }
 

@@ -8,9 +8,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CodeLocationsBehaviour {
 
@@ -43,20 +43,12 @@ public class CodeLocationsBehaviour {
 
     @Test
     public void shouldNotCreateCodeLocationFromPathIfInvalid() {
-        try {
-            CodeLocations.codeLocationFromPath(null);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(InvalidCodeLocation.class)));
-        }
+        assertThrows(InvalidCodeLocation.class, () -> CodeLocations.codeLocationFromPath(null));
     }
 
     @Test
     public void shouldNotCreateCodeLocationFromURLIfInvalid() {
-        try {
-            CodeLocations.codeLocationFromURL("htp://company.com/stories/");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(InvalidCodeLocation.class)));
-        }
+        assertThrows(InvalidCodeLocation.class, () -> CodeLocations.codeLocationFromURL("htp://company.com/stories/"));
     }
 
     @Test

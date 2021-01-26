@@ -6,12 +6,11 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TemplateOutputBehaviour extends AbstractOutputBehaviour {
 
@@ -68,11 +67,9 @@ public class TemplateOutputBehaviour extends AbstractOutputBehaviour {
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         // When
         File outputDirectory = new File("target");
-        try {
-            viewGenerator.generateReportsView(outputDirectory, asList("html"), templates);
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(TemplateableViewGenerator.ViewGenerationFailedForTemplate.class)));
-        }
+        List<String> formats = singletonList("html");
+        assertThrows(TemplateableViewGenerator.ViewGenerationFailedForTemplate.class,
+                () -> viewGenerator.generateReportsView(outputDirectory, formats, templates));
         // Then ... fail as expected
     }
 

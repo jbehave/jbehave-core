@@ -2,7 +2,6 @@ package org.jbehave.core.steps;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
-import org.hamcrest.CoreMatchers;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -31,6 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
@@ -124,11 +124,7 @@ public class StepCreatorBehaviour {
 
         // When
         when(stepMatcher.parameterNames()).thenReturn(new String[] {});
-        try {
-            stepCreator.matchedParameter("unknown");
-        } catch (Exception e) {
-            assertThat(e, is(CoreMatchers.instanceOf(ParameterNotFound.class)));
-        }
+        assertThrows(ParameterNotFound.class, () -> stepCreator.matchedParameter("unknown"));
         // Then .. fail as expected
     }
 

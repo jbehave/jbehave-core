@@ -14,6 +14,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GroovyStepsFactoryBehaviour {
 
@@ -31,10 +32,6 @@ public class GroovyStepsFactoryBehaviour {
     public void shouldNotCreateStepsInstancesFromGroovyWhenResourceInvalid() {
         GroovyStepsFactory factory = new GroovyStepsFactory(new MostUsefulConfiguration(),
                 new GroovyContext(asList("/org/jbehave/core/steps/groovy/invalidSteps.groovy")));
-        try {
-            factory.stepsTypes();
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(GroovyClassInstantiationFailed.class)));
-        }
+        assertThrows(GroovyClassInstantiationFailed.class, factory::stepsTypes);
     }
 }

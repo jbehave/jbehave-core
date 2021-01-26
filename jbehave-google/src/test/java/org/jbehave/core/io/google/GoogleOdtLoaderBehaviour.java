@@ -17,8 +17,7 @@ import java.io.InputStream;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -59,20 +58,14 @@ public class GoogleOdtLoaderBehaviour {
 
     @Test
     public void shouldNotLoadInexistingResourceFromGoogleDocs() {
-        try {
-            new LoadOdtFromGoogle("user", "password", "https://docs.google.com/feeds/default/private/full/", mock(DocsService.class)).loadStoryAsText("an_inexisting_story");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
-        }
+        LoadOdtFromGoogle googleOdtLoader = new LoadOdtFromGoogle("user", "password",
+                "https://docs.google.com/feeds/default/private/full/", mock(DocsService.class));
+        assertThrows(InvalidStoryResource.class, () -> googleOdtLoader.loadStoryAsText("an_unexisting_story"));
     }
 
     @Test
     public void shouldNotAllowInvalidAccess() {
-        try {
-            new LoadOdtFromGoogle("DUMMY", "DUMMY");
-        } catch (Exception e) {
-            assertThat(e, is(instanceOf(GoogleAccessFailed.class)));
-        }
+        assertThrows(GoogleAccessFailed.class, () -> new LoadOdtFromGoogle("DUMMY", "DUMMY"));
     }
 
 }

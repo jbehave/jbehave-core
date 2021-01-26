@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 
@@ -96,12 +97,8 @@ public class StepFailureDecoratorBehaviour {
         boolean givenStory = false;
 
         // When
-        try {
-            decorator.afterStory(givenStory);
-            throw new AssertionError("Should have rethrown exception");
-        } catch (Throwable rethrown) {
-            // Then
-            MatcherAssert.assertThat(rethrown, equalTo(t));
-        }
+        Throwable rethrown = assertThrows(Throwable.class, () -> decorator.afterStory(givenStory));
+        // Then
+        MatcherAssert.assertThat(rethrown, equalTo(t));
     }
 }
