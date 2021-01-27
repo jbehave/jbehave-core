@@ -39,7 +39,6 @@
     <module>spring</module>
     <module>spring-security</module>
     <module>weld</module>
-    <module>noughtsandcrosses</module>
   </modules>
 
   <dependencies>
@@ -77,12 +76,6 @@
     </pluginManagement>
   </build>
   <profiles>
-    <profile>
-      <id>gui</id>
-      <modules>
-        <module>noughtsandcrosses</module>
-      </modules>
-    </profile>
     <profile>
       <id>rest</id>
       <modules>
