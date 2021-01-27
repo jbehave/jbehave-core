@@ -35,7 +35,7 @@ public class PlayersCanHazTurns extends NoughtsAndCrossesStory {
                 "i18n/keywords", classLoader);
         Configuration configuration = new MostUsefulConfiguration()
             .useKeywords(keywords)
-            .useStoryParser(new RegexStoryParser(keywords, new TableTransformers()))
+            .useStoryParser(new RegexStoryParser(keywords))
             .useStoryPathResolver(new UnderscoredCamelCaseResolver(""))
             .useStoryReporterBuilder(new StoryReporterBuilder()
                     .withCodeLocation(codeLocation)
@@ -45,7 +45,7 @@ public class PlayersCanHazTurns extends NoughtsAndCrossesStory {
                     .withKeywords(keywords));
         useConfiguration(configuration);
         WindowControl windowControl = new WindowControl();        
-        addSteps(new InstanceStepsFactory(configuration, new LolCatzSteps(windowControl), new BeforeAndAfterSteps(windowControl)).createCandidateSteps());
+        useStepsFactory(new InstanceStepsFactory(configuration, new LolCatzSteps(windowControl), new BeforeAndAfterSteps(windowControl)));
      }
 
 

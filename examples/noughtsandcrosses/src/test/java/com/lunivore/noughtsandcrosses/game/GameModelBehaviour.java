@@ -4,11 +4,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 
-
+import org.junit.jupiter.api.Test;
 
 class GameModelBehaviour {
 
-    @org.junit.Test
+    @Test
     void shouldStartEmptyAndTellObserver() {
         GameModel game = new GameModel();
         GameObserver observer = mock(GameObserver.class);
@@ -23,7 +23,7 @@ class GameModelBehaviour {
         }
     }
     
-    @org.junit.Test
+    @Test
     void shouldPlaceTokenForCurrentPlayerInTheGivenColumnAndRowStartingWithX() {
         GameModel game = new GameModel();
         GameObserver observer = mock(GameObserver.class);
@@ -39,7 +39,7 @@ class GameModelBehaviour {
         assertThat(game.playerAt(0, 2), equalTo(Player.O));
     }
     
-    @org.junit.Test
+    @Test
     void shouldNotifyObserverWhenTheCurrentPlayerWins() {
         // Given a game which X is about to win
         GameModel game = new GameModel();
