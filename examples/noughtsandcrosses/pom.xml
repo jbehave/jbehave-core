@@ -41,6 +41,7 @@
               <scope>test</scope>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInView>false</ignoreFailureInView>
+              <skip>true</skip>
             </configuration>
             <goals>
               <goal>run-stories-as-embeddables</goal>
