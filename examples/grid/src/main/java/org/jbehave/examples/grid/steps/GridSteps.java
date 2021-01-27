@@ -1,26 +1,25 @@
-package com.lunivore.gameoflife.steps;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+package org.jbehave.examples.grid.steps;
 
 import org.jbehave.core.annotations.Aliases;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.jbehave.examples.grid.domain.Game;
+import org.jbehave.examples.grid.domain.StringObserver;
 
-import com.lunivore.gameoflife.domain.Game;
-import com.lunivore.gameoflife.view.string.StringRenderer;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public class GridSteps {
     
     private Game game;
-    private StringRenderer renderer;
+    private StringObserver renderer;
 
     @Given("a $width by $height game")
     @Aliases(values={"a new game: $width by $height"})
     public void theGameIsRunning(int width, int height) {
         game = new Game(width, height);
-        renderer = new StringRenderer();
+        renderer = new StringObserver();
         game.setObserver(renderer);
     }
     

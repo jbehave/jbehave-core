@@ -1,8 +1,8 @@
-package com.lunivore.gameoflife.domain;
+package org.jbehave.examples.grid.domain;
 
-public interface GameObserver {
+public interface GridObserver {
 
-    GameObserver NULL = new GameObserver() {
+    GridObserver NULL = new GridObserver() {
 
         @Override
         public void gridChanged(Grid grid) {}

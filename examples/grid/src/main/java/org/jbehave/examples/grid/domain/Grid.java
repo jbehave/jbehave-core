@@ -1,9 +1,8 @@
-package com.lunivore.gameoflife.domain;
+package org.jbehave.examples.grid.domain;
 
 public interface Grid {
 
     Grid NULL = new Grid() {
-
         @Override
         public int getHeight() { return 0; }
 
@@ -11,13 +10,13 @@ public interface Grid {
         public int getWidth() { return 0; }
 
         @Override
-        public boolean hasLife(int column, int row) { return false; }
+        public boolean cellToggledAt(int column, int row) { return false; }
     };
 
     int getWidth();
 
     int getHeight();
 
-    boolean hasLife(int column, int row);
+    boolean cellToggledAt(int column, int row);
 
 }

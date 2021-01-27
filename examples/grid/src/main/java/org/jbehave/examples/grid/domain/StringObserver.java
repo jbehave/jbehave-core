@@ -1,9 +1,6 @@
-package com.lunivore.gameoflife.view.string;
+package org.jbehave.examples.grid.domain;
 
-import com.lunivore.gameoflife.domain.GameObserver;
-import com.lunivore.gameoflife.domain.Grid;
-
-public class StringRenderer implements GameObserver {
+public class StringObserver implements GridObserver {
 
     private static final String NL = System.getProperty("line.separator");
     private Grid grid = Grid.NULL;
@@ -12,7 +9,7 @@ public class StringRenderer implements GameObserver {
         StringBuilder builder = new StringBuilder();
         for (int row = 0; row < grid.getHeight(); row++) {
             for (int column = 0; column < grid.getWidth(); column++) {
-                builder.append(grid.hasLife(column, row) ? "X" : ".");
+                builder.append(grid.cellToggledAt(column, row) ? "X" : ".");
             }
             if (row < grid.getHeight() -1) { builder.append(NL); }
         }

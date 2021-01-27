@@ -1,4 +1,4 @@
-package com.lunivore.gameoflife.domain;
+package org.jbehave.examples.grid.domain;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +8,7 @@ public class Game {
 
     private final int width;
     private final int height;
-    private GameObserver observer;
+    private GridObserver observer;
     private Set<Cell> cells = new HashSet<>();
 
     public Game(int width, int height) {
@@ -16,7 +16,7 @@ public class Game {
         this.height = height;
     }
 
-    public void setObserver(GameObserver observer) {
+    public void setObserver(GridObserver observer) {
         this.observer = observer;
         notifyObserver();
     }
@@ -28,7 +28,7 @@ public class Game {
             @Override
             public int getWidth() { return width; }
             @Override
-            public boolean hasLife(int column, int row) { return cells.contains(new Cell(column, row)); }
+            public boolean cellToggledAt(int column, int row) { return cells.contains(new Cell(column, row)); }
             
         });
     }

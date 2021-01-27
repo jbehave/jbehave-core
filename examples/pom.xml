@@ -20,7 +20,7 @@
     <module>failing</module>
     <module>annotations</module>
     <module>executable-jar</module>
-    <module>gameoflife</module>
+    <module>grid</module>
     <module>gherkin</module>
     <module>groovy</module>
     <module>jruby</module>

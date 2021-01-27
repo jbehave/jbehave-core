@@ -1,10 +1,4 @@
-package com.lunivore.gameoflife;
-
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-
-import java.util.List;
+package org.jbehave.examples.grid;
 
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
@@ -16,8 +10,13 @@ import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.examples.grid.steps.GridSteps;
 
-import com.lunivore.gameoflife.steps.GridSteps;
+import java.util.List;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
 
 public class GridStories extends JUnitStories {
 
