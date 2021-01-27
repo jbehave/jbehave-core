@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jbehave</groupId>
@@ -10,6 +11,7 @@
   <name>JBehave Distribution</name>
   <properties>
     <jbehave.site.version>3.4</jbehave.site.version>
+    <xsite.version>1.4</xsite.version>
   </properties>
   <dependencies>
     <dependency>
@@ -87,6 +89,15 @@
     </dependency>
   </dependencies>
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.xsite</groupId>
+          <artifactId>xsite-maven-plugin</artifactId>
+          <version>${xsite.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -311,7 +322,7 @@
                 </artifactItem>
               </artifactItems>
             </configuration>
-          </execution>          
+          </execution>
           <execution>
             <id>unpack-javadoc-maven-plugin</id>
             <phase>generate-resources</phase>
@@ -379,22 +390,22 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy-cobertura-site</id>
+            <id>copy-code-coverage</id>
             <phase>generate-resources</phase>
             <goals>
               <goal>run</goal>
             </goals>
             <configuration>
               <tasks>
-                <property name="code-coverage.directory" value="${project.build.directory}/site/code-coverage" />
-                <mkdir dir="${code-coverage.directory}" />
+                <property name="code-coverage.directory" value="${project.build.directory}/site/code-coverage"/>
+                <mkdir dir="${code-coverage.directory}"/>
                 <copy todir="${code-coverage.directory}" overwrite="true" failonerror="false">
                   <fileset dir="${basedir}/../">
-                    <include name="jbehave-*/target/site/cobertura/**" />
+                    <include name="jbehave-*/target/site/clover/**"/>
                   </fileset>
                   <filtermapper>
-                    <replacestring from="jbehave-" to="" />
-                    <replacestring from="target/site/cobertura" to="/" />
+                    <replacestring from="jbehave-" to=""/>
+                    <replacestring from="target/site/clover" to="/"/>
                   </filtermapper>
                 </copy>
               </tasks>
@@ -408,10 +419,11 @@
             </goals>
             <configuration>
               <tasks>
-                <property name="archetypes.directory" value="${project.build.directory}/archetypes" />
-                <property name="local.archetype.catalog" value="${user.home}/.m2/archetype-catalog.xml" />
-                <mkdir dir="${archetypes.directory}" />
-                <copy todir="${archetypes.directory}" file="${user.home}/.m2/archetype-catalog.xml" overwrite="true" failonerror="false" verbose="true">
+                <property name="archetypes.directory" value="${project.build.directory}/archetypes"/>
+                <property name="local.archetype.catalog" value="${user.home}/.m2/archetype-catalog.xml"/>
+                <mkdir dir="${archetypes.directory}"/>
+                <copy todir="${archetypes.directory}" file="${user.home}/.m2/archetype-catalog.xml" overwrite="true"
+                      failonerror="false" verbose="true">
                 </copy>
               </tasks>
             </configuration>
@@ -421,6 +433,7 @@
       <plugin>
         <groupId>org.codehaus.xsite</groupId>
         <artifactId>xsite-maven-plugin</artifactId>
+        <version>${xsite.version}</version>
         <configuration>
           <sourceDirectoryPath>${basedir}/src/site/</sourceDirectoryPath>
           <compositionFilePath>config/xsite.xml</compositionFilePath>

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jbehave</groupId>
@@ -12,8 +13,8 @@
 
   <properties>
     <jbehave.core.version>${project.version}</jbehave.core.version>
-    <jbehave.site.version>3.3</jbehave.site.version>
-    <maven.archetype.version>2.0</maven.archetype.version>
+    <jbehave.site.version>3.4.1</jbehave.site.version>
+    <maven.archetype.version>3.2.0</maven.archetype.version>
   </properties>
 
   <modules>
@@ -31,14 +32,14 @@
         <directory>src/main/resources</directory>
         <filtering>false</filtering>
         <excludes>
-            <exclude>META-INF/**</exclude>
+          <exclude>META-INF/**</exclude>
         </excludes>
       </resource>
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
         <includes>
-            <include>META-INF/**</include>
+          <include>META-INF/**</include>
         </includes>
       </resource>
     </resources>
@@ -62,12 +63,17 @@
           <artifactId>maven-archetype-plugin</artifactId>
           <version>${maven.archetype.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>groovy-maven-plugin</artifactId>
+          <version>2.1.1</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>gmaven-plugin</artifactId>
+        <artifactId>groovy-maven-plugin</artifactId>
         <executions>
           <execution>
             <id>delete-local-archetype-catalog</id>
@@ -77,16 +83,16 @@
             <phase>verify</phase>
             <configuration>
               <source>
-                if ( project.packaging == 'pom' ){
-                    def localArchetypeCatalog = new File(System.getProperty('user.home'), '.m2/archetype-catalog.xml').absolutePath
-                    ant.delete(file: "${localArchetypeCatalog}", verbose: true)
+                if (project.packaging == 'pom') {
+                  def localArchetypeCatalog = new File(System.getProperty('user.home'), '.m2/archetype-catalog.xml').absolutePath
+                  ant.delete(file: "${localArchetypeCatalog}", verbose: true)
                 }
-            </source>
+              </source>
             </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
- 
+
 </project>
