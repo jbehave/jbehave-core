@@ -21,7 +21,6 @@ public @interface UsingEmbedder {
     String storyTimeouts() default "";
     boolean failOnStoryTimeout() default false;
 	int threads() default 1;
-	boolean stepsFactory() default true;
     String[] metaFilters() default {};
     String systemProperties() default "";
 

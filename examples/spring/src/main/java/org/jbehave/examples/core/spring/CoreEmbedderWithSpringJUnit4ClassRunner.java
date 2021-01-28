@@ -33,7 +33,7 @@ public class CoreEmbedderWithSpringJUnit4ClassRunner {
     @Before
     public void setup() {
         embedder = new CoreEmbedder();
-        embedder.useCandidateSteps(new SpringStepsFactory(embedder.configuration(), context).createCandidateSteps());
+        embedder.useStepsFactory(new SpringStepsFactory(embedder.configuration(), context));
     }
 
     @org.junit.Test

@@ -191,12 +191,8 @@ public class AnnotationBuilder {
         }
         Configuration configuration = buildConfiguration();
         embedder.useConfiguration(configuration);
-        boolean useStepsFactory = finder.getAnnotatedValue(UsingEmbedder.class, Boolean.class, "stepsFactory");
-        if (useStepsFactory) {
-            embedder.useStepsFactory(buildStepsFactory(configuration));
-        } else {
-            embedder.useCandidateSteps(buildCandidateSteps(configuration));
-        }
+        embedder.useStepsFactory(buildStepsFactory(configuration));
+
         List<String> metaFilters = finder.getAnnotatedValues(UsingEmbedder.class, String.class, "metaFilters");
         if (!metaFilters.isEmpty()) {
             embedder.useMetaFilters(metaFilters);
@@ -322,7 +318,6 @@ public class AnnotationBuilder {
             if (instance instanceof ConfigurableEmbedder) {
                 ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder) instance;
                 configurableEmbedder.useConfiguration(embedder.configuration());
-                configurableEmbedder.addSteps(embedder.candidateSteps());
                 configurableEmbedder.useStepsFactory(embedder.stepsFactory());
             }
             return instance;

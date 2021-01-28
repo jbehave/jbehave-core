@@ -1,12 +1,5 @@
 package org.jbehave.examples.core;
 
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
-
-import java.text.SimpleDateFormat;
-import java.util.Properties;
-
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -32,14 +25,16 @@ import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.examples.core.service.TradingService;
 import org.jbehave.examples.core.steps.*;
 
-import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
+import java.text.SimpleDateFormat;
+import java.util.Properties;
+
+import static org.jbehave.core.reporters.Format.*;
 
 /**
  * <p>
  * Example of how to run a single story via JUnit. JUnitStory is a simple facade
  * around the Embedder. The user need only provide the configuration and the
- * CandidateSteps. Using this paradigm (which is the analogous to the one used
- * in JBehave 2) each story class must extends this class and maps one-to-one to
+ * InjectableStepsFactory. Using this paradigm, each story class must extends this class and maps one-to-one to
  * a textual story via the configured {@link StoryPathResolver}.
  * </p>
  * <p>

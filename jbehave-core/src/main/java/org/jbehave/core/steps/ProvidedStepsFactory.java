@@ -1,8 +1,10 @@
 package org.jbehave.core.steps;
 
+import org.jbehave.core.steps.AbstractStepsFactory.StepsInstanceNotFound;
+
 import java.util.List;
 
-import org.jbehave.core.steps.AbstractStepsFactory.StepsInstanceNotFound;
+import static java.util.Arrays.asList;
 
 /**
  * An {@link InjectableStepsFactory} that is provided with the
@@ -11,6 +13,10 @@ import org.jbehave.core.steps.AbstractStepsFactory.StepsInstanceNotFound;
 public class ProvidedStepsFactory implements InjectableStepsFactory {
 
     private final List<CandidateSteps> candidateSteps;
+
+    public ProvidedStepsFactory(){
+        this(asList(new CandidateSteps[]{}));
+    }
 
     public ProvidedStepsFactory(List<CandidateSteps> candidateSteps) {
         this.candidateSteps = candidateSteps;

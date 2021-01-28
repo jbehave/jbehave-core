@@ -1,15 +1,9 @@
 package org.jbehave.core;
 
-import static java.util.Arrays.asList;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.JUnitStory;
-import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 
 /**
@@ -59,7 +53,6 @@ public abstract class ConfigurableEmbedder implements Embeddable {
 	private Embedder embedder = new Embedder();
 	private Configuration configuration;
 	private InjectableStepsFactory stepsFactory;
-	private List<CandidateSteps> candidateSteps;
 
 	@Override
     public void useEmbedder(Embedder embedder) {
@@ -76,33 +69,6 @@ public abstract class ConfigurableEmbedder implements Embeddable {
 
 	public boolean hasConfiguration() {
 		return configuration != null;
-	}
-
-	/**
-	 * @deprecated Use {@link #useStepsFactory(InjectableStepsFactory)}
-	 */
-	@Deprecated
-    public void addSteps(CandidateSteps... steps) {
-		addSteps(asList(steps));
-	}
-
-	/**
-	 * @deprecated Use {@link #useStepsFactory(InjectableStepsFactory)}
-	 */
-	@Deprecated
-    public void addSteps(List<CandidateSteps> steps) {
-		if ( candidateSteps == null ){
-			this.candidateSteps = new ArrayList<>();
-		}
-		this.candidateSteps.addAll(steps);
-	}
-
-	/**
-	 * @deprecated Use {@link #stepsFactory()}
-	 */
-	@Deprecated
-    public List<CandidateSteps> candidateSteps() {
-		return candidateSteps;
 	}
 
 	public void useStepsFactory(InjectableStepsFactory stepsFactory) {
@@ -122,10 +88,6 @@ public abstract class ConfigurableEmbedder implements Embeddable {
 			configuration = configuration();
 		}
 		embedder.useConfiguration(configuration);
-		if (candidateSteps == null) {
-			candidateSteps = candidateSteps();
-		}
-		embedder.useCandidateSteps(candidateSteps);
 		if (stepsFactory == null) {
 			stepsFactory = stepsFactory();
 		}

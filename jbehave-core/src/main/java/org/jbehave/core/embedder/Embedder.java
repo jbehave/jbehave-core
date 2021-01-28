@@ -1,14 +1,5 @@
 package org.jbehave.core.embedder;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -29,11 +20,12 @@ import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.ProvidedStepsFactory;
-import org.jbehave.core.steps.StepFinder;
-import org.jbehave.core.steps.Stepdoc;
+import org.jbehave.core.steps.*;
+
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * The Embedder is a facade allowing all functionality to be embedded into other
@@ -48,7 +40,6 @@ public class Embedder {
 	protected EmbedderControls embedderControls;
 	protected EmbedderFailureStrategy embedderFailureStrategy;
     protected Configuration configuration;
-    protected List<CandidateSteps> candidateSteps;
     protected InjectableStepsFactory stepsFactory;
     protected List<String> metaFilters;
     protected Map<String,MetaMatcher> metaMatchers;
@@ -291,7 +282,7 @@ public class Embedder {
     }
 
     public void reportStepdocs() {
-        reportStepdocs(configuration(), candidateSteps());
+        reportStepdocs(configuration(), stepsFactory().createCandidateSteps());
     }
 
     public void reportStepdocsAsEmbeddables(List<String> classNames) {
@@ -305,10 +296,7 @@ public class Embedder {
             if (embeddable instanceof ConfigurableEmbedder) {
                 ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder) embeddable;
 				Embedder configuredEmbedder = configurableEmbedder.configuredEmbedder();
-				List<CandidateSteps> steps = configuredEmbedder.candidateSteps();
-                if (steps.isEmpty()) {
-                    steps = configuredEmbedder.stepsFactory().createCandidateSteps();
-                }
+				List<CandidateSteps> steps = configuredEmbedder.stepsFactory().createCandidateSteps();
                 reportStepdocs(configuredEmbedder.configuration(), steps);
             } else {
                 embedderMonitor.embeddableNotConfigurable(embeddable.getClass().getName());
@@ -325,7 +313,7 @@ public class Embedder {
 
     public void reportMatchingStepdocs(String stepAsString) {
         Configuration configuration = configuration();
-        List<CandidateSteps> candidateSteps = candidateSteps();
+        List<CandidateSteps> candidateSteps = stepsFactory().createCandidateSteps();
         StepFinder finder = configuration.stepFinder();
         StepdocReporter reporter = configuration.stepdocReporter();
         List<Stepdoc> matching = finder.findMatching(stepAsString, candidateSteps);
@@ -361,16 +349,9 @@ public class Embedder {
         return configuration;
     }
 
-    public List<CandidateSteps> candidateSteps() {
-        if (candidateSteps == null) {
-            candidateSteps = new ArrayList<>();
-        }
-        return candidateSteps;
-    }
-
     public InjectableStepsFactory stepsFactory() {
         if (stepsFactory == null) {
-            stepsFactory = new ProvidedStepsFactory(candidateSteps());
+            stepsFactory = new ProvidedStepsFactory();
         }
         return stepsFactory;
     }
@@ -489,10 +470,6 @@ public class Embedder {
 
     public void useConfiguration(Configuration configuration) {
         this.configuration = configuration;
-    }
-
-    public void useCandidateSteps(List<CandidateSteps> candidateSteps) {
-        this.candidateSteps = candidateSteps;
     }
 
     public void useStepsFactory(InjectableStepsFactory stepsFactory) {

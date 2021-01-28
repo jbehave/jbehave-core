@@ -1,48 +1,8 @@
 package org.jbehave.core.embedder;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.inOrder;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.InjectableEmbedder;
-import org.jbehave.core.annotations.Configure;
-import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.annotations.UsingEmbedder;
-import org.jbehave.core.annotations.When;
+import org.jbehave.core.annotations.*;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder.EmbedderFailureStrategy;
@@ -62,20 +22,31 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMap;
 import org.jbehave.core.model.StoryMaps;
-import org.jbehave.core.reporters.PrintStreamStepdocReporter;
-import org.jbehave.core.reporters.ReportsCount;
-import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.StepFinder;
-import org.jbehave.core.steps.Steps;
+import org.jbehave.core.reporters.*;
+import org.jbehave.core.steps.*;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 class EmbedderBehaviour {
 
@@ -167,11 +138,11 @@ class EmbedderBehaviour {
 
         // When
         Configuration configuration = new MostUsefulConfiguration();
-        CandidateSteps steps = mock(CandidateSteps.class);
+        InjectableStepsFactory stepsFactory = mock(InjectableStepsFactory.class);
         Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.useConfiguration(configuration);
-        embedder.useCandidateSteps(asList(steps));
+        embedder.useStepsFactory(stepsFactory);
         embedder.runAsEmbeddables(classNames);
 
         // Then
@@ -1055,7 +1026,7 @@ class EmbedderBehaviour {
     void shouldFindAndReportMatchingSteps() {
         // Given
         Embedder embedder = new Embedder();
-        embedder.useCandidateSteps(asList((CandidateSteps) new MySteps()));
+        embedder.useStepsFactory(new InstanceStepsFactory(embedder.configuration(), new MySteps()));
         embedder.configuration().useStepFinder(new StepFinder());
         OutputStream out = new ByteArrayOutputStream();
         embedder.configuration().useStepdocReporter(new PrintStreamStepdocReporter(new PrintStream(out)));
@@ -1072,7 +1043,7 @@ class EmbedderBehaviour {
     void shouldReportNoMatchingStepdocsFoundWithStepProvided() {
         // Given
         Embedder embedder = new Embedder();
-        embedder.useCandidateSteps(asList((CandidateSteps) new MySteps()));
+        embedder.useStepsFactory(new InstanceStepsFactory(embedder.configuration(), new MySteps()));
         embedder.configuration().useStepFinder(new StepFinder());
         OutputStream out = new ByteArrayOutputStream();
         embedder.configuration().useStepdocReporter(new PrintStreamStepdocReporter(new PrintStream(out)));
@@ -1088,7 +1059,7 @@ class EmbedderBehaviour {
     void shouldReportNoMatchingStepdocsFoundWhenNoStepsProvided() {
         // Given
         Embedder embedder = new Embedder();
-        embedder.useCandidateSteps(asList(new CandidateSteps[] {}));
+        embedder.useStepsFactory(new InstanceStepsFactory(embedder.configuration(), new CandidateSteps[] {}));
         embedder.configuration().useStepFinder(new StepFinder());
         OutputStream out = new ByteArrayOutputStream();
         embedder.configuration().useStepdocReporter(new PrintStreamStepdocReporter(new PrintStream(out)));
@@ -1104,7 +1075,7 @@ class EmbedderBehaviour {
     void shouldReportAllStepdocs() {
         // Given
         Embedder embedder = new Embedder();
-        embedder.useCandidateSteps(asList((CandidateSteps) new MySteps()));
+        embedder.useStepsFactory(new InstanceStepsFactory(embedder.configuration(), new MySteps()));
         embedder.configuration().useStepFinder(new StepFinder());
         OutputStream out = new ByteArrayOutputStream();
         embedder.configuration().useStepdocReporter(new PrintStreamStepdocReporter(new PrintStream(out)));

@@ -1,7 +1,5 @@
 package org.jbehave.examples.core;
 
-import java.text.SimpleDateFormat;
-
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
@@ -20,14 +18,13 @@ import org.jbehave.examples.core.service.TradingService;
 import org.jbehave.examples.core.steps.BeforeAfterSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
 
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
+import java.text.SimpleDateFormat;
+
+import static org.jbehave.core.reporters.Format.*;
 
 /**
  * Specifies the Embedder for the Trader example, providing the
- * Configuration and the CandidateSteps, using classpath story loading.
+ * Configuration and the InjectableStepsFactory, using classpath story loading.
  */
 public class CoreEmbedder extends Embedder {
 
