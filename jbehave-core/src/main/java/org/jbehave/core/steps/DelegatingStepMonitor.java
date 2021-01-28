@@ -1,13 +1,13 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
+import org.jbehave.core.model.StepPattern;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Queue;
 
-import org.jbehave.core.model.StepPattern;
+import static java.util.Arrays.asList;
 
 /**
  * Monitor which collects other {@link StepMonitor}s and delegates all invocations to the collected monitors.
@@ -32,16 +32,6 @@ public class DelegatingStepMonitor implements StepMonitor {
      */
     public DelegatingStepMonitor(StepMonitor... delegates) {
         this(asList(delegates));
-    }
-
-    /**
-     * @deprecated Use {@link #convertedValueOfType(String, Type, Object, Queue)}
-     */
-    @Override
-    public void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass) {
-        for (StepMonitor monitor : delegates) {
-            monitor.convertedValueOfType(value, type, converted, converterClass);
-        }
     }
 
     @Override
@@ -69,14 +59,6 @@ public class DelegatingStepMonitor implements StepMonitor {
     public void foundParameter(String parameter, int position) {
         for (StepMonitor monitor : delegates) {
             monitor.foundParameter(parameter, position);
-        }
-    }
-
-    @Override
-    @Deprecated
-    public void performing(String step, boolean dryRun) {
-        for (StepMonitor monitor : delegates) {
-            monitor.performing(step, dryRun);
         }
     }
 

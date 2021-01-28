@@ -1052,8 +1052,6 @@ public class PerformableTree {
             try {
                 context.stepsContext().resetScenario();
                 context.reporter().beforeScenario(scenario);
-                context.reporter().beforeScenario(scenario.getTitle());
-                context.reporter().scenarioMeta(scenario.getMeta());
                 State state = context.state();
                 if ( hasExamples() ) {
                     context.reporter().beforeExamples(scenario.getSteps(),
@@ -1230,7 +1228,6 @@ public class PerformableTree {
 			}
             resetStateIfConfigured(context);
             context.stepsContext().resetExample();
-            context.reporter().example(parameters);
             context.reporter().example(parameters, exampleIndex);
             performScenario(context);
         }

@@ -1,17 +1,10 @@
 package org.jbehave.core.reporters;
 
+import org.jbehave.core.model.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
 
 /**
  * Filters out the reports from all stories that pass, The delegate receives
@@ -200,17 +193,6 @@ public class SilentSuccessFilter extends NullStoryReporter {
     }
 
     @Override
-    public void beforeScenario(final String scenarioTitle) {
-        scenarioTodos = new ArrayList<>();
-        scenarioTodos.add(new Todo() {
-            @Override
-            public void doNow() {
-                delegate.beforeScenario(scenarioTitle);
-            }
-        });
-    }
-
-    @Override
     public void scenarioNotAllowed(final Scenario scenario, final String filter) {
         scenarioState = new State() {
             @Override
@@ -219,17 +201,6 @@ public class SilentSuccessFilter extends NullStoryReporter {
             }
         };
         scenarioState.report();
-    }
-
-    @Override
-    public void scenarioMeta(final Meta meta) {
-        scenarioTodos = new ArrayList<>();
-        scenarioTodos.add(new Todo() {
-            @Override
-            public void doNow() {
-                delegate.scenarioMeta(meta);
-            }
-        });
     }
 
     @Override

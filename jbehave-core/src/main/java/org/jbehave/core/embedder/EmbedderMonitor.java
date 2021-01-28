@@ -1,17 +1,13 @@
 package org.jbehave.core.embedder;
 
+import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.model.*;
+import org.jbehave.core.reporters.ReportsCount;
+
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
-
-import org.jbehave.core.failures.BatchFailures;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
-import org.jbehave.core.model.StoryMaps;
-import org.jbehave.core.reporters.ReportsCount;
 
 public interface EmbedderMonitor {
 
@@ -30,10 +26,6 @@ public interface EmbedderMonitor {
     void storyFailed(String path, Throwable cause);
 
     void storiesSkipped(List<String> storyPaths);
-
-    /** @deprecated Use #storiesNotAllowed(List<String>, MetaFilter, boolean) */
-    @Deprecated
-    void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter);
 
     void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter, boolean verbose);
 

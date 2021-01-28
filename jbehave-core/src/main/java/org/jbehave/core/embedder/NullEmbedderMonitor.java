@@ -1,17 +1,13 @@
 package org.jbehave.core.embedder;
 
+import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.model.*;
+import org.jbehave.core.reporters.ReportsCount;
+
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
-
-import org.jbehave.core.failures.BatchFailures;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
-import org.jbehave.core.model.StoryMaps;
-import org.jbehave.core.reporters.ReportsCount;
 
 /**
  * <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">Null Object
@@ -50,11 +46,6 @@ public class NullEmbedderMonitor implements EmbedderMonitor {
 
     @Override
     public void storiesSkipped(List<String> storyPaths) {
-    }
-
-    @Override
-    public void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter) {
-        storiesNotAllowed(notAllowed, filter, false);
     }
 
     @Override

@@ -1,25 +1,14 @@
 package org.jbehave.core.steps;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.thoughtworks.paranamer.NullParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.AsParameters;
-import org.jbehave.core.annotations.ToContext;
 import org.jbehave.core.annotations.FromContext;
 import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.ToContext;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.IgnoringStepsFailure;
@@ -31,20 +20,19 @@ import org.jbehave.core.model.Verbatim;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
-
-import com.thoughtworks.paranamer.NullParanamer;
-import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.steps.context.StepsContext;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static java.util.Arrays.asList;
-import static org.jbehave.core.steps.AbstractStepResult.comment;
-import static org.jbehave.core.steps.AbstractStepResult.failed;
-import static org.jbehave.core.steps.AbstractStepResult.ignorable;
-import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
-import static org.jbehave.core.steps.AbstractStepResult.pending;
-import static org.jbehave.core.steps.AbstractStepResult.silent;
-import static org.jbehave.core.steps.AbstractStepResult.skipped;
-import static org.jbehave.core.steps.AbstractStepResult.successful;
+import static org.jbehave.core.steps.AbstractStepResult.*;
 
 public class StepCreator {
 
@@ -828,7 +816,6 @@ public class StepCreator {
             Timer timer = new Timer().start();
             try {
                 parametriseStep();
-                stepMonitor.performing(parametrisedStep, dryRun);
                 stepMonitor.beforePerforming(parametrisedStep, dryRun, method);
                 if (!dryRun && method != null) {
                     Object outputObject = method.invoke(stepsInstance(), convertedParameters);

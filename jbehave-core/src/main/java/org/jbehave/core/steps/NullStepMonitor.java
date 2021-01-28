@@ -1,10 +1,10 @@
 package org.jbehave.core.steps;
 
+import org.jbehave.core.model.StepPattern;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Queue;
-
-import org.jbehave.core.model.StepPattern;
 
 /**
  * <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">Null Object Pattern</a> implementation of {@link StepMonitor}.
@@ -21,20 +21,8 @@ public class NullStepMonitor implements StepMonitor {
             Object stepsInstance) {
     }
 
-    /**
-     * @deprecated Use {@link #convertedValueOfType(String, Type, Object, Queue)}
-     */
-    @Override
-    public void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass) {
-    }
-
     @Override
     public void convertedValueOfType(String value, Type type, Object converted, Queue<Class<?>> converterClasses) {
-    }
-
-    @Override
-    @Deprecated
-    public void performing(String step, boolean dryRun) {
     }
 
     @Override

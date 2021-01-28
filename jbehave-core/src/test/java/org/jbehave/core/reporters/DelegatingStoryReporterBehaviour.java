@@ -1,13 +1,12 @@
 package org.jbehave.core.reporters;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
@@ -33,6 +32,7 @@ class DelegatingStoryReporterBehaviour {
         Story story = new Story();
         boolean givenStory = false;
         Scenario scenario = new Scenario();
+        Scenario scenario2 = new Scenario();
         String filter = "-some property";
         
         // When
@@ -41,11 +41,9 @@ class DelegatingStoryReporterBehaviour {
         delegator.beforeStory(story, givenStory);        
         delegator.storyNotAllowed(story, filter);
         delegator.beforeScenario(scenario);
-        delegator.beforeScenario("My scenario 1");
         delegator.beforeScenarioSteps(Stage.BEFORE);
         delegator.afterScenarioSteps(Stage.BEFORE);
         delegator.scenarioNotAllowed(scenario, filter);
-        delegator.scenarioMeta(Meta.EMPTY);
         delegator.givenStories(givenStoryPaths);
         delegator.givenStories(givenStories);
         delegator.beforeScenarioSteps(null);
@@ -62,7 +60,7 @@ class DelegatingStoryReporterBehaviour {
         delegator.afterExamples();
         delegator.afterScenario();
        
-        delegator.beforeScenario("My scenario 2");
+        delegator.beforeScenario(scenario2);
         delegator.beforeScenarioSteps(Stage.BEFORE);
         delegator.afterScenarioSteps(Stage.BEFORE);
         delegator.beforeScenarioSteps(null);
@@ -87,11 +85,9 @@ class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).storyNotAllowed(story, filter);
 
         inOrder.verify(delegate).beforeScenario(scenario);
-        inOrder.verify(delegate).beforeScenario("My scenario 1");
         inOrder.verify(delegate).beforeScenarioSteps(Stage.BEFORE);
         inOrder.verify(delegate).afterScenarioSteps(Stage.BEFORE);
         inOrder.verify(delegate).scenarioNotAllowed(scenario, filter);
-        inOrder.verify(delegate).scenarioMeta(Meta.EMPTY);
         inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).beforeScenarioSteps(null);
@@ -108,7 +104,7 @@ class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).afterExamples();
         inOrder.verify(delegate).afterScenario();
         
-        inOrder.verify(delegate).beforeScenario("My scenario 2");
+        inOrder.verify(delegate).beforeScenario(scenario2);
         inOrder.verify(delegate).beforeScenarioSteps(Stage.BEFORE);
         inOrder.verify(delegate).afterScenarioSteps(Stage.BEFORE);
         inOrder.verify(delegate).beforeScenarioSteps(null);

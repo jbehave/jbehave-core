@@ -1,18 +1,10 @@
 package org.jbehave.core.reporters;
 
+import org.jbehave.core.model.*;
+import org.jbehave.core.steps.StepCollector.Stage;
+
 import java.util.List;
 import java.util.Map;
-
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
-import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * <p>
@@ -112,10 +104,6 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeScenario(String title) {
-    }
-
-    @Override
     public void beforeScenario(Scenario scenario) {
     }
 
@@ -124,19 +112,11 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void scenarioMeta(Meta meta) {
-    }
-
-    @Override
     public void afterScenario() {
     }
 
     @Override
     public void beforeExamples(List<String> steps, ExamplesTable table) {
-    }
-
-    @Override
-    public void example(Map<String, String> tableRow) {
     }
 
     @Override

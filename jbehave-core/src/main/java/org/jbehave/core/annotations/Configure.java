@@ -1,12 +1,7 @@
 package org.jbehave.core.annotations;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
+import com.thoughtworks.paranamer.NullParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -17,34 +12,17 @@ import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.RethrowingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.AbsolutePathCalculator;
-import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.io.PathCalculator;
-import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.io.StoryPathResolver;
-import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.io.*;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
-import org.jbehave.core.reporters.ConsoleOutput;
-import org.jbehave.core.reporters.FreemarkerViewGenerator;
-import org.jbehave.core.reporters.PrintStreamStepdocReporter;
-import org.jbehave.core.reporters.StepdocReporter;
-import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
+import org.jbehave.core.reporters.*;
+import org.jbehave.core.steps.*;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
-import org.jbehave.core.steps.ParameterControls;
-import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.core.steps.StepCollector;
-import org.jbehave.core.steps.StepFinder;
-import org.jbehave.core.steps.StepMonitor;
 
-import com.thoughtworks.paranamer.NullParanamer;
-import com.thoughtworks.paranamer.Paranamer;
+import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
@@ -96,9 +74,6 @@ public @interface Configure {
 
     Class<? extends StoryReporterBuilder> storyReporterBuilder() default StoryReporterBuilder.class;
 
-    /**
-     * @deprecated Use storyReporterBuilder()
-     */
-    @Deprecated Class<? extends StoryReporter> defaultStoryReporter() default ConsoleOutput.class;
+    Class<? extends StoryReporter> defaultStoryReporter() default ConsoleOutput.class;
 
 }

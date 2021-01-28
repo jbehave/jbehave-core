@@ -60,19 +60,6 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
-    @Override
-    public void beforeScenario(String scenarioTitle) {
-        for (StoryReporter reporter : delegates) {
-            reporter.beforeScenario(scenarioTitle);
-        }
-    }
-
-    @Override
-    public void scenarioMeta(Meta meta) {
-        for (StoryReporter reporter : delegates) {
-            reporter.scenarioMeta(meta);
-        }
-    }
 
     @Override
     public void beforeStory(Story story, boolean givenStory) {
@@ -127,13 +114,6 @@ public class DelegatingStoryReporter implements StoryReporter {
     public void beforeExamples(List<String> steps, ExamplesTable table) {
         for (StoryReporter reporter : delegates) {
             reporter.beforeExamples(steps, table);
-        }
-    }
-
-    @Override
-    public void example(Map<String, String> tableRow) {
-        for (StoryReporter reporter : delegates) {
-            reporter.example(tableRow);
         }
     }
 

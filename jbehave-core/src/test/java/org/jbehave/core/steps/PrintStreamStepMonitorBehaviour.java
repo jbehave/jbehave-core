@@ -1,7 +1,8 @@
 package org.jbehave.core.steps;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.model.StepPattern;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -11,9 +12,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.model.StepPattern;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 class PrintStreamStepMonitorBehaviour {
 
@@ -43,16 +43,6 @@ class PrintStreamStepMonitorBehaviour {
                 + "' for method 'public void org.jbehave.core.steps.PrintStreamStepMonitorBehaviour$MySteps.thenFoo(java.lang.String)' "
                 + "with annotations '[@org.jbehave.core.annotations.Then(priority=0, value=\"foo named $name\")]' in steps instance '"
                 + steps + "'");
-    }
-
-    @Test
-    void shouldReportConvertedValueOfType() {
-        // When
-        monitor.convertedValueOfType("1", int.class, 1, ParameterConverters.NumberConverter.class);
-
-        // Then
-        assertIsOutputEqualTo("Converted value '1' of type 'int' to '1' with converter "
-                + "'class org.jbehave.core.steps.ParameterConverters$NumberConverter'");
     }
 
     @Test

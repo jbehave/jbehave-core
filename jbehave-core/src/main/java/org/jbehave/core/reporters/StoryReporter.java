@@ -1,18 +1,10 @@
 package org.jbehave.core.reporters;
 
+import org.jbehave.core.model.*;
+import org.jbehave.core.steps.StepCollector.Stage;
+
 import java.util.List;
 import java.util.Map;
-
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
-import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * Allows the runner to report the state of running stories
@@ -46,22 +38,6 @@ public interface StoryReporter {
 
     void beforeScenario(Scenario scenario);
 
-    /**
-     * @deprecated use {@link #beforeScenario(Scenario)}
-     *
-     * @param scenarioTitle Scenario title
-     */
-    @Deprecated
-    void beforeScenario(String scenarioTitle);
-
-    /**
-     * @deprecated use {@link #beforeScenario(Scenario)}
-     *
-     * @param meta Scenario meta
-     */
-    @Deprecated
-    void scenarioMeta(Meta meta);
-
     void afterScenario();
 
     void beforeGivenStories();
@@ -73,14 +49,6 @@ public interface StoryReporter {
     void afterGivenStories();
 
     void beforeExamples(List<String> steps, ExamplesTable table);
-
-    /**
-     * @deprecated use {@link #example(Map, int)}
-     *
-     * @param tableRow Example table row
-     */
-    @Deprecated
-    void example(Map<String, String> tableRow);
 
     void example(Map<String, String> tableRow, int exampleIndex);
 
