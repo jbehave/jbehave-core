@@ -1,38 +1,30 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.*;
-
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.*;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.embedder.MatchingStepMonitor;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.AbstractStepResult.Ignorable;
+import org.jbehave.core.model.*;
 import org.jbehave.core.steps.AbstractStepResult.Comment;
+import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
 import org.junit.jupiter.api.Test;
 
+import java.util.*;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
+
 class MarkUnmatchedStepsAsPendingBehaviour {
-
-    private MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
-
-    private Map<String, String> parameters = new HashMap<>();
+    private final StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
+    private final StepMonitor stepMonitor = new NullStepMonitor();
+    private final Map<String, String> parameters = new HashMap<>();
 
     @Test
     void shouldCreateExecutableStepsWhenCandidatesAreMatched() {
@@ -42,12 +34,12 @@ class MarkUnmatchedStepsAsPendingBehaviour {
 
         String stepAsString = "my step";
         when(candidate.matches(stepAsString, null)).thenReturn(true);
-        when(candidate.createMatchedStep(stepAsString, parameters, Collections.<Step>emptyList())).thenReturn(executableStep);
+        when(candidate.createMatchedStep(stepAsString, parameters, Collections.emptyList())).thenReturn(executableStep);
         List<CandidateSteps> steps = mockCandidateSteps(candidate);
 
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(steps, createScenario(stepAsString),
-                parameters);
+                parameters, stepMonitor);
 
         // Then
         assertThat(executableSteps.size(), equalTo(1));
@@ -64,16 +56,16 @@ class MarkUnmatchedStepsAsPendingBehaviour {
 
         String myStep = "my step";
         when(candidate.matches(myStep)).thenReturn(true);
-        when(candidate.createMatchedStep(myStep, parameters, Collections.<Step>emptyList())).thenReturn(step);
+        when(candidate.createMatchedStep(myStep, parameters, Collections.emptyList())).thenReturn(step);
         String myAndStep = "And my step";
         when(andCandidate.matches(myAndStep)).thenReturn(true);
-        when(andCandidate.createMatchedStep(myAndStep, parameters, Collections.<Step>emptyList())).thenReturn(andStep);
+        when(andCandidate.createMatchedStep(myAndStep, parameters, Collections.emptyList())).thenReturn(andStep);
 
         List<CandidateSteps> steps = mockCandidateSteps(candidate, andCandidate);
 
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(steps,
-                createScenario(myStep, myAndStep), parameters);
+                createScenario(myStep, myAndStep), parameters, stepMonitor);
 
         // Then
         assertThat(executableSteps.size(), equalTo(2));
@@ -91,20 +83,20 @@ class MarkUnmatchedStepsAsPendingBehaviour {
 
         String myAnyStep = "my any step";
         when(anyCandidate.matches(myAnyStep, null)).thenReturn(true);
-        when(anyCandidate.createMatchedStepUponOutcome(myAnyStep, parameters, Collections.<Step>emptyList(), Outcome.ANY)).thenReturn(anyStep);
+        when(anyCandidate.createMatchedStepUponOutcome(myAnyStep, parameters, Collections.emptyList(), Outcome.ANY)).thenReturn(anyStep);
         String mySuccessStep = "my success step";
         when(successCandidate.matches(mySuccessStep, null)).thenReturn(true);
-        when(successCandidate.createMatchedStepUponOutcome(mySuccessStep, parameters, Collections.<Step>emptyList(), Outcome.SUCCESS)).thenReturn(successStep);
+        when(successCandidate.createMatchedStepUponOutcome(mySuccessStep, parameters, Collections.emptyList(), Outcome.SUCCESS)).thenReturn(successStep);
         String myFailureStep = "my failure step";
         when(successCandidate.matches(myFailureStep, null)).thenReturn(true);
-        when(successCandidate.createMatchedStepUponOutcome(myFailureStep, parameters, Collections.<Step>emptyList(), Outcome.FAILURE)).thenReturn(failureStep);
+        when(successCandidate.createMatchedStepUponOutcome(myFailureStep, parameters, Collections.emptyList(), Outcome.FAILURE)).thenReturn(failureStep);
 
         List<CandidateSteps> steps = mockCandidateSteps(anyCandidate, successCandidate, failureCandidate);
 
-        Lifecycle lifecycle = new Lifecycle(ExamplesTable.EMPTY, Arrays.<Lifecycle.Steps>asList(),
+        Lifecycle lifecycle = new Lifecycle(ExamplesTable.EMPTY, Arrays.asList(),
                 asList(new Lifecycle.Steps(Outcome.ANY, asList(myAnyStep)),
-                new Lifecycle.Steps(Outcome.SUCCESS, asList(mySuccessStep)),
-                new Lifecycle.Steps(Outcome.FAILURE, asList(myFailureStep))));
+                        new Lifecycle.Steps(Outcome.SUCCESS, asList(mySuccessStep)),
+                        new Lifecycle.Steps(Outcome.FAILURE, asList(myFailureStep))));
 
         // When
         List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Scope.SCENARIO,
@@ -129,21 +121,21 @@ class MarkUnmatchedStepsAsPendingBehaviour {
 
         String myAnyStep = "my any step";
         when(anyCandidate.matches(myAnyStep, null)).thenReturn(true);
-        when(anyCandidate.createMatchedStepUponOutcome(myAnyStep, parameters, Collections.<Step>emptyList(), Outcome.ANY)).thenReturn(anyStep);
+        when(anyCandidate.createMatchedStepUponOutcome(myAnyStep, parameters, Collections.emptyList(), Outcome.ANY)).thenReturn(anyStep);
         String mySuccessStep = "my success step";
         when(successCandidate.matches(mySuccessStep, null)).thenReturn(true);
-        when(successCandidate.createMatchedStepUponOutcome(mySuccessStep, parameters, Collections.<Step>emptyList(), Outcome.SUCCESS)).thenReturn(successStep);
+        when(successCandidate.createMatchedStepUponOutcome(mySuccessStep, parameters, Collections.emptyList(), Outcome.SUCCESS)).thenReturn(successStep);
         String myFailureStep = "my failure step";
         when(successCandidate.matches(myFailureStep, null)).thenReturn(true);
-        when(successCandidate.createMatchedStepUponOutcome(myFailureStep, parameters, Collections.<Step>emptyList(), Outcome.FAILURE)).thenReturn(failureStep);
+        when(successCandidate.createMatchedStepUponOutcome(myFailureStep, parameters, Collections.emptyList(), Outcome.FAILURE)).thenReturn(failureStep);
 
         List<CandidateSteps> steps = mockCandidateSteps(anyCandidate, successCandidate, failureCandidate);
 
         Scope scope = Scope.STORY;
-        Lifecycle lifecycle = new Lifecycle(Arrays.<Lifecycle.Steps>asList(),
+        Lifecycle lifecycle = new Lifecycle(Arrays.asList(),
                 asList(new Lifecycle.Steps(scope, Outcome.ANY, asList(myAnyStep)),
-                new Lifecycle.Steps(scope, Outcome.SUCCESS, asList(mySuccessStep)),
-                new Lifecycle.Steps(scope, Outcome.FAILURE, asList(myFailureStep))));
+                        new Lifecycle.Steps(scope, Outcome.SUCCESS, asList(mySuccessStep)),
+                        new Lifecycle.Steps(scope, Outcome.FAILURE, asList(myFailureStep))));
 
         // When
         List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, scope,
@@ -171,11 +163,11 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         String compositeAsText = "my composite step";
         when(compositeCandidate.matches(compositeAsText, null)).thenReturn(true);
         when(compositeCandidate.isComposite()).thenReturn(true);
-        when(compositeCandidate.createMatchedStep(compositeAsText, parameters, Collections.<Step>emptyList())).thenReturn(
+        when(compositeCandidate.createMatchedStep(compositeAsText, parameters, Collections.emptyList())).thenReturn(
                 executableComposite);
 
         // When
-        stepCollector.collectScenarioSteps(steps, createScenario(compositeAsText), parameters);
+        stepCollector.collectScenarioSteps(steps, createScenario(compositeAsText), parameters, stepMonitor);
 
         // Then
         verify(compositeCandidate, times(1)).
@@ -195,7 +187,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(steps,
                 createScenario(givenPendingStep, andGivenPendingStep, whenPendingStep, andWhenPendingStep),
-                parameters);
+                parameters, stepMonitor);
         // Then
         assertThat(executableSteps.size(), equalTo(4));
         assertIsPending(executableSteps.get(0), givenPendingStep, null);
@@ -224,7 +216,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(steps,
                 createScenario(givenPendingStep, andGivenPendingStep, whenPendingStep, andWhenPendingStep),
-                parameters);
+                parameters, stepMonitor);
         // Then
         assertThat(executableSteps.size(), equalTo(4));
         assertIsPending(executableSteps.get(0), givenPendingStep, null);
@@ -254,7 +246,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         List<CandidateSteps> steps = mockCandidateSteps(candidate);
 
         // When
-        List<Step> executableSteps = stepCollector.collectScenarioSteps(steps, createScenario(stepAsString), parameters);
+        List<Step> executableSteps = stepCollector.collectScenarioSteps(steps, createScenario(stepAsString), parameters, stepMonitor);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform(null, null);
@@ -271,7 +263,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         List<CandidateSteps> steps = mockCandidateSteps(candidate);
 
         // When
-        List<Step> executableSteps = stepCollector.collectScenarioSteps(steps, createScenario(stepAsString), parameters);
+        List<Step> executableSteps = stepCollector.collectScenarioSteps(steps, createScenario(stepAsString), parameters, stepMonitor);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform(null, null);
@@ -426,13 +418,13 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         when(candidate2.getPriority()).thenReturn(2);
         when(candidate3.getPriority()).thenReturn(3);
         when(candidate4.getPriority()).thenReturn(4);
-        when(candidate1.createMatchedStep(stepAsString, parameters, Collections.<Step>emptyList())).thenReturn(step1);
-        when(candidate2.createMatchedStep(stepAsString, parameters, Collections.<Step>emptyList())).thenReturn(step2);
-        when(candidate3.createMatchedStep(stepAsString, parameters, Collections.<Step>emptyList())).thenReturn(step3);
-        when(candidate4.createMatchedStep(stepAsString, parameters, Collections.<Step>emptyList())).thenReturn(step4);
+        when(candidate1.createMatchedStep(stepAsString, parameters, Collections.emptyList())).thenReturn(step1);
+        when(candidate2.createMatchedStep(stepAsString, parameters, Collections.emptyList())).thenReturn(step2);
+        when(candidate3.createMatchedStep(stepAsString, parameters, Collections.emptyList())).thenReturn(step3);
+        when(candidate4.createMatchedStep(stepAsString, parameters, Collections.emptyList())).thenReturn(step4);
 
         // When we collect the list of steps
-        List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2), createScenario(stepAsString), parameters);
+        List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2), createScenario(stepAsString), parameters, stepMonitor);
 
         // Then the step with highest priority is returned
         assertThat(step4, equalTo(steps.get(0)));
@@ -466,13 +458,13 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         when(candidate2.getPatternAsString()).thenReturn("When I do something ");
         when(candidate3.getPatternAsString()).thenReturn("Then I do something");
         when(candidate4.getPatternAsString()).thenReturn("And I do something");
-        when(candidate1.createMatchedStep(stepAsString, parameters, Collections.<Step>emptyList())).thenReturn(step1);
-        when(candidate2.createMatchedStep(stepAsString, parameters, Collections.<Step>emptyList())).thenReturn(step2);
-        when(candidate3.createMatchedStep(stepAsString, parameters, Collections.<Step>emptyList())).thenReturn(step3);
-        when(candidate4.createMatchedStep(stepAsString, parameters, Collections.<Step>emptyList())).thenReturn(step4);
+        when(candidate1.createMatchedStep(stepAsString, parameters, Collections.emptyList())).thenReturn(step1);
+        when(candidate2.createMatchedStep(stepAsString, parameters, Collections.emptyList())).thenReturn(step2);
+        when(candidate3.createMatchedStep(stepAsString, parameters, Collections.emptyList())).thenReturn(step3);
+        when(candidate4.createMatchedStep(stepAsString, parameters, Collections.emptyList())).thenReturn(step4);
 
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending(new StepFinder(new ByLevenshteinDistance()));
-        List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2), createScenario(stepAsString), parameters);
+        List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2), createScenario(stepAsString), parameters, stepMonitor);
 
         // Then the step with highest priority is returned
         assertThat(step4, equalTo(steps.get(0)));
@@ -504,12 +496,12 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         Meta meta = beforeAndAfterMeta();
 
         ScenarioType scenarioType = ScenarioType.NORMAL;
-        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps), meta,
                 Stage.BEFORE, scenarioType);
         beforeSteps.get(0).perform(null, null);
         assertThat(steps.value, equalTo("before"));
 
-        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps), meta,
                 Stage.AFTER, scenarioType);
         afterSteps.get(0).perform(null, null);
         assertThat(steps.value, equalTo("after"));
@@ -523,13 +515,13 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         UUIDExceptionWrapper failureOccurred = new UUIDExceptionWrapper();
 
         ScenarioType scenarioType = ScenarioType.NORMAL;
-        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps), meta,
                 Stage.BEFORE, scenarioType);
         beforeSteps.get(0).doNotPerform(null, failureOccurred);
         assertThat(steps.value, equalTo("before"));
         assertThat(steps.exception, equalTo(failureOccurred));
 
-        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps), meta,
                 Stage.AFTER, scenarioType);
         failureOccurred = new UUIDExceptionWrapper();
         afterSteps.get(0).doNotPerform(null, failureOccurred);
@@ -543,12 +535,12 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         Story story = mock(Story.class);
         when(story.getMeta()).thenReturn(beforeAndAfterMeta());
 
-        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps), story,
                 Stage.BEFORE, false);
         beforeSteps.get(0).perform(null, null);
         assertThat(steps.value, equalTo("before"));
 
-        List<Step> afterSteps = stepCollector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps), story,
                 Stage.AFTER, false);
         afterSteps.get(0).perform(null, null);
         assertThat(steps.value, equalTo("after"));
@@ -560,14 +552,14 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         Story story = mock(Story.class);
         when(story.getMeta()).thenReturn(beforeAndAfterMeta());
 
-        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps), story,
                 Stage.BEFORE, false);
         UUIDExceptionWrapper failureOccurred = new UUIDExceptionWrapper();
         beforeSteps.get(0).doNotPerform(null, failureOccurred);
         assertThat(steps.value, equalTo("before"));
         assertThat(steps.exception, equalTo(failureOccurred));
 
-        List<Step> afterSteps = stepCollector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps), story,
                 Stage.AFTER, false);
         failureOccurred = new UUIDExceptionWrapper();
         afterSteps.get(0).doNotPerform(null, failureOccurred);

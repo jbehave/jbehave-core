@@ -1,18 +1,14 @@
 package org.jbehave.core.model;
 
-import static org.codehaus.plexus.util.StringUtils.isNotBlank;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.embedder.MetaFilter;
+
+import java.util.*;
+
+import static org.codehaus.plexus.util.StringUtils.isNotBlank;
 
 public class Lifecycle {
 
@@ -56,8 +52,6 @@ public class Lifecycle {
         return !unwrap(before).isEmpty();
     }
 
-    /** @deprecated Use #getBeforeSteps(Scope) */
-    @Deprecated
     public List<String> getBeforeSteps() {
         return getBeforeSteps(Scope.SCENARIO);
     }
@@ -74,8 +68,6 @@ public class Lifecycle {
         return !unwrap(this.after).isEmpty();
     }
 
-    /** @deprecated Use #getAfterSteps(Scope) */
-    @Deprecated
     public List<String> getAfterSteps() {
         return getAfterSteps(Scope.SCENARIO);
     }

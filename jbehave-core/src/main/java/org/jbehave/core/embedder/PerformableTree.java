@@ -1,14 +1,5 @@
 package org.jbehave.core.embedder;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -17,28 +8,19 @@ import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
-import org.jbehave.core.failures.BatchFailures;
-import org.jbehave.core.failures.FailingUponPendingStep;
-import org.jbehave.core.failures.IgnoringStepsFailure;
-import org.jbehave.core.failures.PendingStepsFound;
-import org.jbehave.core.failures.RestartingScenarioFailure;
-import org.jbehave.core.failures.RestartingStoryFailure;
-import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.GivenStory;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.failures.*;
+import org.jbehave.core.model.*;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.DelegatingStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.*;
-import org.jbehave.core.steps.context.StepsContext;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.Timer;
 import org.jbehave.core.steps.StepCreator.PendingStep;
+import org.jbehave.core.steps.context.StepsContext;
+
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Creates a tree of {@link Performable} objects for a set of stories, grouping
@@ -606,18 +588,6 @@ public class PerformableTree {
                     storyAndScenarioMeta, stage, type));
         }
 
-        @Deprecated
-        public PerformableSteps lifecycleSteps(Lifecycle lifecycle, Meta meta, Stage stage) {
-            return lifecycleSteps(lifecycle, meta, stage, Scope.SCENARIO);
-        }
-
-        @Deprecated
-        public PerformableSteps lifecycleSteps(Lifecycle lifecycle, Meta meta, Stage stage, Scope scope) {
-            MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
-            List<Step> steps = configuration.stepCollector().collectLifecycleSteps(candidateSteps, lifecycle, meta, stage, scope);
-            return new PerformableSteps(steps, monitor.matched());
-        }
-
         private Map<Stage, PerformableSteps> lifecycleSteps(Lifecycle lifecycle, Meta meta, Scope scope) {
             MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
             Map<Stage, List<Step>> steps = configuration.stepCollector().collectLifecycleSteps(candidateSteps,
@@ -641,14 +611,6 @@ public class PerformableTree {
                 steps.add(step);
                 steps.addAll(beforeOrAfterStepSteps.get(Stage.AFTER));
             }
-            return new PerformableSteps(steps, monitor.matched());
-        }
-
-        @Deprecated
-        public PerformableSteps scenarioSteps(Scenario scenario, Map<String, String> parameters) {
-            MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
-            List<Step> steps = configuration.stepCollector().collectScenarioSteps(candidateSteps, scenario, parameters,
-                    monitor);
             return new PerformableSteps(steps, monitor.matched());
         }
 
