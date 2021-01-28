@@ -19,6 +19,11 @@
       <artifactId>jbehave-groovy</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-core-example</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

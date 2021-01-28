@@ -6,7 +6,7 @@ import java.util.List;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
-public class FailingCoreStories extends CoreStories {
+public class CoreStoriesFailing extends CoreStories {
 
     @Override
     protected List<String> storyPaths() {

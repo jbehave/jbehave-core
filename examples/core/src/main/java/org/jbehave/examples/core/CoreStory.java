@@ -39,7 +39,7 @@ import static org.jbehave.core.reporters.Format.*;
  * </p>
  * <p>
  * Users wanting to run multiple stories via the same Java class (new to JBehave
- * 3) should look at {@link org.jbehave.examples.core.CoreStories}, {@link CoreStoryRunner} or
+ * 3) should look at {@link org.jbehave.examples.core.CoreStories}, {@link CoreStoriesEmbedders} or
  * {@link org.jbehave.core.junit.AnnotatedEmbedderRunner}
  * </p>
  */

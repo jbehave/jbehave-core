@@ -34,7 +34,7 @@ public class CoreAnnotatedEmbedder extends InjectableEmbedder {
     @org.junit.Test
     public void run() {
         List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromPath("../core/src/main/java"),
-                "**/*.story", "**/examples_table_loaded*");
+                "**/*.story", "**/custom/*.story,**/failing/*.story,**/given/*.story,**/pending/*.story");
         injectedEmbedder().runStoriesAsPaths(storyPaths);
     }
 

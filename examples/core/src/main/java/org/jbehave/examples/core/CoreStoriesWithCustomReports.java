@@ -1,20 +1,20 @@
 package org.jbehave.examples.core;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.reporters.FreemarkerViewGenerator;
-import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.*;
+
+import java.io.File;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
-public class CustomCoreStories extends CoreStories {
+public class CoreStoriesWithCustomReports extends CoreStories {
 
     @Override
     public Configuration configuration() {
@@ -37,5 +37,22 @@ public class CustomCoreStories extends CoreStories {
     protected List<String> storyPaths() {
         String filter = System.getProperty("story.filter", "**/*.story");
         return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/failing/*.story,**/given/*.story,**/pending/*.story");
+    }
+
+    public static class CustomHtmlOutput extends HtmlTemplateOutput {
+
+        public CustomHtmlOutput(File file, Keywords keywords) {
+            super(file, keywords, new FreemarkerProcessor(CustomHtmlOutput.class), "ftl/custom-html-output.ftl");
+        }
+
+        public static final Format FORMAT = new Format("HTML") {
+            @Override
+            public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+                    StoryReporterBuilder storyReporterBuilder) {
+                factory.useConfiguration(storyReporterBuilder.fileConfiguration("html"));
+                return new CustomHtmlOutput(factory.getOutputFile(), storyReporterBuilder.keywords());
+            }
+        };
+
     }
 }

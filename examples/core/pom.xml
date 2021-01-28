@@ -62,7 +62,7 @@
     <profile>
       <id>failing</id>
       <properties>
-        <embeddables>**/FailingCoreStories.java</embeddables>
+        <embeddables>**/CoreStoriesFailing.java</embeddables>
       </properties>
     </profile>
   </profiles>

@@ -3,7 +3,7 @@ package org.jbehave.examples.core.spring;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.spring.SpringStepsFactory;
-import org.jbehave.examples.core.CoreEmbedder;
+import org.jbehave.examples.core.CoreStoriesEmbedders.CoreEmbedder;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

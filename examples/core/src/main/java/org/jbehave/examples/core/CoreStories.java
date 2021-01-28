@@ -1,13 +1,5 @@
 package org.jbehave.examples.core;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.*;
-
-import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -21,7 +13,10 @@ import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.reporters.*;
+import org.jbehave.core.reporters.ContextOutput;
+import org.jbehave.core.reporters.Format;
+import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.SurefireReporter;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterControls;
@@ -30,6 +25,14 @@ import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.examples.core.service.TradingService;
 import org.jbehave.examples.core.steps.*;
+
+import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.*;
 
 /**
  * <p>
@@ -115,7 +118,7 @@ public class CoreStories extends JUnitStories {
         return findPaths(filter, "**/custom/*.story,**/failing/*.story,**/given/*.story,**/pending/*.story");
     }
 
-    private List<String> findPaths(String include, String exclude) {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), include, exclude);
+    protected List<String> findPaths(String include, String exclude) {
+        return new StoryFinder().findPaths(codeLocationFromClass(CoreStories.class), include, exclude);
     }
 }

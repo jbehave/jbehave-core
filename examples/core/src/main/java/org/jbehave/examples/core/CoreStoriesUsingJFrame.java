@@ -12,7 +12,7 @@ import org.jbehave.core.steps.NullStepMonitor;
  * Core stories with JFrame-based context step monitor
  * </p>
  */
-public class JFrameCoreStories extends CoreStories {
+public class CoreStoriesUsingJFrame extends CoreStories {
 
     private Context context = new Context();
     private ContextView contextView = new JFrameContextView().sized(640, 120);

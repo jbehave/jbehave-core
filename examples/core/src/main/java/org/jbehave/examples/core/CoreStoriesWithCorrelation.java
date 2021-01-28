@@ -1,9 +1,5 @@
 package org.jbehave.examples.core;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.AfterStories;
@@ -15,15 +11,19 @@ import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
-public class FailureCorrelationStories extends CoreStories {
+public class CoreStoriesWithCorrelation extends CoreStories {
 
     private List<String> failures = new ArrayList<>();
 
-    public FailureCorrelationStories() {
+    public CoreStoriesWithCorrelation() {
         configuredEmbedder().embedderControls()
                 .doGenerateViewAfterStories(true)
                 .doIgnoreFailureInStories(true)
