@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * Holds flags used by the StoryRunner to control story execution flow.
+ * Holds flags used to control story execution flow.
  */
 public class StoryControls {
 

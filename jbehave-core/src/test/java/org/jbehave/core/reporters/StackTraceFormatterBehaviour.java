@@ -67,9 +67,7 @@ class StackTraceFormatterBehaviour {
                 "\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:42)\n" +
                 "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:108)\n" +
                 "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)\n" +
-                "\tat org.jbehave.core.steps.StepCreator$ParameterisedStep.perform(StepCreator.java:430)\n" +
-                "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)\n" +
-                "\tat org.jbehave.core.embedder.StoryRunner.runStepsWhileKeepingState(StoryRunner.java:457)\n";
+                "\tat org.jbehave.core.steps.StepCreator$ParameterisedStep.perform(StepCreator.java:430)\n";
 
         String trace = formatter.stackTrace(start);
 
@@ -89,9 +87,7 @@ class StackTraceFormatterBehaviour {
                 "\t(groovy-closure-invoke)\n" +
                 "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
                 "\t(groovy-call)\n" +
-                "\tat org.jbehave.core.steps.StepCreator$ParameterisedStep.perform(StepCreator.java:430)\n" +
-                "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)\n" +
-                "...";
+                "\tat org.jbehave.core.steps.StepCreator$ParameterisedStep.perform(StepCreator.java:430)\n";
         assertThatTraceIs(trace, expected);
     }
 
@@ -105,7 +101,7 @@ class StackTraceFormatterBehaviour {
 
         // Then it looks like
         String expected = "java.lang.Exception: some cause\n"
-                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:104)\n"
+                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:100)\n"
                 + "\t(reflection-invoke)\n"
                 + "\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n"
                 + "...";
