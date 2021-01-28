@@ -20,7 +20,6 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.ReportsCount;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -37,7 +36,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class EmbedderMojoBehaviour {
+public class EmbedderMojoBehaviour {
 
     private Embedder embedder = mock(Embedder.class);
     private static final ExecutorService EXECUTOR_SERVICE = mock(ExecutorService.class);
@@ -699,7 +698,6 @@ class EmbedderMojoBehaviour {
     }
 
     @Test
-    @Disabled("Cannot mock MavenProject")
     void shouldUnpackViewResources() throws MojoExecutionException, NoSuchArchiverException, ArchiverException {
         // Given
         UnpackViewResources mojo = new UnpackViewResources() {
@@ -758,7 +756,6 @@ class EmbedderMojoBehaviour {
     }
 
     @Test
-    @Disabled("Cannot mock MavenProject")
     void shouldNotUnpackViewResourcesThatDoNotMatchTheFilters() throws MojoExecutionException,
             NoSuchArchiverException {
         // Given
@@ -800,8 +797,7 @@ class EmbedderMojoBehaviour {
     }
 
     @Test
-    @Disabled("Cannot mock MavenProject")
-    void shouldNotIgnoreFailureInUnpackingViewResources() throws MojoExecutionException, NoSuchArchiverException, ArchiverException {
+    void shouldNotIgnoreFailureInUnpackingViewResources() throws NoSuchArchiverException, ArchiverException {
         // Given
         UnpackViewResources mojo = new UnpackViewResources() {
             @Override
@@ -844,10 +840,8 @@ class EmbedderMojoBehaviour {
         when(archiveManager.getUnArchiver(siteFile)).thenReturn(siteArchiver);
         Mockito.doThrow(new ArchiverException("bum")).when(siteArchiver).extract();
 
-        assertThrows(MojoFailureException.class, mojo::execute);
-        // Then
-        verify(coreArchiver).extract();
-        // and fail as expected ...
+        assertThrows(MojoExecutionException.class, mojo::execute);
+        // Then fail as expected ...
     }
 
     public static class MyExecutors implements ExecutorServiceFactory {

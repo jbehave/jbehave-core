@@ -38,7 +38,6 @@
     <module>pico</module>
     <module>spring</module>
     <module>spring-security</module>
-    <module>weld</module>
   </modules>
 
   <dependencies>
@@ -80,6 +79,12 @@
       <id>rest</id>
       <modules>
         <module>rest</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>weld</id>
+      <modules>
+        <module>weld</module>
       </modules>
     </profile>
   </profiles>
