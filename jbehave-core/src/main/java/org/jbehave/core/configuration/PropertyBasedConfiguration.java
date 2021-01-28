@@ -27,9 +27,7 @@ public class PropertyBasedConfiguration extends MostUsefulConfiguration {
 	 * Setting {@link #SILENT_SUCCESS} will only show the steps for all stories
 	 * if the stories fail.
 	 * </p>
-	 * @deprecated Use StoryReporterBuilder()
 	 */
-	@Deprecated
     @Override
     public StoryReporter defaultStoryReporter() {
 		StoryReporter storyReporter = super.defaultStoryReporter();

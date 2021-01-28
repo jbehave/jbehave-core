@@ -264,10 +264,6 @@ public abstract class Configuration {
         return pendingStepStrategy;
     }
 
-    /**
-     * @deprecated Use {@link StoryReporterBuilder}
-     */
-    @Deprecated
     public StoryReporter defaultStoryReporter() {
         if (defaultStoryReporter == null) {
             defaultStoryReporter = new ConsoleOutput();
