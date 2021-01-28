@@ -1,5 +1,9 @@
 package org.jbehave.core.io;
 
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.plexus.util.DirectoryScanner;
+import org.jbehave.core.configuration.Configuration;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -8,10 +12,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.plexus.util.DirectoryScanner;
-import org.jbehave.core.configuration.Configuration;
-
 import static java.util.Arrays.asList;
 
 /**
@@ -19,8 +19,12 @@ import static java.util.Arrays.asList;
  * directories or jars. Jars are identified by paths ending in ".jar".
  * 
  * Stories can be either in the form of class names or story paths.
+ *
+ * The default class name extension is ".java".
  * 
- * Stories can be sorted by providing a sorting comparator.
+ * Stories can be sorted by providing a sorting {@link Comparator}.
+ * Alternatively, stories can be sorted at execution-time using the
+ * {@link Configuration#useStoryExecutionComparator(Comparator)} instead.
  */
 public class StoryFinder {
 
@@ -29,29 +33,37 @@ public class StoryFinder {
     private final String classNameExtension;
     private final Comparator<? super String> sortingComparator;
 
+    /**
+     * Creates default StoryFinder for ".java" class names and no sorting.
+     */
     public StoryFinder() {
         this(JAVA);
     }
 
+    /**
+     * Creates a StoryFinder with a given class name extension and no sorting.
+     *
+     * @param classNameExtension the extension
+     */
     public StoryFinder(String classNameExtension) {
         this(classNameExtension, null);
     }
 
     /**
+     * Creates a StoryFinder with a given sorting comparator.
+     *
      * @param sortingComparator comparator to sort stories by path
-     * @deprecated Use {@link Configuration#useStoryExecutionComparator(Comparator)} instead
      */
-    @Deprecated
     public StoryFinder(Comparator<? super String> sortingComparator) {
         this(JAVA, sortingComparator);
     }
 
     /**
+     * Creates a StoryFinder with given class name extension and sorting comparator.
+     *
      * @param classNameExtension class name extensions to find
      * @param sortingComparator comparator to sort stories by path
-     * @deprecated Use {@link Configuration#useStoryExecutionComparator(Comparator)} instead
      */
-    @Deprecated
     private StoryFinder(String classNameExtension, Comparator<? super String> sortingComparator) {
         this.classNameExtension = classNameExtension;
         this.sortingComparator = sortingComparator;
