@@ -8,7 +8,6 @@ import org.jbehave.core.embedder.*;
 import org.jbehave.core.embedder.executors.ExecutorServiceFactory;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.*;
 import org.jbehave.core.reporters.ReportsCount;
 
@@ -153,21 +152,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     String injectableEmbedderClass;
 
     /**
-     * The annotated embedder runner class
-     * @deprecated Obsolete
-     */
-    @Deprecated
-    @Parameter(defaultValue = "org.jbehave.core.junit.AnnotatedEmbedderRunner")
-    String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
-
-    /**
-     * Used to find story paths and class names
+     * The story finder used to retrieve story paths and class names
      */
     @Parameter
     String storyFinderClass = StoryFinder.class.getName();
 
     /**
-     * The meta filter
+     * The meta filters
      */
     @Parameter
     String[] metaFilters;
