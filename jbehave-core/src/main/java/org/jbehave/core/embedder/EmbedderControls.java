@@ -54,26 +54,6 @@ public class EmbedderControls {
         return storyTimeouts;
     }
 
-    /**
-     * @deprecated use {@link #storyTimeouts()}
-     */
-    @Deprecated
-    public long storyTimeoutInSecs() {
-    	try {
-    		return Long.parseLong(storyTimeouts);
-    	} catch (NumberFormatException e ){
-            return 0;
-    	}
-    }
-    
-    /**
-     * @deprecated use {@link #storyTimeouts()}
-     */
-    @Deprecated
-    public String storyTimeoutInSecsByPath() {
-        return storyTimeouts();
-    }
-
 	public boolean failOnStoryTimeout() {
 		return failOnStoryTimeout;
 	}
@@ -119,24 +99,6 @@ public class EmbedderControls {
 
     public EmbedderControls useStoryTimeouts(String storyTimeouts) {
         this.storyTimeouts = storyTimeouts;
-        return this;
-    }
-
-    /**
-     * @deprecated use {@link #useStoryTimeouts(String)}
-     */
-    @Deprecated
-    public EmbedderControls useStoryTimeoutInSecs(long storyTimeoutInSecs) {
-    	useStoryTimeouts(Long.toString(storyTimeoutInSecs));
-        return this;
-    }
-
-    /**
-     * @deprecated use {@link #useStoryTimeouts(String)}
-     */
-    @Deprecated
-    public EmbedderControls useStoryTimeoutInSecsByPath(String storyTimeoutInSecsByPath) {
-    	useStoryTimeouts(storyTimeoutInSecsByPath);
         return this;
     }
 

@@ -123,22 +123,6 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     String storyTimeouts;
 
     /**
-     * The story timeout in secs
-     * @deprecated Use storyTimeouts
-     */
-    @Deprecated
-    @Parameter
-    long storyTimeoutInSecs;
-    
-    /**
-     * The story timeout in secs by path
-     * @deprecated Use storyTimeouts
-     */
-    @Deprecated
-    @Parameter
-    String storyTimeoutInSecsByPath;
-
-    /**
      * The boolean flag to fail on story timeout
      */
     @Parameter(defaultValue = "false")
@@ -342,12 +326,6 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
                 .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
                 .doVerboseFiltering(verboseFiltering)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads);
-        if ( storyTimeoutInSecs != 0 ){
-        	embedderControls.useStoryTimeoutInSecs(storyTimeoutInSecs);
-        }
-        if ( storyTimeoutInSecsByPath != null ){
-        	embedderControls.useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath);
-        }
         if ( storyTimeouts != null ){
         	embedderControls.useStoryTimeouts(storyTimeouts);
         }        

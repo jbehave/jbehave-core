@@ -1,54 +1,25 @@
 package org.jbehave.core.configuration;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Set;
-
+import com.thoughtworks.paranamer.NullParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryControls;
-import org.jbehave.core.failures.FailingUponPendingStep;
-import org.jbehave.core.failures.FailureStrategy;
-import org.jbehave.core.failures.PassingUponPendingStep;
-import org.jbehave.core.failures.PendingStepStrategy;
-import org.jbehave.core.failures.RethrowingFailure;
-import org.jbehave.core.failures.SilentlyAbsorbingFailure;
+import org.jbehave.core.failures.*;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.AbsolutePathCalculator;
-import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.io.PathCalculator;
-import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.io.StoryPathResolver;
-import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.io.*;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
-import org.jbehave.core.parsers.CompositeParser;
-import org.jbehave.core.parsers.RegexCompositeParser;
-import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
-import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.parsers.StepPatternParser;
-import org.jbehave.core.parsers.StoryParser;
-import org.jbehave.core.reporters.ConsoleOutput;
-import org.jbehave.core.reporters.FreemarkerViewGenerator;
-import org.jbehave.core.reporters.PrintStreamStepdocReporter;
-import org.jbehave.core.reporters.StepdocReporter;
-import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
-import org.jbehave.core.steps.ParameterControls;
-import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.PrintStreamStepMonitor;
-import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.core.steps.StepCollector;
-import org.jbehave.core.steps.StepFinder;
-import org.jbehave.core.steps.StepMonitor;
+import org.jbehave.core.parsers.*;
+import org.jbehave.core.reporters.*;
+import org.jbehave.core.steps.*;
 import org.jbehave.core.steps.context.StepsContext;
 
-import com.thoughtworks.paranamer.NullParanamer;
-import com.thoughtworks.paranamer.Paranamer;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
 
 /**
  * <p>
@@ -321,7 +292,6 @@ public abstract class Configuration {
         }
         return stepsContext;
     }
-
 
     public StepCollector stepCollector() {
         if (stepCollector == null) {

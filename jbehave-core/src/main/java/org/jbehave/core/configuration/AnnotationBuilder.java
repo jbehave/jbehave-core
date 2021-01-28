@@ -1,12 +1,6 @@
 package org.jbehave.core.configuration;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
+import com.thoughtworks.paranamer.Paranamer;
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
@@ -19,11 +13,7 @@ import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
-import org.jbehave.core.io.PathCalculator;
-import org.jbehave.core.io.ResourceLoader;
-import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.io.*;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
@@ -31,18 +21,15 @@ import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.InstanceStepsFactory;
-import org.jbehave.core.steps.ParameterControls;
-import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.*;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
-import org.jbehave.core.steps.ScanningStepsFactory;
-import org.jbehave.core.steps.StepCollector;
-import org.jbehave.core.steps.StepFinder;
-import org.jbehave.core.steps.StepMonitor;
 
-import com.thoughtworks.paranamer.Paranamer;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Allows the building of {@link Configuration}, {@link CandidateSteps} and
@@ -191,8 +178,6 @@ public class AnnotationBuilder {
         boolean verboseFailures = control(finder, "verboseFailures");
         boolean verboseFiltering = control(finder, "verboseFiltering");
         String storyTimeouts = finder.getAnnotatedValue(UsingEmbedder.class, String.class, "storyTimeouts");
-        long storyTimeoutInSecs = finder.getAnnotatedValue(UsingEmbedder.class, Long.class, "storyTimeoutInSecs");
-        String storyTimeoutInSecsByPath = finder.getAnnotatedValue(UsingEmbedder.class, String.class, "storyTimeoutInSecsByPath");
         boolean failOnStoryTimeout = control(finder, "failOnStoryTimeout");
         int threads = finder.getAnnotatedValue(UsingEmbedder.class, Integer.class, "threads");
         Embedder embedder = embedder();
@@ -201,12 +186,6 @@ public class AnnotationBuilder {
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView)
                 .doVerboseFailures(verboseFailures).doVerboseFiltering(verboseFiltering)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads);
-        if ( storyTimeoutInSecs != 0 ){
-            embedderControls.useStoryTimeoutInSecs(storyTimeoutInSecs);
-        }
-        if ( StringUtils.isNotBlank(storyTimeoutInSecsByPath) ){
-            embedderControls.useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath);
-        }
         if ( StringUtils.isNotBlank(storyTimeouts) ){
             embedderControls.useStoryTimeouts(storyTimeouts);
         }

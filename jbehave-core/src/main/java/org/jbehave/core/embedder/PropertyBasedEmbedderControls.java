@@ -59,16 +59,6 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
     }
 
     @Override
-    public long storyTimeoutInSecs() {
-        return propertyAs(STORY_TIMEOUT_IN_SECS, Long.class, super.storyTimeoutInSecs()); 
-    }
-    
-    @Override
-    public String storyTimeoutInSecsByPath() {
-        return propertyAs(STORY_TIMEOUT_IN_SECS_BY_PATH, String.class, super.storyTimeoutInSecsByPath()); 
-    }
-
-    @Override
 	public boolean failOnStoryTimeout() {
         return propertyAs(FAIL_ON_STORY_TIMEOUT, Boolean.class, super.failOnStoryTimeout()); 
 	}
@@ -111,8 +101,7 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
         .append("ignoreFailureInView", ignoreFailureInView())
         .append("verboseFailures", verboseFailures())
         .append("verboseFiltering", verboseFiltering())
-        .append("storyTimeoutInSecs", storyTimeoutInSecs())
-        .append("storyTimeoutInSecsByPath", storyTimeoutInSecsByPath())
+        .append("storyTimeouts", storyTimeouts())
         .append("threads", threads())
         .toString();        
     }
