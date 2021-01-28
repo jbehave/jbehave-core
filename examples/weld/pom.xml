@@ -28,6 +28,14 @@
       <plugin>
         <groupId>org.jbehave</groupId>
         <artifactId>jbehave-maven-plugin</artifactId>
+        <dependencies>
+          <!-- Required by Weld -->
+          <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>13.0.1</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <id>unpack-view-resources</id>
