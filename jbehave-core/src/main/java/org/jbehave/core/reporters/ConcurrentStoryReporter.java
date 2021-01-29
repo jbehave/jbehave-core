@@ -94,27 +94,22 @@ public class ConcurrentStoryReporter implements StoryReporter {
         }
     }
 
-    private final List<DelayedMethod> delayedMethods;
     private final StoryReporter crossReferencing;
     private final StoryReporter delegate;
     private final boolean multiThreading;
+    private final List<DelayedMethod> delayedMethods;
     private boolean invoked = false;
 
     public ConcurrentStoryReporter(StoryReporter crossReferencing, StoryReporter delegate, boolean multiThreading) {
         this.crossReferencing = crossReferencing;
         this.delegate = delegate;
         this.multiThreading = multiThreading;
-        delayedMethods = multiThreading ? Collections.synchronizedList(new ArrayList<DelayedMethod>()) : null;
+        this.delayedMethods = multiThreading ? Collections.synchronizedList(new ArrayList<DelayedMethod>()) : null;
     }
 
     @Override
     public void storyNotAllowed(Story story, String filter) {
-        crossReferencing.storyNotAllowed(story, filter);
-        if (multiThreading) {
-            delayedMethods.add(new DelayedMethod(storyNotAllowed, story, filter));
-        } else {
-            delegate.storyNotAllowed(story, filter);
-        }
+        perform(reporter -> reporter.storyNotAllowed(story, filter), storyNotAllowed, story, filter);
     }
 
     @Override
