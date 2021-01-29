@@ -34,9 +34,4 @@ public class CoreStoriesUsingNeedle extends CoreStories {
     return new NeedleStepsFactory(configuration(), providers, steps);
   }
 
-  @Override
-  protected List<String> storyPaths() {
-    return new StoryFinder().findPaths(codeLocationFromPath("../core/src/main/java"), "**/*.story", "");
-  }
-
 }

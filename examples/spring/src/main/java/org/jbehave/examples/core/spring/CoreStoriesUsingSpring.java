@@ -28,10 +28,4 @@ public class CoreStoriesUsingSpring extends CoreStories {
                 .createApplicationContext();
     }
 
-    @Override
-    protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromPath("../core/src/main/java"), "**/*.story", "");
-
-    }
-
 }

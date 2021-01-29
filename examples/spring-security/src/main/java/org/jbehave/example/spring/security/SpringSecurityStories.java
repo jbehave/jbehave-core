@@ -1,7 +1,5 @@
 package org.jbehave.example.spring.security;
 
-import java.util.List;
-
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.CodeLocations;
@@ -14,10 +12,10 @@ import org.jbehave.core.steps.spring.SpringStepsFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import static org.jbehave.core.reporters.Format.CONSOLE;
+import java.util.List;
+
+import static org.jbehave.core.reporters.Format.ANSI_CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
 
 public class SpringSecurityStories extends JUnitStories {
 
@@ -31,9 +29,11 @@ public class SpringSecurityStories extends JUnitStories {
     @Override
     public Configuration configuration() {
         Configuration configuration = new MostUsefulConfiguration();
-        configuration.useStoryReporterBuilder(new StoryReporterBuilder()
-                .withCodeLocation(CodeLocations.codeLocationFromClass(getClass())).withDefaultFormats()
-                .withFormats(CONSOLE, TXT, HTML, XML));
+        configuration.useStoryReporterBuilder(
+                new StoryReporterBuilder()
+                        .withCodeLocation(CodeLocations.codeLocationFromClass(getClass()))
+                        .withDefaultFormats()
+                        .withFormats(ANSI_CONSOLE, HTML));
         return configuration;
     }
 

@@ -21,7 +21,7 @@ import org.picocontainer.PicoContainer;
 import org.picocontainer.behaviors.Caching;
 import org.picocontainer.injectors.ConstructorInjection;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 /**
  * Run core stories using PicoStepsFactory. The textual core stories are
@@ -47,11 +47,6 @@ public class CoreStoriesUsingPico extends CoreStories {
         container.addComponent(SandpitSteps.class);
         container.addComponent(SearchSteps.class);
         return container;
-    }
-
-    @Override
-    protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromPath("../core/src/main/java"), "**/*.story", "");
     }
 
 }
