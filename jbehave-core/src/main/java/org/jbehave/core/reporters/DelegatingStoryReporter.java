@@ -8,6 +8,7 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 
@@ -41,227 +42,166 @@ public class DelegatingStoryReporter implements StoryReporter {
 
     @Override
     public void afterScenario() {
-        for (StoryReporter reporter : delegates) {
-            reporter.afterScenario();
-        }
+        delegate(StoryReporter::afterScenario);
     }
 
     @Override
     public void afterStory(boolean givenStory) {
-        for (StoryReporter reporter : delegates) {
-            reporter.afterStory(givenStory);
-        }
+        delegate(reporter -> reporter.afterStory(givenStory));
     }
 
     @Override
     public void beforeScenario(Scenario scenario) {
-        for (StoryReporter reporter : delegates) {
-            reporter.beforeScenario(scenario);
-        }
+        delegate(reporter -> reporter.beforeScenario(scenario));
     }
-
 
     @Override
     public void beforeStory(Story story, boolean givenStory) {
-        for (StoryReporter reporter : delegates) {
-            reporter.beforeStory(story, givenStory);
-        }
+        delegate(reporter -> reporter.beforeStory(story, givenStory));
     }
 
     @Override
     public void narrative(final Narrative narrative) {
-        for (StoryReporter reporter : delegates) {
-            reporter.narrative(narrative);
-        }
+        delegate(reporter -> reporter.narrative(narrative));
     }
 
     @Override
     public void lifecyle(Lifecycle lifecycle) {
-        for (StoryReporter reporter : delegates) {
-            reporter.lifecyle(lifecycle);
-        }
+        delegate(reporter -> reporter.lifecyle(lifecycle));
     }
 
     @Override
     public void beforeScenarioSteps(Stage stage) {
-        for (StoryReporter reporter : delegates) {
-            reporter.beforeScenarioSteps(stage);
-        }
+        delegate(reporter -> reporter.beforeScenarioSteps(stage));
     }
 
     @Override
     public void afterScenarioSteps(Stage stage) {
-        for (StoryReporter reporter : delegates) {
-            reporter.afterScenarioSteps(stage);
-        }
+        delegate(reporter -> reporter.afterScenarioSteps(stage));
     }
 
     @Override
     public void beforeStorySteps(Stage stage) {
-        for (StoryReporter reporter : delegates) {
-            reporter.beforeStorySteps(stage);
-        }
+        delegate(reporter -> reporter.beforeStorySteps(stage));
     }
 
     @Override
     public void afterStorySteps(Stage stage) {
-        for (StoryReporter reporter : delegates) {
-            reporter.afterStorySteps(stage);
-        }
+        delegate(reporter -> reporter.afterStorySteps(stage));
     }
 
     @Override
     public void beforeExamples(List<String> steps, ExamplesTable table) {
-        for (StoryReporter reporter : delegates) {
-            reporter.beforeExamples(steps, table);
-        }
+        delegate(reporter -> reporter.beforeExamples(steps, table));
     }
 
     @Override
     public void example(Map<String, String> tableRow, int exampleIndex) {
-        for (StoryReporter reporter : delegates) {
-            reporter.example(tableRow, exampleIndex);
-        }
+        delegate(reporter -> reporter.example(tableRow, exampleIndex));
     }
 
     @Override
     public void afterExamples() {
-        for (StoryReporter reporter : delegates) {
-            reporter.afterExamples();
-        }
+        delegate(StoryReporter::afterExamples);
     }
 
     @Override
     public void failed(String step, Throwable cause) {
-        for (StoryReporter reporter : delegates) {
-            reporter.failed(step, cause);
-        }
+        delegate(reporter -> reporter.failed(step, cause));
     }
 
     @Override
     public void failedOutcomes(String step, OutcomesTable table) {
-        for (StoryReporter reporter : delegates) {
-            reporter.failedOutcomes(step, table);
-        }
+        delegate(reporter -> reporter.failedOutcomes(step, table));
     }
 
     @Override
     public void beforeGivenStories() {
-        for (StoryReporter reporter : delegates) {
-            reporter.beforeGivenStories();
-        }
+        delegate(StoryReporter::beforeGivenStories);
     }
 
     @Override
     public void givenStories(GivenStories givenStories) {
-        for (StoryReporter reporter : delegates) {
-            reporter.givenStories(givenStories);
-        }
+        delegate(reporter -> reporter.givenStories(givenStories));
     }
 
     @Override
     public void givenStories(List<String> storyPaths) {
-        for (StoryReporter reporter : delegates) {
-            reporter.givenStories(storyPaths);
-        }
+        delegate(reporter -> reporter.givenStories(storyPaths));
     }
 
     @Override
     public void afterGivenStories() {
-        for (StoryReporter reporter : delegates) {
-            reporter.afterGivenStories();
-        }
+        delegate(StoryReporter::afterGivenStories);
     }
 
     @Override
     public void beforeStep(String step) {
-        for (StoryReporter reporter : delegates) {
-            reporter.beforeStep(step);
-        }
+        delegate(reporter -> reporter.beforeStep(step));
     }
 
     @Override
     public void ignorable(String step) {
-        for (StoryReporter reporter : delegates) {
-            reporter.ignorable(step);
-        }
+        delegate(reporter -> reporter.ignorable(step));
     }
 
     @Override
     public void comment(String step) {
-        for (StoryReporter reporter : delegates) {
-            reporter.comment(step);
-        }
+        delegate(reporter -> reporter.comment(step));
     }
 
     @Override
     public void notPerformed(String step) {
-        for (StoryReporter reporter : delegates) {
-            reporter.notPerformed(step);
-        }
+        delegate(reporter -> reporter.notPerformed(step));
     }
 
     @Override
     public void pending(String step) {
-        for (StoryReporter reporter : delegates) {
-            reporter.pending(step);
-        }
+        delegate(reporter -> reporter.pending(step));
     }
 
     @Override
     public void successful(String step) {
-        for (StoryReporter reporter : delegates) {
-            reporter.successful(step);
-        }
+        delegate(reporter -> reporter.successful(step));
     }
 
     @Override
     public void scenarioNotAllowed(Scenario scenario, String filter) {
-        for (StoryReporter reporter : delegates) {
-            reporter.scenarioNotAllowed(scenario, filter);
-        }
+        delegate(reporter -> reporter.scenarioNotAllowed(scenario, filter));
     }
 
     @Override
     public void storyNotAllowed(Story story, String filter) {
-        for (StoryReporter reporter : delegates) {
-            reporter.storyNotAllowed(story, filter);
-        }
+        delegate(reporter -> reporter.storyNotAllowed(story, filter));
     }
 
     @Override
     public void dryRun() {
-        for (StoryReporter reporter : delegates) {
-            reporter.dryRun();
-        }
+        delegate(StoryReporter::dryRun);
     }
     
     @Override
     public void pendingMethods(List<String> methods) {
-        for (StoryReporter reporter : delegates) {
-            reporter.pendingMethods(methods);
-        }
+        delegate(reporter -> reporter.pendingMethods(methods));
     }
 
     @Override
     public void restarted(String step, Throwable cause) {
-        for (StoryReporter reporter : delegates) {
-            reporter.restarted(step, cause);
-        }
+        delegate(reporter -> reporter.restarted(step, cause));
     }
     
     @Override
     public void restartedStory(Story story, Throwable cause) {
-        for (StoryReporter reporter : delegates) {
-            reporter.restartedStory(story, cause);
-        }
+        delegate(reporter -> reporter.restartedStory(story, cause));
     }
 
     @Override
     public void storyCancelled(Story story, StoryDuration storyDuration) {
-        for (StoryReporter reporter : delegates) {
-            reporter.storyCancelled(story, storyDuration);
-        }
+        delegate(reporter -> reporter.storyCancelled(story, storyDuration));
+    }
+
+    private void delegate(Consumer<StoryReporter> reporter) {
+        delegates.forEach(reporter);
     }
 
     public Collection<StoryReporter> getDelegates() {
