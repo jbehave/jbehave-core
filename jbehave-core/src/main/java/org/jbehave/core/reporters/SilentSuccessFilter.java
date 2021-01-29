@@ -163,7 +163,7 @@ public class SilentSuccessFilter extends NullStoryReporter {
         return new State() {
             @Override
             public void report() {
-                stateReporter.run();;
+                stateReporter.run();
             }
         };
     }
