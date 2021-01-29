@@ -32,16 +32,10 @@ public class JsonOutput extends PrintStreamOutput {
     private static final String[] STEP_KEYS = { "successful", "ignorable", "comment", "pending", "notPerformed",
             "failed", "restarted" };
 
-    private static final String[] PARAMETER_KEYS = { PARAMETER_TABLE_START, PARAMETER_TABLE_END,
-            PARAMETER_VERBATIM_START, PARAMETER_VERBATIM_END, PARAMETER_VALUE_START, PARAMETER_VALUE_END,
-            PARAMETER_VALUE_NEWLINE, "parameterValueStart", "parameterValueEnd", "parameterValueNewline" };
-
     private char lastChar = JSON_DOCUMENT_START;
 
     private int givenStoriesLevel = 0;
     private int storyPublishingLevel = 0;
-    private final Map<Integer, Boolean> scenarioPublishingPerLevels = new HashMap<>();
-    private boolean scenarioCompleted = false;
     private boolean stepPublishing = false;
 
     public JsonOutput(PrintStream output, Keywords keywords) {
@@ -86,40 +80,12 @@ public class JsonOutput extends PrintStreamOutput {
         if (stepPublishing) {
             if ("example".equals(key) || "exampleScenariosEnd".equals(key)) {
                 // Closing previous "example"
-                print("]}");
-                stepPublishing = false;
+                print("}");
             }
             if ("afterScenario".equals(key) || "afterScenarioWithFailure".equals(key)) {
-                // Closing "steps"
-                print("]");
-                stepPublishing = false;
-                scenarioCompleted = true;
-            }
-            else if ("afterBeforeStorySteps".equals(key) || "afterAfterStorySteps".equals(key)){
                 stepPublishing = false;
             }
         } else if (ArrayUtils.contains(STEP_KEYS, key)) {
-            // Starting "steps"
-            print("\"steps\": [");
-            stepPublishing = true;
-        } else if ("beforeScenario".equals(key)) {
-            scenarioCompleted = false;
-            if (scenarioPublishingPerLevels.get(storyPublishingLevel) != Boolean.TRUE) {
-                // Starting "scenarios"
-                print("\"scenarios\": [");
-                scenarioPublishingPerLevels.put(storyPublishingLevel, Boolean.TRUE);
-            }
-        } else if ("afterScenario".equals(key) || "afterScenarioWithFailure".equals(key)) {
-            // Need to complete scenario with examples
-            scenarioCompleted = true;
-        }
-        else if (!"afterExamples".equals(key) && scenarioPublishingPerLevels.get(storyPublishingLevel) == Boolean.TRUE
-                && scenarioCompleted && !ArrayUtils.contains(PARAMETER_KEYS, key)) {
-            // Closing "scenarios"
-            scenarioPublishingPerLevels.put(storyPublishingLevel, Boolean.FALSE);
-            print("]");
-        }
-        if ("beforeBeforeStorySteps".equals(key) || "beforeAfterStorySteps".equals(key)) {
             stepPublishing = true;
         }
         return super.format(key, defaultPattern, args);
@@ -135,6 +101,9 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("dryRun", "\"dryRun\": \"{0}\"");
         patterns.setProperty("beforeStory", "'{'\"path\": \"{1}\", \"title\": \"{0}\"");
         patterns.setProperty("storyCancelled", "'{'\"cancelled\": '{'\"keyword\": \"{0}\", \"durationKeyword\": \"{1}\", \"durationInSecs\": \"{2}\"}}");
+        patterns.setProperty("afterStory", "}");
+        patterns.setProperty("beforeScenarios", "\"scenarios\": [");
+        patterns.setProperty("afterScenarios", "]");
         patterns.setProperty("afterStory", "}");
         patterns.setProperty("pendingMethodsStart", "\"pendingMethods\": [");
         patterns.setProperty("pendingMethod", "\"{0}\"");
@@ -162,6 +131,8 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("afterBeforeStorySteps", "]");
         patterns.setProperty("beforeAfterStorySteps", "\"afterStorySteps\": [");
         patterns.setProperty("afterAfterStorySteps", "]");
+        patterns.setProperty("beforeScenarioSteps", "\"steps\": [");
+        patterns.setProperty("afterScenarioSteps", "]");
         patterns.setProperty("beforeScenario","'{'\"keyword\": \"{0}\", \"title\": \"{1}\"");
         patterns.setProperty("scenarioNotAllowed", "\"notAllowed\": '{'\"pattern\": \"{0}\"}");
         patterns.setProperty("afterScenario", "}");

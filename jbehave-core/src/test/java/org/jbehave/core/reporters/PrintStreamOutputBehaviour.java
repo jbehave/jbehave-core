@@ -222,6 +222,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         reporter.beforeStory(rootStory, false);
         reporter.lifecyle(lifecycle);
+        reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
@@ -229,6 +230,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
         reporter.lifecyle(lifecycle);
+        reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
@@ -236,6 +238,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
         reporter.lifecyle(lifecycle);
+        reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
@@ -244,6 +247,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.afterScenarioSteps(null);
         reporter.afterExamples();
         reporter.afterScenario();
+        reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reporter.beforeScenarioSteps(null);
@@ -251,6 +255,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.afterScenarioSteps(null);
         reporter.afterExamples();
         reporter.afterScenario();
+        reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reporter.beforeScenarioSteps(null);
@@ -258,13 +263,6 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.afterScenarioSteps(null);
         reporter.afterExamples();
         reporter.afterScenario();
-        reporter.beforeScenario(scenario);
-        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
-        reporter.example(example, 0);
-        reporter.beforeGivenStories();
-        reporter.givenStories(Collections.singletonList(givenStory.getPath()));
-        reporter.beforeStory(givenStory, true);
-        reporter.lifecyle(lifecycle);
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
@@ -272,6 +270,15 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
         reporter.lifecyle(lifecycle);
+        reporter.beforeScenarios();
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
+        reporter.example(example, 0);
+        reporter.beforeGivenStories();
+        reporter.givenStories(Collections.singletonList(givenStory.getPath()));
+        reporter.beforeStory(givenStory, true);
+        reporter.lifecyle(lifecycle);
+        reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
@@ -280,6 +287,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.afterScenarioSteps(null);
         reporter.afterExamples();
         reporter.afterScenario();
+        reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reporter.beforeScenarioSteps(null);
@@ -287,6 +295,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.afterScenarioSteps(null);
         reporter.afterExamples();
         reporter.afterScenario();
+        reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reporter.beforeScenarioSteps(null);
@@ -294,6 +303,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.afterScenarioSteps(null);
         reporter.afterExamples();
         reporter.afterScenario();
+        reporter.afterScenarios();
         reporter.afterStory(false);
 
         // Then
@@ -319,6 +329,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         reporter.beforeStory(rootStory, false);
         reporter.lifecyle(lifecycle);
+        reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.emptyList(), examplesTable);
         reporter.example(example, 0);
@@ -329,6 +340,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.example(example, 0);
         reporter.afterExamples();
         reporter.afterScenario();
+        reporter.afterScenarios();
         reporter.afterStory(false);
 
         // Then
@@ -615,10 +627,13 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         reporter.beforeStory(story, false);
         reporter.lifecyle(lifecycle);
+        reporter.beforeScenarios();
         reporter.beforeScenario(new Scenario("Normal scenario", Meta.EMPTY));
         reporter.beforeExamples(Collections.singletonList("Then '<expected>' is equal to '<actual>'"), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
+        reporter.beforeScenarioSteps(null);
         reporter.successful("Then '((some data))' is ((equal to)) '((some data))'");
+        reporter.afterScenarioSteps(null);
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.beforeScenario(new Scenario("Some empty scenario", Meta.EMPTY));
@@ -626,6 +641,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.example(table.getRow(0), -1);
         reporter.afterExamples();
         reporter.afterScenario();
+        reporter.afterScenarios();
         reporter.afterStory(false);
 
         // Then

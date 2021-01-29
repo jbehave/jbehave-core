@@ -950,9 +950,11 @@ public class PerformableTree {
         }
 
         private void performScenarios(RunContext context) throws InterruptedException {
+            context.reporter().beforeScenarios();
             for (PerformableScenario scenario : scenarios) {
                 scenario.perform(context);
             }
+            context.reporter().afterScenarios();
         }
 
         public List<PerformableScenario> getScenarios() {

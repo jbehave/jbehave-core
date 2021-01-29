@@ -29,8 +29,10 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method beforeScenarioSteps;
     private static Method afterScenarioSteps;
     private static Method scenarioNotAllowed;
+    private static Method beforeScenarios;
     private static Method beforeScenario;
     private static Method afterScenario;
+    private static Method afterScenarios;
     private static Method beforeGivenStories;
     private static Method givenStories;
     private static Method givenStoriesPaths;
@@ -64,8 +66,10 @@ public class ConcurrentStoryReporter implements StoryReporter {
             beforeScenarioSteps = StoryReporter.class.getMethod("beforeScenarioSteps", Stage.class);
             afterScenarioSteps = StoryReporter.class.getMethod("afterScenarioSteps", Stage.class);
             scenarioNotAllowed = StoryReporter.class.getMethod("scenarioNotAllowed", Scenario.class, String.class);
+            beforeScenarios = StoryReporter.class.getMethod("beforeScenarios");
             beforeScenario = StoryReporter.class.getMethod("beforeScenario", Scenario.class);
             afterScenario = StoryReporter.class.getMethod("afterScenario");
+            afterScenarios = StoryReporter.class.getMethod("afterScenarios");
             beforeGivenStories = StoryReporter.class.getMethod("beforeGivenStories");
             givenStories = StoryReporter.class.getMethod("givenStories", GivenStories.class);
             givenStoriesPaths = StoryReporter.class.getMethod("givenStories", List.class);
@@ -159,6 +163,11 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeScenarios() {
+        perform(StoryReporter::beforeScenarios, beforeScenarios);
+    }
+
+    @Override
     public void beforeScenario(Scenario scenario) {
         perform(reporter ->  reporter.beforeScenario(scenario), beforeScenario, scenario);
     }
@@ -166,6 +175,11 @@ public class ConcurrentStoryReporter implements StoryReporter {
     @Override
     public void afterScenario() {
         perform(StoryReporter::afterScenario, afterScenario);
+    }
+
+    @Override
+    public void afterScenarios() {
+        perform(StoryReporter::afterScenarios, afterScenarios);
     }
 
     @Override

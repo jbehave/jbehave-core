@@ -245,6 +245,16 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
+    public void beforeScenarios() {
+        print(format("beforeScenarios", ""));
+    }
+
+    @Override
+    public void afterScenarios() {
+        print(format("afterScenarios", ""));
+    }
+
+    @Override
     public void narrative(Narrative narrative) {
         if (!narrative.isEmpty()) {
             if (!narrative.isAlternative()) {
@@ -339,6 +349,20 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
                 print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), name, meta.getProperty(name)));
             }
             print(format("metaEnd", NL));
+        }
+    }
+
+    @Override
+    public void beforeScenarioSteps(Stage stage) {
+        if (stage == null) {
+            print(format("beforeScenarioSteps", ""));
+        }
+    }
+
+    @Override
+    public void afterScenarioSteps(Stage stage) {
+        if (stage == null) {
+            print(format("afterScenarioSteps", ""));
         }
     }
 

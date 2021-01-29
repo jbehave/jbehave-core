@@ -22,6 +22,10 @@ public interface StoryReporter {
 
     void afterStory(boolean givenOrRestartingStory);
 
+    void beforeScenarios();
+
+    void afterScenarios();
+
     void narrative(Narrative narrative);
 
     void lifecyle(Lifecycle lifecycle);

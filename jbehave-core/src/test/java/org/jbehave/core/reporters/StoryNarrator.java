@@ -48,10 +48,12 @@ class StoryNarrator {
         reporter.successful(beforeStoryStep);
         reporter.afterStorySteps(Stage.BEFORE);
 
+        reporter.beforeScenarios();
         reporter.beforeScenario(new Scenario("I ask for a loan", Meta.EMPTY));
         reporter.beforeGivenStories();
         reporter.givenStories(asList("/given/story1", "/given/story2"));
         reporter.afterGivenStories();
+        reporter.beforeScenarioSteps(null);
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- Then ignore me");
         reporter.comment("!-- A comment");
@@ -83,14 +85,18 @@ class StoryNarrator {
         } catch (UUIDExceptionWrapper e) {
             reporter.failedOutcomes("Then I don't return loan", ((OutcomesFailed) e.getCause()).outcomesTable());
         }
+        reporter.afterScenarioSteps(null);
         reporter.afterScenario();
         reporter.beforeScenario(new Scenario("Parametrised Scenario", Meta.EMPTY));
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
         reporter.example(table.getRow(0), 0);
+        reporter.beforeScenarioSteps(null);
         reporter.successful("Given money $30");
         reporter.successful("Then I give it to Mauro");
+        reporter.afterScenarioSteps(null);
         reporter.example(table.getRow(1), 1);
+        reporter.beforeScenarioSteps(null);
         reporter.successful("Given money $50");
         reporter.successful("Then I give it to Paul");
         if (withFailure) {
@@ -98,8 +104,10 @@ class StoryNarrator {
         } else {
             reporter.pending("Then I should have a balance of $30");
         }
+        reporter.afterScenarioSteps(null);
         reporter.afterExamples();
         reporter.afterScenario();
+        reporter.afterScenarios();
 
         reporter.beforeStorySteps(Stage.AFTER);
         reporter.beforeStep(afterStoryStep);

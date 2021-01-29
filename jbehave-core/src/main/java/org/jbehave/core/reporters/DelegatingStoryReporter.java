@@ -46,8 +46,18 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void afterScenarios() {
+        delegate(StoryReporter::afterScenarios);
+    }
+
+    @Override
     public void afterStory(boolean givenStory) {
         delegate(reporter -> reporter.afterStory(givenStory));
+    }
+
+    @Override
+    public void beforeScenarios() {
+        delegate(StoryReporter::beforeScenarios);
     }
 
     @Override
