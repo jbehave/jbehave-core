@@ -401,11 +401,11 @@
                 <mkdir dir="${code-coverage.directory}"/>
                 <copy todir="${code-coverage.directory}" overwrite="true" failonerror="false">
                   <fileset dir="${basedir}/../">
-                    <include name="jbehave-*/target/site/clover/**"/>
+                    <include name="jbehave-*/target/site/jacoco/**"/>
                   </fileset>
                   <filtermapper>
                     <replacestring from="jbehave-" to=""/>
-                    <replacestring from="target/site/clover" to="/"/>
+                    <replacestring from="target/site/jacoco" to="/"/>
                   </filtermapper>
                 </copy>
               </tasks>
