@@ -147,7 +147,7 @@
                 <additionalJOption>-Xdoclint:none</additionalJOption>
                 <failOnError>false</failOnError>
                 <links>
-                  <link>http://docs.oracle.com/javase/8/docs/api</link>
+                  <link>https://docs.oracle.com/en/java/javase/11/docs/api</link>
                 </links>
               </configuration>
             </execution>
@@ -212,6 +212,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>3.1.1</version>
+          <configuration>
+            <configLocation>distribution/src/checkstyle/jbehave-checks.xml</configLocation>
+          </configuration>
           <executions>
             <execution>
               <phase>test</phase>
