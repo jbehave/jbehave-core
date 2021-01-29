@@ -92,6 +92,12 @@
     {
       "keyword": "Scenario:",
       "title": "I ask for a loan",
+      "beforeScenarioSteps": [
+        {
+          "outcome": "successful",
+          "value": "Given a scenario step"
+        }
+      ],
       "givenStories": {
         "keyword": "GivenStories:",
         "givenStories": [
@@ -201,6 +207,12 @@
             ]
           }
         }
+      ],
+      "afterScenarioSteps": [
+        {
+          "outcome": "successful",
+          "value": "Given a scenario step"
+        }
       ]
     },
     {
@@ -235,6 +247,12 @@
               "money": "$30",
               "to": "Mauro"
             },
+            "beforeScenarioSteps": [
+              {
+                "outcome": "successful",
+                "value": "Given a scenario step"
+              }
+            ],
             "steps": [
               {
                 "outcome": "successful",
@@ -244,6 +262,12 @@
                 "outcome": "successful",
                 "value": "Then I give it to Mauro"
               }
+            ],
+            "afterScenarioSteps": [
+              {
+                "outcome": "successful",
+                "value": "Given a scenario step"
+              }
             ]
           },
           {
@@ -252,6 +276,12 @@
               "money": "$50",
               "to": "Paul"
             },
+            "beforeScenarioSteps": [
+              {
+                "outcome": "successful",
+                "value": "Given a scenario step"
+              }
+            ],
             "steps": [
               {
                 "outcome": "successful",
@@ -265,6 +295,12 @@
                 "outcome": "pending",
                 "keyword": "PENDING",
                 "value": "Then I should have a balance of $30"
+              }
+            ],
+            "afterScenarioSteps": [
+              {
+                "outcome": "successful",
+                "value": "Given a scenario step"
               }
             ]
           }

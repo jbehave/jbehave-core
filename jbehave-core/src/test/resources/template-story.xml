@@ -47,6 +47,9 @@ Given a before story step
 <givenStory>/given/story2</givenStory>
 </givenStories>
 <step outcome="successful">
+Given a scenario step
+</step>
+<step outcome="successful">
 Given I have a balance of $50
 </step>
 <step outcome="ignorable">
@@ -82,7 +85,7 @@ Then I should... - try again
 <step outcome="failed">
 Then I should have a balance of $30
  <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:73)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:75)
 	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
 	(reflection-invoke)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
@@ -94,7 +97,7 @@ Then I should have $20
 Then I don&apos;t return loan
  <failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed
 	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:84)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:86)
 	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
 	(reflection-invoke)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
@@ -114,6 +117,9 @@ Then I don&apos;t return loan
 <value>A wrong date</value><value>01/01/2011</value><value>&quot;02/01/2011&quot;</value><value>No</value>
 </outcome>
 </outcomes>
+</step>
+<step outcome="successful">
+Given a scenario step
 </step>
 </scenario>
 <scenario keyword="Scenario:" title="Parametrised Scenario">
@@ -137,12 +143,21 @@ Then I don&apos;t return loan
 </examples>
 <example keyword="Example:">{money=$30, to=Mauro}</example>
 <step outcome="successful">
+Given a scenario step
+</step>
+<step outcome="successful">
 Given money $30
 </step>
 <step outcome="successful">
 Then I give it to Mauro
 </step>
+<step outcome="successful">
+Given a scenario step
+</step>
 <example keyword="Example:">{money=$50, to=Paul}</example>
+<step outcome="successful">
+Given a scenario step
+</step>
 <step outcome="successful">
 Given money $50
 </step>
@@ -152,11 +167,14 @@ Then I give it to Paul
 <step outcome="failed">
 Then I should have a balance of $30
  <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:103)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:109)
 	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
 	(reflection-invoke)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
 ...</failure></step>
+<step outcome="successful">
+Given a scenario step
+</step>
 </scenario>
 <after keyword="After:">
 <step outcome="successful">

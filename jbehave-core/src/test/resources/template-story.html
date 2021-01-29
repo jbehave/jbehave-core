@@ -58,6 +58,8 @@ Outcome: ANY
 <div class="givenStory">/given/story2</div>
 </div>
  <!-- normal scenario steps -->
+<div class="step successful">Given a scenario step</div>
+
 <div class="step successful">Given I have a balance of $50</div>
 
 <div class="step ignorable">!-- Then ignore me</div>
@@ -82,7 +84,7 @@ Outcome: ANY
 
 <div class="step failed">Then I should have a balance of $30<span class="keyword failed">(FAILED)</span></div>
 <pre class="failure">java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:73)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:75)
 	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToHtml(TemplateOutputBehaviour.java:25)
 	(reflection-invoke)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
@@ -92,7 +94,7 @@ Outcome: ANY
 <div class="step failed">Then I don't return loan<span class="keyword failed">(FAILED)</span></div>
 <pre class="failure">org.jbehave.core.model.OutcomesTable$OutcomesFailed
 	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:84)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:86)
 	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToHtml(TemplateOutputBehaviour.java:25)
 	(reflection-invoke)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
@@ -118,12 +120,14 @@ Outcome: ANY
 
 <pre class="failure">org.jbehave.core.model.OutcomesTable$OutcomesFailed
 	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:84)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:86)
 	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToHtml(TemplateOutputBehaviour.java:25)
 	(reflection-invoke)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
 ...</pre>
 </div>
+<div class="step successful">Given a scenario step</div>
+
 </div> <!-- end scenario -->
 <div class="scenario"><h2>Scenario: Parametrised Scenario</h2>
 <div class="examples"><h3>Examples:</h3>
@@ -147,22 +151,30 @@ Outcome: ANY
 </table>
 </div>  <!-- end examples -->
 <h3 class="example">Example: {money=$30, to=Mauro}</h3>
+<div class="step successful">Given a scenario step</div>
+
 <div class="step successful">Given money $30</div>
 
 <div class="step successful">Then I give it to Mauro</div>
 
+<div class="step successful">Given a scenario step</div>
+
 <h3 class="example">Example: {money=$50, to=Paul}</h3>
+<div class="step successful">Given a scenario step</div>
+
 <div class="step successful">Given money $50</div>
 
 <div class="step successful">Then I give it to Paul</div>
 
 <div class="step failed">Then I should have a balance of $30<span class="keyword failed">(FAILED)</span></div>
 <pre class="failure">java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:103)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:109)
 	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToHtml(TemplateOutputBehaviour.java:25)
 	(reflection-invoke)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
 ...</pre>
+<div class="step successful">Given a scenario step</div>
+
 </div> <!-- end scenario -->
 <div class="after">
 <h3>After:</h3>

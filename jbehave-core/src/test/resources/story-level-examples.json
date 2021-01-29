@@ -52,6 +52,12 @@
               "key1": "value1",
               "key2": "value2"
             },
+            "beforeScenarioSteps": [
+              {
+                "outcome": "successful",
+                "value": "My step"
+              }
+            ],
             "givenStories": {
               "keyword": "GivenStories:",
               "givenStories": [
@@ -115,6 +121,12 @@
                               "key1": "value1",
                               "key2": "value2"
                             },
+                            "beforeScenarioSteps": [
+                              {
+                                "outcome": "successful",
+                                "value": "My step"
+                              }
+                            ],
                             "givenStories": {
                               "keyword": "GivenStories:",
                               "givenStories": [
@@ -178,7 +190,19 @@
                                               "key1": "value1",
                                               "key2": "value2"
                                             },
+                                            "beforeScenarioSteps": [
+                                              {
+                                                "outcome": "successful",
+                                                "value": "My step"
+                                              }
+                                            ],
                                             "steps": [
+                                              {
+                                                "outcome": "successful",
+                                                "value": "My step"
+                                              }
+                                            ],
+                                            "afterScenarioSteps": [
                                               {
                                                 "outcome": "successful",
                                                 "value": "My step"
@@ -197,6 +221,12 @@
                                 "outcome": "successful",
                                 "value": "My step"
                               }
+                            ],
+                            "afterScenarioSteps": [
+                              {
+                                "outcome": "successful",
+                                "value": "My step"
+                              }
                             ]
                           }
                         ]
@@ -207,6 +237,12 @@
               ]
             },
             "steps": [
+              {
+                "outcome": "successful",
+                "value": "My step"
+              }
+            ],
+            "afterScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "My step"
@@ -247,6 +283,12 @@
               "key1": "value1",
               "key2": "value2"
             },
+            "beforeScenarioSteps": [
+              {
+                "outcome": "successful",
+                "value": "My step"
+              }
+            ],
             "givenStories": {
               "keyword": "GivenStories:",
               "givenStories": [
@@ -310,6 +352,12 @@
                               "key1": "value1",
                               "key2": "value2"
                             },
+                            "beforeScenarioSteps": [
+                              {
+                                "outcome": "successful",
+                                "value": "My step"
+                              }
+                            ],
                             "givenStories": {
                               "keyword": "GivenStories:",
                               "givenStories": [
@@ -373,7 +421,19 @@
                                               "key1": "value1",
                                               "key2": "value2"
                                             },
+                                            "beforeScenarioSteps": [
+                                              {
+                                                "outcome": "successful",
+                                                "value": "My step"
+                                              }
+                                            ],
                                             "steps": [
+                                              {
+                                                "outcome": "successful",
+                                                "value": "My step"
+                                              }
+                                            ],
+                                            "afterScenarioSteps": [
                                               {
                                                 "outcome": "successful",
                                                 "value": "My step"
@@ -392,6 +452,12 @@
                                 "outcome": "successful",
                                 "value": "My step"
                               }
+                            ],
+                            "afterScenarioSteps": [
+                              {
+                                "outcome": "successful",
+                                "value": "My step"
+                              }
                             ]
                           }
                         ]
@@ -402,6 +468,12 @@
               ]
             },
             "steps": [
+              {
+                "outcome": "successful",
+                "value": "My step"
+              }
+            ],
+            "afterScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "My step"

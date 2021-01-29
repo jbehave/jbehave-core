@@ -78,7 +78,7 @@ public class JsonOutput extends PrintStreamOutput {
             print("}");
         }
         if (stepPublishing) {
-            if ("example".equals(key) || "exampleScenariosEnd".equals(key)) {
+            if ("exampleScenariosEnd".equals(key) || "example".equals(key) && givenStoriesLevel == 0) {
                 // Closing previous "example"
                 print("}");
             }
@@ -131,6 +131,10 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("afterBeforeStorySteps", "]");
         patterns.setProperty("beforeAfterStorySteps", "\"afterStorySteps\": [");
         patterns.setProperty("afterAfterStorySteps", "]");
+        patterns.setProperty("beforeBeforeScenarioSteps", "\"beforeScenarioSteps\": [");
+        patterns.setProperty("afterBeforeScenarioSteps", "]");
+        patterns.setProperty("beforeAfterScenarioSteps", "\"afterScenarioSteps\": [");
+        patterns.setProperty("afterAfterScenarioSteps", "]");
         patterns.setProperty("beforeScenarioSteps", "\"steps\": [");
         patterns.setProperty("afterScenarioSteps", "]");
         patterns.setProperty("beforeScenario","'{'\"keyword\": \"{0}\", \"title\": \"{1}\"");

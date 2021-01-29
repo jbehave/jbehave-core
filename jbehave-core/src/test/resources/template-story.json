@@ -61,6 +61,8 @@
 }
 
 ,"steps": [
+{"outcome": "successful", "step": "Given a scenario step"}
+,
 {"outcome": "successful", "step": "Given I have a balance of $50"}
 ,
 {"outcome": "ignorable", "step": "!-- Then ignore me"}
@@ -83,11 +85,11 @@
 ,
 {"outcome": "Restarted Story", "step": "\/path\/to\/story"}
 ,
-{"outcome": "failed", "step": "Then I should have a balance of $30", "failure": "java.lang.Exception: Expected <30> got <25>\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:73)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:39)\n\t(reflection-invoke)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n..."}
+{"outcome": "failed", "step": "Then I should have a balance of $30", "failure": "java.lang.Exception: Expected <30> got <25>\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:75)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:39)\n\t(reflection-invoke)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n..."}
 ,
 {"outcome": "notPerformed", "step": "Then I should have $20"}
 ,
-{"outcome": "failed", "step": "Then I don't return loan", "failure": "org.jbehave.core.model.OutcomesTable$OutcomesFailed\n\tat org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:84)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:39)\n\t(reflection-invoke)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n...","outcomes": {
+{"outcome": "failed", "step": "Then I don't return loan", "failure": "org.jbehave.core.model.OutcomesTable$OutcomesFailed\n\tat org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:86)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:39)\n\t(reflection-invoke)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n...","outcomes": {
 "fields":
 [
 "Description",
@@ -103,6 +105,8 @@
 ]
 }
 }
+,
+{"outcome": "successful", "step": "Given a scenario step"}
 
 ]
 },
@@ -129,19 +133,27 @@
 , "examples": [
 {"keyword": "Example:", "value": "{money=$30, to=Mauro}"
 ,"steps": [
+{"outcome": "successful", "step": "Given a scenario step"}
+,
 {"outcome": "successful", "step": "Given money $30"}
 ,
 {"outcome": "successful", "step": "Then I give it to Mauro"}
+,
+{"outcome": "successful", "step": "Given a scenario step"}
 
 ]
 },
 {"keyword": "Example:", "value": "{money=$50, to=Paul}"
 ,"steps": [
+{"outcome": "successful", "step": "Given a scenario step"}
+,
 {"outcome": "successful", "step": "Given money $50"}
 ,
 {"outcome": "successful", "step": "Then I give it to Paul"}
 ,
-{"outcome": "failed", "step": "Then I should have a balance of $30", "failure": "java.lang.Exception: Expected <30> got <25>\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:103)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:39)\n\t(reflection-invoke)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n..."}
+{"outcome": "failed", "step": "Then I should have a balance of $30", "failure": "java.lang.Exception: Expected <30> got <25>\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:109)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:39)\n\t(reflection-invoke)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n..."}
+,
+{"outcome": "successful", "step": "Given a scenario step"}
 
 ]
 }

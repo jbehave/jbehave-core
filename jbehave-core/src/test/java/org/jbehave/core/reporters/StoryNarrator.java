@@ -30,9 +30,10 @@ class StoryNarrator {
         meta.setProperty("author", "Mauro");
         String beforeStoryStep = "Given a before story step";
         String afterStoryStep = "Given an after story step";
-        Steps beforeScenarioSteps = new Steps(Scope.SCENARIO, asList("Given a scenario step"));
+        String scenarioStep = "Given a scenario step";
+        Steps beforeScenarioSteps = new Steps(Scope.SCENARIO, asList(scenarioStep));
         Steps beforeStorySteps = new Steps(Scope.STORY, asList(beforeStoryStep));
-        Steps afterScenarioSteps = new Steps(Scope.SCENARIO, asList("Given a scenario step"));
+        Steps afterScenarioSteps = new Steps(Scope.SCENARIO, asList(scenarioStep));
         Steps afterStorySteps = new Steps(Scope.STORY, asList(afterStoryStep));
         Lifecycle lifecycle = new Lifecycle(asList(beforeScenarioSteps, beforeStorySteps), asList(afterScenarioSteps, afterStorySteps));
         Story story = new Story("/path/to/story", new Description("An interesting story & special chars"), new Meta(meta),
@@ -50,6 +51,7 @@ class StoryNarrator {
 
         reporter.beforeScenarios();
         reporter.beforeScenario(new Scenario("I ask for a loan", Meta.EMPTY));
+        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE);
         reporter.beforeGivenStories();
         reporter.givenStories(asList("/given/story1", "/given/story2"));
         reporter.afterGivenStories();
@@ -86,16 +88,20 @@ class StoryNarrator {
             reporter.failedOutcomes("Then I don't return loan", ((OutcomesFailed) e.getCause()).outcomesTable());
         }
         reporter.afterScenarioSteps(null);
+        reportScenarioStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterScenario();
         reporter.beforeScenario(new Scenario("Parametrised Scenario", Meta.EMPTY));
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
         reporter.example(table.getRow(0), 0);
+        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE);
         reporter.beforeScenarioSteps(null);
         reporter.successful("Given money $30");
         reporter.successful("Then I give it to Mauro");
         reporter.afterScenarioSteps(null);
+        reportScenarioStep(reporter, scenarioStep, Stage.AFTER);
         reporter.example(table.getRow(1), 1);
+        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE);
         reporter.beforeScenarioSteps(null);
         reporter.successful("Given money $50");
         reporter.successful("Then I give it to Paul");
@@ -105,6 +111,7 @@ class StoryNarrator {
             reporter.pending("Then I should have a balance of $30");
         }
         reporter.afterScenarioSteps(null);
+        reportScenarioStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.afterScenarios();
@@ -126,6 +133,13 @@ class StoryNarrator {
                 + "}\n";
         reporter.pendingMethods(asList(method1, method2));
         reporter.afterStory(givenStory);
+    }
+
+    private static void reportScenarioStep(StoryReporter reporter, String step, Stage stage) {
+        reporter.beforeScenarioSteps(stage);
+        reporter.beforeStep(step);
+        reporter.successful(step);
+        reporter.afterScenarioSteps(stage);
     }
 
     public static class IsDateEqual extends IsEqual<Date> {
@@ -173,5 +187,4 @@ class StoryNarrator {
         }
         reporter.afterStory(false);
     }
-
 }

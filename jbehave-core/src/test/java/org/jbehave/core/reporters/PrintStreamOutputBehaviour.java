@@ -15,6 +15,7 @@ import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
@@ -226,6 +227,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
+        reportStep(reporter, step, Stage.BEFORE);
         reporter.beforeGivenStories();
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
@@ -234,6 +236,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
+        reportStep(reporter, step, Stage.BEFORE);
         reporter.beforeGivenStories();
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
@@ -242,30 +245,29 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
-        reporter.beforeScenarioSteps(null);
-        reporter.successful(step);
-        reporter.afterScenarioSteps(null);
+        reportStep(reporter, step, Stage.BEFORE);
+        reportStep(reporter, step, null);
+        reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
-        reporter.beforeScenarioSteps(null);
-        reporter.successful(step);
-        reporter.afterScenarioSteps(null);
+        reportStep(reporter, step, null);
+        reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
-        reporter.beforeScenarioSteps(null);
-        reporter.successful(step);
-        reporter.afterScenarioSteps(null);
+        reportStep(reporter, step, null);
+        reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
+        reportStep(reporter, step, Stage.BEFORE);
         reporter.beforeGivenStories();
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
@@ -274,6 +276,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
+        reportStep(reporter, step, Stage.BEFORE);
         reporter.beforeGivenStories();
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
@@ -282,25 +285,23 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
-        reporter.beforeScenarioSteps(null);
-        reporter.successful(step);
-        reporter.afterScenarioSteps(null);
+        reportStep(reporter, step, Stage.BEFORE);
+        reportStep(reporter, step, null);
+        reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
-        reporter.beforeScenarioSteps(null);
-        reporter.successful(step);
-        reporter.afterScenarioSteps(null);
+        reportStep(reporter, step, null);
+        reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
-        reporter.beforeScenarioSteps(null);
-        reporter.successful(step);
-        reporter.afterScenarioSteps(null);
+        reportStep(reporter, step, null);
+        reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.afterScenarios();
@@ -613,10 +614,11 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldReportEventsToJsonOutputEmptyScenarioLifecycle() {
+    void shouldReportEventsToJsonOutputEmptyScenarioLifecycle() throws IOException {
         // Given
         OutputStream out = new ByteArrayOutputStream();
         StoryReporter reporter = new JsonOutput(new PrintStream(out), new Properties(), new LocalizedKeywords());
+        String scenarioStep = "Then '((some data))' is ((equal to)) '((some data))'";
 
         // When
         ExamplesTable table = new ExamplesTable("|actual|expected|\n|some data|some data|\n");
@@ -631,32 +633,24 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(new Scenario("Normal scenario", Meta.EMPTY));
         reporter.beforeExamples(Collections.singletonList("Then '<expected>' is equal to '<actual>'"), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
-        reporter.beforeScenarioSteps(null);
-        reporter.successful("Then '((some data))' is ((equal to)) '((some data))'");
-        reporter.afterScenarioSteps(null);
+        reportStep(reporter, scenarioStep, Stage.BEFORE);
+        reportStep(reporter, scenarioStep, null);
+        reportStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.beforeScenario(new Scenario("Some empty scenario", Meta.EMPTY));
         reporter.beforeExamples(Collections.<String>emptyList(), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
+        reportStep(reporter, scenarioStep, Stage.BEFORE);
+        reportStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.afterScenarios();
         reporter.afterStory(false);
 
         // Then
-        String expected = "{\"path\": \"\\/path\\/to\\/story\", \"title\": \"Story with lifecycle and empty scenario\","
-                + "\"lifecycle\": {\"keyword\": \"Lifecycle:\",\"parameters\": {\"names\": [\"actual\",\"expected\"],"
-                + "\"values\": [[\"some data\",\"some data\"]]}},\"scenarios\": [{\"keyword\": \"Scenario:\", \"title\""
-                + ": \"Normal scenario\",\"examples\": {\"keyword\": \"Examples:\",\"steps\": [\"Then '<expected>' is"
-                + " equal to '<actual>'\"],\"parameters\": {\"names\": [],\"values\": []},\"examples\": [{\"keyword\":"
-                + " \"Example:\", \"parameters\": {\"actual\":\"some data\",\"expected\":\"some data\"},\"steps\":"
-                + " [{\"outcome\": \"successful\", \"value\": \"Then '((some data))' is ((equal to)) '((some data))'\"}]}]}},"
-                + "{\"keyword\": \"Scenario:\", \"title\": \"Some empty scenario\",\"examples\": {\"keyword\": \"Examples:\""
-                + ",\"steps\": [],\"parameters\": {\"names\": [],\"values\": []},\"examples\": [{\"keyword\": \"Example:\","
-                + " \"parameters\": {\"actual\":\"some data\",\"expected\":\"some data\"}}]}}]}";
 
-        assertThat(dos2unix(out.toString()), equalTo(expected));
+        assertJson("story-empty-scenario-with-lifecycle.json", out.toString());
     }
 
     private void assertJson(String expectedJsonFileName, String actualJson) throws IOException {
@@ -665,6 +659,13 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         JsonObject expectedObject = parser.parse(actualJson).getAsJsonObject();
         JsonObject actualObject = parser.parse(expected).getAsJsonObject();
         assertThat(expectedObject, is(actualObject));
+    }
+
+    private void reportStep(StoryReporter reporter, String step, Stage stage) {
+        reporter.beforeScenarioSteps(stage);
+        reporter.beforeStep(step);
+        reporter.successful(step);
+        reporter.afterScenarioSteps(stage);
     }
 
     @SuppressWarnings("serial")
