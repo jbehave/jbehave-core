@@ -176,10 +176,15 @@ public class StoryManager {
 						allDone = false;
 						StoryDuration duration = runningStory.getDuration();
 						runningStory.updateDuration();
+						if (context.isCancelled(story)) {
+							if (duration.cancelTimedOut()) {
+								future.cancel(true);
+							}
+							continue;
+						}
 						if (duration.timedOut()) {
 							embedderMonitor.storyTimeout(story, duration);
 							context.cancelStory(story, duration);
-							future.cancel(true);
 							if (embedderControls.failOnStoryTimeout()) {
 								throw new StoryExecutionFailed(story.getPath(),
 										new StoryTimedOut(duration));
