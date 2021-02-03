@@ -708,23 +708,18 @@ public class TemplateableOutput extends NullStoryReporter {
             return "";
         }
 
-        /*
-         * formatting without escaping doesn't make sense unless
-         * we do a ftl text output format
-         */
-        @Deprecated
         public String getFormattedStep(String parameterPattern) {
             return getFormattedStep(EscapeMode.NONE, parameterPattern);
         }
 
-        public String getFormattedStep(EscapeMode outputFormat, String parameterPattern) {
+        public String getFormattedStep(EscapeMode escapeMode, String parameterPattern) {
             // note that escaping the stepPattern string only works
             // because placeholders for parameters do not contain
             // special chars (the placeholder is {0} etc)
-            String escapedStep = outputFormat.escapeString(stepPattern);
+            String escapedStep = escapeMode.escapeString(stepPattern);
             if (!parameters.isEmpty()) {
                 try {
-                    return MessageFormat.format(escapedStep, formatParameters(outputFormat, parameterPattern));
+                    return MessageFormat.format(escapedStep, formatParameters(escapeMode, parameterPattern));
                 } catch (RuntimeException e) {
                     throw new StepFormattingFailed(stepPattern, parameterPattern, parameters, e);
                 }
@@ -732,10 +727,10 @@ public class TemplateableOutput extends NullStoryReporter {
             return escapedStep;
         }
 
-        private Object[] formatParameters(EscapeMode outputFormat, String parameterPattern) {
+        private Object[] formatParameters(EscapeMode escapeMode, String parameterPattern) {
             Object[] arguments = new Object[parameters.size()];
             for (int a = 0; a < parameters.size(); a++) {
-                arguments[a] = MessageFormat.format(parameterPattern, outputFormat.escapeString(parameters.get(a).getValue()));
+                arguments[a] = MessageFormat.format(parameterPattern, escapeMode.escapeString(parameters.get(a).getValue()));
             }
             return arguments;
         }

@@ -30,10 +30,7 @@ import org.jbehave.examples.core.steps.TraderSteps;
 import org.junit.runner.RunWith;
 import org.picocontainer.MutablePicoContainer;
 
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+import static org.jbehave.core.reporters.Format.*;
 
 /**
  * Run stories via annotated embedder configuration and steps using Pico. The

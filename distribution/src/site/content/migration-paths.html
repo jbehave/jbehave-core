@@ -17,6 +17,11 @@
 <ul>
 	<li>Changed method names for filter exclusion from 'notAllowed' to 'excluded'</li>
 	<li>Changed default scenario type in @BeforeScenario/@AfterScenario annotations.</li>
+	<li>Removed deprecated org.jbehave.core.reporters.StoryReporterBuilder.Format.
+		Use org.jbehave.core.reporters.Format instead.</li>
+	<li>Removed deprecated SameThreadExecutors.</li>
+	<li>Removed deprecated methods in step collectors.</li>
+	<li>Removed deprecated methods in StoryReporter, StepMonitor and EmbedderMonitor.</li>
 	<li>JUnitStory is now a subtype of JUnitStories.</li>
 	<li>Ant tasks no longer supported.  Use JUnit support instead.</li>
 	<li>Hudson/Jenkins plugins no longer supported.</li>
@@ -26,9 +31,6 @@
 		Use InjectableStepsFactory instead.</li>
 	<li>Embedder controls storyTimeoutInSecs and storyTimeoutInSecsByPath no longer supported.
 		Use storyTimeouts instead.</li>
-	<li>Deprecated SameThreadExecutors removed.</li>
-	<li>Deprecated methods in step collectors removed.</li>
-	<li>Deprecated methods in StoryReporter, StepMonitor and EmbedderMonitor removed.</li>
 </ul>
 
 <h2>From 3.x to 4.0</h2>

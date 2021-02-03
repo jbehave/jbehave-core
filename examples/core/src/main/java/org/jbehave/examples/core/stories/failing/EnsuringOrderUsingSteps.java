@@ -4,6 +4,7 @@ import org.jbehave.core.Embeddable;
 import org.jbehave.core.annotations.*;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.A;
 import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.B;
@@ -46,7 +47,7 @@ public class EnsuringOrderUsingSteps implements Embeddable {
 
     public static class MyStoryReporterBuilder extends StoryReporterBuilder {
         public MyStoryReporterBuilder() {
-            withFormats(Format.CONSOLE, Format.STATS);
+            withFormats(Format.CONSOLE);
         }
 
     }

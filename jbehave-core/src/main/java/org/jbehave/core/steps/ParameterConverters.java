@@ -96,12 +96,6 @@ public class ParameterConverters {
     public static final Locale DEFAULT_NUMBER_FORMAT_LOCAL = Locale.ENGLISH;
     public static final String DEFAULT_COLLECTION_SEPARATOR = ",";
 
-    /**
-     * Use {@link #DEFAULT_COLLECTION_SEPARATOR}
-     */
-    @Deprecated
-    public static final String DEFAULT_LIST_SEPARATOR = DEFAULT_COLLECTION_SEPARATOR;
-
     public static final boolean DEFAULT_THREAD_SAFETY = true;
 
     private static final String DEFAULT_TRUE_VALUE = "true";
@@ -834,20 +828,6 @@ public class ParameterConverters {
             }
             return super.convertValue(value, type);
         }
-    }
-
-    /**
-     * Use #AbstractListParameterConverter
-     * @param values values to trim
-     * @return trimmed values
-     */
-    @Deprecated
-    public static List<String> trim(List<String> values) {
-        List<String> trimmed = new ArrayList<>();
-        for (String value : values) {
-            trimmed.add(value.trim());
-        }
-        return trimmed;
     }
 
     /**

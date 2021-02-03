@@ -26,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.*;
+import static org.jbehave.core.reporters.Format.*;
 
 /**
  * Run stories via annotated embedder configuration and steps using Pico. The
