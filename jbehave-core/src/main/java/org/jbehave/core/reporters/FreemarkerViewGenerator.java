@@ -1,6 +1,7 @@
 package org.jbehave.core.reporters;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.jbehave.core.io.StoryNameResolver;
@@ -29,7 +30,7 @@ import org.jbehave.core.io.UnderscoredToCapitalized;
  * </p>
  * <p>
  * The view generator can also specify the {@link StoryNameResolver} (defaulting
- * to {@link UnderscoredToCapitalized}) and the class whose ClassLoader
+ * to {@link UnderscoredToCapitalized}) and the class or ClassLoader which
  * Freemarker uses to load the templates from (defaulting to
  * {@link FreemarkerProcessor}).
  * </p>
@@ -42,19 +43,27 @@ public class FreemarkerViewGenerator extends TemplateableViewGenerator {
         this(FreemarkerViewGenerator.class);
     }
 
-    public FreemarkerViewGenerator(StoryNameResolver nameResolver) {
-        super(nameResolver, new FreemarkerProcessor());
+    public FreemarkerViewGenerator(Class<?> templateLoadingFrom) {
+        this(new UnderscoredToCapitalized(), templateLoadingFrom.getClassLoader());
     }
 
-    public FreemarkerViewGenerator(Class<?> templateLoadingFrom) {
+    public FreemarkerViewGenerator(ClassLoader templateLoadingFrom) {
         this(new UnderscoredToCapitalized(), templateLoadingFrom);
     }
 
     public FreemarkerViewGenerator(StoryNameResolver nameResolver, Class<?> templateLoadingFrom) {
-        super(nameResolver, new FreemarkerProcessor(templateLoadingFrom));
+        this(nameResolver, templateLoadingFrom.getClassLoader());
+    }
+
+    public FreemarkerViewGenerator(StoryNameResolver nameResolver, ClassLoader templateLoadingFrom) {
+        this(nameResolver, templateLoadingFrom, StandardCharsets.ISO_8859_1);
     }
 
     public FreemarkerViewGenerator(StoryNameResolver nameResolver, Class<?> templateLoadingFrom, Charset charset) {
+        this(nameResolver, templateLoadingFrom.getClassLoader(), charset);
+    }
+
+    public FreemarkerViewGenerator(StoryNameResolver nameResolver, ClassLoader templateLoadingFrom, Charset charset) {
         super(nameResolver, new FreemarkerProcessor(templateLoadingFrom), charset);
     }
 
