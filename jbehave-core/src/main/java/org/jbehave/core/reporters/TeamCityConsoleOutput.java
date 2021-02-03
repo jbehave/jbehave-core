@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Scenario;
+import org.jbehave.core.steps.Timing;
 
 /**
  * Decorates console output to allow TeamCity build script interaction:
@@ -45,8 +46,8 @@ public class TeamCityConsoleOutput extends ConsoleOutput {
 	}
 
 	@Override
-	public void afterScenario() {
-		super.afterScenario();
+	public void afterScenario(Timing timing) {
+		super.afterScenario(timing);
 		print(format("testFinished", eventName));
 		this.eventName = null;
 	}

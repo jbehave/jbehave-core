@@ -45,12 +45,6 @@ public interface StoryReporter {
 
     void afterScenario(Timing timing);
 
-    /**
-     * @deprecated use {@link #afterScenario(Timing)}
-     */
-    @Deprecated
-    void afterScenario();
-
     void beforeGivenStories();
 
     void givenStories(GivenStories givenStories);

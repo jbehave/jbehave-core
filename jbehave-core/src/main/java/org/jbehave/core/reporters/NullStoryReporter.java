@@ -120,14 +120,6 @@ public class NullStoryReporter implements StoryReporter {
     public void scenarioExcluded(Scenario scenario, String filter) {
     }
 
-    /**
-     * @deprecated use {@link #afterScenario(Timing)}
-     */
-    @Deprecated
-    @Override
-    public void afterScenario() {
-    }
-
     @Override
     public void afterScenario(Timing timing) {
     }

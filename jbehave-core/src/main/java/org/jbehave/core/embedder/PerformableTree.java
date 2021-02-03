@@ -1067,7 +1067,6 @@ public class PerformableTree {
                     normalScenario.perform(context);
                 }
                 this.status = context.status(state);
-                context.reporter().afterScenario();
             } finally {
                 timing = new Timing(timer.stop());
                 context.reporter().afterScenario(timing);

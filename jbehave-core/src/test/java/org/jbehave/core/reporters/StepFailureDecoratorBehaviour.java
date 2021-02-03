@@ -3,6 +3,7 @@ package org.jbehave.core.reporters;
 import org.hamcrest.MatcherAssert;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.*;
+import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -37,6 +38,7 @@ class StepFailureDecoratorBehaviour {
         List<String> steps = asList("Given step <one>", "Then step <two>");
         ExamplesTable table = new ExamplesTable("|one|two|\n |1|2|\n");
         Map<String, String> tableRow = table.getRow(0);
+        Timing timing = new Timing();
 
         // When
         decorator.dryRun();
@@ -53,7 +55,7 @@ class StepFailureDecoratorBehaviour {
         decorator.beforeExamples(steps, table);
         decorator.example(tableRow, 0);
         decorator.afterExamples();
-        decorator.afterScenario();
+        decorator.afterScenario(timing);
         decorator.afterStory(givenStory);
 
         // Then
@@ -70,7 +72,7 @@ class StepFailureDecoratorBehaviour {
         inOrder.verify(delegate).beforeExamples(steps, table);
         inOrder.verify(delegate).example(tableRow, 0);
         inOrder.verify(delegate).afterExamples();
-        inOrder.verify(delegate).afterScenario();
+        inOrder.verify(delegate).afterScenario(timing);
         inOrder.verify(delegate).afterStory(givenStory);
     }
 

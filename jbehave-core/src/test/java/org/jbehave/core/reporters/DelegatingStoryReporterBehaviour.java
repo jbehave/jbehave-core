@@ -61,7 +61,6 @@ class DelegatingStoryReporterBehaviour {
         delegator.beforeScenarioSteps(Stage.AFTER);
         delegator.afterScenarioSteps(Stage.AFTER);
         delegator.afterExamples();
-        delegator.afterScenario();
         delegator.afterScenario(timing);
        
         delegator.beforeScenario(scenario2);
@@ -74,7 +73,6 @@ class DelegatingStoryReporterBehaviour {
         delegator.afterScenarioSteps(null);
         delegator.beforeScenarioSteps(Stage.AFTER);
         delegator.afterScenarioSteps(Stage.AFTER);
-        delegator.afterScenario();
         delegator.afterScenario(timing);
         delegator.afterScenarios();
         
@@ -109,7 +107,6 @@ class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).beforeScenarioSteps(Stage.AFTER);
         inOrder.verify(delegate).afterScenarioSteps(Stage.AFTER);
         inOrder.verify(delegate).afterExamples();
-        inOrder.verify(delegate).afterScenario();
         inOrder.verify(delegate).afterScenario(timing);
         
         inOrder.verify(delegate).beforeScenario(scenario2);
@@ -122,7 +119,6 @@ class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).afterScenarioSteps(null);
         inOrder.verify(delegate).beforeScenarioSteps(Stage.AFTER);
         inOrder.verify(delegate).afterScenarioSteps(Stage.AFTER);
-        inOrder.verify(delegate).afterScenario();
         inOrder.verify(delegate).afterScenario(timing);
         inOrder.verify(delegate).afterScenarios();
         

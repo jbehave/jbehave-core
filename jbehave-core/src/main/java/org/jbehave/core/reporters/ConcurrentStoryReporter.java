@@ -32,7 +32,6 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method scenarioExcluded;
     private static Method beforeScenarios;
     private static Method beforeScenario;
-    private static Method afterScenarioDeprecated;
     private static Method afterScenario;
     private static Method afterScenarios;
     private static Method beforeGivenStories;
@@ -70,7 +69,6 @@ public class ConcurrentStoryReporter implements StoryReporter {
             scenarioExcluded = StoryReporter.class.getMethod("scenarioExcluded", Scenario.class, String.class);
             beforeScenarios = StoryReporter.class.getMethod("beforeScenarios");
             beforeScenario = StoryReporter.class.getMethod("beforeScenario", Scenario.class);
-            afterScenarioDeprecated = StoryReporter.class.getMethod("afterScenario");
             afterScenario = StoryReporter.class.getMethod("afterScenario", Timing.class);
             afterScenarios = StoryReporter.class.getMethod("afterScenarios");
             beforeGivenStories = StoryReporter.class.getMethod("beforeGivenStories");
@@ -168,11 +166,6 @@ public class ConcurrentStoryReporter implements StoryReporter {
     @Override
     public void beforeScenario(Scenario scenario) {
         perform(reporter ->  reporter.beforeScenario(scenario), beforeScenario, scenario);
-    }
-
-    @Override
-    public void afterScenario() {
-        perform(StoryReporter::afterScenario, afterScenarioDeprecated);
     }
 
     @Override

@@ -42,11 +42,6 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void afterScenario() {
-        delegate(StoryReporter::afterScenario);
-    }
-
-    @Override
     public void afterScenario(Timing timing) {
         delegate(reporter -> reporter.afterScenario(timing));
     }
