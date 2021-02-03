@@ -1,6 +1,7 @@
 package org.jbehave.core.reporters;
 
 import org.jbehave.core.model.*;
+import org.jbehave.core.steps.Timing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,8 +109,8 @@ public class SilentSuccessFilter extends NullStoryReporter {
     }
 
     @Override
-    public void afterScenario() {
-        addScenarioTodo(delegate::afterScenario);
+    public void afterScenario(Timing timing) {
+        addScenarioTodo(() -> delegate.afterScenario(timing));
         scenarioState.report();
     }
 

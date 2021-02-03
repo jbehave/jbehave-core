@@ -1,5 +1,8 @@
 package org.jbehave.core.reporters;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -16,6 +19,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
@@ -220,6 +224,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         String step = "My step";
         Scenario scenario = new Scenario("My scenario", Meta.EMPTY, null, examplesTable, Collections.<String>emptyList());
+        Timing timing = getTiming();
 
         reporter.beforeStory(rootStory, false);
         reporter.lifecyle(lifecycle);
@@ -249,21 +254,21 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reportStep(reporter, step, null);
         reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reportStep(reporter, step, null);
         reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reportStep(reporter, step, null);
         reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
         reporter.example(example, 0);
@@ -289,21 +294,21 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reportStep(reporter, step, null);
         reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reportStep(reporter, step, null);
         reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reportStep(reporter, step, null);
         reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.afterScenarios();
         reporter.afterStory(false);
 
@@ -327,6 +332,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
 
         Scenario scenario = new Scenario("My scenario", Meta.EMPTY, null, examplesTable, Collections.<String>emptyList());
+        Timing timing = getTiming();
 
         reporter.beforeStory(rootStory, false);
         reporter.lifecyle(lifecycle);
@@ -335,12 +341,12 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeExamples(Collections.emptyList(), examplesTable);
         reporter.example(example, 0);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.emptyList(), examplesTable);
         reporter.example(example, 0);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.afterScenarios();
         reporter.afterStory(false);
 
@@ -350,10 +356,11 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 + "[\"key2\",\"row2\"]]}},\"scenarios\": [{\"keyword\": \"Scenario:\", \"title\": \"My scenario\","
                 + "\"examples\": {\"keyword\": \"Examples:\",\"steps\": [],\"parameters\": {\"names\": [\"key\",\"row\"]"
                 + ",\"values\": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},\"examples\": [{\"keyword\": \"Example:\","
-                + " \"parameters\": {}}]}},{\"keyword\": \"Scenario:\", \"title\": \"My scenario\",\"examples\": "
-                + "{\"keyword\": \"Examples:\",\"steps\": [],\"parameters\": {\"names\": [\"key\",\"row\"],\"values\":"
-                + " [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},\"examples\": [{\"keyword\": \"Example:\", \"parameters\""
-                + ": {}}]}}]}";
+                + " \"parameters\": {}}]},\"start\":1,\"end\":2},{\"keyword\": \"Scenario:\", \"title\": \"My scenario\","
+                + "\"examples\": {\"keyword\": \"Examples:\",\"steps\": [],\"parameters\": {\"names\": [\"key\",\"row\"]"
+                + ",\"values\": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},\"examples\": [{\"keyword\": \"Example:\", "
+                + "\"parameters\": {}}]},\"start\":1,\"end\":2}]}";
+
         assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
@@ -369,11 +376,11 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 return new PrintStream(out);
             }
         };
-        TxtOutput reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
+        StoryReporter reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
 
 
         reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new NullPointerException()));
-        reporter.afterScenario();
+        reporter.afterScenario(getTiming());
 
         assertThat(dos2unix(out.toString()), startsWith("Then I should have a balance of $30 (FAILED)\n" +
                 "(java.lang.NullPointerException)\n" +
@@ -394,11 +401,11 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 return new PrintStream(out);
             }
         };
-        TxtOutput reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
+        StoryReporter reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
 
 
         reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new MyKnownFailure()));
-        reporter.afterScenario();
+        reporter.afterScenario(getTiming());
 
         assertThat(dos2unix(out.toString()), equalTo("Then I should have a balance of $30 (FAILED)\n" +
                 "(org.jbehave.core.reporters.PrintStreamOutputBehaviour$MyKnownFailure)\n\n" +
@@ -412,7 +419,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         OutputStream stackTrace = new ByteArrayOutputStream();
         exception.getCause().printStackTrace(new PrintStream(stackTrace));
         OutputStream out = new ByteArrayOutputStream();
-        TxtOutput reporter = new TxtOutput(new PrintStream(out), new Properties(),
+        StoryReporter reporter = new TxtOutput(new PrintStream(out), new Properties(),
                 new LocalizedKeywords(), true);
 
         // When
@@ -422,7 +429,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.failed("When I ask Liz for a loan of $100", exception);
         reporter.pending("Then I should have a balance of $30");
         reporter.notPerformed("Then I should have $20");
-        reporter.afterScenario();
+        reporter.afterScenario(getTiming());
 
         // Then
         String expected = "Scenario: A title\n" 
@@ -449,7 +456,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.failed("When I ask Liz for a loan of $100", exception);
         reporter.pending("Then I should have a balance of $30");
         reporter.notPerformed("Then I should have $20");
-        reporter.afterScenario();
+        reporter.afterScenario(getTiming());
 
         // Then
         assertThat(out.toString().contains(stackTrace.toString()), is(false));
@@ -626,6 +633,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         ExamplesTable emptyExamplesTable = ExamplesTable.EMPTY;
         Story story = new Story("/path/to/story", new Description("Story with lifecycle and empty scenario"), null,
                 null, null, lifecycle, new ArrayList<Scenario>());
+        Timing timing = getTiming();
 
         reporter.beforeStory(story, false);
         reporter.lifecyle(lifecycle);
@@ -637,14 +645,14 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reportStep(reporter, scenarioStep, null);
         reportStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.beforeScenario(new Scenario("Some empty scenario", Meta.EMPTY));
         reporter.beforeExamples(Collections.<String>emptyList(), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
         reportStep(reporter, scenarioStep, Stage.BEFORE);
         reportStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.afterScenarios();
         reporter.afterStory(false);
 
@@ -666,6 +674,13 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeStep(step);
         reporter.successful(step);
         reporter.afterScenarioSteps(stage);
+    }
+
+    private Timing getTiming() {
+        Timing timing = mock(Timing.class);
+        when(timing.getStart()).thenReturn(1l);
+        when(timing.getEnd()).thenReturn(2l);
+        return timing;
     }
 
     @SuppressWarnings("serial")

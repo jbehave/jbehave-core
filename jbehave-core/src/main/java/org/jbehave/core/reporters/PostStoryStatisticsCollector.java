@@ -15,6 +15,7 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.steps.Timing;
 
 import static java.util.Arrays.asList;
 
@@ -171,7 +172,7 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
     }
 
     @Override
-    public void afterScenario() {
+    public void afterScenario(Timing timing) {
         if (givenStories > 0) {
             countScenarios("givenStoryScenarios");
         } else {

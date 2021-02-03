@@ -136,7 +136,7 @@ public abstract class AbstractStepResult implements StepResult {
     protected final String step;
     protected final Type type;
     protected final UUIDExceptionWrapper throwable;
-    private final Timing timing = new Timing();
+    private Timing timing = new Timing();
     private String parametrisedStep;
 
     public AbstractStepResult(Type type, String step) {
@@ -166,7 +166,7 @@ public abstract class AbstractStepResult implements StepResult {
     
     @Override
     public StepResult setTimings(Timer timer) {
-        this.timing.setTimings(timer);
+        this.timing = new Timing(timer);
         return this;
     }
     

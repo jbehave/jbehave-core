@@ -168,6 +168,7 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("beforeExampleParameters", " \"parameters\": '{'");
         patterns.setProperty("afterExampleParameters", "}");
         patterns.setProperty("exampleParameter", "\"{0}\":\"{1}\"");
+        patterns.setProperty("numericParameter", "\"{0}\":{1}");
         patterns.setProperty("beforeExamples", "\"examples\": '{'\"keyword\": \"{0}\"");
         patterns.setProperty("examplesStepsStart", "\"steps\": [");
         patterns.setProperty("examplesStep", "\"{0}\"");

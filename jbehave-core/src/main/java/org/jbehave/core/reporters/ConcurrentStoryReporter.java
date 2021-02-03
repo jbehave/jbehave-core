@@ -2,6 +2,7 @@ package org.jbehave.core.reporters;
 
 import org.jbehave.core.model.*;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.Timing;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,6 +32,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method scenarioNotAllowed;
     private static Method beforeScenarios;
     private static Method beforeScenario;
+    private static Method afterScenarioDeprecated;
     private static Method afterScenario;
     private static Method afterScenarios;
     private static Method beforeGivenStories;
@@ -68,7 +70,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
             scenarioNotAllowed = StoryReporter.class.getMethod("scenarioNotAllowed", Scenario.class, String.class);
             beforeScenarios = StoryReporter.class.getMethod("beforeScenarios");
             beforeScenario = StoryReporter.class.getMethod("beforeScenario", Scenario.class);
-            afterScenario = StoryReporter.class.getMethod("afterScenario");
+            afterScenarioDeprecated = StoryReporter.class.getMethod("afterScenario");
+            afterScenario = StoryReporter.class.getMethod("afterScenario", Timing.class);
             afterScenarios = StoryReporter.class.getMethod("afterScenarios");
             beforeGivenStories = StoryReporter.class.getMethod("beforeGivenStories");
             givenStories = StoryReporter.class.getMethod("givenStories", GivenStories.class);
@@ -169,7 +172,12 @@ public class ConcurrentStoryReporter implements StoryReporter {
 
     @Override
     public void afterScenario() {
-        perform(StoryReporter::afterScenario, afterScenario);
+        perform(StoryReporter::afterScenario, afterScenarioDeprecated);
+    }
+
+    @Override
+    public void afterScenario(Timing timing) {
+        perform(reporter -> reporter.afterScenario(timing), afterScenario, timing);
     }
 
     @Override

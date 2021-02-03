@@ -1,6 +1,7 @@
 package org.jbehave.core.reporters;
 
 import org.jbehave.core.model.*;
+import org.jbehave.core.steps.Timing;
 import org.jbehave.core.steps.StepCollector.Stage;
 
 import java.util.List;
@@ -119,8 +120,16 @@ public class NullStoryReporter implements StoryReporter {
     public void scenarioNotAllowed(Scenario scenario, String filter) {
     }
 
+    /**
+     * @deprecated use {@link #afterScenario(Timing)}
+     */
+    @Deprecated
     @Override
     public void afterScenario() {
+    }
+
+    @Override
+    public void afterScenario(Timing timing) {
     }
 
     @Override

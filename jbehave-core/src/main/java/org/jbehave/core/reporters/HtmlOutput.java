@@ -119,6 +119,7 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("parameterValueStart", "<span class=\"step parameter\">");
         patterns.setProperty("parameterValueEnd", "</span>");
         patterns.setProperty("parameterValueNewline", "<br/>");
+        patterns.setProperty("numericParameter", "<h3>{0} {1}</h3>\n");
         return patterns;
     }
 }

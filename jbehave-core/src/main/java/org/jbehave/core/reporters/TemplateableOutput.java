@@ -23,6 +23,7 @@ import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModelException;
 import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.Timing;
 
 import static org.jbehave.core.steps.StepCreator.*;
 
@@ -183,7 +184,7 @@ public class TemplateableOutput extends NullStoryReporter {
     }
 
     @Override
-    public void afterScenario() {
+    public void afterScenario(Timing timing) {
         if (this.outputScenario.currentExample == null) {
             this.outputStory.scenarios.add(outputScenario);
         }

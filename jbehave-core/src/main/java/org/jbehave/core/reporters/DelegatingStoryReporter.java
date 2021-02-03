@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.model.*;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.Timing;
 
 import java.util.Collection;
 import java.util.List;
@@ -43,6 +44,11 @@ public class DelegatingStoryReporter implements StoryReporter {
     @Override
     public void afterScenario() {
         delegate(StoryReporter::afterScenario);
+    }
+
+    @Override
+    public void afterScenario(Timing timing) {
+        delegate(reporter -> reporter.afterScenario(timing));
     }
 
     @Override

@@ -7,6 +7,8 @@ import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.Timer;
+import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
@@ -24,7 +26,7 @@ class DelegatingStoryReporterBehaviour {
     void shouldDelegateReporterEvents() {
         // Given
         StoryReporter delegate = mock(StoryReporter.class);
-        DelegatingStoryReporter delegator = new DelegatingStoryReporter(delegate);
+        StoryReporter delegator = new DelegatingStoryReporter(delegate);
         List<String> givenStoryPaths = asList("path/to/story1", "path/to/story2");
         GivenStories givenStories = new GivenStories(StringUtils.join(givenStoryPaths, ","));
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
@@ -34,6 +36,7 @@ class DelegatingStoryReporterBehaviour {
         Scenario scenario = new Scenario();
         Scenario scenario2 = new Scenario();
         String filter = "-some property";
+        Timing timing = new Timing();
         
         // When
         delegator.dryRun();
@@ -60,6 +63,7 @@ class DelegatingStoryReporterBehaviour {
         delegator.afterScenarioSteps(Stage.AFTER);
         delegator.afterExamples();
         delegator.afterScenario();
+        delegator.afterScenario(timing);
        
         delegator.beforeScenario(scenario2);
         delegator.beforeScenarioSteps(Stage.BEFORE);
@@ -72,6 +76,7 @@ class DelegatingStoryReporterBehaviour {
         delegator.beforeScenarioSteps(Stage.AFTER);
         delegator.afterScenarioSteps(Stage.AFTER);
         delegator.afterScenario();
+        delegator.afterScenario(timing);
         delegator.afterScenarios();
         
         delegator.afterStory(givenStory);
@@ -106,6 +111,7 @@ class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).afterScenarioSteps(Stage.AFTER);
         inOrder.verify(delegate).afterExamples();
         inOrder.verify(delegate).afterScenario();
+        inOrder.verify(delegate).afterScenario(timing);
         
         inOrder.verify(delegate).beforeScenario(scenario2);
         inOrder.verify(delegate).beforeScenarioSteps(Stage.BEFORE);
@@ -118,6 +124,7 @@ class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).beforeScenarioSteps(Stage.AFTER);
         inOrder.verify(delegate).afterScenarioSteps(Stage.AFTER);
         inOrder.verify(delegate).afterScenario();
+        inOrder.verify(delegate).afterScenario(timing);
         inOrder.verify(delegate).afterScenarios();
         
         inOrder.verify(delegate).afterStory(givenStory);

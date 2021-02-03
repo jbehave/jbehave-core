@@ -2,6 +2,8 @@ package org.jbehave.core.reporters;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,6 +23,7 @@ import org.jbehave.core.model.Lifecycle.Steps;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.Timing;
 
 class StoryNarrator {
 
@@ -39,6 +42,8 @@ class StoryNarrator {
         Story story = new Story("/path/to/story", new Description("An interesting story & special chars"), new Meta(meta),
                 new Narrative("renovate my house", "customer", "get a loan"), GivenStories.EMPTY, lifecycle, new ArrayList<Scenario>());
         boolean givenStory = false;
+        Timing timing = getTiming();
+
         reporter.dryRun();
         reporter.beforeStory(story, givenStory);
         reporter.narrative(story.getNarrative());
@@ -89,7 +94,7 @@ class StoryNarrator {
         }
         reporter.afterScenarioSteps(null);
         reportScenarioStep(reporter, scenarioStep, Stage.AFTER);
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.beforeScenario(new Scenario("Parametrised Scenario", Meta.EMPTY));
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
@@ -113,7 +118,7 @@ class StoryNarrator {
         reporter.afterScenarioSteps(null);
         reportScenarioStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(timing);
         reporter.afterScenarios();
 
         reporter.beforeStorySteps(Stage.AFTER);
@@ -183,8 +188,15 @@ class StoryNarrator {
             Scenario scenario = story.getScenarios().get(0);
             reporter.beforeScenario(scenario);
             reporter.scenarioNotAllowed(scenario, "-theme testing");
-            reporter.afterScenario();
+            reporter.afterScenario(getTiming());
         }
         reporter.afterStory(false);
+    }
+
+    private static Timing getTiming() {
+        Timing timing = mock(Timing.class);
+        when(timing.getStart()).thenReturn(1l);
+        when(timing.getEnd()).thenReturn(2l);
+        return timing;
     }
 }

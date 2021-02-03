@@ -6,6 +6,8 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.Timer;
+import org.jbehave.core.steps.Timing;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +27,8 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class SilentSuccessFilterBehaviour {
+
+    private static final Timing TIMING = new Timing();
 
     @Mock
     private StoryReporter delegate;
@@ -54,7 +58,7 @@ class SilentSuccessFilterBehaviour {
         filter.comment("!-- A comment");
         filter.successful("When step 1.2");
         filter.successful("Then step 1.3");
-        filter.afterScenario();
+        filter.afterScenario(TIMING);
 
         filter.beforeScenario(scenario2);
         filter.givenStories(givenStories);
@@ -62,7 +66,7 @@ class SilentSuccessFilterBehaviour {
         filter.successful("Given step 2.1");
         filter.pending("When step 2.2");
         filter.notPerformed("Then step 2.3");
-        filter.afterScenario();
+        filter.afterScenario(TIMING);
 
         filter.beforeScenario(scenario3);
         filter.beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
@@ -76,13 +80,13 @@ class SilentSuccessFilterBehaviour {
         OutcomesTable outcomesTable = new OutcomesTable();
         filter.failedOutcomes("When failed outcomes", outcomesTable);
         filter.afterExamples();
-        filter.afterScenario();
+        filter.afterScenario(TIMING);
 
         filter.beforeScenario(scenario4);
         filter.successful("Given step 4.1");
         filter.successful("When step 4.2");
         filter.successful("Then step 4.3");
-        filter.afterScenario();
+        filter.afterScenario(TIMING);
         filter.afterStory(false);
 
         // Then
@@ -110,7 +114,7 @@ class SilentSuccessFilterBehaviour {
         inOrder.verify(delegate).successful("Given step 2.1");
         inOrder.verify(delegate).pending("When step 2.2");
         inOrder.verify(delegate).notPerformed("Then step 2.3");
-        inOrder.verify(delegate).afterScenario();
+        inOrder.verify(delegate).afterScenario(TIMING);
 
         inOrder.verify(delegate).beforeScenario(scenario3);
         inOrder.verify(delegate).beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
@@ -123,7 +127,7 @@ class SilentSuccessFilterBehaviour {
         inOrder.verify(delegate).failedOutcomes("When failed outcomes", outcomesTable);
         inOrder.verify(delegate).afterExamples();
 
-        inOrder.verify(delegate).afterScenario();
+        inOrder.verify(delegate).afterScenario(TIMING);
         inOrder.verify(delegate).afterStory(false);
     }
 
@@ -146,7 +150,7 @@ class SilentSuccessFilterBehaviour {
         filter.comment("!-- A comment");
         filter.successful("When step 1.2");
         filter.successful("Then step 1.3");
-        filter.afterScenario();
+        filter.afterScenario(TIMING);
 
         Scenario scenario2 = new Scenario("My scenario 2", Meta.EMPTY);
         filter.beforeScenario(scenario2);
@@ -155,7 +159,7 @@ class SilentSuccessFilterBehaviour {
         filter.successful("Given step 2.1");
         filter.pending("When step 2.2");
         filter.notPerformed("Then step 2.3");
-        filter.afterScenario();
+        filter.afterScenario(TIMING);
 
         Scenario scenario3 = new Scenario("My scenario 3", Meta.EMPTY);
         filter.beforeScenario(scenario3);
@@ -170,14 +174,14 @@ class SilentSuccessFilterBehaviour {
         OutcomesTable outcomesTable = new OutcomesTable();
         filter.failedOutcomes("When failed outcomes", outcomesTable);
         filter.afterExamples();
-        filter.afterScenario();
+        filter.afterScenario(TIMING);
 
         Scenario scenario4 = new Scenario("My scenario 4", Meta.EMPTY);
         filter.beforeScenario(scenario4);
         filter.successful("Given step 4.1");
         filter.successful("When step 4.2");
         filter.successful("Then step 4.3");
-        filter.afterScenario();
+        filter.afterScenario(TIMING);
         filter.afterStory(false);
 
         // Then
@@ -205,7 +209,7 @@ class SilentSuccessFilterBehaviour {
         inOrder.verify(delegate).successful("Given step 2.1");
         inOrder.verify(delegate).pending("When step 2.2");
         inOrder.verify(delegate).notPerformed("Then step 2.3");
-        inOrder.verify(delegate).afterScenario();
+        inOrder.verify(delegate).afterScenario(TIMING);
 
         inOrder.verify(delegate).beforeScenario(scenario3);
         inOrder.verify(delegate).beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
@@ -218,7 +222,7 @@ class SilentSuccessFilterBehaviour {
         inOrder.verify(delegate).failedOutcomes("When failed outcomes", outcomesTable);
         inOrder.verify(delegate).afterExamples();
 
-        inOrder.verify(delegate).afterScenario();
+        inOrder.verify(delegate).afterScenario(TIMING);
         inOrder.verify(delegate).afterStory(false);
     }
 

@@ -25,6 +25,7 @@ import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.*;
 import org.jbehave.core.model.OutcomesTable.Outcome;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.Timing;
 
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.jbehave.core.steps.StepCreator.*;
@@ -433,7 +434,9 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void afterScenario() {
+    public void afterScenario(Timing timing) {
+        print(format("numericParameter", EMPTY, "start", timing.getStart()));
+        print(format("numericParameter", EMPTY, "end", timing.getEnd()));
         if (cause.get() != null && !(cause.get() instanceof KnownFailure) && reportFailureTrace() ) {
             print(format("afterScenarioWithFailure", "\n{0}\n",
                     new StackTraceFormatter(compressFailureTrace()).stackTrace(cause.get())));

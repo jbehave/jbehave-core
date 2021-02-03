@@ -929,7 +929,7 @@ public class PerformableTree {
                 }
                 this.status = context.status(state);
             } finally {
-                timing.setTimings(timer.stop());
+                timing = new Timing(timer.stop());
             }
         }
 
@@ -1069,7 +1069,8 @@ public class PerformableTree {
                 this.status = context.status(state);
                 context.reporter().afterScenario();
             } finally {
-                timing.setTimings(timer.stop());
+                timing = new Timing(timer.stop());
+                context.reporter().afterScenario(timing);
             }
         }
 

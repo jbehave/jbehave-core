@@ -9,6 +9,7 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -123,7 +124,7 @@ class PostStoryStatisticsCollectorBehaviour {
         // 1st given story
         reporter.beforeStory(story, true);
         reporter.beforeScenario(new Scenario("a scenario without steps", Meta.EMPTY));
-        reporter.afterScenario();
+        reporter.afterScenario(new Timing());
         reporter.afterStory(true);
 
         // 2nd given story
@@ -134,10 +135,10 @@ class PostStoryStatisticsCollectorBehaviour {
         reporter.beforeStory(story, true);
         reporter.beforeScenario(new Scenario("initialise static", Meta.EMPTY));
         reporter.successful("the bank has customers");
-        reporter.afterScenario();
+        reporter.afterScenario(new Timing());
         reporter.afterStory(true);
 
-        reporter.afterScenario();
+        reporter.afterScenario(new Timing());
         reporter.afterStory(true);
 
         reporter.successful("Given I have a balance of $50");
@@ -145,7 +146,7 @@ class PostStoryStatisticsCollectorBehaviour {
         reporter.comment("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
-        reporter.afterScenario();
+        reporter.afterScenario(new Timing());
 
         // 2nd scenario
         reporter.beforeScenario(new Scenario("A failing scenario", Meta.EMPTY));
@@ -162,13 +163,13 @@ class PostStoryStatisticsCollectorBehaviour {
         reporter.example(table.getRow(0), 0);
         reporter.example(table.getRow(1), 1);
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(new Timing());
 
         // 3rd scenario
         reporter.beforeScenario(new Scenario("A pending scenario", Meta.EMPTY));
         reporter.pending("When I have some money");
         reporter.notPerformed("Then I should have $20");
-        reporter.afterScenario();        
+        reporter.afterScenario(new Timing());
         
         // end story
         reporter.afterStory(false);

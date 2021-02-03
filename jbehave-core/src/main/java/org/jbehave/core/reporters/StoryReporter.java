@@ -2,6 +2,7 @@ package org.jbehave.core.reporters;
 
 import org.jbehave.core.model.*;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.Timing;
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,12 @@ public interface StoryReporter {
 
     void beforeScenario(Scenario scenario);
 
+    void afterScenario(Timing timing);
+
+    /**
+     * @deprecated use {@link #afterScenario(Timing)}
+     */
+    @Deprecated
     void afterScenario();
 
     void beforeGivenStories();

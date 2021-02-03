@@ -5,5 +5,7 @@
 </meta>
 <scenario keyword="Scenario:" title="A scenario">
 <filter>-theme testing</filter>
+<timing phase="start">1</timing>
+<timing phase="end">2</timing>
 </scenario>
 </story>
