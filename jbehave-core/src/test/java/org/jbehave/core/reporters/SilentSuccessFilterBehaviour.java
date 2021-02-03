@@ -6,7 +6,6 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.Timer;
 import org.jbehave.core.steps.Timing;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.junit.jupiter.api.Test;
@@ -227,20 +226,20 @@ class SilentSuccessFilterBehaviour {
     }
 
     @Test
-    void shouldNotPassSilentlyOutputNotAllowedByMetaFilter() {
+    void shouldNotPassSilentlyOutputExcludedByMetaFilter() {
         // Given
         Story story = new Story();
         Scenario scenario = new Scenario();
 
         String metaFilter = "";
         // When
-        filter.storyNotAllowed(story, metaFilter);
-        filter.scenarioNotAllowed(scenario, metaFilter);
+        filter.storyExcluded(story, metaFilter);
+        filter.scenarioExcluded(scenario, metaFilter);
 
         // Then
         InOrder inOrder = inOrder(delegate);
 
-        inOrder.verify(delegate).storyNotAllowed(story, metaFilter);
-        inOrder.verify(delegate).scenarioNotAllowed(scenario, metaFilter);
+        inOrder.verify(delegate).storyExcluded(story, metaFilter);
+        inOrder.verify(delegate).scenarioExcluded(scenario, metaFilter);
     }
 }

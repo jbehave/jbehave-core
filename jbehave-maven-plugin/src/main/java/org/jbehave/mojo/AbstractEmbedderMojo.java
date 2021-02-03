@@ -351,7 +351,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         @Override
-        public void metaNotAllowed(Meta meta, MetaFilter filter) {
+        public void metaExcluded(Meta meta, MetaFilter filter) {
             getLog().debug(meta + " excluded by filter '" + filter.asString() + "'");
         }
 
@@ -376,11 +376,11 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         @Override
-        public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
+        public void storiesExcluded(List<Story> excluded, MetaFilter filter, boolean verbose) {
             StringBuilder sb = new StringBuilder();
-            sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
+            sb.append(excluded.size() + " stories excluded by filter: " + filter.asString() + "\n");
             if (verbose) {
-                for (Story story : stories) {
+                for (Story story : excluded) {
                     sb.append(story.getPath()).append("\n");
                 }
             }
@@ -388,7 +388,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
     	@Override
-        public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
+        public void scenarioExcluded(Scenario scenario, MetaFilter filter) {
             StringBuilder sb = new StringBuilder();
             sb.append("Scenario '"+scenario.getTitle()+"' excluded by filter: " + filter.asString() + "\n");
             getLog().info(sb.toString());
@@ -425,10 +425,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
                     "Reports view generated with " + count.getStories() + " stories (of which "
                             + count.getStoriesPending() + " pending) containing " + count.getScenarios()
                             + " scenarios (of which " + count.getScenariosPending() + " pending)");
-            if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
+            if (count.getStoriesExcluded() > 0 || count.getScenariosExcluded() > 0) {
                 getLog().info(
-                        "Meta filters excluded " + count.getStoriesNotAllowed() + " stories and  "
-                                + count.getScenariosNotAllowed() + " scenarios");
+                        "Meta filters excluded " + count.getStoriesExcluded() + " stories and  "
+                                + count.getScenariosExcluded() + " scenarios");
             }
         }
 

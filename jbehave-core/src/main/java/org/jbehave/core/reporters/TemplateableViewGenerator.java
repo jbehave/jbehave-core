@@ -174,15 +174,15 @@ public class TemplateableViewGenerator implements ViewGenerator {
     @Override
     public ReportsCount getReportsCount() {
         int stories = countStoriesWithScenarios();
-        int storiesNotAllowed = count("notAllowed", reports);
+        int storiesExcluded = count("excluded", reports);
         int storiesPending = count("pending", reports);
         int scenarios = count("scenarios", reports);
         int scenariosFailed = count("scenariosFailed", reports);
-        int scenariosNotAllowed = count("scenariosNotAllowed", reports);
+        int scenariosExcluded = count("scenariosExcluded", reports);
         int scenariosPending = count("scenariosPending", reports);
         int stepsFailed = count("stepsFailed", reports);
-        return new ReportsCount(stories, storiesNotAllowed, storiesPending, scenarios, scenariosFailed,
-                scenariosNotAllowed, scenariosPending, stepsFailed);
+        return new ReportsCount(stories, storiesExcluded, storiesPending, scenarios, scenariosFailed,
+                scenariosExcluded, scenariosPending, stepsFailed);
     }
 
     private int countStoriesWithScenarios(){

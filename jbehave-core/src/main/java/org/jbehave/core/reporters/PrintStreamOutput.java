@@ -226,7 +226,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void storyNotAllowed(Story story, String filter) {
+    public void storyExcluded(Story story, String filter) {
         print(format("filter", "{0}\n", filter));
     }
 
@@ -422,7 +422,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
+    public void scenarioExcluded(Scenario scenario, String filter) {
         print(format("filter", "{0}\n", filter));
     }
 

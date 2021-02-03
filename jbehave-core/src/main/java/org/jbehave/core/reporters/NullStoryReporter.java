@@ -49,7 +49,7 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void storyNotAllowed(Story story, String filter) {
+    public void storyExcluded(Story story, String filter) {
     }
 
     @Override
@@ -117,7 +117,7 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
+    public void scenarioExcluded(Scenario scenario, String filter) {
     }
 
     /**

@@ -42,8 +42,8 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
     }
 
     @Override
-    public void metaNotAllowed(Meta meta, MetaFilter filter) {
-        delegate.metaNotAllowed(meta, filter);
+    public void metaExcluded(Meta meta, MetaFilter filter) {
+        delegate.metaExcluded(meta, filter);
     }
 
     @Override
@@ -62,13 +62,13 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
     }
 
     @Override
-    public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
-        delegate.storiesNotAllowed(stories, filter, verbose);
+    public void storiesExcluded(List<Story> excluded, MetaFilter filter, boolean verbose) {
+        delegate.storiesExcluded(excluded, filter, verbose);
      }
 
 	@Override
-    public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
-		delegate.scenarioNotAllowed(scenario, filter);
+    public void scenarioExcluded(Scenario scenario, MetaFilter filter) {
+		delegate.scenarioExcluded(scenario, filter);
 	}
 
     @Override

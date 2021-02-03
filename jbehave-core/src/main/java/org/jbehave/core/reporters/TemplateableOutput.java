@@ -52,8 +52,8 @@ public class TemplateableOutput extends NullStoryReporter {
     }
 
     @Override
-    public void storyNotAllowed(Story story, String filter) {
-        this.outputStory.notAllowedBy = filter;
+    public void storyExcluded(Story story, String filter) {
+        this.outputStory.excludedBy = filter;
     }
 
     @Override
@@ -85,13 +85,12 @@ public class TemplateableOutput extends NullStoryReporter {
     }
 
     @Override
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
-        this.outputScenario.notAllowedBy = filter;
+    public void scenarioExcluded(Scenario scenario, String filter) {
+        this.outputScenario.excludedBy = filter;
     }
 
     @Override
-    public void beforeScenario(Scenario scenario)
-    {
+    public void beforeScenario(Scenario scenario) {
         if (this.outputScenario.currentExample == null) {
             this.outputScenario = new OutputScenario();
         }
@@ -405,7 +404,7 @@ public class TemplateableOutput extends NullStoryReporter {
         private OutputMeta meta;
         private OutputNarrative narrative;
         private OutputLifecycle lifecycle;
-        private String notAllowedBy;
+        private String excludedBy;
         private List<String> pendingMethods;
         private List<OutputStep> beforeSteps = new ArrayList<>();
         private List<OutputStep> afterSteps = new ArrayList<>();
@@ -433,8 +432,8 @@ public class TemplateableOutput extends NullStoryReporter {
             return lifecycle;
         }
 
-        public String getNotAllowedBy() {
-            return notAllowedBy;
+        public String getExcludedBy() {
+            return excludedBy;
         }
 
         public void addBeforeStep(OutputStep outputStep) {
@@ -573,7 +572,7 @@ public class TemplateableOutput extends NullStoryReporter {
         private List<OutputStep> steps = new ArrayList<>();
         private OutputMeta meta;
         private GivenStories givenStories;
-        private String notAllowedBy;
+        private String excludedBy;
         private List<String> examplesSteps;
         private ExamplesTable examplesTable;
         private Map<String, String> currentExample;
@@ -617,8 +616,8 @@ public class TemplateableOutput extends NullStoryReporter {
             return givenStories;
         }
 
-        public String getNotAllowedBy() {
-            return notAllowedBy;
+        public String getExcludedBy() {
+            return excludedBy;
         }
 
         public List<String> getExamplesSteps() {

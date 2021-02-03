@@ -60,15 +60,15 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
 
     @Test
-    void shouldOutputStoryToTxtWhenNotAllowedByFilter() throws IOException {
+    void shouldOutputStoryToTxtWhenExcludedByFilter() throws IOException {
         // Given
-        String name = "stream-story-not-allowed.txt";
+        String name = "stream-story-excluded.txt";
         File file = newFile("target/"+ name);
         StoryReporter reporter = new TxtOutput(createPrintStream(file));
 
         // When
         StoryNarrator
-                .narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
+                .narrateAnInterestingStoryExcludedByFilter(reporter, false);
 
         // Then
         assertFileOutputIsSameAs(file, name);
@@ -108,15 +108,15 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToHtmlWhenNotAllowedByFilter() throws IOException {
+    void shouldOutputStoryToHtmlWhenExcludedByFilter() throws IOException {
         // Given
-        String name = "stream-story-not-allowed.html";
+        String name = "stream-story-excluded.html";
         File file = newFile("target/" + name);
         StoryReporter reporter = new HtmlOutput(createPrintStream(file));
 
         // When
         StoryNarrator
-                .narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
+                .narrateAnInterestingStoryExcludedByFilter(reporter, false);
 
         // Then
         assertFileOutputIsSameAs(file, name);
@@ -156,15 +156,15 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToXmlWhenNotAllowedByFilter() throws IOException {
+    void shouldOutputStoryToXmlWhenExcludedByFilter() throws IOException {
         // Given
-        String name = "stream-story-not-allowed.xml";
+        String name = "stream-story-excluded.xml";
         File file = newFile("target/" + name);
         StoryReporter reporter = new XmlOutput(createPrintStream(file));
 
         // When
         StoryNarrator
-                .narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
+                .narrateAnInterestingStoryExcludedByFilter(reporter, false);
 
         // Then
         assertFileOutputIsSameAs(file, name);

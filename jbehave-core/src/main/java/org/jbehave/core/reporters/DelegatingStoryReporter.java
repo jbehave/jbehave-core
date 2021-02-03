@@ -182,13 +182,13 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
-        delegate(reporter -> reporter.scenarioNotAllowed(scenario, filter));
+    public void scenarioExcluded(Scenario scenario, String filter) {
+        delegate(reporter -> reporter.scenarioExcluded(scenario, filter));
     }
 
     @Override
-    public void storyNotAllowed(Story story, String filter) {
-        delegate(reporter -> reporter.storyNotAllowed(story, filter));
+    public void storyExcluded(Story story, String filter) {
+        delegate(reporter -> reporter.storyExcluded(story, filter));
     }
 
     @Override

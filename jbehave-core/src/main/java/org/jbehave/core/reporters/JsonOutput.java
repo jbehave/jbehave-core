@@ -138,7 +138,7 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("beforeScenarioSteps", "\"steps\": [");
         patterns.setProperty("afterScenarioSteps", "]");
         patterns.setProperty("beforeScenario","'{'\"keyword\": \"{0}\", \"title\": \"{1}\"");
-        patterns.setProperty("scenarioNotAllowed", "\"notAllowed\": '{'\"pattern\": \"{0}\"}");
+        patterns.setProperty("scenarioExcluded", "\"excluded\": '{'\"pattern\": \"{0}\"}");
         patterns.setProperty("afterScenario", "}");
         patterns.setProperty("afterScenarioWithFailure", "\"failure\": \"{0}\" }");
         patterns.setProperty("givenStories", "\"givenStories\": '{'\"keyword\": \"{0}\", \"paths\": \"{1}\"}");

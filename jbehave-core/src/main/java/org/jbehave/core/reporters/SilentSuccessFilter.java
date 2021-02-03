@@ -59,8 +59,8 @@ public class SilentSuccessFilter extends NullStoryReporter {
     }
 
     @Override
-    public void storyNotAllowed(final Story story, final String filter) {
-        beforeStoryState = createState(() -> delegate.storyNotAllowed(story, filter));
+    public void storyExcluded(final Story story, final String filter) {
+        beforeStoryState = createState(() -> delegate.storyExcluded(story, filter));
         beforeStoryState.report();
     }
 
@@ -121,8 +121,8 @@ public class SilentSuccessFilter extends NullStoryReporter {
     }
 
     @Override
-    public void scenarioNotAllowed(final Scenario scenario, final String filter) {
-        scenarioState = createState(() -> delegate.scenarioNotAllowed(scenario, filter));
+    public void scenarioExcluded(final Scenario scenario, final String filter) {
+        scenarioState = createState(() -> delegate.scenarioExcluded(scenario, filter));
         scenarioState.report();
     }
 

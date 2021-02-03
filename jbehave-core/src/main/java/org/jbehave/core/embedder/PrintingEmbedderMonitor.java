@@ -48,7 +48,7 @@ public abstract class PrintingEmbedderMonitor extends NullEmbedderMonitor {
     }
 
     @Override
-    public void metaNotAllowed(Meta meta, MetaFilter filter) {
+    public void metaExcluded(Meta meta, MetaFilter filter) {
         print("%s excluded by filter '%s'", meta, filter.asString());
     }
 
@@ -74,18 +74,18 @@ public abstract class PrintingEmbedderMonitor extends NullEmbedderMonitor {
     }
 
     @Override
-    public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
+    public void storiesExcluded(List<Story> excluded, MetaFilter filter, boolean verbose) {
         StringBuilder format = new StringBuilder("%d stories excluded by filter: %s%n");
         if (verbose) {
-            for (Story story : stories) {
+            for (Story story : excluded) {
                 format.append(story.getPath()).append("%n");
             }
         }
-        print(format.toString(), stories.size(), filter.asString());
+        print(format.toString(), excluded.size(), filter.asString());
     }
 
     @Override
-    public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
+    public void scenarioExcluded(Scenario scenario, MetaFilter filter) {
         print("Scenario '%s' excluded by filter: %s%n", scenario.getTitle(), filter.asString());
     }
 
@@ -116,9 +116,9 @@ public abstract class PrintingEmbedderMonitor extends NullEmbedderMonitor {
     public void reportsViewGenerated(ReportsCount count) {
         print("Reports view generated with %d stories (of which %d pending) containing %d scenarios (of which %d pending)",
                 count.getStories(), count.getStoriesPending(), count.getScenarios(), count.getScenariosPending());
-        if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
-            print("Meta filters excluded %d stories and  %d scenarios", count.getStoriesNotAllowed(),
-                    count.getScenariosNotAllowed());
+        if (count.getStoriesExcluded() > 0 || count.getScenariosExcluded() > 0) {
+            print("Meta filters excluded %d stories and  %d scenarios", count.getStoriesExcluded(),
+                    count.getScenariosExcluded());
         }
     }
 

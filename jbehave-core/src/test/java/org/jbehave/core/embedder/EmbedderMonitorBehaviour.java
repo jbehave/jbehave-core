@@ -91,7 +91,7 @@ class EmbedderMonitorBehaviour {
         monitor.mapsViewGenerationFailed(outputDirectory, storyMaps, viewProperties, cause);
         Meta meta = mock(Meta.class);
         MetaFilter filter = mock(MetaFilter.class);
-        monitor.metaNotAllowed(meta, filter);
+        monitor.metaExcluded(meta, filter);
         Properties properties = mock(Properties.class);
         monitor.processingSystemProperties(properties);
         ReportsCount count = mock(ReportsCount.class);
@@ -125,7 +125,7 @@ class EmbedderMonitorBehaviour {
         verify(delegate).generatingReportsView(outputDirectory, formats, viewProperties);
         verify(delegate).mappingStory(storyPath, metaFilters);
         verify(delegate).mapsViewGenerationFailed(outputDirectory, storyMaps, viewProperties, cause);
-        verify(delegate).metaNotAllowed(meta, filter);
+        verify(delegate).metaExcluded(meta, filter);
         verify(delegate).processingSystemProperties(properties);
         verify(delegate).reportsViewGenerated(count);
         verify(delegate).reportsViewGenerationFailed(outputDirectory, formats, viewProperties, cause);

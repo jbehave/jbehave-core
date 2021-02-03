@@ -41,7 +41,7 @@ class PerformableTreeBehaviour {
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
     @Test
-    void shouldAddNotAllowedPerformableScenariosToPerformableStory() {
+    void shouldAddExcludedPerformableScenariosToPerformableStory() {
         Scenario scenario = new Scenario("scenario title", Meta.createMeta("@skip", new Keywords()));
         Story story = new Story(STORY_PATH, Collections.singletonList(scenario));
         List<Story> stories = Collections.singletonList(story);

@@ -124,7 +124,7 @@ public class MetaFilter {
     public boolean allow(Meta meta) {
         boolean allowed = this.filterMatcher.match(meta);
         if (!allowed) {
-            monitor.metaNotAllowed(meta, this);
+            monitor.metaExcluded(meta, this);
         }
         return allowed;
     }

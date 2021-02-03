@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public interface StoryReporter {
 
-    void storyNotAllowed(Story story, String filter);
+    void storyExcluded(Story story, String filter);
 
     void storyCancelled(Story story, StoryDuration storyDuration);
 
@@ -39,7 +39,7 @@ public interface StoryReporter {
 
     void afterScenarioSteps(Stage stage);
 
-    void scenarioNotAllowed(Scenario scenario, String filter);
+    void scenarioExcluded(Scenario scenario, String filter);
 
     void beforeScenario(Scenario scenario);
 

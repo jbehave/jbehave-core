@@ -6,22 +6,22 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ReportsCount {
 
     private final int stories;
-    private final int storiesNotAllowed;
+    private final int storiesExcluded;
     private final int storiesPending;
     private final int scenarios;
     private final int scenariosFailed;
-    private final int scenariosNotAllowed;
+    private final int scenariosExcluded;
     private final int scenariosPending;
     private final int stepsFailed;
 
-    public ReportsCount(int stories, int storiesNotAllowed, int storiesPending, int scenarios, int scenariosFailed,
-            int scenariosNotAllowed, int scenariosPending, int stepsFailed) {
+    public ReportsCount(int stories, int storiesExcluded, int storiesPending, int scenarios, int scenariosFailed,
+                        int scenariosExcluded, int scenariosPending, int stepsFailed) {
         this.stories = stories;
-        this.storiesNotAllowed = storiesNotAllowed;
+        this.storiesExcluded = storiesExcluded;
         this.storiesPending = storiesPending;
         this.scenarios = scenarios;
         this.scenariosFailed = scenariosFailed;
-        this.scenariosNotAllowed = scenariosNotAllowed;
+        this.scenariosExcluded = scenariosExcluded;
         this.scenariosPending = scenariosPending;
         this.stepsFailed = stepsFailed;
     }
@@ -30,8 +30,8 @@ public class ReportsCount {
         return stories;
     }
 
-    public int getStoriesNotAllowed() {
-        return storiesNotAllowed;
+    public int getStoriesExcluded() {
+        return storiesExcluded;
     }
 
     public int getStoriesPending() {
@@ -46,8 +46,8 @@ public class ReportsCount {
         return scenariosFailed;
     }
 
-    public int getScenariosNotAllowed() {
-        return scenariosNotAllowed;
+    public int getScenariosExcluded() {
+        return scenariosExcluded;
     }
 
     public int getScenariosPending() {
@@ -60,8 +60,6 @@ public class ReportsCount {
 
     public boolean failed(){
         return scenariosFailed > 0 || stepsFailed > 0;
-// JBEHAVE-472:  find a better way to express failures before scenarios        
-//        if ( stories > 0 && scenarios == 0 ) return true;
     }
 
     public boolean pending(){

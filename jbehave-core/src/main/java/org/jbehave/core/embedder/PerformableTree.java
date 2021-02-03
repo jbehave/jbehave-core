@@ -906,7 +906,7 @@ public class PerformableTree {
         @Override
         public void perform(RunContext context) throws InterruptedException {
             if (!allowed) {
-                context.reporter().storyNotAllowed(story, context.filter.asString());
+                context.reporter().storyExcluded(story, context.filter.asString());
                 this.status = Status.NOT_ALLOWED;
             }
             Timer timer = new Timer().start();
@@ -1047,7 +1047,7 @@ public class PerformableTree {
         @Override
         public void perform(RunContext context) throws InterruptedException {
             if (!isAllowed()) {
-                context.embedderMonitor().scenarioNotAllowed(scenario, context.filter());
+                context.embedderMonitor().scenarioExcluded(scenario, context.filter());
                 return;
             }
             Timer timer = new Timer().start();

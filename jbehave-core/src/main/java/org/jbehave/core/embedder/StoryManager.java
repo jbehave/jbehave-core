@@ -120,9 +120,9 @@ public class StoryManager {
 		runStories(context, stories);
 		waitUntilAllDoneOrFailed(context);
 		MetaFilter filter = context.filter();
-		List<Story> notAllowed = notAllowedBy(filter);
-		if (!notAllowed.isEmpty()) {
-			embedderMonitor.storiesNotAllowed(notAllowed, filter,
+		List<Story> excluded = excludedBy(filter);
+		if (!excluded.isEmpty()) {
+			embedderMonitor.storiesExcluded(excluded, filter,
 					embedderControls.verboseFiltering());
 		}
 
@@ -141,11 +141,11 @@ public class StoryManager {
 		if (filteredStory.allowed()) {
 			runningStories.put(story.getPath(), runningStory(story));
 		} else {
-			notAllowedBy(context.getFilter()).add(story);
+			excludedBy(context.getFilter()).add(story);
 		}
 	}
 
-	public List<Story> notAllowedBy(MetaFilter filter) {
+	public List<Story> excludedBy(MetaFilter filter) {
 		List<Story> stories = excludedStories.get(filter);
 		if (stories == null) {
 			stories = new ArrayList<>();

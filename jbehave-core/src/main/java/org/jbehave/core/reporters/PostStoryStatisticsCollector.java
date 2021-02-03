@@ -29,8 +29,8 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
 
     private final OutputStream output;
     private final Map<String, Integer> data = new HashMap<>();
-    private final List<String> events = asList("notAllowed", "pending", "scenariosNotAllowed",
-            "givenStoryScenariosNotAllowed", "steps", "stepsSuccessful", "stepsIgnorable", "comments", "stepsPending",
+    private final List<String> events = asList("excluded", "pending", "scenariosExcluded",
+            "givenStoryScenariosExcluded", "steps", "stepsSuccessful", "stepsIgnorable", "comments", "stepsPending",
             "stepsNotPerformed", "stepsFailed", "currentScenarioSteps", "currentScenarioStepsPending", "scenarios",
             "scenariosSuccessful", "scenariosPending", "scenariosFailed", "givenStories", "givenStoryScenarios",
             "givenStoryScenariosSuccessful", "givenStoryScenariosPending", "givenStoryScenariosFailed", "examples");
@@ -38,7 +38,7 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
     private Throwable cause;
     private OutcomesTable outcomesFailed;
     private int givenStories;
-    private boolean currentScenarioNotAllowed;
+    private boolean currentScenarioExcluded;
 
     public PostStoryStatisticsCollector(OutputStream output) {
         this.output = output;
@@ -111,9 +111,9 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
     }
 
     @Override
-    public void storyNotAllowed(Story story, String filter) {
+    public void storyExcluded(Story story, String filter) {
         resetData();
-        add("notAllowed");
+        add("excluded");
         writeData();
     }
 
@@ -156,18 +156,18 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
     public void beforeScenario(Scenario scenario) {
         cause = null;
         outcomesFailed = null;
-        currentScenarioNotAllowed = false;
+        currentScenarioExcluded = false;
         reset("currentScenarioSteps");
         reset("currentScenarioStepsPending");
     }
 
     @Override
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
+    public void scenarioExcluded(Scenario scenario, String filter) {
         if (givenStories > 0) {
-            add("givenStoryScenariosNotAllowed");
+            add("givenStoryScenariosExcluded");
         } else {
-            add("scenariosNotAllowed");
-            currentScenarioNotAllowed = true;
+            add("scenariosExcluded");
+            currentScenarioExcluded = true;
         }
     }
 
@@ -178,7 +178,7 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
         } else {
             countScenarios("scenarios");
         }
-        if (has("currentScenarioStepsPending") || (!has("currentScenarioSteps") && !currentScenarioNotAllowed)) {
+        if (has("currentScenarioStepsPending") || (!has("currentScenarioSteps") && !currentScenarioExcluded)) {
             if (givenStories > 0) {
                 add("givenStoryScenariosPending");
             } else {
@@ -189,7 +189,7 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
 
     private void countScenarios(String namespace) {
         add(namespace);
-        if (!currentScenarioNotAllowed){
+        if (!currentScenarioExcluded){
             if (cause != null || outcomesFailed != null) {
                 add(namespace + "Failed");
             } else {

@@ -19,7 +19,7 @@ public interface EmbedderMonitor {
 
     void embeddablesSkipped(List<String> classNames);
 
-    void metaNotAllowed(Meta meta, MetaFilter filter);
+    void metaExcluded(Meta meta, MetaFilter filter);
 
     void runningStory(String path);
 
@@ -27,9 +27,9 @@ public interface EmbedderMonitor {
 
     void storiesSkipped(List<String> storyPaths);
 
-    void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter, boolean verbose);
+    void storiesExcluded(List<Story> excluded, MetaFilter filter, boolean verbose);
 
-	void scenarioNotAllowed(Scenario scenario, MetaFilter filter);
+	void scenarioExcluded(Scenario scenario, MetaFilter filter);
 
     void batchFailed(BatchFailures failures);
 

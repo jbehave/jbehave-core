@@ -202,21 +202,21 @@ public class EmbedderMojoBehaviour {
                         + " and view properties '" + viewProperties + "'", cause);
 
         int stories = 2;
-        int storiesNotAllowed = 1;
+        int storiesExcluded = 1;
         int storiesPending = 1;
         int scenarios = 4;
         int scenariosFailed = 1;
-        int scenariosNotAllowed = 0;
+        int scenariosExcluded = 0;
         int scenariosPending = 1;
         int stepsFailed = 1;
-        embedderMonitor.reportsViewGenerated(new ReportsCount(stories, storiesNotAllowed, storiesPending, scenarios,
-                scenariosFailed, scenariosNotAllowed, scenariosPending, stepsFailed));
+        embedderMonitor.reportsViewGenerated(new ReportsCount(stories, storiesExcluded, storiesPending, scenarios,
+                scenariosFailed, scenariosExcluded, scenariosPending, stepsFailed));
         verify(log).info(
                 "Reports view generated with " + stories + " stories (of which " + storiesPending
                         + " pending) containing " + scenarios + " scenarios (of which " + scenariosPending
                         + " pending)");
         verify(log).info(
-                "Meta filters excluded " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
+                "Meta filters excluded " + storiesExcluded + " stories and  " + scenariosExcluded
                         + " scenarios");
         embedderMonitor.reportsViewNotGenerated();
         verify(log).info("Reports view not generated");

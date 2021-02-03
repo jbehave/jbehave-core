@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 public class ConcurrentStoryReporter implements StoryReporter {
 
     private static Method storyCancelled;
-    private static Method storyNotAllowed;
+    private static Method storyExcluded;
     private static Method beforeStory;
     private static Method afterStory;
     private static Method narrative;
@@ -29,7 +29,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method afterStorySteps;
     private static Method beforeScenarioSteps;
     private static Method afterScenarioSteps;
-    private static Method scenarioNotAllowed;
+    private static Method scenarioExcluded;
     private static Method beforeScenarios;
     private static Method beforeScenario;
     private static Method afterScenarioDeprecated;
@@ -58,7 +58,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     static {
         try {
             storyCancelled = StoryReporter.class.getMethod("storyCancelled", Story.class, StoryDuration.class);
-            storyNotAllowed = StoryReporter.class.getMethod("storyNotAllowed", Story.class, String.class);
+            storyExcluded = StoryReporter.class.getMethod("storyExcluded", Story.class, String.class);
             beforeStory = StoryReporter.class.getMethod("beforeStory", Story.class, Boolean.TYPE);
             afterStory = StoryReporter.class.getMethod("afterStory", Boolean.TYPE);
             narrative = StoryReporter.class.getMethod("narrative", Narrative.class);
@@ -67,7 +67,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
             afterStorySteps = StoryReporter.class.getMethod("afterStorySteps", Stage.class);
             beforeScenarioSteps = StoryReporter.class.getMethod("beforeScenarioSteps", Stage.class);
             afterScenarioSteps = StoryReporter.class.getMethod("afterScenarioSteps", Stage.class);
-            scenarioNotAllowed = StoryReporter.class.getMethod("scenarioNotAllowed", Scenario.class, String.class);
+            scenarioExcluded = StoryReporter.class.getMethod("scenarioExcluded", Scenario.class, String.class);
             beforeScenarios = StoryReporter.class.getMethod("beforeScenarios");
             beforeScenario = StoryReporter.class.getMethod("beforeScenario", Scenario.class);
             afterScenarioDeprecated = StoryReporter.class.getMethod("afterScenario");
@@ -111,8 +111,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void storyNotAllowed(Story story, String filter) {
-        perform(reporter -> reporter.storyNotAllowed(story, filter), storyNotAllowed, story, filter);
+    public void storyExcluded(Story story, String filter) {
+        perform(reporter -> reporter.storyExcluded(story, filter), storyExcluded, story, filter);
     }
 
     @Override
@@ -156,8 +156,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
-        perform(reporter ->  reporter.scenarioNotAllowed(scenario, filter), scenarioNotAllowed, scenario, filter);
+    public void scenarioExcluded(Scenario scenario, String filter) {
+        perform(reporter ->  reporter.scenarioExcluded(scenario, filter), scenarioExcluded, scenario, filter);
     }
 
     @Override

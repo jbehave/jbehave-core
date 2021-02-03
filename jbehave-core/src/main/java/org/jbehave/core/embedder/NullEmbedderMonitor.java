@@ -33,7 +33,7 @@ public class NullEmbedderMonitor implements EmbedderMonitor {
     }
 
     @Override
-    public void metaNotAllowed(Meta meta, MetaFilter filter) {
+    public void metaExcluded(Meta meta, MetaFilter filter) {
     }
 
     @Override
@@ -49,11 +49,11 @@ public class NullEmbedderMonitor implements EmbedderMonitor {
     }
 
     @Override
-    public void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter, boolean verbose) {
+    public void storiesExcluded(List<Story> excluded, MetaFilter filter, boolean verbose) {
     }
 
 	@Override
-    public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
+    public void scenarioExcluded(Scenario scenario, MetaFilter filter) {
 	}
 
     @Override

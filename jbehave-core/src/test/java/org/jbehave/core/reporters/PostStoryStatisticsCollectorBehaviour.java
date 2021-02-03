@@ -71,29 +71,29 @@ class PostStoryStatisticsCollectorBehaviour {
     }
 
     @Test
-    void shouldCollectStoryStatisticsWhenStoryNotAllowedByFilter() {
+    void shouldCollectStoryStatisticsWhenStoryExcludedByFilter() {
         // When
-        StoryNarrator.narrateAnInterestingStoryNotAllowedByFilter(reporter, true);
+        StoryNarrator.narrateAnInterestingStoryExcludedByFilter(reporter, true);
 
         // Then
         String statistics = out.toString();
-        assertThat(statistics, containsString("notAllowed=1"));
+        assertThat(statistics, containsString("excluded=1"));
     }
 
     @Test
-    void shouldCollectStoryStatisticsWhenScenariosNotAllowedByFilter() {
+    void shouldCollectStoryStatisticsWhenScenariosExcludedByFilter() {
         // When
-        StoryNarrator.narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
+        StoryNarrator.narrateAnInterestingStoryExcludedByFilter(reporter, false);
         
         // Then
         String statistics = out.toString();
-        assertThat(statistics, containsString("notAllowed=0"));
+        assertThat(statistics, containsString("excluded=0"));
         assertThat(statistics, containsString("pending=0"));
         assertThat(statistics, containsString("scenarios=1"));
         assertThat(statistics, containsString("scenariosSuccessful=0"));
         assertThat(statistics, containsString("scenariosPending=0"));
         assertThat(statistics, containsString("scenariosFailed=0"));
-        assertThat(statistics, containsString("scenariosNotAllowed=1"));
+        assertThat(statistics, containsString("scenariosExcluded=1"));
     }
 
     @Test

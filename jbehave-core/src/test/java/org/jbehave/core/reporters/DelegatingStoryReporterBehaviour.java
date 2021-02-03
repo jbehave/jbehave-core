@@ -7,7 +7,6 @@ import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.Timer;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -42,12 +41,12 @@ class DelegatingStoryReporterBehaviour {
         delegator.dryRun();
         
         delegator.beforeStory(story, givenStory);        
-        delegator.storyNotAllowed(story, filter);
+        delegator.storyExcluded(story, filter);
         delegator.beforeScenarios();
         delegator.beforeScenario(scenario);
         delegator.beforeScenarioSteps(Stage.BEFORE);
         delegator.afterScenarioSteps(Stage.BEFORE);
-        delegator.scenarioNotAllowed(scenario, filter);
+        delegator.scenarioExcluded(scenario, filter);
         delegator.givenStories(givenStoryPaths);
         delegator.givenStories(givenStories);
         delegator.beforeScenarioSteps(null);
@@ -89,13 +88,13 @@ class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).dryRun();        
 
         inOrder.verify(delegate).beforeStory(story, givenStory);
-        inOrder.verify(delegate).storyNotAllowed(story, filter);
+        inOrder.verify(delegate).storyExcluded(story, filter);
 
         inOrder.verify(delegate).beforeScenarios();
         inOrder.verify(delegate).beforeScenario(scenario);
         inOrder.verify(delegate).beforeScenarioSteps(Stage.BEFORE);
         inOrder.verify(delegate).afterScenarioSteps(Stage.BEFORE);
-        inOrder.verify(delegate).scenarioNotAllowed(scenario, filter);
+        inOrder.verify(delegate).scenarioExcluded(scenario, filter);
         inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).beforeScenarioSteps(null);

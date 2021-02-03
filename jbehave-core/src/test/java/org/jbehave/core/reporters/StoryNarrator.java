@@ -172,9 +172,7 @@ class StoryNarrator {
         }
     }
 
-    // TODO: doesn't quite match the way stories
-    // look when they are excluded
-    static void narrateAnInterestingStoryNotAllowedByFilter(StoryReporter reporter, boolean storyNotAllowed) {
+    static void narrateAnInterestingStoryExcludedByFilter(StoryReporter reporter, boolean storyExluded) {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
         meta.setProperty("author", "Mauro");
@@ -182,12 +180,12 @@ class StoryNarrator {
                 new Description("An interesting story"), new Meta(meta), new Narrative("renovate my house", "customer", "get a loan"),
                 Arrays.asList(new Scenario("A scenario", Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY, new ArrayList<String>())));
         reporter.beforeStory(story, false);
-        if (storyNotAllowed) {
-            reporter.storyNotAllowed(story, "-theme testing");
+        if (storyExluded) {
+            reporter.storyExcluded(story, "-theme testing");
         } else  {
             Scenario scenario = story.getScenarios().get(0);
             reporter.beforeScenario(scenario);
-            reporter.scenarioNotAllowed(scenario, "-theme testing");
+            reporter.scenarioExcluded(scenario, "-theme testing");
             reporter.afterScenario(getTiming());
         }
         reporter.afterStory(false);
