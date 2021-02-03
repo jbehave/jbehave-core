@@ -420,7 +420,7 @@ class StepsBehaviour {
             afterGivenStory = true;
         }        
         
-        @BeforeScenario
+        @BeforeScenario(uponType = ScenarioType.NORMAL)
         public void beforeNormalScenarios() {
             beforeNormalScenario = true;
         }
@@ -435,7 +435,7 @@ class StepsBehaviour {
             beforeAnyScenario = true;
         }
 
-        @AfterScenario
+        @AfterScenario(uponType = ScenarioType.NORMAL)
         public void afterNormalScenarios() {
             afterNormalScenario = true;
         }
@@ -450,12 +450,12 @@ class StepsBehaviour {
             afterAnyScenario = true;
         }
 
-        @AfterScenario(uponOutcome=AfterScenario.Outcome.SUCCESS)
+        @AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome=AfterScenario.Outcome.SUCCESS)
         public void afterSuccessfulScenarios() {
             afterSuccessfulScenario = true;
         }
         
-        @AfterScenario(uponOutcome=AfterScenario.Outcome.FAILURE)
+        @AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome=AfterScenario.Outcome.FAILURE)
         public void afterFailedScenarios() {
             afterFailedScenario = true;
         }
@@ -517,7 +517,7 @@ class StepsBehaviour {
 
     static class BeforeSteps extends Steps {
         
-        @BeforeScenario
+        @BeforeScenario(uponType = ScenarioType.NORMAL)
         public void beforeScenario() {
             throw new RuntimeException("Damn, I failed!");
         }
@@ -526,7 +526,7 @@ class StepsBehaviour {
 
     static class AfterSteps extends Steps {
 
-        @AfterScenario
+        @AfterScenario(uponType = ScenarioType.NORMAL)
         public void afterScenario() {
             throw new RuntimeException("Damn, I failed!");
         }

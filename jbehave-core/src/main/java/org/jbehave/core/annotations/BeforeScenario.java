@@ -13,10 +13,10 @@ public @interface BeforeScenario {
 
     /**
      * Signals that the annotated method should be invoked only upon given type
-     * 
+     *
      * @return A ScenarioType upon which the method should be invoked
      */
-    ScenarioType uponType() default ScenarioType.NORMAL;
+    ScenarioType uponType() default ScenarioType.ANY;
 
     /**
      * Lifecycle hooks with the higher order will be executed first

@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 class MarkUnmatchedStepsAsPendingBehaviour {
+
     private final StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
     private final StepMonitor stepMonitor = new NullStepMonitor();
     private final Map<String, String> parameters = new HashMap<>();
@@ -586,21 +587,21 @@ class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     public static class ClassWithMethodsAandB extends Steps {
-        @BeforeScenario
+        @BeforeScenario(uponType = ScenarioType.NORMAL)
         public void a() {
         }
 
-        @AfterScenario
+        @AfterScenario(uponType = ScenarioType.NORMAL)
         public void b() {
         }
     }
 
     public static class ClassWithMethodsCandD extends Steps {
-        @BeforeScenario
+        @BeforeScenario(uponType = ScenarioType.NORMAL)
         public void c() {
         }
 
-        @AfterScenario
+        @AfterScenario(uponType = ScenarioType.NORMAL)
         public void d() {
         }
     }
@@ -608,12 +609,12 @@ class MarkUnmatchedStepsAsPendingBehaviour {
     public static class BeforeOrAfterScenarioWithParameterSteps extends Steps {
         private String value;
 
-        @BeforeScenario
+        @BeforeScenario(uponType = ScenarioType.NORMAL)
         public void beforeScenario(@Named("before") String before) {
             this.value = before;
         }
 
-        @AfterScenario
+        @AfterScenario(uponType = ScenarioType.NORMAL)
         public void afterScenario(@Named("after") String after) {
             this.value = after;
         }
@@ -623,13 +624,13 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         private String value;
         private UUIDExceptionWrapper exception;
 
-        @BeforeScenario
+        @BeforeScenario(uponType = ScenarioType.NORMAL)
         public void beforeScenario(@Named("before") String before, UUIDExceptionWrapper exception) {
             this.value = before;
             this.exception = exception;
         }
 
-        @AfterScenario
+        @AfterScenario(uponType = ScenarioType.NORMAL)
         public void afterScenario(@Named("after") String after, UUIDExceptionWrapper exception) {
             this.value = after;
             this.exception = exception;
