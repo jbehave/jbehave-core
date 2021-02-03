@@ -3,7 +3,6 @@ package org.jbehave.core;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.JUnitStories;
-import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.steps.InjectableStepsFactory;
 
 /**
@@ -43,7 +42,7 @@ import org.jbehave.core.steps.InjectableStepsFactory;
  * </p>
  * <p>
  * Typically, users that use JUnit will find it easier to extend other
- * implementations, such as {@link JUnitStory} or {@link JUnitStories}, which
+ * implementations, such as {@link JUnitStories}, which
  * implement the {@link#run()} using the configured {@link Embedder} and
  * annotate it with JUnit's annotations.
  * </p>

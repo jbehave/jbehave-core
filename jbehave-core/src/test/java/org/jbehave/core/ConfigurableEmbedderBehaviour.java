@@ -37,8 +37,8 @@ class ConfigurableEmbedderBehaviour {
         story.run();
 
         // Then
-        verify(embedder).useConfiguration(configuration);
-        verify(embedder).useStepsFactory(stepsFactory);
+        verify(embedder, times(2)).useConfiguration(configuration);
+        verify(embedder, times(2)).useStepsFactory(stepsFactory);
         verify(embedder).runStoriesAsPaths(asList(storyPath));
     }
 
@@ -83,8 +83,8 @@ class ConfigurableEmbedderBehaviour {
         story.run();
 
         // Then
-        verify(embedder).useConfiguration(configuration);
-        verify(embedder).useStepsFactory(stepsFactory);
+        verify(embedder, times(2)).useConfiguration(configuration);
+        verify(embedder, times(2)).useStepsFactory(stepsFactory);
         verify(embedder).runStoriesAsPaths(asList(storyPath));
     }
 

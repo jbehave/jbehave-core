@@ -1,5 +1,6 @@
 package org.jbehave.core.junit;
 
+import java.util.List;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
@@ -13,19 +14,13 @@ import static java.util.Arrays.asList;
  * JUnit-runnable entry-point to run a single story specified by a {@link Embeddable} class.
  * </p>
  */
-public abstract class JUnitStory extends ConfigurableEmbedder {
-    
-	@Override
-    @Test
-    public void run() {
-        Embedder embedder = configuredEmbedder();
-        StoryPathResolver pathResolver = embedder.configuration().storyPathResolver();
+public abstract class JUnitStory extends JUnitStories {
+
+    @Override
+    protected List<String> storyPaths() {
+        StoryPathResolver pathResolver = configuredEmbedder().configuration().storyPathResolver();
         String storyPath = pathResolver.resolve(this.getClass());
-        try {
-            embedder.runStoriesAsPaths(asList(storyPath));
-        } finally {
-            embedder.generateSurefireReport();
-        }
+        return asList(storyPath);
     }
 
 }
