@@ -9,11 +9,7 @@ import static org.mockito.Mockito.spy;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import org.hamcrest.core.IsEqual;
 import org.jbehave.core.annotations.Scope;
@@ -85,8 +81,7 @@ class StoryNarrator {
             reporter.pending("Then I should have a balance of $30");
         }
         reporter.notPerformed("Then I should have $20");
-        OutcomesTable outcomesTable = new OutcomesTable(new LocalizedKeywords(),  Map
-            .of(Date.class, "dd/MM/yyyy"));
+        OutcomesTable outcomesTable = new OutcomesTable(new LocalizedKeywords(),  mapOf(Date.class, "dd/MM/yyyy"));
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
         Date actualDate = dateFor("01/01/2011");
         Date expectedDate = dateFor("02/01/2011");
@@ -143,6 +138,12 @@ class StoryNarrator {
                 + "}\n";
         reporter.pendingMethods(asList(method1, method2));
         reporter.afterStory(givenStory);
+    }
+
+    private static Map<Type,String> mapOf(Type type, String value) {
+        Map<Type,String> map = new HashMap<>();
+        map.put(type, value);
+        return map;
     }
 
     private static void reportScenarioStep(StoryReporter reporter, String step, Stage stage) {

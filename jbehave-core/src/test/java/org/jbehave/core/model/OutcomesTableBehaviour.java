@@ -3,13 +3,19 @@ package org.jbehave.core.model;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.OutcomesTable.Outcome;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
+import org.jbehave.core.reporters.TemplateableViewGenerator;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Type;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OutcomesTableBehaviour {
 
@@ -23,6 +29,43 @@ class OutcomesTableBehaviour {
         table.verify();
         assertThat(table.getOutcomes().size(), equalTo(2));
         assertThat(table.getFailedOutcomes().size(), equalTo(0));
+    }
+
+    @Test
+    void shouldAllowConfigurableFormats() {
+        Map<Type,String> formats = new HashMap<>();
+        formats.put(Date.class, "yyyy-MM-dd");
+        formats.put(Number.class, "0.#");
+        formats.put(Boolean.class, "Y,N");
+        OutcomesTable table = new OutcomesTable(formats);
+        Date date = new Date();
+        Number number = Double.parseDouble("1.23");
+        Boolean bool = true;
+        table.addOutcome("a date", date, equalTo(date));
+        table.addOutcome("a number", number, is(number));
+        table.addOutcome("a boolean", bool, is(bool));
+        table.verify();
+        assertThat(table.getOutcomes().size(), equalTo(3));
+        assertThat(table.getFailedOutcomes().size(), equalTo(0));
+        assertThatFormatIs(table, Date.class, "yyyy-MM-dd");
+        assertThatFormatIs(table, Number.class, "0.#");
+        assertThatFormatIs(table, Boolean.class, "Y,N");
+    }
+
+    private void assertThatFormatIs(OutcomesTable table, Type type, String expected) {
+        assertThat(table.getFormat(type), is(expected));
+        assertThat(table.getFormat(type.getTypeName()), is(expected));
+    }
+
+    @Test
+    void shouldNotAllowInvalidFormatType() {
+        Map<Type,String> formats = new HashMap<>();
+        formats.put(Date.class, "yyyy-MM-dd");
+        formats.put(Number.class, "0.#");
+        formats.put(Boolean.class, "Y,N");
+        OutcomesTable table = new OutcomesTable(formats);
+        assertThrows(OutcomesTable.FormatTypeInvalid.class,
+                () -> table.getFormat("an.invalid.Type"));
     }
 
     @Test

@@ -105,12 +105,12 @@
 <#assign isVerified=outcome.isVerified()?string>
 <#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
 <outcome>
-<value>${outcome.description?xml}</value><value><@renderOutcomeValue outcome.getValue() table.getDateFormat()/></value><value>${outcome.matcher?xml}</value><value><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></value>
+<value>${outcome.description?xml}</value><value><@renderOutcomeValue outcome.getValue() table/></value><value>${outcome.matcher?xml}</value><value><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></value>
 </outcome>
 </#list>
 </outcomes>
 </#macro>
-<#macro renderOutcomeValue value dateFormat><#if value?is_date>${value?string(dateFormat)}<#else>${value?xml}</#if></#macro>
+<#macro renderOutcomeValue value table><#if value?is_date><#assign format=table.getFormat('java.util.Date')>${value?string(format)}<#elseif value?is_number><#assign format=table.getFormat('java.lang.Number')><#setting number_format="${format}">${value?c}<#elseif value?is_boolean><#assign format=table.getFormat('java.lang.Boolean')><#setting boolean_format="${format}">${value?c}<#else>${value?xml}</#if></#macro>
 <#macro renderStep step>
 <#assign formattedStep = step.getFormattedStep(EscapeMode.XML, "<parameter>{0}</parameter>")>
 <step outcome="${step.outcome}">

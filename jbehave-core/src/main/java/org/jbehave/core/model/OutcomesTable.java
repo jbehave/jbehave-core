@@ -35,9 +35,13 @@ public class OutcomesTable {
         this(keywords, defaultFormats());
     }
 
+    public OutcomesTable(Map<Type, String> formats) {
+        this(new LocalizedKeywords(), formats);
+    }
+
     public OutcomesTable(Keywords keywords, Map<Type, String> formats) {
         this.keywords = keywords;
-        this.formats = formats;
+        this.formats = mergeWithDefaults(formats);
     }
 
     /**
@@ -45,7 +49,7 @@ public class OutcomesTable {
      */
     @Deprecated
     public OutcomesTable(Keywords keywords, String dateFormat) {
-        this(keywords, addToFormats(Date.class, dateFormat));
+        this(keywords, mergeWithDefaults(Date.class, dateFormat));
     }
 
     public <T> void addOutcome(String description, T value, Matcher<T> matcher) {
@@ -92,6 +96,14 @@ public class OutcomesTable {
         return formats.get(type);
     }
 
+    public String getFormat(String typeName){
+        try {
+            return getFormat(Class.forName(typeName));
+        } catch (ClassNotFoundException e) {
+            throw new FormatTypeInvalid(typeName, e);
+        }
+    }
+
     /**
      * @deprecated Use {@link #getFormat(Type)}
      */
@@ -124,12 +136,20 @@ public class OutcomesTable {
     private static Map<Type,String> defaultFormats() {
         Map<Type,String> map = new HashMap<>();
         map.put(Date.class, "EEE MMM dd hh:mm:ss zzz yyyy");
+        map.put(Number.class, "0.###");
+        map.put(Boolean.class, "yes,no");
         return map;
     }
 
-    private static Map<Type,String> addToFormats(Type type, String format) {
+    private static Map<Type,String> mergeWithDefaults(Type type, String format) {
         Map<Type,String> map = defaultFormats();
         map.put(type, format);
+        return map;
+    }
+
+    private Map<Type, String> mergeWithDefaults(Map<Type, String> formats) {
+        Map<Type,String> map = defaultFormats();
+        map.putAll(formats);
         return map;
     }
 
@@ -183,4 +203,9 @@ public class OutcomesTable {
 
     }
 
+    public static class FormatTypeInvalid extends RuntimeException {
+        public FormatTypeInvalid(String type, Throwable e) {
+            super(type, e);
+        }
+    }
 }
