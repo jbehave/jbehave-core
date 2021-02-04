@@ -31,7 +31,7 @@ class OutcomesTableBehaviour {
         Object one = "one";
         Boolean two = true;
         table.addOutcome("a success", one, equalTo(one));
-        // add a non-failed outcome
+        // add a failed outcome
         table.addOutcome("a failure", two, is(false));
         try {
             table.verify();

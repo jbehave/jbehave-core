@@ -1,5 +1,6 @@
 package org.jbehave.core.reporters;
 
+import java.lang.reflect.Type;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -208,7 +209,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         for (Outcome<?> outcome : rows) {
             print(format("outcomesTableRowStart", "|", outcome.isVerified() ? "verified" : "notVerified"));
             print(format("outcomesTableCell", "{0}|", outcome.getDescription()));
-            print(format("outcomesTableCell", "{0}|", renderOutcomeValue(outcome.getValue(), table.getDateFormat())));
+            print(format("outcomesTableCell", "{0}|", renderOutcomeValue(outcome.getValue(), table)));
             print(format("outcomesTableCell", "{0}|", outcome.getMatcher()));
             print(format("outcomesTableCell", "{0}|", (outcome.isVerified() ? keywords.yes() : keywords.no())));
             print(format("outcomesTableRowEnd", NL));
@@ -217,9 +218,9 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         print(format("outcomesTableEnd", NL));
     }
 
-    private Object renderOutcomeValue(Object value, String dateFormat) {
+    private Object renderOutcomeValue(Object value, OutcomesTable outcomesTable) {
         if (value instanceof Date) {
-            return new SimpleDateFormat(dateFormat).format(value);
+            return new SimpleDateFormat(outcomesTable.getFormat(Date.class)).format(value);
         } else {
             return value;
         }

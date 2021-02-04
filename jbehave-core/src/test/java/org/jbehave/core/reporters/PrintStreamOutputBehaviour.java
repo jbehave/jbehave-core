@@ -3,6 +3,7 @@ package org.jbehave.core.reporters;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Type;
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -602,10 +603,11 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryReporter reporter = new TxtOutput(new PrintStream(out));
 
         // When
-        OutcomesTable outcomesTable = new OutcomesTable(new LocalizedKeywords(), "dd/MM/yyyy");
+        OutcomesTable outcomesTable = new OutcomesTable(new LocalizedKeywords(), mapOf(Date.class, "dd/MM/yyyy"));
         Date actualDate = StoryNarrator.dateFor("01/01/2011");
         Date expectedDate = StoryNarrator.dateFor("02/01/2011");
-        outcomesTable.addOutcome("A wrong date", actualDate, new IsDateEqual(expectedDate, outcomesTable.getDateFormat()));
+        outcomesTable.addOutcome("A wrong date", actualDate, new IsDateEqual(expectedDate, outcomesTable.getFormat(
+            Date.class)));
         try {
             outcomesTable.verify();
         } catch (UUIDExceptionWrapper e) {
@@ -618,6 +620,12 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 + "|Description|Value|Matcher|Verified|\n"
                 + "|A wrong date|01/01/2011|\"02/01/2011\"|No|\n";
         assertThat(dos2unix(out.toString()), equalTo(expected));
+    }
+
+    private Map<Type, String> mapOf(Type type, String value) {
+        Map<Type,String> map = new HashMap<>();
+        map.put(type, value);
+        return map;
     }
 
     @Test

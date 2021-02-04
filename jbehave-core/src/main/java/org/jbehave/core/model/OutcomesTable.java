@@ -1,9 +1,13 @@
 package org.jbehave.core.model;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hamcrest.Matcher;
@@ -16,25 +20,32 @@ public class OutcomesTable {
     private static final String NEWLINE = "\n";
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
-	private static final String DEFAULT_DATE_FORMAT = "EEE MMM dd hh:mm:ss zzz yyyy";
 
     private final Keywords keywords;
-	private final String dateFormat;
+	private final Map<Type,String> formats;
     private final List<Outcome<?>> outcomes = new ArrayList<>();
     private final List<Outcome<?>> failedOutcomes = new ArrayList<>();
     private UUIDExceptionWrapper failureCause;
-    
+
     public OutcomesTable() {
         this(new LocalizedKeywords());
     }
-    
+
     public OutcomesTable(Keywords keywords) {
-        this(keywords, DEFAULT_DATE_FORMAT);
+        this(keywords, defaultFormats());
     }
 
-    public OutcomesTable(Keywords keywords, String dateFormat) {
+    public OutcomesTable(Keywords keywords, Map<Type, String> formats) {
         this.keywords = keywords;
-		this.dateFormat = dateFormat;
+        this.formats = formats;
+    }
+
+    /**
+     * @deprecated Use {@link #OutcomesTable(Keywords,Map<Type,String>)}
+     */
+    @Deprecated
+    public OutcomesTable(Keywords keywords, String dateFormat) {
+        this(keywords, addToFormats(Date.class, dateFormat));
     }
 
     public <T> void addOutcome(String description, T value, Matcher<T> matcher) {
@@ -73,10 +84,22 @@ public class OutcomesTable {
         return keywords.outcomeFields();
     }
 
-    public String getDateFormat(){
-    	return dateFormat;
+    public Map<Type, String> getFormats(){
+        return formats;
     }
-    
+
+    public String getFormat(Type type){
+        return formats.get(type);
+    }
+
+    /**
+     * @deprecated Use {@link #getFormat(Type)}
+     */
+    @Deprecated
+    public String getDateFormat(){
+        return getFormat(Date.class);
+    }
+
     public String asString() {
         StringBuilder sb = new StringBuilder();
         for (Iterator<String> iterator = getOutcomeFields().iterator(); iterator.hasNext();) {
@@ -96,6 +119,18 @@ public class OutcomesTable {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    private static Map<Type,String> defaultFormats() {
+        Map<Type,String> map = new HashMap<>();
+        map.put(Date.class, "EEE MMM dd hh:mm:ss zzz yyyy");
+        return map;
+    }
+
+    private static Map<Type,String> addToFormats(Type type, String format) {
+        Map<Type,String> map = defaultFormats();
+        map.put(type, format);
+        return map;
     }
 
     public static class Outcome<T> {

@@ -12,15 +12,14 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
+import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
 
 public abstract class AbstractOutputBehaviour {
 
     protected void assertThatOutputIs(String out, String pathToExpected) throws IOException {
-        String expected = IOUtils.toString(getClass().getResourceAsStream(pathToExpected), true);
-        System.out.println(dos2unix(out));
-        assertThat(dos2unix(out), is(dos2unix(expected)));
+        String expected = dos2unix(IOUtils.toString(getClass().getResourceAsStream(pathToExpected), true));
+        String actual = dos2unix(out);
+        assertThat(actual, equalToCompressingWhiteSpace(expected));
     }
 
     protected String dos2unix(String string) {

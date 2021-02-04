@@ -5,11 +5,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 
 import org.hamcrest.core.IsEqual;
@@ -82,11 +84,13 @@ class StoryNarrator {
             reporter.pending("Then I should have a balance of $30");
         }
         reporter.notPerformed("Then I should have $20");
-        OutcomesTable outcomesTable = new OutcomesTable(new LocalizedKeywords(), "dd/MM/yyyy");
+        OutcomesTable outcomesTable = new OutcomesTable(new LocalizedKeywords(),  Map
+            .of(Date.class, "dd/MM/yyyy"));
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
         Date actualDate = dateFor("01/01/2011");
         Date expectedDate = dateFor("02/01/2011");
-        outcomesTable.addOutcome("A wrong date", actualDate, new IsDateEqual(expectedDate, outcomesTable.getDateFormat()));
+        outcomesTable.addOutcome("A wrong date", actualDate, new IsDateEqual(expectedDate, outcomesTable.getFormat(
+            Date.class)));
         try {
             outcomesTable.verify();
         } catch (UUIDExceptionWrapper e) {
