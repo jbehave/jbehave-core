@@ -1,4 +1,4 @@
-<story path="/path/to/story" title="An interesting story &amp; special chars">
+<story id="story-id" path="/path/to/story" title="An interesting story &amp; special chars">
 <dryRun>DRY RUN</dryRun>
 <meta>
 <property keyword="@" name="author" value="Mauro"/>
@@ -34,7 +34,7 @@
 <beforeStorySteps>
 <step outcome="successful">Given a before story step</step>
 </beforeStorySteps>
-<scenario keyword="Scenario:" title="I ask for a loan">
+<scenario id="scenario-id" keyword="Scenario:" title="I ask for a loan">
 <step outcome="successful">Given a scenario step</step>
 <givenStories keyword="GivenStories:">
 <givenStory parameters="">/given/story1</givenStory>
@@ -64,7 +64,7 @@
 <timing phase="start">1</timing>
 <timing phase="end">2</timing>
 </scenario><!-- after scenario -->
-<scenario keyword="Scenario:" title="Parametrised Scenario">
+<scenario id="scenario-id" keyword="Scenario:" title="Parametrised Scenario">
 <examples keyword="Examples:">
 <step>Given money &lt;money&gt;</step>
 <step>Then I give it to &lt;to&gt;</step>

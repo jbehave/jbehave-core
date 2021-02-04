@@ -313,7 +313,7 @@ class ConcurrencyBehaviour {
                                 return new XmlOutput(new PrintStream(xmlOut));
                             } else {
                                 Properties properties = new Properties();
-                                properties.put("beforeStory", "beforeStory: {1}\n");
+                                properties.put("beforeStory", "beforeStory: {2}\n");
                                 properties.put("afterStory", "afterStory\n");
                                 return new TxtOutput(new PrintStream(textOut), properties);
                             }

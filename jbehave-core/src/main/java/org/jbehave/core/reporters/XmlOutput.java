@@ -49,7 +49,7 @@ public class XmlOutput extends PrintStreamOutput {
     private static Properties defaultXmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "<dryRun>{0}</dryRun>\n");        
-        patterns.setProperty("beforeStory", "<story path=\"{1}\" title=\"{0}\">\n");
+        patterns.setProperty("beforeStory", "<story id=\"{0}\" path=\"{2}\" title=\"{1}\">\n");
         patterns.setProperty("storyCancelled", "<cancelled keyword=\"{0}\" durationKeyword=\"{1}\" durationInSecs=\"{2}\"/>\n");
         patterns.setProperty("afterStory", "</story>\n");
         patterns.setProperty("pendingMethod", "<pendingMethod>{0}</pendingMethod>\n");        
@@ -78,7 +78,7 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("afterBeforeStorySteps", "</beforeStorySteps>\n");
         patterns.setProperty("beforeAfterStorySteps", "<afterStorySteps>\n");
         patterns.setProperty("afterAfterStorySteps", "</afterStorySteps>\n");
-        patterns.setProperty("beforeScenario", "<scenario keyword=\"{0}\" title=\"{1}\">\n");
+        patterns.setProperty("beforeScenario", "<scenario id=\"{0}\" keyword=\"{1}\" title=\"{2}\">\n");
         patterns.setProperty("scenarioExcluded", "<excluded pattern=\"{0}\"/>\n");
         patterns.setProperty("afterScenario", "</scenario>\n");
         patterns.setProperty("afterScenarioWithFailure", "<failure>{0}</failure>\n</scenario>\n");

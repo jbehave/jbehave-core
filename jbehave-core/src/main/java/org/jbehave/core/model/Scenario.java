@@ -5,12 +5,14 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Scenario extends StepsContainer {
 
+    private final String id = UUID.randomUUID().toString();
     private final String title;
     private final Meta meta;
     private final GivenStories givenStories;
@@ -67,6 +69,10 @@ public class Scenario extends StepsContainer {
             return ExamplesTable.EMPTY;
         }
         return examplesTable;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public boolean hasMeta(){

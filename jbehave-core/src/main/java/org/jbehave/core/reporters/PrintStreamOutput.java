@@ -239,7 +239,8 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
 
     @Override
     public void beforeStory(Story story, boolean givenStory) {
-        print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
+        print(format("beforeStory", "{0}\n{1}\n({2})\n", story.getId(), story.getDescription().asString(),
+                story.getPath()));
         if (dryRun.get()) {
             print(format("dryRun", "{0}\n", keywords.dryRun()));
         }
@@ -430,7 +431,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     @Override
     public void beforeScenario(Scenario scenario) {
         cause.set(null);
-        print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), scenario.getTitle()));
+        print(format("beforeScenario", "{0} {1} {2}\n", scenario.getId(), keywords.scenario(), scenario.getTitle()));
         print(scenario.getMeta());
     }
 

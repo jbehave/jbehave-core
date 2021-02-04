@@ -1,4 +1,5 @@
 {
+  "id": "story-id",
   "path": "\/path\/to\/story",
   "title": "An interesting story & special chars",
   "dryRun": "DRY RUN",
@@ -91,6 +92,7 @@
   "scenarios": [
     {
       "keyword": "Scenario:",
+      "id": "scenario-id",
       "title": "I ask for a loan",
       "beforeScenarioSteps": [
         {
@@ -219,6 +221,7 @@
     },
     {
       "keyword": "Scenario:",
+      "id": "scenario-id",
       "title": "Parametrised Scenario",
       "examples": {
         "keyword": "Examples:",

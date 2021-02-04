@@ -49,7 +49,7 @@ public class TxtOutput extends PrintStreamOutput {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "{0}\n");
         patterns.setProperty("storyCancelled", "{0} ({1} {2} s)\n");
-        patterns.setProperty("beforeStory", "{0}\n({1})\n");
+        patterns.setProperty("beforeStory", "{1}\n({2})\n");
         patterns.setProperty("afterStory", "\n");
         patterns.setProperty("metaStart", "{0}\n");
         patterns.setProperty("metaProperty", "{0}{1} {2}\n");    
@@ -74,7 +74,7 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("afterBeforeStorySteps", "\n");
         patterns.setProperty("beforeAfterStorySteps", "\n");
         patterns.setProperty("afterAfterStorySteps", "\n");
-        patterns.setProperty("beforeScenario", "{0} {1}\n");
+        patterns.setProperty("beforeScenario", "{1} {2}\n");
         patterns.setProperty("afterScenario", "\n");
         patterns.setProperty("afterScenarioWithFailure", "\n{0}\n");
         patterns.setProperty("givenStories", "{0} {1}\n");

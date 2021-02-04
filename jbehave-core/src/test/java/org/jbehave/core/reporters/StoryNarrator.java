@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.spy;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -41,8 +42,8 @@ class StoryNarrator {
         Steps afterScenarioSteps = new Steps(Scope.SCENARIO, asList(scenarioStep));
         Steps afterStorySteps = new Steps(Scope.STORY, asList(afterStoryStep));
         Lifecycle lifecycle = new Lifecycle(asList(beforeScenarioSteps, beforeStorySteps), asList(afterScenarioSteps, afterStorySteps));
-        Story story = new Story("/path/to/story", new Description("An interesting story & special chars"), new Meta(meta),
-                new Narrative("renovate my house", "customer", "get a loan"), GivenStories.EMPTY, lifecycle, new ArrayList<Scenario>());
+        Story story = spyStoryUuid(new Story("/path/to/story", new Description("An interesting story & special chars"), new Meta(meta),
+                new Narrative("renovate my house", "customer", "get a loan"), GivenStories.EMPTY, lifecycle, new ArrayList<Scenario>()));
         boolean givenStory = false;
         Timing timing = getTiming();
 
@@ -57,7 +58,7 @@ class StoryNarrator {
         reporter.afterStorySteps(Stage.BEFORE);
 
         reporter.beforeScenarios();
-        reporter.beforeScenario(new Scenario("I ask for a loan", Meta.EMPTY));
+        reporter.beforeScenario(spyScenarioUuid(new Scenario("I ask for a loan", Meta.EMPTY)));
         reportScenarioStep(reporter, scenarioStep, Stage.BEFORE);
         reporter.beforeGivenStories();
         reporter.givenStories(asList("/given/story1", "/given/story2"));
@@ -99,7 +100,7 @@ class StoryNarrator {
         reporter.afterScenarioSteps(null);
         reportScenarioStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterScenario(timing);
-        reporter.beforeScenario(new Scenario("Parametrised Scenario", Meta.EMPTY));
+        reporter.beforeScenario(spyScenarioUuid(new Scenario("Parametrised Scenario", Meta.EMPTY)));
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
         reporter.example(table.getRow(0), 0);
@@ -180,19 +181,31 @@ class StoryNarrator {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
         meta.setProperty("author", "Mauro");
-        Story story = new Story("/path/to/story",
+        Story story = spyStoryUuid(new Story("/path/to/story",
                 new Description("An interesting story"), new Meta(meta), new Narrative("renovate my house", "customer", "get a loan"),
-                Arrays.asList(new Scenario("A scenario", Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY, new ArrayList<String>())));
+                Arrays.asList(new Scenario("A scenario", Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY, new ArrayList<String>()))));
         reporter.beforeStory(story, false);
         if (storyExluded) {
             reporter.storyExcluded(story, "-theme testing");
         } else  {
             Scenario scenario = story.getScenarios().get(0);
-            reporter.beforeScenario(scenario);
+            reporter.beforeScenario(spyScenarioUuid(scenario));
             reporter.scenarioExcluded(scenario, "-theme testing");
             reporter.afterScenario(getTiming());
         }
         reporter.afterStory(false);
+    }
+
+    private static Scenario spyScenarioUuid(Scenario scenario) {
+        Scenario spy = spy(scenario);
+        when(spy.getId()).thenReturn("scenario-id");
+        return spy;
+    }
+
+    private static Story spyStoryUuid(Story story) {
+        Story spy = spy(story);
+        when(spy.getId()).thenReturn("story-id");
+        return spy;
     }
 
     private static Timing getTiming() {

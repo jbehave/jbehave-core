@@ -2,6 +2,7 @@ package org.jbehave.core.reporters;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.spy;
 
 import java.lang.reflect.Type;
 import org.jbehave.core.failures.KnownFailure;
@@ -218,13 +219,13 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryReporter reporter = new JsonOutput(new PrintStream(out), new Properties(), new LocalizedKeywords());
 
         // When
-        Story givenStory = new Story("/path/to/story", new Description("Given story"),
-                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
-        Story rootStory = new Story("/path/to/story", new Description("Root story"),
-                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
+        Story givenStory = spyStoryUuid(new Story("/path/to/story", new Description("Given story"),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>()));
+        Story rootStory = spyStoryUuid(new Story("/path/to/story", new Description("Root story"),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>()));
 
         String step = "My step";
-        Scenario scenario = new Scenario("My scenario", Meta.EMPTY, null, examplesTable, Collections.<String>emptyList());
+        Scenario scenario = spyScenarioUuid(new Scenario("My scenario", Meta.EMPTY, null, examplesTable, Collections.<String>emptyList()));
         Timing timing = getTiming();
 
         reporter.beforeStory(rootStory, false);
@@ -329,10 +330,11 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryReporter reporter = new JsonOutput(new PrintStream(out), new Properties(), new LocalizedKeywords());
 
         // When
-        Story rootStory = new Story("/path/to/story", new Description("Root story"),
-                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
+        Story rootStory = spyStoryUuid(new Story("/path/to/story", new Description("Root story"),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>()));
 
-        Scenario scenario = new Scenario("My scenario", Meta.EMPTY, null, examplesTable, Collections.<String>emptyList());
+        Scenario scenario = spyScenarioUuid(new Scenario("My scenario", Meta.EMPTY, null, examplesTable,
+                Collections.<String>emptyList()));
         Timing timing = getTiming();
 
         reporter.beforeStory(rootStory, false);
@@ -352,15 +354,15 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.afterStory(false);
 
         // Then
-        String expected = "{\"path\": \"\\/path\\/to\\/story\", \"title\": \"Root story\",\"lifecycle\": {\"keyword\": "
-                + "\"Lifecycle:\",\"parameters\": {\"names\": [\"key\",\"row\"],\"values\": [[\"key1\",\"row1\"],"
-                + "[\"key2\",\"row2\"]]}},\"scenarios\": [{\"keyword\": \"Scenario:\", \"title\": \"My scenario\","
-                + "\"examples\": {\"keyword\": \"Examples:\",\"steps\": [],\"parameters\": {\"names\": [\"key\",\"row\"]"
-                + ",\"values\": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},\"examples\": [{\"keyword\": \"Example:\","
-                + " \"parameters\": {}}]},\"start\":1,\"end\":2},{\"keyword\": \"Scenario:\", \"title\": \"My scenario\","
-                + "\"examples\": {\"keyword\": \"Examples:\",\"steps\": [],\"parameters\": {\"names\": [\"key\",\"row\"]"
-                + ",\"values\": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},\"examples\": [{\"keyword\": \"Example:\", "
-                + "\"parameters\": {}}]},\"start\":1,\"end\":2}]}";
+        String expected = "{\"id\": \"story-id\", \"path\": \"\\/path\\/to\\/story\", \"title\": \"Root story\",\"lifecycle\":"
+                + " {\"keyword\": \"Lifecycle:\",\"parameters\": {\"names\": [\"key\",\"row\"],\"values\": [[\"key1\",\"row1\"]"
+                + ",[\"key2\",\"row2\"]]}},\"scenarios\": [{\"keyword\": \"Scenario:\", \"id\": \"scenario-id\", \"title\": "
+                + "\"My scenario\",\"examples\": {\"keyword\": \"Examples:\",\"steps\": [],\"parameters\": {\"names\": "
+                + "[\"key\",\"row\"],\"values\": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},\"examples\": [{\"keyword\": "
+                + "\"Example:\", \"parameters\": {}}]},\"start\":1,\"end\":2},{\"keyword\": \"Scenario:\", \"id\": "
+                + "\"scenario-id\", \"title\": \"My scenario\",\"examples\": {\"keyword\": \"Examples:\",\"steps\": [],"
+                + "\"parameters\": {\"names\": [\"key\",\"row\"],\"values\": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},"
+                + "\"examples\": [{\"keyword\": \"Example:\", \"parameters\": {}}]},\"start\":1,\"end\":2}]}";
 
         assertThat(dos2unix(out.toString()), equalTo(expected));
     }
@@ -424,7 +426,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 new LocalizedKeywords(), true);
 
         // When
-        reporter.beforeScenario(new Scenario("A title", Meta.EMPTY));
+        reporter.beforeScenario(spyScenarioUuid(new Scenario("A title", Meta.EMPTY)));
         reporter.successful("Given I have a balance of $50");
         reporter.successful("When I request $20");
         reporter.failed("When I ask Liz for a loan of $100", exception);
@@ -639,14 +641,14 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         ExamplesTable table = new ExamplesTable("|actual|expected|\n|some data|some data|\n");
         Lifecycle lifecycle = new Lifecycle(table);
         ExamplesTable emptyExamplesTable = ExamplesTable.EMPTY;
-        Story story = new Story("/path/to/story", new Description("Story with lifecycle and empty scenario"), null,
-                null, null, lifecycle, new ArrayList<Scenario>());
+        Story story = spyStoryUuid(new Story("/path/to/story", new Description("Story with lifecycle and empty scenario"), null,
+                null, null, lifecycle, new ArrayList<Scenario>()));
         Timing timing = getTiming();
 
         reporter.beforeStory(story, false);
         reporter.lifecyle(lifecycle);
         reporter.beforeScenarios();
-        reporter.beforeScenario(new Scenario("Normal scenario", Meta.EMPTY));
+        reporter.beforeScenario(spyScenarioUuid(new Scenario("Normal scenario", Meta.EMPTY)));
         reporter.beforeExamples(Collections.singletonList("Then '<expected>' is equal to '<actual>'"), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
         reportStep(reporter, scenarioStep, Stage.BEFORE);
@@ -654,7 +656,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reportStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterExamples();
         reporter.afterScenario(timing);
-        reporter.beforeScenario(new Scenario("Some empty scenario", Meta.EMPTY));
+        reporter.beforeScenario(spyScenarioUuid(new Scenario("Some empty scenario", Meta.EMPTY)));
         reporter.beforeExamples(Collections.<String>emptyList(), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
         reportStep(reporter, scenarioStep, Stage.BEFORE);
@@ -689,6 +691,18 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         when(timing.getStart()).thenReturn(1l);
         when(timing.getEnd()).thenReturn(2l);
         return timing;
+    }
+
+    private static Scenario spyScenarioUuid(Scenario scenario) {
+        Scenario spy = spy(scenario);
+        when(spy.getId()).thenReturn("scenario-id");
+        return spy;
+    }
+
+    private static Story spyStoryUuid(Story story) {
+        Story spy = spy(story);
+        when(spy.getId()).thenReturn("story-id");
+        return spy;
     }
 
     @SuppressWarnings("serial")

@@ -50,7 +50,7 @@ public class HtmlOutput extends PrintStreamOutput {
     private static Properties defaultHtmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "<div class=\"dryRun\">{0}</div>\n");        
-        patterns.setProperty("beforeStory", "<div class=\"story\">\n<h1>{0}</h1>\n<div class=\"path\">{1}</div>\n");
+        patterns.setProperty("beforeStory", "<div id=\"{0}\" class=\"story\">\n<h1>{1}</h1>\n<div class=\"path\">{2}</div>\n");
         patterns.setProperty("storyCancelled", "<div class=\"cancelled\">{0} ({1} {2} s)</div>\n");
         patterns.setProperty("afterStory", "</div>\n");
         patterns.setProperty("pendingMethod", "<div><pre class=\"pending\">{0}</pre></div>\n");        
@@ -77,7 +77,7 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("afterBeforeStorySteps", "</div>\n");
         patterns.setProperty("beforeAfterStorySteps", "<div class=\"afterStorySteps\">\n");
         patterns.setProperty("afterAfterStorySteps", "</div>\n");
-        patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<h2>{0} {1}</h2>\n");
+        patterns.setProperty("beforeScenario", "<div id=\"{0}\" class=\"scenario\">\n<h2>{1} {2}</h2>\n");
         patterns.setProperty("afterScenario", "</div>\n");
         patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
         patterns.setProperty("givenStories", "<div class=\"givenStories\">{0} {1}</div>\n");

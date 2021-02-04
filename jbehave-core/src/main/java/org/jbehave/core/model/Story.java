@@ -3,6 +3,7 @@ package org.jbehave.core.model;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -12,6 +13,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class Story {
 
+    private final String id = UUID.randomUUID().toString();
     private final String path;
     private final Description description;
     private final Narrative narrative;
@@ -149,6 +151,10 @@ public class Story {
 
     public String getName() {
         return (name != null ? name : getPath());
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void namedAs(String name) {

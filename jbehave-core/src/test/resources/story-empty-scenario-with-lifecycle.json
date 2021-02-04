@@ -1,4 +1,5 @@
 {
+  "id": "story-id",
   "path": "\/path\/to\/story",
   "title": "Story with lifecycle and empty scenario",
   "lifecycle": {
@@ -19,6 +20,7 @@
   "scenarios": [
     {
       "keyword": "Scenario:",
+      "id": "scenario-id",
       "title": "Normal scenario",
       "examples": {
         "keyword": "Examples:",
@@ -62,6 +64,7 @@
     },
     {
       "keyword": "Scenario:",
+      "id": "scenario-id",
       "title": "Some empty scenario",
       "examples": {
         "keyword": "Examples:",

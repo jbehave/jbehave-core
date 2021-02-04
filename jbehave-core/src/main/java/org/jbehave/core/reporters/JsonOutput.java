@@ -99,7 +99,7 @@ public class JsonOutput extends PrintStreamOutput {
     private static Properties defaultXmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "\"dryRun\": \"{0}\"");
-        patterns.setProperty("beforeStory", "'{'\"path\": \"{1}\", \"title\": \"{0}\"");
+        patterns.setProperty("beforeStory", "'{'\"id\": \"{0}\", \"path\": \"{2}\", \"title\": \"{1}\"");
         patterns.setProperty("storyCancelled", "'{'\"cancelled\": '{'\"keyword\": \"{0}\", \"durationKeyword\": \"{1}\", \"durationInSecs\": \"{2}\"}}");
         patterns.setProperty("afterStory", "}");
         patterns.setProperty("beforeScenarios", "\"scenarios\": [");
@@ -137,7 +137,7 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("afterAfterScenarioSteps", "]");
         patterns.setProperty("beforeScenarioSteps", "\"steps\": [");
         patterns.setProperty("afterScenarioSteps", "]");
-        patterns.setProperty("beforeScenario","'{'\"keyword\": \"{0}\", \"title\": \"{1}\"");
+        patterns.setProperty("beforeScenario","'{'\"keyword\": \"{1}\", \"id\": \"{0}\", \"title\": \"{2}\"");
         patterns.setProperty("scenarioExcluded", "\"excluded\": '{'\"pattern\": \"{0}\"}");
         patterns.setProperty("afterScenario", "}");
         patterns.setProperty("afterScenarioWithFailure", "\"failure\": \"{0}\" }");

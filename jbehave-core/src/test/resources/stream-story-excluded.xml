@@ -1,9 +1,9 @@
-<story path="/path/to/story" title="An interesting story">
+<story id="story-id" path="/path/to/story" title="An interesting story">
 <meta>
 <property keyword="@" name="author" value="Mauro"/>
 <property keyword="@" name="theme" value="testing"/>
 </meta>
-<scenario keyword="Scenario:" title="A scenario">
+<scenario id="scenario-id" keyword="Scenario:" title="A scenario">
 <filter>-theme testing</filter>
 <timing phase="start">1</timing>
 <timing phase="end">2</timing>
