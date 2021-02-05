@@ -89,7 +89,7 @@
   ,
     {"outcome": "notPerformed", "step": "Then I should have $20"}
   ,
-    {"outcome": "failed", "step": "Then I don't return loan", "failure": "org.jbehave.core.model.OutcomesTable$OutcomesFailed\n\tat org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:70)\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:91)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:39)\n\t(reflection-invoke)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n...","outcomes": {
+    {"outcome": "failed", "step": "Then I don't return loan", "failure": "org.jbehave.core.model.OutcomesTable$OutcomesFailed\n\tat org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:87)\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:91)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:39)\n\t(reflection-invoke)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n...","outcomes": {
       "fields":
       [
         "Description",

@@ -15,6 +15,23 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 
+/**
+ * <p>
+ * Represents a tabular structure that holds {@link Outcome}s to be verified by invoking
+ * method {@link #verify()}.  If verification fails an {@link OutcomesFailed} exception is thrown.
+ * <p/>
+ * <p>
+ * The Outcomes Tables allows the specification of {@link Keywords} for the outcome fields,
+ * as well as rendering formats for different types.  The default formats include:
+ * <ul>
+ *     <li>Date: "EEE MMM dd hh:mm:ss zzz yyyy"</li>
+ *     <li>Number: "0.###"</li>
+ *     <li>Boolean: "yes,no"</li>
+ * </ul>
+ * These formats can be overridden as well as new ones added.
+ * The formats can be retrieved via methods {@link #getFormat(Type)} and {@link #getFormat(String)}.
+ * </p>
+ */
 public class OutcomesTable {
 
     private static final String NEWLINE = "\n";
