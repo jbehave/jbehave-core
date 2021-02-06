@@ -60,11 +60,11 @@ public class PerformableTree {
 
         FilteredStory filteredStory = context.filter(story);
         Meta storyMeta = story.getMeta();
-        boolean storyAllowed = filteredStory.allowed();
+        boolean storyExcluded = filteredStory.excluded();
 
-        performableStory.allowed(storyAllowed);
+        performableStory.excluded(storyExcluded);
 
-        if (storyAllowed) {
+        if (!storyExcluded) {
 
             Map<Stage, PerformableSteps> lifecycleSteps = context.lifecycleSteps(story.getLifecycle(), storyMeta,
                     Scope.STORY);
@@ -73,8 +73,8 @@ public class PerformableTree {
             performableStory.addBeforeSteps(lifecycleSteps.get(Stage.BEFORE));
             performableStory.addAll(performableScenarios(context, story, storyParameters, filteredStory));
 
-            // Add Given stories only if story contains allowed scenarios
-            if (performableStory.hasAllowedScenarios()) {
+            // Add Given stories only if story contains non-filtered scenarios
+            if (performableStory.hasIncludedScenarios()) {
                 Map<String, String> givenStoryParameters = new HashMap<>(storyParameters);
                 addMetaParameters(givenStoryParameters, storyMeta);
                 if ( story.hasGivenStories() ) {
@@ -141,11 +141,11 @@ public class PerformableTree {
             return performableScenario;
         }
 
-        boolean scenarioAllowed = filterContext.allowed(originalScenario);
+        boolean scenarioExcluded = filterContext.excluded(originalScenario);
 
-        performableScenario.allowed(scenarioAllowed);
+        performableScenario.excluded(scenarioExcluded);
 
-        if (scenarioAllowed) {
+        if (!scenarioExcluded) {
             Meta storyAndScenarioMeta = scenario.getMeta().inheritFrom(story.getMeta());
 
             if (isParameterisedByExamples(scenario)) {
@@ -202,9 +202,8 @@ public class PerformableTree {
     private void addExampleScenario(RunContext context, Scenario scenario, PerformableScenario performableScenario,
             Story story, Meta storyAndScenarioMeta, Map<String, String> parameters, int exampleIndex) {
         Meta exampleScenarioMeta = parameterMeta(context, parameters).inheritFrom(storyAndScenarioMeta);
-        boolean exampleScenarioAllowed = context.filter().allow(exampleScenarioMeta);
 
-        if (exampleScenarioAllowed) {
+        if (!context.filter().excluded(exampleScenarioMeta)) {
             ExamplePerformableScenario exampleScenario = exampleScenario(context, story, scenario,
                     storyAndScenarioMeta, parameters, exampleIndex);
             performableScenario.addExampleScenario(exampleScenario);
@@ -841,7 +840,7 @@ public class PerformableTree {
         private final Story story;
         private final transient Keywords keywords;
         private final boolean givenStory;
-        private boolean allowed;
+        private boolean excluded;
         private Status status;
         private Timing timing = new Timing();
         private List<PerformableStory> givenStories = new ArrayList<>();
@@ -855,12 +854,12 @@ public class PerformableTree {
             this.givenStory = givenStory;
         }
 
-        public void allowed(boolean allowed) {
-            this.allowed = allowed;
+        public void excluded(boolean excluded) {
+            this.excluded = excluded;
         }
 
-        public boolean isAllowed() {
-            return allowed;
+        public boolean isExcluded() {
+            return excluded;
         }
 
         public Story getStory() {
@@ -905,7 +904,7 @@ public class PerformableTree {
 
         @Override
         public void perform(RunContext context) throws InterruptedException {
-            if (!allowed) {
+            if (isExcluded()) {
                 context.reporter().storyExcluded(story, context.filter.asString());
                 this.status = Status.EXCLUDED;
             }
@@ -961,13 +960,8 @@ public class PerformableTree {
             return scenarios;
         }
 
-        public boolean hasAllowedScenarios() {
-            for (PerformableScenario scenario : getScenarios()) {
-                if (scenario.isAllowed()) {
-                    return true;
-                }
-            }
-            return false;
+        public boolean hasIncludedScenarios() {
+            return getScenarios().stream().anyMatch(scenario -> !scenario.isExcluded());
         }
     }
 
@@ -975,7 +969,7 @@ public class PerformableTree {
 
         private final Scenario scenario;
         private final String storyPath;
-        private boolean allowed;
+        private boolean excluded;
         @SuppressWarnings("unused")
         private Status status;
         private Timing timing = new Timing();
@@ -998,12 +992,12 @@ public class PerformableTree {
             exampleScenarios.add(exampleScenario);
         }
 
-        public void allowed(boolean allowed) {
-            this.allowed = allowed;
+        public void excluded(boolean excluded) {
+            this.excluded = excluded;
         }
 
-        public boolean isAllowed() {
-            return allowed;
+        public boolean isExcluded() {
+            return excluded;
         }
 
         public Status getStatus() { return status; }
@@ -1037,7 +1031,7 @@ public class PerformableTree {
         }
 
         public boolean isPerformable() {
-            return hasNormalScenario() || hasExamples() || !isAllowed();
+            return hasNormalScenario() || hasExamples() || isExcluded();
         }
 
         public List<ExamplePerformableScenario> getExamples() {
@@ -1046,7 +1040,7 @@ public class PerformableTree {
 
         @Override
         public void perform(RunContext context) throws InterruptedException {
-            if (!isAllowed()) {
+            if (isExcluded()) {
                 context.embedderMonitor().scenarioExcluded(scenario, context.filter());
                 return;
             }
@@ -1225,13 +1219,12 @@ public class PerformableTree {
         @Override
         public void perform(RunContext context) throws InterruptedException {
 			Meta parameterMeta = parameterMeta(context.configuration().keywords(), parameters).inheritFrom(getStoryAndScenarioMeta());
-			if (!parameterMeta.isEmpty() && !context.filter().allow(parameterMeta)) {
-				return;
-			}
-            resetStateIfConfigured(context);
-            context.stepsContext().resetExample();
-            context.reporter().example(parameters, exampleIndex);
-            performScenario(context);
+            if (parameterMeta.isEmpty() || !context.filter().excluded(parameterMeta)) {
+                resetStateIfConfigured(context);
+                context.stepsContext().resetExample();
+                context.reporter().example(parameters, exampleIndex);
+                performScenario(context);
+            }
         }
 
         private Meta parameterMeta(Keywords keywords, Map<String, String> parameters) {

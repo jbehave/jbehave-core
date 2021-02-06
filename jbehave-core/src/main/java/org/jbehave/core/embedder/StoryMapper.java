@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMap;
 import org.jbehave.core.model.StoryMaps;
@@ -23,7 +22,7 @@ public class StoryMapper {
     private Map<String, Set<Story>> map = new HashMap<>();
 
     /**
-     * Maps a story if it is allowed by the meta filter
+     * Maps a story if it is not excluded by the meta filter
      * 
      * @param story
      *            the Story
@@ -31,17 +30,13 @@ public class StoryMapper {
      *            the meta filter
      */
     public void map(Story story, MetaFilter metaFilter) {
-        if (metaFilter.allow(story.getMeta())) {
-            boolean allowed = false;
-            for (Scenario scenario : story.getScenarios()) {
-                // scenario also inherits meta from story
-                Meta inherited = scenario.getMeta().inheritFrom(story.getMeta());
-                if (metaFilter.allow(inherited)) {
-                    allowed = true;
-                    break;
-                }
-            }
-            if (allowed) {
+        Meta storyMeta = story.getMeta();
+        if (!metaFilter.excluded(storyMeta)) {
+            boolean allScenariosExcluded = story.getScenarios().stream()
+                    // scenario also inherits meta from story
+                    .map(scenario -> scenario.getMeta().inheritFrom(storyMeta))
+                    .allMatch(metaFilter::excluded);
+            if (!allScenariosExcluded) {
                 add(metaFilter.asString(), story);
             }
         }

@@ -31,8 +31,8 @@ class StoryMapperBehaviour {
         StoryMapper mapper = new StoryMapper();
         when(meta1.inheritFrom(meta1)).thenReturn(meta1);
         when(meta2.inheritFrom(meta2)).thenReturn(meta2);
-        when(filter.allow(meta1)).thenReturn(false);
-        when(filter.allow(meta2)).thenReturn(true);
+        when(filter.excluded(meta1)).thenReturn(true);
+        when(filter.excluded(meta2)).thenReturn(false);
         when(filter.asString()).thenReturn(filterAsString);
         mapper.map(story1, filter);
         mapper.map(story2, filter);

@@ -461,6 +461,7 @@ class EmbedderBehaviour {
         List<String> storyPaths = new ArrayList<>();
         Map<String, Story> stories = new HashMap<>();
         Meta meta = mock(Meta.class);
+        when(meta.inheritFrom(meta)).thenReturn(meta);
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
@@ -472,7 +473,7 @@ class EmbedderBehaviour {
 
         // When
         MetaFilter filter = mock(MetaFilter.class);
-        when(filter.allow(meta)).thenReturn(false);
+        when(filter.excluded(meta)).thenReturn(true);
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
         RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
         when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),

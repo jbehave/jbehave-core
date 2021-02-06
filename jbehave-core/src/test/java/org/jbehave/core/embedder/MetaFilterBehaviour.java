@@ -6,6 +6,8 @@ import org.jbehave.core.embedder.MetaFilter.MetaMatcher;
 import org.jbehave.core.model.Meta;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +22,7 @@ import static org.hamcrest.Matchers.lessThan;
 
 class MetaFilterBehaviour {
 
-	MetaBuilder metaBuilder = new MetaBuilder();
+    MetaBuilder metaBuilder = new MetaBuilder();
 
     @Test
     void shouldParseIncludesAndExcludesUsingDefaultMetaMatcher() {
@@ -34,89 +36,68 @@ class MetaFilterBehaviour {
         assertThat(defaultMetaMatcher.exclude().toString(), equalTo("{defect-1234=, theme=smoke testing, skip=}"));
     }
 
-    @Test
-    void shouldFilterByNameAndValue() {
-        assertFilterAllowsProperty("+theme smoke testing", "theme smoke testing", true);
-        assertFilterAllowsProperty("+theme smoke testing", "theme testing", false);
-    }
-
-    @Test
-    void shouldFilterByNameOnly() {
-        assertFilterAllowsProperty("-skip", "skip", false);
-    }
-    
-    @Test
-    void shouldFilterWithBothIncludeAndExclude() {
-        assertFilterAllowsProperty("+theme smoke testing -skip", "theme smoke testing", true);
-        assertFilterAllowsProperty("+theme smoke testing -skip", "skip", false);
-        assertFilterAllowsProperty("+theme smoke testing", "theme smoke testing", true);
-        assertFilterAllowsProperty("+theme smoke testing", "theme testing", false);
-        assertFilterAllowsProperty("-skip", "theme testing", true);
-        assertFilterAllowsProperty("-skip", "skip", false);
-        assertFilterAllowsProperty("+theme smoke testing -theme UI", "theme smoke testing", true);
-        assertFilterAllowsProperty("+theme smoke testing -theme UI", "theme UI", false);
-    }
-
-    @Test
-    void shouldFilterWithIncludeWinningOverExclude() {
-        assertFilterAllowsProperty("+theme smoke testing -theme UI", "theme smoke testing", true);
-        assertFilterAllowsProperty("+theme smoke testing -theme UI", "theme UI", false);
-    }
-
-    @Test
-    void shouldFilterByValueWithAsterisk() {
-        assertFilterAllowsProperty("+map *API", "map Service API", true);
-    }
-
-    @Test
-    void shouldTreatNullFiltersAsEmptyFilters() {
-        assertFilterAllowsProperty(null, "skip", true);
-        assertFilterAllowsProperty("", "skip", true);
-    }
-
-    private void assertFilterAllowsProperty(String filter, String property, boolean allowed) {
-        assertThat(filter(filter).allow(new Meta(asList(property))), equalTo(allowed));
+    @ParameterizedTest
+    @CsvSource({
+            "+theme smoke testing,           theme smoke testing, false",
+            "+theme smoke testing,           theme testing,       true",
+            "-skip,                          skip,                true",
+            "+theme smoke testing -skip,     theme smoke testing, false",
+            "+theme smoke testing -skip,     skip,                true",
+            "+theme smoke testing,           theme smoke testing, false",
+            "+theme smoke testing,           theme testing,       true",
+            "-skip,                          theme testing,       false",
+            "-skip,                          skip,                true",
+            "+theme smoke testing -theme UI, theme smoke testing, false",
+            "+theme smoke testing -theme UI, theme UI,            true",
+            "+theme smoke testing -theme UI, theme UI,            true",
+            "+theme smoke testing -theme UI, theme smoke testing, false",
+            "+map *API,                      map Service API,     false",
+            ",                               skip,                false",
+            "'',                             skip,                false"
+    })
+    void shouldApplyFilter(String filterAsString, String property, boolean excluded) {
+        assertThat(filter(filterAsString).excluded(new Meta(asList(property))), equalTo(excluded));
     }
     
     @Test
     void shouldFilterByAdditiveBooleanExpressionsUsingGroovy() {
         MetaFilter filter = filter("groovy: (a == '11' | a == '22') && b == '33'");
-        assertThat(filter.allow(metaBuilder.clear().a(11).b(33).build()), is(true));
-        assertThat(filter.allow(metaBuilder.clear().a(22).b(33).build()), is(true));
-        assertThat(filter.allow(metaBuilder.clear().a(44).b(33).build()), is(false));
-        assertThat(filter.allow(metaBuilder.clear().a(11).b(44).build()), is(false));
-        assertThat(filter.allow(metaBuilder.clear().a(11).build()), is(false));
-        assertThat(filter.allow(metaBuilder.clear().b(33).build()), is(false));
-        assertThat(filter.allow(metaBuilder.clear().c(99).build()), is(false));
+        assertThat(filter.excluded(metaBuilder.clear().a(11).b(33).build()), is(false));
+        assertThat(filter.excluded(metaBuilder.clear().a(22).b(33).build()), is(false));
+        assertThat(filter.excluded(metaBuilder.clear().a(44).b(33).build()), is(true));
+        assertThat(filter.excluded(metaBuilder.clear().a(11).b(44).build()), is(true));
+        assertThat(filter.excluded(metaBuilder.clear().a(11).build()), is(true));
+        assertThat(filter.excluded(metaBuilder.clear().b(33).build()), is(true));
+        assertThat(filter.excluded(metaBuilder.clear().c(99).build()), is(true));
     }
 
     @Test
     void shouldFilterByNegativeBooleanExpressionsUsingGroovy() {
         MetaFilter filter = filter("groovy: a != '11' && b != '22'");
-        assertThat(filter.allow(metaBuilder.clear().a(11).b(33).build()), is(false));
-        assertThat(filter.allow(metaBuilder.clear().a(33).b(33).build()), is(true));
+        assertThat(filter.excluded(metaBuilder.clear().a(11).b(33).build()), is(true));
+        assertThat(filter.excluded(metaBuilder.clear().a(33).b(33).build()), is(false));
     }
 
     @Test
     void shouldFilterByPresenceOfPropertyUsingGroovy() {
         MetaFilter filter = filter("groovy: d");
-        assertThat(filter.allow(metaBuilder.clear().a(11).build()), is(false));
-        assertThat(filter.allow(metaBuilder.clear().a(11).d("").build()), is(true));
-        assertThat(filter.allow(metaBuilder.clear().a(11).d("4nyth1ng").build()), is(true));
+        assertThat(filter.excluded(metaBuilder.clear().a(11).build()), is(true));
+        assertThat(filter.excluded(metaBuilder.clear().a(11).d("").build()), is(false));
+        assertThat(filter.excluded(metaBuilder.clear().a(11).d("4nyth1ng").build()), is(false));
     }
 
     @Test
     void shouldFilterByNonPresenceOfPropertyUsingGroovy() {
         MetaFilter filter = filter("groovy: !d");
-        assertThat(filter.allow(metaBuilder.clear().a(11).build()), is(true));
-        assertThat(filter.allow(metaBuilder.clear().a(11).d("").build()), is(false));
+        assertThat(filter.excluded(metaBuilder.clear().a(11).build()), is(false));
+        assertThat(filter.excluded(metaBuilder.clear().a(11).d("").build()), is(true));
     }
 
     @Test
     void shouldFilterByRegexUsingGroovy() {
         MetaFilter filter = filter("groovy: d ==~ /.*\\d+.*/");
-        assertThat(filter.allow(metaBuilder.clear().d("fr3ddie").build()), is(true));
-        assertThat(filter.allow(metaBuilder.clear().d("mercury").build()), is(false));
+        assertThat(filter.excluded(metaBuilder.clear().d("fr3ddie").build()), is(false));
+        assertThat(filter.excluded(metaBuilder.clear().d("mercury").build()), is(true));
     }
 
     @Test
@@ -125,10 +106,8 @@ class MetaFilterBehaviour {
         MetaFilter filter = filter("groovy: a != '11' && b != '22'");
         long start = System.currentTimeMillis();
         for (int i = 0; i < 1000; i++) {
-            boolean allow = filter.allow(metaBuilder.clear().a(11).b(33).build());
-            if ( allow ){
-                continue;
-            } else {
+            boolean excluded = filter.excluded(metaBuilder.clear().a(11).b(33).build());
+            if (excluded) {
                 break;
             }
         }
@@ -143,25 +122,25 @@ class MetaFilterBehaviour {
     @Test
     void shouldFilterUsingCustomMetaMatcher() {
         String filterAsString = "custom: anything goes";
-		Map<String, MetaMatcher> metaMatchers = new HashMap<>();
-		metaMatchers.put("custom:", new AnythingGoesMetaMatcher());
-		MetaFilter filter = new MetaFilter(filterAsString, new SilentEmbedderMonitor(), metaMatchers);
-		assertThat(filter.metaMatcher(), instanceOf(AnythingGoesMetaMatcher.class));
-        assertThat(filter.allow(metaBuilder.clear().d("anything").build()), is(true));
+        Map<String, MetaMatcher> metaMatchers = new HashMap<>();
+        metaMatchers.put("custom:", new AnythingGoesMetaMatcher());
+        MetaFilter filter = new MetaFilter(filterAsString, new SilentEmbedderMonitor(), metaMatchers);
+        assertThat(filter.metaMatcher(), instanceOf(AnythingGoesMetaMatcher.class));
+        assertThat(filter.excluded(metaBuilder.clear().d("anything").build()), is(false));
     }
 
-    public class AnythingGoesMetaMatcher implements MetaMatcher {
+    public static class AnythingGoesMetaMatcher implements MetaMatcher {
 
-		@Override
+        @Override
         public void parse(String filterAsString) {
-		}
+        }
 
-		@Override
+        @Override
         public boolean match(Meta meta) {
-			return true;
-		}
+            return true;
+        }
 
-	}
+    }
 
     public static class MetaBuilder {
 

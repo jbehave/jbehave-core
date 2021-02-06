@@ -113,7 +113,7 @@ public class Lifecycle {
         MetaFilter filter = getMetaFilter(outcome);
         List<Steps> afterSteps = new ArrayList<>();
         for (Steps steps : after) {
-            if (outcome == steps.outcome && (meta.equals(Meta.EMPTY) || filter.allow(meta))) {
+            if (outcome == steps.outcome && (meta.equals(Meta.EMPTY) || !filter.excluded(meta))) {
                 afterSteps.add(stepsByScope(steps, scope));
             }
         }

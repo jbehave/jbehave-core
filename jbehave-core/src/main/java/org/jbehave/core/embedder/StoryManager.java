@@ -137,11 +137,11 @@ public class StoryManager {
     }
 
 	private void filterRunning(RunContext context, Story story) {
-		FilteredStory filteredStory = context.filter(story);
-		if (filteredStory.allowed()) {
-			runningStories.put(story.getPath(), runningStory(story));
-		} else {
+		if (context.filter(story).excluded()) {
 			excludedBy(context.getFilter()).add(story);
+		}
+		else {
+			runningStories.put(story.getPath(), runningStory(story));
 		}
 	}
 

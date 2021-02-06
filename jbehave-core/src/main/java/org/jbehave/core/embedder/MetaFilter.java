@@ -38,7 +38,7 @@ import org.jbehave.core.model.Meta.Property;
  * <pre>
  * MetaFilter filter = new MetaFilter(
  * 		&quot;+author Mauro -theme smoke testing +map *API -skip&quot;);
- * filter.allow(new Meta(asList(&quot;map someAPI&quot;)));
+ * filter.excluded(new Meta(asList(&quot;map someAPI&quot;)));
  * </pre>
  * 
  * </p>
@@ -121,12 +121,12 @@ public class MetaFilter {
         return new DefaultMetaMatcher();
     }
 
-    public boolean allow(Meta meta) {
-        boolean allowed = this.filterMatcher.match(meta);
-        if (!allowed) {
+    public boolean excluded(Meta meta) {
+        boolean excluded = !this.filterMatcher.match(meta);
+        if (excluded) {
             monitor.metaExcluded(meta, this);
         }
-        return allowed;
+        return excluded;
     }
 
     public MetaMatcher metaMatcher() {

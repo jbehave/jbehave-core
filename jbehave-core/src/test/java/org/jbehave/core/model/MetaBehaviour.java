@@ -2,6 +2,8 @@ package org.jbehave.core.model;
 
 import org.jbehave.core.embedder.MetaFilter;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static java.util.Arrays.asList;
 
@@ -45,18 +47,14 @@ class MetaBehaviour {
         assertThat(meta.getProperty("two"), equalTo("Two"));
     }
     
-    @Test
-    void shouldAllowFilteringBySingleExclusion() {
-      Meta meta = new Meta(asList("environment all", "skip"));
-      MetaFilter filter = new MetaFilter("-skip");
-      assertThat("should not be allowed", filter.allow(meta), is(false));
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "-skip",
+            "-environment preview -skip"
+    })
+    void shouldAllowFiltering(String filterAsString) {
+        Meta meta = new Meta(asList("environment all", "skip"));
+        MetaFilter filter = new MetaFilter(filterAsString);
+        assertThat("should be excluded", filter.excluded(meta), is(true));
     }
-
-    @Test
-    void shouldAllowFilteringByMultipleExclusions() {
-      Meta meta = new Meta(asList("environment all", "skip"));
-      MetaFilter filter = new MetaFilter("-environment preview -skip");
-      assertThat("should not be allowed", filter.allow(meta), is(false));
-    }
-
 }
