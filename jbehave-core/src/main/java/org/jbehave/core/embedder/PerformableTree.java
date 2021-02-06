@@ -833,7 +833,7 @@ public class PerformableTree {
     }
 
     public static enum Status {
-        SUCCESSFUL, FAILED, PENDING, NOT_PERFORMED, NOT_ALLOWED;
+        SUCCESSFUL, FAILED, PENDING, NOT_PERFORMED, EXCLUDED;
     }
 
     public static class PerformableStory extends AbstractPerformableGivenStories {
@@ -907,7 +907,7 @@ public class PerformableTree {
         public void perform(RunContext context) throws InterruptedException {
             if (!allowed) {
                 context.reporter().storyExcluded(story, context.filter.asString());
-                this.status = Status.NOT_ALLOWED;
+                this.status = Status.EXCLUDED;
             }
             Timer timer = new Timer().start();
             try {

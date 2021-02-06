@@ -16,6 +16,7 @@
 
 <ul>
 	<li>Changed method names for filter exclusion from 'notAllowed' to 'excluded'</li>
+	<li>Rename Status NOT_ALLOWED to EXCLUDED</li>
 	<li>Changed default scenario type in @BeforeScenario/@AfterScenario annotations.</li>
 	<li>Deprecated use of date format String parameter in OutcomesTable.  Use map parameter instead.</li>
 	<li>Removed deprecated org.jbehave.core.reporters.StoryReporterBuilder.Format.
@@ -44,9 +45,9 @@
 execution mechanism of the stories, with the StoryRunner
 replaced by the PerformableTree. The result of execution of the
 performable tree should be serialisable and consumable by any
-reporting/UI layer independent of the StoryReporters.  Correspondingly, the CrossReference 
-class has also changed.  As customising the StoryRunner and the CrossReference is likely to 
-be a very niche use case, most users will  not notice any significant difference. 
+reporting/UI layer independent of the StoryReporters.  Correspondingly, the CrossReference
+class has also changed.  As customising the StoryRunner and the CrossReference is likely to
+be a very niche use case, most users will  not notice any significant difference.
 The rest of the configuration is backward compatible.</p>
 
 <h2>From 3.0 to 3.1</h2>

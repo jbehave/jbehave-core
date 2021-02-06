@@ -170,7 +170,7 @@ public class SurefireReporter {
                             counts.addFailure();
                             break;
                         case PENDING:
-                        case NOT_ALLOWED:
+                        case EXCLUDED:
                         case NOT_PERFORMED:
                             counts.addSkipped();
                             break;
