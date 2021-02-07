@@ -1,6 +1,5 @@
 package org.jbehave.core.reporters;
 
-import java.lang.reflect.Type;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -367,6 +366,20 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
 
     private void printScenarioSteps(String stepsStage, Stage stage) {
         printSteps(stepsStage, "Scenario", stage);
+    }
+
+    @Override
+    public void beforeStoriesSteps(Stage stage) {
+        printStoriesSteps("before", stage);
+    }
+
+    @Override
+    public void afterStoriesSteps(Stage stage) {
+        printStoriesSteps("after", stage);
+    }
+
+    private void printStoriesSteps(String stepsStage, Stage stage) {
+        printSteps(stepsStage, "Stories", stage);
     }
 
     @Override

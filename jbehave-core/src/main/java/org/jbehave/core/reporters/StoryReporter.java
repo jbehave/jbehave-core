@@ -15,6 +15,10 @@ import java.util.Map;
  */
 public interface StoryReporter {
 
+    void beforeStoriesSteps(Stage stage);
+
+    void afterStoriesSteps(Stage stage);
+
     void storyExcluded(Story story, String filter);
 
     void storyCancelled(Story story, StoryDuration storyDuration);

@@ -42,6 +42,16 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeStoriesSteps(Stage stage) {
+        delegate(reporter -> reporter.beforeStoriesSteps(stage));
+    }
+
+    @Override
+    public void afterStoriesSteps(Stage stage) {
+        delegate(reporter -> reporter.afterStoriesSteps(stage));
+    }
+
+    @Override
     public void afterScenario(Timing timing) {
         delegate(reporter -> reporter.afterScenario(timing));
     }

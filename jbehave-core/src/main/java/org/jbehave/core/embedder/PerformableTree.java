@@ -456,16 +456,15 @@ public class PerformableTree {
     public void performBeforeOrAfterStories(RunContext context, Stage stage) {
         String storyPath = StringUtils.capitalize(stage.name().toLowerCase()) + "Stories";
         context.currentPath(storyPath);
-        context.reporter().beforeStory(new Story(storyPath), false);
+        context.reporter().beforeStoriesSteps(stage);
         try {
             (stage == Stage.BEFORE ? root.beforeSteps : root.afterSteps).perform(context);
         } catch (InterruptedException e) {
             throw new UUIDExceptionWrapper(e);
         } finally {
+            context.reporter().afterStoriesSteps(stage);
             invokeDelayedReporters(context.reporter());
         }
-        context.reporter().afterStory(false);
-        invokeDelayedReporters(context.reporter());
     }
 
     private void invokeDelayedReporters(StoryReporter reporter) {

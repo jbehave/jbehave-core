@@ -19,6 +19,8 @@ import java.util.function.Consumer;
  */
 public class ConcurrentStoryReporter implements StoryReporter {
 
+    private static Method beforeStoriesSteps;
+    private static Method afterStoriesSteps;
     private static Method storyCancelled;
     private static Method storyExcluded;
     private static Method beforeStory;
@@ -56,6 +58,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
 
     static {
         try {
+            beforeStoriesSteps = StoryReporter.class.getMethod("beforeStoriesSteps", Stage.class);
+            afterStoriesSteps = StoryReporter.class.getMethod("afterStoriesSteps", Stage.class);
             storyCancelled = StoryReporter.class.getMethod("storyCancelled", Story.class, StoryDuration.class);
             storyExcluded = StoryReporter.class.getMethod("storyExcluded", Story.class, String.class);
             beforeStory = StoryReporter.class.getMethod("beforeStory", Story.class, Boolean.TYPE);
@@ -106,6 +110,16 @@ public class ConcurrentStoryReporter implements StoryReporter {
         this.delegate = delegate;
         this.multiThreading = multiThreading;
         this.delayedMethods = multiThreading ? Collections.synchronizedList(new ArrayList<DelayedMethod>()) : null;
+    }
+
+    @Override
+    public void beforeStoriesSteps(Stage stage) {
+        perform(reporter ->  reporter.beforeStoriesSteps(stage), beforeStoriesSteps, stage);
+    }
+
+    @Override
+    public void afterStoriesSteps(Stage stage) {
+        perform(reporter ->  reporter.afterStoriesSteps(stage), afterStoriesSteps, stage);
     }
 
     @Override

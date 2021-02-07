@@ -73,6 +73,10 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("lifecycleOutcomeEnd", "</div>\n");
         patterns.setProperty("lifecycleMetaFilter", "<div class=\"metaFilter step\">{0} {1}</div>\n");
         patterns.setProperty("lifecycleStep", "<div class=\"step\">{0}</div>\n");
+        patterns.setProperty("beforeBeforeStoriesSteps", "<div class=\"beforeStoriesSteps\">\n");
+        patterns.setProperty("afterBeforeStoriesSteps", "</div>\n");
+        patterns.setProperty("beforeAfterStoriesSteps", "<div class=\"afterStoriesSteps\">\n");
+        patterns.setProperty("afterAfterStoriesSteps", "</div>\n");
         patterns.setProperty("beforeBeforeStorySteps", "<div class=\"beforeStorySteps\">\n");
         patterns.setProperty("afterBeforeStorySteps", "</div>\n");
         patterns.setProperty("beforeAfterStorySteps", "<div class=\"afterStorySteps\">\n");

@@ -17,6 +17,14 @@ import java.util.Map;
 public class NullStoryReporter implements StoryReporter {
 
     @Override
+    public void beforeStoriesSteps(Stage stage) {
+    }
+
+    @Override
+    public void afterStoriesSteps(Stage stage) {
+    }
+
+    @Override
     public void beforeStep(String step) {
     }
 

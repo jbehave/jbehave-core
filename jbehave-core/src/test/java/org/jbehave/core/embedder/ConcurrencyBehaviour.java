@@ -59,8 +59,7 @@ class ConcurrencyBehaviour {
         embedder.embedderControls().useThreads(2);
         embedder.runAsEmbeddables(asList(XmlFormat.class.getName()));
         String textOutput = XmlFormat.textOut.toString();
-        assertThat(textOutput,
-                equalTo("beforeStory: BeforeStories\nafterStory\nbeforeStory: AfterStories\nafterStory\n"));
+        assertThat(textOutput, equalTo("BeforeStories\n\nAfterStories\n\n"));
     }
 
     @Test
