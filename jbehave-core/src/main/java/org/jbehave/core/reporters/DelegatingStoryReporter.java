@@ -87,8 +87,8 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void lifecyle(Lifecycle lifecycle) {
-        delegate(reporter -> reporter.lifecyle(lifecycle));
+    public void lifecycle(Lifecycle lifecycle) {
+        delegate(reporter -> reporter.lifecycle(lifecycle));
     }
 
     @Override

@@ -271,7 +271,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void lifecyle(Lifecycle lifecycle) {
+    public void lifecycle(Lifecycle lifecycle) {
         if (!lifecycle.isEmpty()) {
             print(format("lifecycleStart", "{0}\n", keywords.lifecycle()));
             ExamplesTable lifecycleExamplesTable = lifecycle.getExamplesTable();

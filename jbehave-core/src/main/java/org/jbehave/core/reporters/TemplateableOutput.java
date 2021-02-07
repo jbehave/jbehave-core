@@ -78,7 +78,7 @@ public class TemplateableOutput extends NullStoryReporter {
     }
 
     @Override
-    public void lifecyle(Lifecycle lifecycle) {
+    public void lifecycle(Lifecycle lifecycle) {
         if(!lifecycle.isEmpty()){
             this.outputStory.lifecycle = new OutputLifecycle(lifecycle);            
         }

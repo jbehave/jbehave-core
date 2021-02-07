@@ -53,8 +53,8 @@ public class SilentSuccessFilter extends NullStoryReporter {
     }
 
     @Override
-    public void lifecyle(final Lifecycle lifecycle) {
-        beforeStoryState = createState(() -> delegate.lifecyle(lifecycle));
+    public void lifecycle(final Lifecycle lifecycle) {
+        beforeStoryState = createState(() -> delegate.lifecycle(lifecycle));
         beforeStoryState.report();
     }
 

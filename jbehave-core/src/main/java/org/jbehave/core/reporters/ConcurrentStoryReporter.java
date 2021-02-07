@@ -65,7 +65,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
             beforeStory = StoryReporter.class.getMethod("beforeStory", Story.class, Boolean.TYPE);
             afterStory = StoryReporter.class.getMethod("afterStory", Boolean.TYPE);
             narrative = StoryReporter.class.getMethod("narrative", Narrative.class);
-            lifecycle = StoryReporter.class.getMethod("lifecyle", Lifecycle.class);
+            lifecycle = StoryReporter.class.getMethod("lifecycle", Lifecycle.class);
             beforeStorySteps = StoryReporter.class.getMethod("beforeStorySteps", Stage.class);
             afterStorySteps = StoryReporter.class.getMethod("afterStorySteps", Stage.class);
             beforeScenarioSteps = StoryReporter.class.getMethod("beforeScenarioSteps", Stage.class);
@@ -143,8 +143,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
     
     @Override
-    public void lifecyle(Lifecycle aLifecycle) {
-        perform(reporter ->  reporter.lifecyle(aLifecycle), lifecycle, aLifecycle);
+    public void lifecycle(Lifecycle aLifecycle) {
+        perform(reporter ->  reporter.lifecycle(aLifecycle), lifecycle, aLifecycle);
     }
 
     @Override

@@ -46,7 +46,7 @@ class StoryNarrator {
         reporter.dryRun();
         reporter.beforeStory(story, givenStory);
         reporter.narrative(story.getNarrative());
-        reporter.lifecyle(lifecycle);
+        reporter.lifecycle(lifecycle);
 
         reporter.beforeStorySteps(Stage.BEFORE);
         reporter.beforeStep(beforeStoryStep);

@@ -912,7 +912,7 @@ public class PerformableTree {
                 context.stepsContext().resetStory();
                 context.reporter().beforeStory(story, givenStory);
                 context.reporter().narrative(story.getNarrative());
-                context.reporter().lifecyle(story.getLifecycle());
+                context.reporter().lifecycle(story.getLifecycle());
                 State state = context.state();
                 performStorySteps(context, beforeSteps, Stage.BEFORE);
                 performGivenStories(context, givenStories, story.getGivenStories());

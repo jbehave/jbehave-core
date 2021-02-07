@@ -85,7 +85,7 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void lifecyle(Lifecycle lifecycle) {
+    public void lifecycle(Lifecycle lifecycle) {
     }
 
     @Override

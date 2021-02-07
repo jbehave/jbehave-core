@@ -33,7 +33,7 @@ public interface StoryReporter {
 
     void narrative(Narrative narrative);
 
-    void lifecyle(Lifecycle lifecycle);
+    void lifecycle(Lifecycle lifecycle);
 
     void beforeStorySteps(Stage stage);
 

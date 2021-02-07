@@ -229,7 +229,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         Timing timing = getTiming();
 
         reporter.beforeStory(rootStory, false);
-        reporter.lifecyle(lifecycle);
+        reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
@@ -238,7 +238,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeGivenStories();
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
-        reporter.lifecyle(lifecycle);
+        reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
@@ -247,7 +247,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeGivenStories();
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
-        reporter.lifecyle(lifecycle);
+        reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
@@ -278,7 +278,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeGivenStories();
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
-        reporter.lifecyle(lifecycle);
+        reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
@@ -287,7 +287,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeGivenStories();
         reporter.givenStories(Collections.singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
-        reporter.lifecyle(lifecycle);
+        reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.singletonList(step), examplesTable);
@@ -338,7 +338,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         Timing timing = getTiming();
 
         reporter.beforeStory(rootStory, false);
-        reporter.lifecyle(lifecycle);
+        reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(Collections.emptyList(), examplesTable);
@@ -646,7 +646,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         Timing timing = getTiming();
 
         reporter.beforeStory(story, false);
-        reporter.lifecyle(lifecycle);
+        reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(spyScenarioUuid(new Scenario("Normal scenario", Meta.EMPTY)));
         reporter.beforeExamples(Collections.singletonList("Then '<expected>' is equal to '<actual>'"), emptyExamplesTable);
