@@ -48,6 +48,7 @@ public class XmlOutput extends PrintStreamOutput {
 
     private static Properties defaultXmlPatterns() {
         Properties patterns = new Properties();
+        patterns.setProperty("beforeStep", "");
         patterns.setProperty("dryRun", "<dryRun>{0}</dryRun>\n");        
         patterns.setProperty("beforeStory", "<story id=\"{0}\" path=\"{2}\" title=\"{1}\">\n");
         patterns.setProperty("storyCancelled", "<cancelled keyword=\"{0}\" durationKeyword=\"{1}\" durationInSecs=\"{2}\"/>\n");
@@ -82,6 +83,8 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("afterBeforeStorySteps", "</beforeStorySteps>\n");
         patterns.setProperty("beforeAfterStorySteps", "<afterStorySteps>\n");
         patterns.setProperty("afterAfterStorySteps", "</afterStorySteps>\n");
+        patterns.setProperty("beforeScenarioSteps", "<steps>\n");
+        patterns.setProperty("afterScenarioSteps", "</steps>\n");
         patterns.setProperty("beforeScenario", "<scenario id=\"{0}\" keyword=\"{1}\" title=\"{2}\">\n");
         patterns.setProperty("scenarioExcluded", "<excluded pattern=\"{0}\"/>\n");
         patterns.setProperty("afterScenario", "</scenario>\n");
@@ -126,6 +129,8 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("parameterValueEnd", "</parameter>");
         patterns.setProperty("parameterValueNewline", "\n");
         patterns.setProperty("numericParameter", "<timing phase=\"{0}\">{1}</timing>\n");
+        patterns.setProperty("beforeComposedSteps", "<steps>\n");
+        patterns.setProperty("afterComposedSteps", "</steps>\n");
         return patterns;
     }
 }

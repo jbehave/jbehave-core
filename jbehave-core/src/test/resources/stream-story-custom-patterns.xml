@@ -40,9 +40,20 @@
 <givenStory parameters="">/given/story1</givenStory>
 <givenStory parameters="">/given/story2</givenStory>
 </givenStories>
+<steps>
 <step outcome="successful">Given I have a balance of $50</step>
 <step outcome="ignorable">!-- Then ignore me</step>
 <step outcome="comment">!-- A comment</step>
+<steps>
+<step outcome="successful">When I perform inner step</step>
+<steps>
+<step outcome="successful">When I perform inner step</step>
+<step outcome="successful">When I perform inner step</step>
+</steps>
+<step outcome="successful">When I perform composite step</step>
+<step outcome="successful">When I perform inner step</step>
+</steps>
+<step outcome="successful">When I perform composite step</step>
 <step outcome="successful">When I request $20</step>
 <step outcome="successful">When I ask Liz for a loan of $100</step>
 <step outcome="successful">When I ask Liz for a loan of $<parameter>99</parameter></step>
@@ -60,6 +71,7 @@
 <outcome><value>I don&apos;t return all</value><value>100.0</value><value>&lt;50.0&gt;</value><value>No</value></outcome>
 <outcome><value>A wrong date</value><value>01/01/2011</value><value>&quot;02/01/2011&quot;</value><value>No</value></outcome>
 </outcomes>
+</steps>
 <step outcome="successful">Given a scenario step</step>
 <timing phase="start">1</timing>
 <timing phase="end">2</timing>
@@ -76,15 +88,19 @@
 
 <example keyword="Example:">{money=$30, to=Mauro}</example>
 <step outcome="successful">Given a scenario step</step>
+<steps>
 <step outcome="successful">Given money $30</step>
 <step outcome="successful">Then I give it to Mauro</step>
+</steps>
 <step outcome="successful">Given a scenario step</step>
 
 <example keyword="Example:">{money=$50, to=Paul}</example>
 <step outcome="successful">Given a scenario step</step>
+<steps>
 <step outcome="successful">Given money $50</step>
 <step outcome="successful">Then I give it to Paul</step>
 <step outcome="pending" keyword="PENDING">Then I should have a balance of $30</step>
+</steps>
 <step outcome="successful">Given a scenario step</step>
 </examples><!-- after examples -->
 <timing phase="start">1</timing>

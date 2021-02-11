@@ -105,6 +105,14 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeComposedSteps() {
+    }
+
+    @Override
+    public void afterComposedSteps() {
+    }
+
+    @Override
     public void beforeGivenStories(){
     }
 

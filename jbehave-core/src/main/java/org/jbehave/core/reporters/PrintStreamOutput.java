@@ -150,6 +150,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
 
     @Override
     public void beforeStep(String step) {
+        print(format("beforeStep", "{0}\n", step));
     }
 
     @Override
@@ -366,6 +367,16 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
 
     private void printScenarioSteps(String stepsStage, Stage stage) {
         printSteps(stepsStage, "Scenario", stage);
+    }
+
+    @Override
+    public void beforeComposedSteps() {
+        print(format("beforeComposedSteps", ""));
+    }
+
+    @Override
+    public void afterComposedSteps() {
+        print(format("afterComposedSteps", ""));
     }
 
     @Override

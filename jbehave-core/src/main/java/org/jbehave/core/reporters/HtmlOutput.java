@@ -49,6 +49,7 @@ public class HtmlOutput extends PrintStreamOutput {
 
     private static Properties defaultHtmlPatterns() {
         Properties patterns = new Properties();
+        patterns.setProperty("beforeStep", "");
         patterns.setProperty("dryRun", "<div class=\"dryRun\">{0}</div>\n");        
         patterns.setProperty("beforeStory", "<div id=\"{0}\" class=\"story\">\n<h1>{1}</h1>\n<div class=\"path\">{2}</div>\n");
         patterns.setProperty("storyCancelled", "<div class=\"cancelled\">{0} ({1} {2} s)</div>\n");
@@ -81,6 +82,8 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("afterBeforeStorySteps", "</div>\n");
         patterns.setProperty("beforeAfterStorySteps", "<div class=\"afterStorySteps\">\n");
         patterns.setProperty("afterAfterStorySteps", "</div>\n");
+        patterns.setProperty("beforeScenarioSteps", "<div class=\"steps\">\n");
+        patterns.setProperty("afterScenarioSteps", "</div>\n");
         patterns.setProperty("beforeScenario", "<div id=\"{0}\" class=\"scenario\">\n<h2>{1} {2}</h2>\n");
         patterns.setProperty("afterScenario", "</div>\n");
         patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
@@ -124,6 +127,8 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("parameterValueEnd", "</span>");
         patterns.setProperty("parameterValueNewline", "<br/>");
         patterns.setProperty("numericParameter", "<h3>{0} {1}</h3>\n");
+        patterns.setProperty("beforeComposedSteps", "<div class=\"steps\">\n");
+        patterns.setProperty("afterComposedSteps", "</div>\n");
         return patterns;
     }
 }

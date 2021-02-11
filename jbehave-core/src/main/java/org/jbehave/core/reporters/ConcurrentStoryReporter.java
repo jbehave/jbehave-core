@@ -31,6 +31,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method afterStorySteps;
     private static Method beforeScenarioSteps;
     private static Method afterScenarioSteps;
+    private static Method beforeComposedSteps;
+    private static Method afterComposedSteps;
     private static Method scenarioExcluded;
     private static Method beforeScenarios;
     private static Method beforeScenario;
@@ -70,6 +72,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
             afterStorySteps = StoryReporter.class.getMethod("afterStorySteps", Stage.class);
             beforeScenarioSteps = StoryReporter.class.getMethod("beforeScenarioSteps", Stage.class);
             afterScenarioSteps = StoryReporter.class.getMethod("afterScenarioSteps", Stage.class);
+            beforeComposedSteps = StoryReporter.class.getMethod("beforeComposedSteps");
+            afterComposedSteps = StoryReporter.class.getMethod("afterComposedSteps");
             scenarioExcluded = StoryReporter.class.getMethod("scenarioExcluded", Scenario.class, String.class);
             beforeScenarios = StoryReporter.class.getMethod("beforeScenarios");
             beforeScenario = StoryReporter.class.getMethod("beforeScenario", Scenario.class);
@@ -155,6 +159,16 @@ public class ConcurrentStoryReporter implements StoryReporter {
     @Override
     public void afterStorySteps(Stage stage) {
         perform(reporter ->  reporter.afterStorySteps(stage), afterStorySteps, stage);
+    }
+
+    @Override
+    public void beforeComposedSteps() {
+        perform(StoryReporter::beforeComposedSteps, beforeComposedSteps);
+    }
+
+    @Override
+    public void afterComposedSteps() {
+        perform(StoryReporter::afterComposedSteps, afterComposedSteps);
     }
 
     @Override

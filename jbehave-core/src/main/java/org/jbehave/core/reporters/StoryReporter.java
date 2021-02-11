@@ -43,6 +43,10 @@ public interface StoryReporter {
 
     void afterScenarioSteps(Stage stage);
 
+    void beforeComposedSteps();
+
+    void afterComposedSteps();
+
     void scenarioExcluded(Scenario scenario, String filter);
 
     void beforeScenario(Scenario scenario);

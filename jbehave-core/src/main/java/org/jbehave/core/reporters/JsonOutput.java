@@ -151,13 +151,14 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("givenStory", "'{'\"parameters\": \"{1}\", \"path\": \"{0}\"}");
         patterns.setProperty("givenStoriesEnd", "]");
         patterns.setProperty("afterGivenStories", "}");
-        patterns.setProperty("successful", "'{'\"outcome\": \"successful\", \"value\": \"{0}\"}");
-        patterns.setProperty("ignorable", "'{'\"outcome\": \"ignorable\", \"value\": \"{0}\"}");
-        patterns.setProperty("comment", "'{'\"outcome\": \"comment\", \"value\": \"{0}\"}");
-        patterns.setProperty("pending", "'{'\"outcome\": \"pending\", \"keyword\": \"{1}\", \"value\": \"{0}\"}");
-        patterns.setProperty("notPerformed", "'{'\"outcome\": \"notPerformed\", \"keyword\": \"{1}\", \"value\": \"{0}\"}");
-        patterns.setProperty("failed", "'{'\"outcome\": \"failed\", \"keyword\": \"{1}\", \"value\": \"{0}\", \"failure\": \"{2}\"}");
-        patterns.setProperty("restarted", "'{'\"outcome\": \"restarted\", \"value\": \"{0}\", \"reason\": \"{1}\"}");
+        patterns.setProperty("beforeStep", "'{'");
+        patterns.setProperty("successful", "\"outcome\": \"successful\", \"value\": \"{0}\"}");
+        patterns.setProperty("ignorable", "\"outcome\": \"ignorable\", \"value\": \"{0}\"}");
+        patterns.setProperty("comment", "\"outcome\": \"comment\", \"value\": \"{0}\"}");
+        patterns.setProperty("pending", "\"outcome\": \"pending\", \"keyword\": \"{1}\", \"value\": \"{0}\"}");
+        patterns.setProperty("notPerformed", "\"outcome\": \"notPerformed\", \"keyword\": \"{1}\", \"value\": \"{0}\"}");
+        patterns.setProperty("failed", "\"outcome\": \"failed\", \"keyword\": \"{1}\", \"value\": \"{0}\", \"failure\": \"{2}\"}");
+        patterns.setProperty("restarted", "\"outcome\": \"restarted\", \"value\": \"{0}\", \"reason\": \"{1}\"}");
         patterns.setProperty("restartedStory", "'{'\"story\": '{'\"outcome\": \"restartedStory\", \"value\": \"{0}\", \"reason\": \"{1}\"}}");
         patterns.setProperty("outcomesTableStart", "'{'\"outcomes\": '{'");
         patterns.setProperty("outcomesTableHeadStart", "\"fields\": [");
@@ -196,6 +197,8 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("parameterValueStart", "((");
         patterns.setProperty("parameterValueEnd", "))");
         patterns.setProperty("parameterValueNewline", "\\n");
+        patterns.setProperty("beforeComposedSteps", "\"steps\": [");
+        patterns.setProperty("afterComposedSteps", "]");
         return patterns;
     }
 }

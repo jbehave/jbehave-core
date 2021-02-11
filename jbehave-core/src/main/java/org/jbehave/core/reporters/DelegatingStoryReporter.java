@@ -102,6 +102,16 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeComposedSteps() {
+        delegate(StoryReporter::beforeComposedSteps);
+    }
+
+    @Override
+    public void afterComposedSteps() {
+        delegate(StoryReporter::afterComposedSteps);
+    }
+
+    @Override
     public void beforeStorySteps(Stage stage) {
         delegate(reporter -> reporter.beforeStorySteps(stage));
     }

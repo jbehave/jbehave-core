@@ -43,6 +43,12 @@ GivenStories:
 Given I have a balance of $50
 !-- Then ignore me
 !-- A comment
+When I perform inner step
+When I perform inner step
+When I perform inner step
+When I perform composite step
+When I perform inner step
+When I perform composite step
 When I request $20
 When I ask Liz for a loan of $100
 When I ask Liz for a loan of $99

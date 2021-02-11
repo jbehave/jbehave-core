@@ -374,8 +374,13 @@ public class PerformableTree {
             UUIDExceptionWrapper stepFailure = result.getFailure();
             State state = stepFailure == null ? this : new SomethingHappened(stepFailure);
 
-            for (Step composedStep : step.getComposedSteps()) {
-                state = state.run(composedStep, results, reporter);
+            List<Step> composedSteps = step.getComposedSteps();
+            if (!composedSteps.isEmpty()) {
+                reporter.beforeComposedSteps();
+                for (Step composedStep : composedSteps) {
+                    state = state.run(composedStep, results, reporter);
+                }
+                reporter.afterComposedSteps();
             }
 
             result.describeTo(reporter);

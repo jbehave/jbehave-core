@@ -127,6 +127,34 @@
           "value": "!-- A comment"
         },
         {
+          "steps": [
+            {
+              "outcome": "successful",
+              "value": "When I perform inner step"
+            },
+            {
+              "steps": [
+                {
+                  "outcome": "successful",
+                  "value": "When I perform inner step"
+                },
+                {
+                  "outcome": "successful",
+                  "value": "When I perform inner step"
+                }
+              ],
+              "outcome": "successful",
+              "value": "When I perform composite step"
+            },
+            {
+              "outcome": "successful",
+              "value": "When I perform inner step"
+            }
+          ],
+          "outcome": "successful",
+          "value": "When I perform composite step"
+        },
+        {
           "outcome": "successful",
           "value": "When I request $20"
         },
