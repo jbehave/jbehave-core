@@ -8,7 +8,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.JBehaveJUnit4Runner;
+import org.jbehave.core.junit.JUnit4StoryRunner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -20,7 +20,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML;
 
-@RunWith(JBehaveJUnit4Runner.class)
+@RunWith(JUnit4StoryRunner.class)
 public class GoogleStories extends JUnitStories {
 
     @Override

@@ -6,7 +6,7 @@ import java.util.List;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.junit.JBehaveJUnit4Runner;
+import org.jbehave.core.junit.JUnit4StoryRunner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.steps.ExampleSteps;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -23,13 +23,13 @@ import org.junit.runner.RunWith;
  * {@link LoadFromClasspath} story loader is configured.
  * </p>
  */
-@RunWith(JBehaveJUnit4Runner.class)
+@RunWith(JUnit4StoryRunner.class)
 public class MathStories extends JUnitStories {
 
     public MathStories() {
         useConfiguration(
                 new MostUsefulConfiguration().useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats()));
-        JBehaveJUnit4Runner.recommendedControls(configuredEmbedder());
+        JUnit4StoryRunner.recommendedControls(configuredEmbedder());
     }
 
     @Override

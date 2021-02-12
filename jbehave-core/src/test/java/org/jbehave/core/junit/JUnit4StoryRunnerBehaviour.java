@@ -29,7 +29,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class JBehaveJUnit4RunnerBehaviour {
+class JUnit4StoryRunnerBehaviour {
 
     @Mock
     private RunNotifier notifier;
@@ -58,7 +58,7 @@ class JBehaveJUnit4RunnerBehaviour {
         when(controls.doIgnoreFailureInView(Mockito.anyBoolean())).thenReturn(controls);
         Embedder embedder = mock(Embedder.class);
         when(embedder.embedderControls()).thenReturn(controls);
-        EmbedderControls recommendedControls = JBehaveJUnit4Runner.recommendedControls(embedder);
+        EmbedderControls recommendedControls = JUnit4StoryRunner.recommendedControls(embedder);
         assertThat(recommendedControls, is(controls));
         verify(controls).doIgnoreFailureInView(true);
         verify(controls).doIgnoreFailureInStories(true);
@@ -69,7 +69,7 @@ class JBehaveJUnit4RunnerBehaviour {
     void canRunExampleScenariosAndCheckNotifications(Class<? extends ConfigurableEmbedder> cls,
             String expectedFirstStoryName, String expectedFirstScenario, String expectedFirstStep)
             throws InitializationError, ReflectiveOperationException {
-        JBehaveJUnit4Runner runner = new JBehaveJUnit4Runner(cls);
+        JUnit4StoryRunner runner = new JUnit4StoryRunner(cls);
         runner.run(notifier);
         verifyAllChildDescriptionsFired(runner.getDescription(), true);
         assertThat(runner.getDescription().getDisplayName(), equalTo(cls.getName()));

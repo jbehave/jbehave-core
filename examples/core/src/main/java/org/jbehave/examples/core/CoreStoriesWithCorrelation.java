@@ -8,7 +8,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.JBehaveJUnit4Runner;
+import org.jbehave.core.junit.JUnit4StoryRunner;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
-@RunWith(JBehaveJUnit4Runner.class)
+@RunWith(JUnit4StoryRunner.class)
 public class CoreStoriesWithCorrelation extends CoreStories {
 
     private List<String> failures = new ArrayList<>();

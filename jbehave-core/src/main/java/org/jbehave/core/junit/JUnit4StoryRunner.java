@@ -21,14 +21,14 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-public class JBehaveJUnit4Runner extends BlockJUnit4ClassRunner {
+public class JUnit4StoryRunner extends BlockJUnit4ClassRunner {
     private final Embedder configuredEmbedder;
     private final Configuration configuration;
     private final Description rootDescription;
     private final ConfigurableEmbedder configurableEmbedder;
     private int numberOfTestCases;
 
-    public JBehaveJUnit4Runner(Class<? extends ConfigurableEmbedder> testClass)
+    public JUnit4StoryRunner(Class<? extends ConfigurableEmbedder> testClass)
             throws InitializationError, ReflectiveOperationException {
         super(testClass);
         configurableEmbedder = testClass.getDeclaredConstructor().newInstance();

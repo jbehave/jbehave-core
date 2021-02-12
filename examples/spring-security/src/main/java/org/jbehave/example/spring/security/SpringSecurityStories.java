@@ -4,7 +4,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.JBehaveJUnit4Runner;
+import org.jbehave.core.junit.JUnit4StoryRunner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -19,7 +19,7 @@ import java.util.List;
 import static org.jbehave.core.reporters.Format.ANSI_CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML;
 
-@RunWith(JBehaveJUnit4Runner.class)
+@RunWith(JUnit4StoryRunner.class)
 public class SpringSecurityStories extends JUnitStories {
 
     private ConfigurableApplicationContext context;
