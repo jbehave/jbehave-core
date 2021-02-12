@@ -13,7 +13,7 @@ import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.JUnitReportingRunner;
+import org.jbehave.core.junit.JBehaveJUnit4Runner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -22,7 +22,7 @@ import org.jbehave.core.steps.spring.SpringStepsFactory;
 import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JBehaveJUnit4Runner.class)
 public class MetaByRowStories extends JUnitStories {
 
     @Override

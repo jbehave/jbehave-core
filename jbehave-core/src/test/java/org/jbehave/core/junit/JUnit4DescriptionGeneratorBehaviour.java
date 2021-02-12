@@ -64,7 +64,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 @ExtendWith(MockitoExtension.class)
-class JUnitDescriptionGeneratorBehaviour {
+class JUnit4DescriptionGeneratorBehaviour {
 
     private static final String DEFAULT_SCENARIO_TITLE = "Default Scenario Title";
     private static final String GIVEN_STEP = "Given Step1";
@@ -76,7 +76,7 @@ class JUnitDescriptionGeneratorBehaviour {
     @Mock private GivenStories givenStories;
     @Mock private Configuration configuration;
 
-    private JUnitDescriptionGenerator generator;
+    private JUnit4DescriptionGenerator generator;
 
     @BeforeEach
     void beforeEach() {
@@ -126,7 +126,7 @@ class JUnitDescriptionGeneratorBehaviour {
 
         PerformableTree performableTree = mockPerformableTree(performableStory);
 
-        generator = new JUnitDescriptionGenerator(singletonList(steps), configuration);
+        generator = new JUnit4DescriptionGenerator(singletonList(steps), configuration);
         generator.createDescriptionFrom(performableTree);
         assertEquals(0, generator.getTestCases());
     }
@@ -403,7 +403,7 @@ class JUnitDescriptionGeneratorBehaviour {
 
     private Description createDescriptionFrom(Scenario scenario) {
         PerformableScenario performableScenario = mockPerformableScenario(scenario, null, false);
-        generator = new JUnitDescriptionGenerator(singletonList(steps), configuration);
+        generator = new JUnit4DescriptionGenerator(singletonList(steps), configuration);
         return generator.createDescriptionFrom(Lifecycle.EMPTY, performableScenario);
     }
 
@@ -423,7 +423,7 @@ class JUnitDescriptionGeneratorBehaviour {
 
         PerformableTree performableTree = mockPerformableTree(performableStory);
 
-        generator = new JUnitDescriptionGenerator(singletonList(steps), configuration);
+        generator = new JUnit4DescriptionGenerator(singletonList(steps), configuration);
         return generator.createDescriptionFrom(performableTree);
     }
 

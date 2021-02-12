@@ -10,7 +10,7 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.JUnitReportingRunner;
+import org.jbehave.core.junit.JBehaveJUnit4Runner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableParsers;
@@ -39,7 +39,7 @@ import static org.jbehave.core.reporters.Format.XML;
  * Stories are specified in classpath and correspondingly the {@link LoadFromClasspath} story loader is configured.
  * </p>
  */
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JBehaveJUnit4Runner.class)
 public class MyStories extends JUnitStories {
 
     public MyStories() {

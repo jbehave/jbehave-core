@@ -2,16 +2,21 @@ package org.jbehave.core.junit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import java.util.stream.Stream;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.ConfigurableEmbedder;
+import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.junit.story.ExampleScenarioJUnitStories;
 import org.jbehave.core.junit.story.ExampleScenarioJUnitStoriesLocalized;
 import org.jbehave.core.junit.story.ExampleScenarioJUnitStory;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -20,10 +25,11 @@ import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class JUnitReportingRunnerIntegrationBehaviour {
+class JBehaveJUnit4RunnerBehaviour {
 
     @Mock
     private RunNotifier notifier;
@@ -45,12 +51,25 @@ class JUnitReportingRunnerIntegrationBehaviour {
         );
     }
 
+    @Test
+    void canPrepareEmbedderWithRecommendedControls() {
+        EmbedderControls controls = mock(EmbedderControls.class);
+        when(controls.doIgnoreFailureInStories(Mockito.anyBoolean())).thenReturn(controls);
+        when(controls.doIgnoreFailureInView(Mockito.anyBoolean())).thenReturn(controls);
+        Embedder embedder = mock(Embedder.class);
+        when(embedder.embedderControls()).thenReturn(controls);
+        EmbedderControls recommendedControls = JBehaveJUnit4Runner.recommendedControls(embedder);
+        assertThat(recommendedControls, is(controls));
+        verify(controls).doIgnoreFailureInView(true);
+        verify(controls).doIgnoreFailureInStories(true);
+    }
+
     @ParameterizedTest
     @MethodSource("data")
-    void runUpExampleScenarioAndCheckNotifications(Class<? extends ConfigurableEmbedder> cls,
+    void canRunExampleScenariosAndCheckNotifications(Class<? extends ConfigurableEmbedder> cls,
             String expectedFirstStoryName, String expectedFirstScenario, String expectedFirstStep)
-            throws ReflectiveOperationException, InitializationError {
-        JUnitReportingRunner runner = new JUnitReportingRunner(cls);
+            throws InitializationError, ReflectiveOperationException {
+        JBehaveJUnit4Runner runner = new JBehaveJUnit4Runner(cls);
         runner.run(notifier);
         verifyAllChildDescriptionsFired(runner.getDescription(), true);
         assertThat(runner.getDescription().getDisplayName(), equalTo(cls.getName()));

@@ -8,14 +8,14 @@ import java.util.List;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.JUnitReportingRunner;
+import org.jbehave.core.junit.JBehaveJUnit4Runner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.runner.RunWith;
 
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JBehaveJUnit4Runner.class)
 public class JRubyStories extends JUnitStories {
 
     @Override

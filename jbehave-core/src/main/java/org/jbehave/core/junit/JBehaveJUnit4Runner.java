@@ -21,14 +21,14 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
+public class JBehaveJUnit4Runner extends BlockJUnit4ClassRunner {
     private final Embedder configuredEmbedder;
     private final Configuration configuration;
     private final Description rootDescription;
     private final ConfigurableEmbedder configurableEmbedder;
     private int numberOfTestCases;
 
-    public JUnitReportingRunner(Class<? extends ConfigurableEmbedder> testClass)
+    public JBehaveJUnit4Runner(Class<? extends ConfigurableEmbedder> testClass)
             throws InitializationError, ReflectiveOperationException {
         super(testClass);
         configurableEmbedder = testClass.getDeclaredConstructor().newInstance();
@@ -76,7 +76,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
         return new Statement() {
             @Override
             public void evaluate() {
-                JUnitScenarioReporter junitReporter = new JUnitScenarioReporter(notifier, rootDescription,
+                JUnit4StoryReporter junitReporter = new JUnit4StoryReporter(notifier, rootDescription,
                         configuration.keywords());
                 // tell the reporter how to handle pending steps
                 junitReporter.usePendingStepStrategy(configuration.pendingStepStrategy());
@@ -104,7 +104,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
         return configuredEmbedder.stepsFactory().createCandidateSteps();
     }
 
-    private void addToStoryReporterFormats(JUnitScenarioReporter junitReporter) {
+    private void addToStoryReporterFormats(JUnit4StoryReporter junitReporter) {
         StoryReporterBuilder storyReporterBuilder = configuration.storyReporterBuilder();
         StoryReporterBuilder.ProvidedFormat junitReportFormat = new StoryReporterBuilder.ProvidedFormat(junitReporter);
         storyReporterBuilder.withFormats(junitReportFormat);
@@ -112,7 +112,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
 
     private List<Description> buildDescriptionFromStories(List<String> storyPaths) {
         List<CandidateSteps> candidateSteps = getCandidateSteps();
-        JUnitDescriptionGenerator descriptionGenerator = new JUnitDescriptionGenerator(candidateSteps, configuration);
+        JUnit4DescriptionGenerator descriptionGenerator = new JUnit4DescriptionGenerator(candidateSteps, configuration);
         List<Description> storyDescriptions = new ArrayList<>();
 
         addSuite(storyDescriptions, "BeforeStories");

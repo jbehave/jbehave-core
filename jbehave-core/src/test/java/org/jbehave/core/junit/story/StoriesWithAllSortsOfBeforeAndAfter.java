@@ -7,7 +7,7 @@ import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.junit.JUnitReportingRunner;
+import org.jbehave.core.junit.JBehaveJUnit4Runner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.steps.ExampleSteps;
 import org.jbehave.core.junit.steps.InitSteps;
@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
  * {@link LoadFromClasspath} story loader is configured.
  * </p>
  */
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JBehaveJUnit4Runner.class)
 public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
 
     public StoriesWithAllSortsOfBeforeAndAfter() {
@@ -41,7 +41,7 @@ public class StoriesWithAllSortsOfBeforeAndAfter extends JUnitStories {
                 .useParameterControls(
                         new ParameterControls("<", ">", true))
         );
-        JUnitReportingRunner.recommendedControls(configuredEmbedder());
+        JBehaveJUnit4Runner.recommendedControls(configuredEmbedder());
     }
 
     @Override

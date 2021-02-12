@@ -32,7 +32,7 @@ import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class JUnitScenarioReporterBehaviour {
+class JUnit4StoryReporterBehaviour {
 
     private static final String NAME_SCENARIO = "scenario";
     private static final String NAME_STORY = "story";
@@ -43,7 +43,7 @@ class JUnitScenarioReporterBehaviour {
     private Description storyDescription = Description.createSuiteDescription(NAME_STORY);
     private final Description scenarioDescription = Description.createTestDescription(getClass(), NAME_SCENARIO);
     private final Story story = new Story();
-    private JUnitScenarioReporter reporter;
+    private JUnit4StoryReporter reporter;
     private final Keywords keywords = new Keywords();
 
     @BeforeEach
@@ -60,7 +60,7 @@ class JUnitScenarioReporterBehaviour {
         Description child2 = addTestToScenario("child.");
         Description child3 = addTestToScenario("child..");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         reportStepSuccess(reporter);
@@ -78,7 +78,7 @@ class JUnitScenarioReporterBehaviour {
 
         Description child1 = addTestToScenario("child");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         reportStepFailure(reporter);
@@ -93,7 +93,7 @@ class JUnitScenarioReporterBehaviour {
     void shouldHandleIgnorableSteps() {
         Description comment = addTestToScenario("!-- Comment");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         verifyStoryStarted();
@@ -109,7 +109,7 @@ class JUnitScenarioReporterBehaviour {
     void failureInBeforeStoriesShouldCountOnce() {
         Description beforeStories = addBeforeStories();
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reporter.beforeStoriesSteps(StepCollector.Stage.BEFORE);
         verifyTestRunStarted();
@@ -128,7 +128,7 @@ class JUnitScenarioReporterBehaviour {
         Description child = addTestToScenario("child");
         Description afterStories = addAfterStories();
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reporter.beforeStoriesSteps(StepCollector.Stage.BEFORE);
         verifyTestRunStarted();
@@ -163,7 +163,7 @@ class JUnitScenarioReporterBehaviour {
         Description child = addTestToScenario("scenario step");
         Description after = addTestToScenario("after scenario step");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         verifyStoryStarted();
@@ -197,7 +197,7 @@ class JUnitScenarioReporterBehaviour {
         Description afterStoryStep1 = addTestToStory("after story step1");
         Description afterStoryStep2 = addTestToStory("after story step2");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBeforeStory(story, false);
         verifyStoryStarted();
@@ -245,7 +245,7 @@ class JUnitScenarioReporterBehaviour {
         afterStoryStep.addChild(composedAfter);
         addTestToStory("@AfterStory");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBeforeStory(story, false);
         verifyStoryStarted();
@@ -279,7 +279,7 @@ class JUnitScenarioReporterBehaviour {
     void shouldNotNotifySubStepWithoutBeforeAction() {
         scenarioDescription.addChild(Description.TEST_MECHANISM);
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportStepSuccess(reporter);
         verifyNoInteractions(notifier);
@@ -291,7 +291,7 @@ class JUnitScenarioReporterBehaviour {
         Description givenStoryDescription = addChildGivenStoryToScenario();
         Description child = addTestToScenario("child");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         Story givenStory = new Story();
         givenStory.namedAs("aGivenStory");
@@ -314,7 +314,7 @@ class JUnitScenarioReporterBehaviour {
         Description givenStoryDescription = addChildGivenStoryToScenario();
         Description child = addTestToScenario("child");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         reportGivenStoryEventsWithExample();
@@ -337,7 +337,7 @@ class JUnitScenarioReporterBehaviour {
         Description comp2 = Description.createTestDescription(this.getClass(), "comp2");
         child.addChild(comp2);
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         reporter.beforeStep("child");
@@ -364,7 +364,7 @@ class JUnitScenarioReporterBehaviour {
         Description step = Description.createTestDescription(this.getClass(), "Step");
         example.addChild(step);
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         reporter.example(null, 0);
@@ -389,7 +389,7 @@ class JUnitScenarioReporterBehaviour {
         Description comp2 = Description.createTestDescription(this.getClass(), "comp2");
         step.addChild(comp2);
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         reporter.example(null, 0);
@@ -422,7 +422,7 @@ class JUnitScenarioReporterBehaviour {
         Description step = Description.createTestDescription(this.getClass(), "Step");
         example.addChild(step);
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         reportGivenStoryEvents();
@@ -443,7 +443,7 @@ class JUnitScenarioReporterBehaviour {
         Description child1 = addTestToScenario("child1");
         Description child2 = addTestToScenario("child2");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         PendingStepStrategy strategy = new FailingUponPendingStep();
         reporter.usePendingStepStrategy(strategy);
@@ -463,7 +463,7 @@ class JUnitScenarioReporterBehaviour {
     void shouldIgnorePendingStepsIfConfigurationSaysSo() {
         Description child = addTestToScenario("child");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         reporter.pending("child");
@@ -476,7 +476,7 @@ class JUnitScenarioReporterBehaviour {
 
     @Test
     void shouldHandleFailuresInBeforeStories() {
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBeforeStory(story, false);
         reporter.failed(NAME_STORY, new UUIDExceptionWrapper("Error Message",
@@ -491,7 +491,7 @@ class JUnitScenarioReporterBehaviour {
     void shouldNotifyAboutNotAllowedScenario() {
         Description child1 = addTestToScenario("child");
 
-        reporter = new JUnitScenarioReporter(notifier, rootDescription, keywords);
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         reporter.scenarioExcluded(mock(Scenario.class), "filter");
@@ -501,11 +501,11 @@ class JUnitScenarioReporterBehaviour {
         verify(notifier).fireTestIgnored(scenarioDescription);
     }
 
-    private void reportStoryFinish(JUnitScenarioReporter reporter) {
+    private void reportStoryFinish(JUnit4StoryReporter reporter) {
         reporter.afterStory(false);
     }
 
-    private void reportScenarioFinish(JUnitScenarioReporter reporter) {
+    private void reportScenarioFinish(JUnit4StoryReporter reporter) {
         reporter.afterScenario(mock(Timing.class));
         // test should not be finished until we send the final event
         verify(notifier, VerificationModeFactory.times(0)).fireTestRunFinished(
@@ -518,17 +518,17 @@ class JUnitScenarioReporterBehaviour {
         verifyStepSuccess(step);
     }
 
-    private void reportStepSuccess(JUnitScenarioReporter reporter) {
+    private void reportStepSuccess(JUnit4StoryReporter reporter) {
         reporter.beforeStep("child");
         reporter.successful("child");
     }
 
-    private void reportStepFailure(JUnitScenarioReporter reporter) {
+    private void reportStepFailure(JUnit4StoryReporter reporter) {
         reporter.beforeStep("child");
         reporter.failed("child", new UUIDExceptionWrapper(new Exception("FAIL")));
     }
 
-    private void reportIgnorable(JUnitScenarioReporter reporter) {
+    private void reportIgnorable(JUnit4StoryReporter reporter) {
         reporter.ignorable("!-- Comment");
     }
 

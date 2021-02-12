@@ -25,7 +25,7 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepType;
 import org.junit.runner.Description;
 
-public class JUnitDescriptionGenerator {
+public class JUnit4DescriptionGenerator {
 
     public static final String BEFORE_STORY_STEP_NAME = "@BeforeStory";
     public static final String AFTER_STORY_STEP_NAME = "@AfterStory";
@@ -45,7 +45,7 @@ public class JUnitDescriptionGenerator {
 
     private String previousNonAndStep;
 
-    public JUnitDescriptionGenerator(List<CandidateSteps> candidateSteps, Configuration configuration) {
+    public JUnit4DescriptionGenerator(List<CandidateSteps> candidateSteps, Configuration configuration) {
         this.configuration = configuration;
         for (ScenarioType type : ScenarioType.values()) {
             beforeOrAfterScenario.put(type, new ArrayList<>());

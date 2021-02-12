@@ -4,7 +4,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.context.Context;
 import org.jbehave.core.context.ContextView;
 import org.jbehave.core.context.JFrameContextView;
-import org.jbehave.core.junit.JUnitReportingRunner;
+import org.jbehave.core.junit.JBehaveJUnit4Runner;
 import org.jbehave.core.steps.ContextStepMonitor;
 import org.jbehave.core.steps.NullStepMonitor;
 import org.junit.runner.RunWith;
@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
  * Core stories with JFrame-based context step monitor
  * </p>
  */
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JBehaveJUnit4Runner.class)
 public class CoreStoriesUsingJFrame extends CoreStories {
 
     private Context context = new Context();

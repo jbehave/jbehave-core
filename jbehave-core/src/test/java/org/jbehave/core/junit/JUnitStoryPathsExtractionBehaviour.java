@@ -16,7 +16,7 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryPathResolver;
 import org.junit.jupiter.api.Test;
 
-class StoryPathsExtractorBehaviour {
+class JUnitStoryPathsExtractionBehaviour {
 
     private static final List<String> JUNIT_STORIES_PATHS = Arrays.asList("/path/story1.story", "/path/story2.story");
 

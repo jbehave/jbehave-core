@@ -1,20 +1,19 @@
 package org.jbehave.core.junit.story;
 
-import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.junit.JUnitReportingRunner;
+import org.jbehave.core.junit.JBehaveJUnit4Runner;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.junit.steps.ExampleSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.runner.RunWith;
 
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JBehaveJUnit4Runner.class)
 public class ExampleScenarioJUnitStory extends JUnitStory {
 
     public ExampleScenarioJUnitStory() {
         useConfiguration(new MostUsefulConfiguration());
-        JUnitReportingRunner.recommendedControls(configuredEmbedder());
+        JBehaveJUnit4Runner.recommendedControls(configuredEmbedder());
     }
 
     @Override

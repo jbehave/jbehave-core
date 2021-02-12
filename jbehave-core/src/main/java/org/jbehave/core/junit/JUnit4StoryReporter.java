@@ -28,7 +28,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 
-public class JUnitScenarioReporter extends NullStoryReporter {
+public class JUnit4StoryReporter extends NullStoryReporter {
     private final RunNotifier notifier;
 
     private final Description rootDescription;
@@ -39,7 +39,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
 
     private final AtomicInteger testCounter = new AtomicInteger();
 
-    public JUnitScenarioReporter(RunNotifier notifier, Description rootDescription, Keywords keywords) {
+    public JUnit4StoryReporter(RunNotifier notifier, Description rootDescription, Keywords keywords) {
         this.rootDescription = rootDescription;
         this.notifier = notifier;
         this.keywords = keywords;
@@ -185,7 +185,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
         TestState testState = this.testState.get();
         Description currentScenario = testState.currentScenario;
         if (currentScenario != null && currentScenario.getDisplayName().startsWith(
-                JUnitDescriptionGenerator.BEFORE_STORY_STEP_NAME)) {
+                JUnit4DescriptionGenerator.BEFORE_STORY_STEP_NAME)) {
             // @BeforeStory has been called already
             notifier.fireTestStarted(currentScenario);
             notifier.fireTestFinished(currentScenario);
@@ -197,7 +197,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
         TestState testState = this.testState.get();
         Description currentScenario = testState.currentScenario;
         if (currentScenario != null) {
-            if (currentScenario.getDisplayName().startsWith(JUnitDescriptionGenerator.AFTER_STORY_STEP_NAME)) {
+            if (currentScenario.getDisplayName().startsWith(JUnit4DescriptionGenerator.AFTER_STORY_STEP_NAME)) {
                 // @AfterStory has been called already
                 notifier.fireTestStarted(currentScenario);
                 notifier.fireTestFinished(currentScenario);
@@ -213,7 +213,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
     private void processBeforeScenario() {
         Description currentStep = testState.get().currentStep;
         if (currentStep != null && currentStep.getDisplayName().startsWith(
-                JUnitDescriptionGenerator.BEFORE_SCENARIO_STEP_NAME)) {
+                JUnit4DescriptionGenerator.BEFORE_SCENARIO_STEP_NAME)) {
             // @BeforeScenario has been called already
             notifier.fireTestStarted(currentStep);
             notifier.fireTestFinished(currentStep);
@@ -225,7 +225,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
         TestState testState = this.testState.get();
         Description currentStep = testState.currentStep;
         if (currentStep != null) {
-            if (currentStep.getDisplayName().startsWith(JUnitDescriptionGenerator.AFTER_SCENARIO_STEP_NAME)) {
+            if (currentStep.getDisplayName().startsWith(JUnit4DescriptionGenerator.AFTER_SCENARIO_STEP_NAME)) {
                 // @AfterScenario has been called already
                 notifier.fireTestStarted(currentStep);
                 notifier.fireTestFinished(currentStep);
