@@ -15,8 +15,10 @@
 <p>From the Java point of view, the most significant changes are:</p>
 
 <ul>
-    <li>Changed method names for filter exclusion from 'notAllowed' to 'excluded'</li>
-    <li>Rename Status NOT_ALLOWED to EXCLUDED</li>
+    <li>Changed visibility of method JUnitStories#storyPaths() from protected to public.
+        Subclasses overriding the method should change visibility accordingly.</li>
+    <li>Changed method names for filter exclusion from 'notAllowed' to 'excluded'.</li>
+    <li>Rename Status NOT_ALLOWED to EXCLUDED.</li>
     <li>Changed default scenario type in @BeforeScenario/@AfterScenario annotations.</li>
     <li>Deprecated use of date format String parameter in OutcomesTable.  Use map parameter instead.</li>
     <li>Removed deprecated org.jbehave.core.reporters.StoryReporterBuilder.Format.
