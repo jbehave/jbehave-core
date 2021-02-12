@@ -14,6 +14,7 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
+import org.jbehave.core.junit.JUnitReportingRunner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
@@ -27,6 +28,7 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.guice.GuiceStepsFactory;
+import org.junit.runner.RunWith;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -49,6 +51,7 @@ import static org.jbehave.core.reporters.Format.XML;
  * Stories are specified in classpath and correspondingly the {@link LoadFromClasspath} story loader is configured.
  * </p> 
  */
+@RunWith(JUnitReportingRunner.class)
 public class MyStories extends JUnitStories {
     
     public MyStories() {

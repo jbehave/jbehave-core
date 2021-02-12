@@ -8,11 +8,13 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
+import org.jbehave.core.junit.JUnitReportingRunner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.core.rest.steps.RESTSteps;
+import org.junit.runner.RunWith;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.Format.CONSOLE;
@@ -23,6 +25,7 @@ import static org.jbehave.core.reporters.Format.HTML;
  * Example of how stories can be retrieved via REST.
  * </p>
  */
+@RunWith(JUnitReportingRunner.class)
 public class RESTStories extends JUnitStories {
 
     public RESTStories() {

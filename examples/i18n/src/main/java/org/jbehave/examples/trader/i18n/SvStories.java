@@ -2,9 +2,11 @@ package org.jbehave.examples.trader.i18n;
 
 import java.util.Locale;
 
+import org.jbehave.core.junit.JUnitReportingRunner;
 import org.jbehave.examples.trader.i18n.steps.SvSteps;
+import org.junit.runner.RunWith;
 
-
+@RunWith(JUnitReportingRunner.class)
 public class SvStories extends LocalizedStories {
     
     @Override
