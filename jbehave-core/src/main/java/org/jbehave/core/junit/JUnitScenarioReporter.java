@@ -96,7 +96,7 @@ public class JUnitScenarioReporter extends NullStoryReporter {
     }
 
     private Description findStoryDescription(String storyName) {
-        String escapedStoryName = JUnitStringDecorator.getJunitSafeString(storyName);
+        String escapedStoryName = JUnitTextManipulator.escape(storyName);
         for (Description storyDescription : rootDescription.getChildren()) {
             if (storyDescription.getDisplayName().equals(escapedStoryName)) {
                 return storyDescription;

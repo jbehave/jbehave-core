@@ -32,7 +32,7 @@ public class JUnitDescriptionGenerator {
     public static final String BEFORE_SCENARIO_STEP_NAME = "@BeforeScenario";
     public static final String AFTER_SCENARIO_STEP_NAME = "@AfterScenario";
 
-    private final DescriptionTextUniquefier uniq = new DescriptionTextUniquefier();
+    private final JUnitTextManipulator textManipulator = new JUnitTextManipulator();
     private int testCases;
     private final List<StepCandidate> allCandidates = new ArrayList<>();
 
@@ -140,12 +140,12 @@ public class JUnitDescriptionGenerator {
     private void addBeforeOrAfterStep(BeforeOrAfterStep beforeOrAfterStep, Description description, String stepName) {
         Method method = beforeOrAfterStep.getMethod();
         Description testDescription = Description.createTestDescription(method.getDeclaringClass(),
-                getJunitSafeString(stepName), method.getAnnotations());
+                uniquify(stepName), method.getAnnotations());
         description.addChild(testDescription);
     }
 
-    public String getJunitSafeString(String string) {
-        return uniq.getUniqueDescription(JUnitStringDecorator.getJunitSafeString(string));
+    public String uniquify(String string) {
+        return textManipulator.uniquify(string);
     }
 
     public int getTestCases() {
@@ -163,7 +163,7 @@ public class JUnitDescriptionGenerator {
     }
 
     private void addGivenStoryToScenario(Description scenarioDescription, String path) {
-        scenarioDescription.addChild(Description.createSuiteDescription(getJunitSafeString(getFilename(path))));
+        scenarioDescription.addChild(Description.createSuiteDescription(uniquify(getFilename(path))));
         testCases++;
     }
 
@@ -241,18 +241,18 @@ public class JUnitDescriptionGenerator {
 
     private void addPendingStep(Description description, String stringStep) {
         testCases++;
-        description.addChild(Description.createSuiteDescription(getJunitSafeString("[PENDING] " + stringStep)));
+        description.addChild(Description.createSuiteDescription(uniquify("[PENDING] " + stringStep)));
     }
 
     private void addRegularStep(Description description, String stringStep, StepCandidate step) {
         testCases++;
         // JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view jump to the
         // corresponding test method accordingly. For now we have to live, that we end up in the correct class.
-        description.addChild(Description.createTestDescription(step.getStepsType(), getJunitSafeString(stringStep)));
+        description.addChild(Description.createTestDescription(step.getStepsType(), uniquify(stringStep)));
     }
 
     private void addCompositeSteps(Description description, String stringStep, StepCandidate step) {
-        Description testDescription = Description.createSuiteDescription(getJunitSafeString(stringStep));
+        Description testDescription = Description.createSuiteDescription(uniquify(stringStep));
         addSteps(testDescription, Arrays.asList(step.composedSteps()));
         description.addChild(testDescription);
     }
@@ -288,11 +288,11 @@ public class JUnitDescriptionGenerator {
     }
 
     private Description createDescriptionForStory(Story story) {
-        return Description.createSuiteDescription(getJunitSafeString(story.getName()));
+        return Description.createSuiteDescription(uniquify(story.getName()));
     }
 
     private Description createDescriptionForScenario(Scenario scenario) {
         return Description.createSuiteDescription(
-                configuration.keywords().scenario() + " " + getJunitSafeString(scenario.getTitle()));
+                configuration.keywords().scenario() + " " + uniquify(scenario.getTitle()));
     }
 }

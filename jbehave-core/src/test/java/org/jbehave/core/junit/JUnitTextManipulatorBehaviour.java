@@ -7,23 +7,23 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Valery_Yatsynovich
  */
-class JUnitStringDecoratorBehaviour
+class JUnitTextManipulatorBehaviour
 {
     @Test
     void shouldReplaceParenthesesWithVerticalBars() {
-        String actual = JUnitStringDecorator.getJunitSafeString("some string with (parentheses)");
+        String actual = JUnitTextManipulator.escape("some string with (parentheses)");
         assertEquals("some string with |parentheses|", actual);
     }
 
     @Test
     void shouldReplaceCrLfWithCommas() {
-        String actual = JUnitStringDecorator.getJunitSafeString("some\n\r string with \r\n\ncrlf\n\n");
+        String actual = JUnitTextManipulator.escape("some\n\r string with \r\n\ncrlf\n\n");
         assertEquals("some,  string with , crlf, ", actual);
     }
 
     @Test
     void shouldReplaceDotWithOneDotLeader() {
-        String actual = JUnitStringDecorator.getJunitSafeString("some string. with dots.");
+        String actual = JUnitTextManipulator.escape("some string. with dots.");
         assertEquals("some string\u2024 with dots\u2024", actual);
     }
 }
