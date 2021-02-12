@@ -77,6 +77,12 @@
   </build>
   <profiles>
     <profile>
+      <id>google</id>
+      <modules>
+        <module>google</module>
+      </modules>
+    </profile>
+    <profile>
       <id>rest</id>
       <modules>
         <module>rest</module>
