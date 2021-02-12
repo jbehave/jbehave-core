@@ -39,7 +39,7 @@ public class RemoteCoreStories extends CoreStories {
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         // Specify story paths as remote URLs
         String codeLocation = codeLocationFromURL("http://jbehave.org/reference/examples/stories/")
                 .toExternalForm();

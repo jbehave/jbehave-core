@@ -53,7 +53,7 @@ public class SpringSecurityStories extends JUnitStories {
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return new StoryFinder().findPaths(CodeLocations.codeLocationFromClass(getClass()), "**/*.story", "");
 
     }

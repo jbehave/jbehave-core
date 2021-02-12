@@ -23,7 +23,7 @@ public class ExampleScenarioJUnitStoriesLocalized extends ExampleScenarioJUnitSt
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return Collections.singletonList("org/jbehave/core/junit/story/Multiplication_de.story");
     }
 }

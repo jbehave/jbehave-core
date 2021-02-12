@@ -42,7 +42,7 @@ public class GridStories extends JUnitStories {
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
     }
 

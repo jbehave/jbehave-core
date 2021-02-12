@@ -11,7 +11,7 @@ import org.jbehave.core.junit.JUnitStory;
  * <p>
  * Users can either extend the abstract implementation {@link ConfigurableEmbedder},
  * which does not implement the {@link #run()} method, or other
- * implementations, such as {@link JUnitStory} or {@link JUnitStories}, which
+ * implementations, such as {@link JUnitStories} which
  * implement {@link #run()} using JUnit's {@link org.junit.Test} annotation.
  * </p>
  * <p>
@@ -21,7 +21,6 @@ import org.jbehave.core.junit.JUnitStory;
  * 
  * @see ConfigurableEmbedder
  * @see InjectableEmbedder
- * @see JUnitStory
  * @see JUnitStories
  */
 public interface Embeddable {

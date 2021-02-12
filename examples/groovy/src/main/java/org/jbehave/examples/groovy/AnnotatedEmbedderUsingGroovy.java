@@ -29,7 +29,7 @@ public class AnnotatedEmbedderUsingGroovy extends InjectableEmbedder {
         injectedEmbedder().runStoriesAsPaths(storyPaths());
     }
 
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return new StoryFinder()
                 .findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/using_groovy.story"), null);
     }

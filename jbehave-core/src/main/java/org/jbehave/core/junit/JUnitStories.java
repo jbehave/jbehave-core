@@ -24,6 +24,6 @@ public abstract class JUnitStories extends ConfigurableEmbedder {
         }
     }
 
-    protected abstract List<String> storyPaths();
+    public abstract List<String> storyPaths();
 
 }

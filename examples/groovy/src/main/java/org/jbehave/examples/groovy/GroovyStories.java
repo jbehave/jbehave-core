@@ -34,7 +34,7 @@ public class GroovyStories extends CoreStories {
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         String filter = System.getProperty("story.filter", "**/using_groovy.story");
         return findPaths(filter, "");
     }

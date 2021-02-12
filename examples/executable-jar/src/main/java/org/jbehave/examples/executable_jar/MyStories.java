@@ -84,7 +84,7 @@ public class MyStories extends JUnitStories {
      * or from jar file (supported starting with 3.7.5)
      */
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return new StoryFinder().findPaths(CodeLocations.codeLocationFromClass(getClass()),
                 "**/*.story", "");
     }

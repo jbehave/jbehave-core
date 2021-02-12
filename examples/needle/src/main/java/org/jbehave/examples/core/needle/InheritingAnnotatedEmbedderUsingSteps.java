@@ -22,7 +22,7 @@ public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedd
         injectedEmbedder().runStoriesAsPaths(storyPaths());
     }
 
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "");
     }
 

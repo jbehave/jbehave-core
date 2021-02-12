@@ -21,7 +21,7 @@ class StoryPathsExtractorBehaviour {
     private static final List<String> JUNIT_STORIES_PATHS = Arrays.asList("/path/story1.story", "/path/story2.story");
 
     @Test
-    void shouldExtractStoryPathsFromJUnitStory() throws ReflectiveOperationException {
+    void shouldExtractStoryPathsFromJUnitStory() {
         TestJUnitStory testJUnitStory = new TestJUnitStory();
         Embedder embedder = mock(Embedder.class);
         testJUnitStory.useEmbedder(embedder);
@@ -31,26 +31,17 @@ class StoryPathsExtractorBehaviour {
         when(configuration.storyPathResolver()).thenReturn(storyPathResolver);
         String storyPath = "/path/story.story";
         when(storyPathResolver.resolve(TestJUnitStory.class)).thenReturn(storyPath);
-        assertEquals(Collections.singletonList(storyPath), new StoryPathsExtractor(testJUnitStory).getStoryPaths());
+        assertEquals(Collections.singletonList(storyPath), testJUnitStory.storyPaths());
     }
 
     @Test
-    void shouldExtractStoryPathsFromJUnitStories() throws ReflectiveOperationException {
-        assertEquals(JUNIT_STORIES_PATHS, new StoryPathsExtractor(new TestJUnitStories()).getStoryPaths());
+    void shouldExtractStoryPathsFromJUnitStories() {
+        assertEquals(JUNIT_STORIES_PATHS, new TestJUnitStories().storyPaths());
     }
 
     @Test
-    void shouldExtractStoryPathsFromJUnitStoriesChild() throws ReflectiveOperationException {
-        assertEquals(JUNIT_STORIES_PATHS, new StoryPathsExtractor(new ChildTestJUnitStories()).getStoryPaths());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenTypeOfConfigurableEmbedderIsUnknown() {
-        StoryPathsExtractor storyPathsExtractor = new StoryPathsExtractor(new TestConfigurableEmbedder());
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                storyPathsExtractor::getStoryPaths);
-        assertEquals("Only ConfigurableEmbedder of types JUnitStory and JUnitStories is supported",
-                exception.getMessage());
+    void shouldExtractStoryPathsFromJUnitStoriesChild(){
+        assertEquals(JUNIT_STORIES_PATHS, new ChildTestJUnitStories().storyPaths());
     }
 
     public static class TestJUnitStory extends JUnitStory {
@@ -58,7 +49,7 @@ class StoryPathsExtractorBehaviour {
 
     public static class TestJUnitStories extends JUnitStories {
         @Override
-        protected List<String> storyPaths() {
+        public List<String> storyPaths() {
             return JUNIT_STORIES_PATHS;
         }
     }

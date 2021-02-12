@@ -127,7 +127,7 @@ class ConfigurableEmbedderBehaviour {
         }
 
         @Override
-        protected List<String> storyPaths() {
+        public List<String> storyPaths() {
             return asList("org/jbehave/core/story1", "org/jbehave/core/story2");
         }
 

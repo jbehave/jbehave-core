@@ -258,7 +258,7 @@ class ConcurrencyBehaviour {
         }
 
         @Override
-        protected List<String> storyPaths() {
+        public List<String> storyPaths() {
             if(customStoryPath != null) {
                 return new StoryFinder().findPaths(
                         codeLocationFromClass(this.getClass()), customStoryPath, "");

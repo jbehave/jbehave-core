@@ -19,7 +19,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 public class FailingStories extends CoreStories {
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return new StoryFinder().findPaths(codeLocationFromClass(CoreStories.class), "**/failing/*.story","**/given_relative_path*");
     }
 }

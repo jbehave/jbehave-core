@@ -116,7 +116,7 @@ public class CoreStories extends JUnitStories {
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         String filter = System.getProperty("story.filter", "**/*.story");
         return findPaths(filter, "**/custom/*.story,**/failing/*.story,**/given/*.story,**/pending/*.story");
     }

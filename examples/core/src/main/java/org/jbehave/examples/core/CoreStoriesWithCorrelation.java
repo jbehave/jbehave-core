@@ -45,7 +45,7 @@ public class CoreStoriesWithCorrelation extends CoreStories {
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/failure_correlation*.story", "");                
     }
 

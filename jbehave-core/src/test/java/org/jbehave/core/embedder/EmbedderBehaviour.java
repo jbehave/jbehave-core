@@ -1128,7 +1128,7 @@ class EmbedderBehaviour {
         }
 
         @Override
-        protected List<String> storyPaths() {
+        public List<String> storyPaths() {
             return asList("**/*.story");
         }
 

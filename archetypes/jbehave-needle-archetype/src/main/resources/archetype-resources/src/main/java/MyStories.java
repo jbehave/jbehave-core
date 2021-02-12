@@ -100,7 +100,7 @@ public class MyStories extends JUnitStories {
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
       return new StoryFinder().findPaths(codeLocationFromPath("src/main/resources"), "**/*.story", "");
     }
 }

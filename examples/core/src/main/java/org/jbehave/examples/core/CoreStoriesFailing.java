@@ -9,7 +9,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 public class CoreStoriesFailing extends CoreStories {
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         String filter = System.getProperty("story.filter", "**/failing/*.story");
         return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/custom/*.story,**/given/*.story,**/pending/*.story");
     }

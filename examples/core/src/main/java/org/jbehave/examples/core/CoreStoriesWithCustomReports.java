@@ -37,7 +37,7 @@ public class CoreStoriesWithCustomReports extends CoreStories {
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         String filter = System.getProperty("story.filter", "**/*.story");
         return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/failing/*.story,**/given/*.story,**/pending/*.story");
     }

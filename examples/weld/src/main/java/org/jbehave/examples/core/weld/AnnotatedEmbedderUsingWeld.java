@@ -32,7 +32,7 @@ public class AnnotatedEmbedderUsingWeld extends InjectableEmbedder {
         injectedEmbedder().runStoriesAsPaths(storyPaths());
     }
 
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return new StoryFinder().findPaths(codeLocationFromPath("../core/src/main/java"), "**/*.story", "");
     }
 }

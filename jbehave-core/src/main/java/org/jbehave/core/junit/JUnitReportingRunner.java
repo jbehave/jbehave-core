@@ -35,7 +35,7 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
         configuredEmbedder = configurableEmbedder.configuredEmbedder();
         configuration = configuredEmbedder.configuration();
 
-        List<String> storyPaths = new StoryPathsExtractor(configurableEmbedder).getStoryPaths();
+        List<String> storyPaths = storyPathsFor(configurableEmbedder);
 
         StepMonitor originalStepMonitor = configuration.stepMonitor();
         configuration.useStepMonitor(new NullStepMonitor());
@@ -46,6 +46,14 @@ public class JUnitReportingRunner extends BlockJUnit4ClassRunner {
         for (Description storyDescription : storyDescriptions) {
             rootDescription.addChild(storyDescription);
         }
+    }
+
+    private List<String> storyPathsFor(ConfigurableEmbedder configurableEmbedder) {
+        if (configurableEmbedder instanceof JUnitStories) {
+            return ((JUnitStories)configurableEmbedder).storyPaths();
+        }
+        throw new IllegalArgumentException(
+                "Only ConfigurableEmbedder of type JUnitStories is supported");
     }
 
     @Override

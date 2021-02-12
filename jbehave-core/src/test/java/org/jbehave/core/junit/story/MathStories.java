@@ -39,7 +39,7 @@ public class MathStories extends JUnitStories {
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return Collections.singletonList("org/jbehave/core/junit/story/Multiplication.story");
     }
 }

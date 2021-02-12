@@ -42,7 +42,7 @@ import org.jbehave.core.steps.InjectableStepsFactory;
  * </p>
  * <p>
  * Typically, users that use JUnit will find it easier to extend other
- * implementations, such as {@link JUnitStories}, which
+ * implementations, such as {@link JUnitStories} which
  * implement the {@link#run()} using the configured {@link Embedder} and
  * annotate it with JUnit's annotations.
  * </p>

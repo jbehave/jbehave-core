@@ -26,7 +26,7 @@ public class ExampleScenarioJUnitStories extends JUnitStories {
     }
 
     @Override
-    protected List<String> storyPaths() {
+    public List<String> storyPaths() {
         return Arrays.asList("org/jbehave/core/junit/story/Multiplication.story",
                 "org/jbehave/core/junit/story/Empty.story");
     }
