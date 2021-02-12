@@ -12,9 +12,9 @@ import com.google.inject.Module;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface UsingGuice {
-	
-	Class<? extends Module>[] modules() default {};
+    
+    Class<? extends Module>[] modules() default {};
 
-	boolean inheritModules() default true;
+    boolean inheritModules() default true;
 
 }

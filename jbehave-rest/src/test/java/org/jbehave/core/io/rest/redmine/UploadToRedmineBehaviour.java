@@ -14,31 +14,31 @@ import static org.hamcrest.Matchers.startsWith;
 
 class UploadToRedmineBehaviour {
 
-	@Test
-	void canFormatURIForJSON() {
-	    UploadToRedmine uploader = new UploadToRedmine(Type.JSON);
-		String resourcePath = "http://demo.redmine.org/project/jbehave/wiki/some_story";
-		String text = uploader.uri(resourcePath, Type.JSON);
-		assertThat(text, equalTo(resourcePath+".json"));
-	}
+    @Test
+    void canFormatURIForJSON() {
+        UploadToRedmine uploader = new UploadToRedmine(Type.JSON);
+        String resourcePath = "http://demo.redmine.org/project/jbehave/wiki/some_story";
+        String text = uploader.uri(resourcePath, Type.JSON);
+        assertThat(text, equalTo(resourcePath+".json"));
+    }
 
-	@Test
-	void canFormatAsJSON() {
-	    UploadToRedmine uploader = new UploadToRedmine(Type.JSON);
-		String resourcePath = "http://demo.redmine.org/project/jbehave/wiki/some_story";
-		String text = read("redmine.json");
-		Resource resource = new Resource(resourcePath);
-		resource.setContent(text);
-		String entity = uploader.entity(resource, Type.JSON);
-		assertThat(entity, startsWith("{\"wiki_page\""));
-	}
+    @Test
+    void canFormatAsJSON() {
+        UploadToRedmine uploader = new UploadToRedmine(Type.JSON);
+        String resourcePath = "http://demo.redmine.org/project/jbehave/wiki/some_story";
+        String text = read("redmine.json");
+        Resource resource = new Resource(resourcePath);
+        resource.setContent(text);
+        String entity = uploader.entity(resource, Type.JSON);
+        assertThat(entity, startsWith("{\"wiki_page\""));
+    }
 
-	private String read(String path) {
-		try {
-			return IOUtils.toString(getClass().getClassLoader().getResource(path), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    private String read(String path) {
+        try {
+            return IOUtils.toString(getClass().getClassLoader().getResource(path), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

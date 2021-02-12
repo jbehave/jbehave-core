@@ -20,18 +20,18 @@ import org.needle4j.injection.InjectionProviderInstancesSupplier;
 @Inherited
 public @interface UsingNeedle {
 
-	/**
-	 * Injection provider supplier.
-	 * 
-	 * @return list of suppliers.
-	 */
-	Class<? extends InjectionProviderInstancesSupplier>[] supplier() default {};
+    /**
+     * Injection provider supplier.
+     *
+     * @return list of suppliers.
+     */
+    Class<? extends InjectionProviderInstancesSupplier>[] supplier() default {};
 
-	/**
-	 * Injection providers.
-	 * 
-	 * @return list of providers.
-	 */
-	Class<? extends InjectionProvider<?>>[] provider() default {};
+    /**
+     * Injection providers.
+     *
+     * @return list of providers.
+     */
+    Class<? extends InjectionProvider<?>>[] provider() default {};
 
 }

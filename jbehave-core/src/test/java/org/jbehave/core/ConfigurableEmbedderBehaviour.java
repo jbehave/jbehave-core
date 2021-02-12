@@ -61,7 +61,7 @@ class ConfigurableEmbedderBehaviour {
         verify(embedder).runStoriesAsPaths(asList("org/jbehave/core/story1", "org/jbehave/core/story2"));
     }
 
-	@Test
+    @Test
     void shouldAllowOverrideOfDefaultConfiguration() {
         // Given
         Embedder embedder = mock(Embedder.class);
@@ -88,7 +88,7 @@ class ConfigurableEmbedderBehaviour {
         verify(embedder).runStoriesAsPaths(asList(storyPath));
     }
 
-	@Test
+    @Test
     void shouldAllowAdditionOfSteps() {
         // Given
         Embedder embedder = mock(Embedder.class);

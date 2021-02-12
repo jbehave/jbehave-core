@@ -19,23 +19,23 @@ import org.picocontainer.PicoContainer;
  */
 public class PicoStepsFactory extends AbstractStepsFactory {
 
-	private final PicoContainer parent;
+    private final PicoContainer parent;
 
-	public PicoStepsFactory(Configuration configuration, PicoContainer parent) {
-		super(configuration);
-		this.parent = parent;
-	}
+    public PicoStepsFactory(Configuration configuration, PicoContainer parent) {
+        super(configuration);
+        this.parent = parent;
+    }
 
-	@Override
-	protected List<Class<?>> stepsTypes() {
-		List<Class<?>> types = new ArrayList<>();
-		for (ComponentAdapter<?> adapter : parent.getComponentAdapters()) {
-			if (hasAnnotatedMethods(adapter.getComponentImplementation())) {
-				types.add(adapter.getComponentImplementation());
-			}
-		}
-		return types;
-	}
+    @Override
+    protected List<Class<?>> stepsTypes() {
+        List<Class<?>> types = new ArrayList<>();
+        for (ComponentAdapter<?> adapter : parent.getComponentAdapters()) {
+            if (hasAnnotatedMethods(adapter.getComponentImplementation())) {
+                types.add(adapter.getComponentImplementation());
+            }
+        }
+        return types;
+    }
 
     @Override
     public Object createInstanceOfType(Class<?> type) {

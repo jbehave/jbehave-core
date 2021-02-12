@@ -73,7 +73,7 @@ public class BankAccountSteps {
 
     @Then("my balance is archived")
     public void thenBalanceIsArchived() {
-    	Date now = new Date();
+        Date now = new Date();
         account.archive(now);
         assertThat(account.getArchived(now), equalTo(account.getBalance()));
     }
@@ -98,15 +98,15 @@ public class BankAccountSteps {
         }
 
         public void archive(Date date) {
-        	archive.put(date, balance);
-		}
+            archive.put(date, balance);
+        }
 
-		public int getArchived(Date date){
+        public int getArchived(Date date){
             return archive.get(date);
         }
 
-		public String getName(){
-        	return name;
+        public String getName(){
+            return name;
         }
         
         public int getBalance() {

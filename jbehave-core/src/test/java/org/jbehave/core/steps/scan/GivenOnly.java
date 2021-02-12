@@ -4,8 +4,8 @@ import org.jbehave.core.annotations.Given;
 
 public class GivenOnly {
 
-	@Given("")
-	public void given(){		
-	}
+    @Given("")
+    public void given(){        
+    }
 
 }

@@ -55,7 +55,7 @@ Also supported for resource indexing and loading (but not for uploading) is <a h
                 <id>import-to-filesystem</id>
                 <phase>process-resources</phase>
                 <configuration>
-					<restProvider>xwiki</restProvider>
+                    <restProvider>xwiki</restProvider>
                     <restRootURI>http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages</restRootURI>
                     <restUsername>[optional]</restUsername>
                     <restPassword>[optional]</restPassword>
@@ -70,7 +70,7 @@ Also supported for resource indexing and loading (but not for uploading) is <a h
                 <id>export-from-filesystem</id>
                 <phase>process-resources</phase>
                 <configuration>
-					<restProvider>xwiki</restProvider>
+                    <restProvider>xwiki</restProvider>
                     <restRootURI>http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages</restRootURI>
                     <restUsername>[optional]</restUsername>
                     <restPassword>[optional]</restPassword>
@@ -95,7 +95,7 @@ mvn org.jbehave:jbehave-rest:import-to-filesystem   -Djbehave.rest.rootURI=http:
                                                     -Djbehave.rest.resourcesPath=src/main/resources/stories -Djbehave.rest.resourcesExt=.story 
 mvn org.jbehave:jbehave-rest:export-from-filesystem -Djbehave.restRootURI=http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages 
                                                     -Djbehave.rest.resourcesPath=src/main/resources/stories -Djbehave.rest.resourcesExt=.story 
-													-Djbehave.rest.resourcesIncludes=**/*.story
+                                                    -Djbehave.rest.resourcesIncludes=**/*.story
 ]]>
 </script>
 

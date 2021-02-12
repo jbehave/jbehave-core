@@ -20,7 +20,7 @@ A Swing-based <a
 
 <pre class="brush: java">
     private Context context = new Context();
-	private Format contextFormat = new ContextOutput(context);
+    private Format contextFormat = new ContextOutput(context);
     private ContextView contextView = new JFrameContextView().sized(640, 120);
     private StepMonitor delegate = ... 
     private ContextStepMonitor contextStepMonitor = new ContextStepMonitor(context, contextView, delegate);
@@ -29,7 +29,7 @@ A Swing-based <a
 <p>The ContextStepMonitor needs to be added to the Configuration:</p>
 
 <pre class="brush: java">
-   Configuration = new MostUsefulConfiguration()        		
+   Configuration = new MostUsefulConfiguration()
                 .useStepMonitor(contextStepMonitor);
 </pre>
 

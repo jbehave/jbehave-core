@@ -36,11 +36,11 @@ class ExportFromFilesystemBehaviour {
         write(text2, file2);
         Map<String, Resource> index = new HashMap<>();
         Resource aResource = new Resource(rootURI + "/A_story");
-		index.put("A_story", aResource);
+        index.put("A_story", aResource);
         Resource anotherResource = new Resource(rootURI + "/Another_story");
-		index.put("Another_story", anotherResource);
+        index.put("Another_story", anotherResource);
         String includes = "**";
-		when(indexer.indexResources(rootURI, sourcePath, sourceSyntax, includes)).thenReturn(index);
+        when(indexer.indexResources(rootURI, sourcePath, sourceSyntax, includes)).thenReturn(index);
 
         // When
         ResourceExporter exporter = new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt, sourceSyntax, includes);

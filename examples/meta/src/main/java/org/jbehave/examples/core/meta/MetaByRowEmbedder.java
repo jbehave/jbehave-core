@@ -15,12 +15,12 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 @UsingSpring(resources = { "org.jbehave.examples.core.meta.StepsScanner" })
 public final class MetaByRowEmbedder extends InjectableEmbedder {
 
-	@Override
+    @Override
     @org.junit.Test
-	public void run() {
-		injectedEmbedder().metaFilters().add("+smoke");
-		injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(
-				codeLocationFromClass(this.getClass()), "**/*.story", ""));
-	}
+    public void run() {
+        injectedEmbedder().metaFilters().add("+smoke");
+        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(
+                codeLocationFromClass(this.getClass()), "**/*.story", ""));
+    }
 
 }

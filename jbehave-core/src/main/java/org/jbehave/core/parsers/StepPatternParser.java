@@ -24,21 +24,21 @@ import org.jbehave.core.steps.StepType;
  */
 public interface StepPatternParser {
 
-	/**
-	 * Parses a step pattern to create a step matcher
-	 * 
-	 *
+    /**
+     * Parses a step pattern to create a step matcher
+     *
+     *
      * @param stepType
      * @param stepPattern the step pattern
      * @return A StepMatcher that will capture the parameters associated with a
-	 *         step
-	 */
-	StepMatcher parseStep(StepType stepType, String stepPattern);
+     *         step
+     */
+    StepMatcher parseStep(StepType stepType, String stepPattern);
 
-	/**
-	 * Returns current parameter prefix
-	 * 
-	 * @return parameter prefix, e.g. <b>$</b>
-	 */
-	String getPrefix();
+    /**
+     * Returns current parameter prefix
+     *
+     * @return parameter prefix, e.g. <b>$</b>
+     */
+    String getPrefix();
 }

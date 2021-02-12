@@ -24,7 +24,7 @@ page.</p>
 continous-integration) or in any modern Java IDE that supports unit
 testing frameworks (<a href="http://junit.org">JUnit</a> supported by
 default, but any test framework can be easily adopted). Read more on <a
-	href="running-stories.html">running stories</a>.</p>
+    href="running-stories.html">running stories</a>.</p>
 <p>Note that stories can also be run via web runner, although the
 web support is not part of JBehave Core. For more info on web support
 refer to <a href="http://jbehave.org/reference/web/stable">JBehave
@@ -35,7 +35,7 @@ Web</a>.</p>
 <p>JBehave comes bundled with out-the-box JUnit support but has no
 tie-in to JUnit. You can easily configure stories to run with other
 testing framework, such as TestNG or Spring's Test module (see <a
-	href="developing-stories.html">developing stories</a> for more
+    href="developing-stories.html">developing stories</a> for more
 details).</p>
 
 <p>A quick fix to run with TestNG is simply to annotate the run()
@@ -67,7 +67,7 @@ test</h3>
 <p>Some IDEs need to be aware of the JBehave source to enable the
 JUnit plugin for stories, as they can't spot the <b>@Test</b> annotation
 in a class jar. The link to the core sources is available from the <a
-	href="download.html">download</a> page.</p>
+    href="download.html">download</a> page.</p>
 
 <p>Alternatively, <a href="http://m2eclipse.sonatype.org">M2Eclipse</a>
 users can download the sources automatically.</p>
@@ -92,9 +92,9 @@ Java hierarchy.</p>
 are shown as pending?</h3>
 
 <p>Configure the <a
-	href="javadoc/core/org/jbehave/core/failures/PendingStepStrategy.html">PendingStepStrategy</a>:
+    href="javadoc/core/org/jbehave/core/failures/PendingStepStrategy.html">PendingStepStrategy</a>:
 in <a
-	href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a></p>
+    href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a></p>
 <pre class="brush: java">
    new MostUsefulConfiguration().usePendingStepStrategy(new FailingUponPendingStep());  
 </pre>
@@ -102,25 +102,25 @@ in <a
 <h3>How do I output my story steps just when a story fails?</h3>
 
 <p>Configure the <a
-	href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>
 in <a
-	href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a></p>
+    href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a></p>
 
 <pre class="brush: java">
    new MostUsefulConfiguration().useStoryReporter(new SilentSuccessFilter(ConsoleOutput()));
 </pre>
 
 <p>Alternatively, you can use <a
-	href="javadoc/core/org/jbehave/core/configuration/PropertyBasedConfiguration.html">PropertyBasedConfiguration</a>
+    href="javadoc/core/org/jbehave/core/configuration/PropertyBasedConfiguration.html">PropertyBasedConfiguration</a>
 setting system property <b>"org.jbehave.core.configuration.silentsuccess"</b>.</p>
 
 <h3>Can my steps classes be POJOs?</h3>
 
 <p>Yes, in fact it's recommended to write steps as POJOs and create
 instances of <a
-	href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
+    href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
 via the <a
-	href="javadoc/core/org/jbehave/core/steps/InstanceStepsFactory.html">InstanceStepsFactory</a>
+    href="javadoc/core/org/jbehave/core/steps/InstanceStepsFactory.html">InstanceStepsFactory</a>
 </p>
 <pre class="brush: java">
     Configuration configuration = new MostUsefulConfiguration(); // adapt configuration to your needs
@@ -128,7 +128,7 @@ via the <a
 </pre>
 
 <p>Alternatively, one can extend the <a
-	href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a> class,
+    href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a> class,
 although not recommended as it provides tie-in with the implementation
 of the <a href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
 interface, which is subject to change.</p>
@@ -136,7 +136,7 @@ interface, which is subject to change.</p>
 <h3>Can I use dependency injection to compose my steps classes?</h3>
 
 <p>Yes, Guice, Needle, PicoContainer and Spring are supported. See <a
-	href="dependency-injection.html">dependency injection</a> page for more
+    href="dependency-injection.html">dependency injection</a> page for more
 details.</p>
 
 <h3>Can I use annotations to configure my stories?</h3>
@@ -150,13 +150,13 @@ details.</p>
 <p>Yes, at various levels:</p>
 
 <ul>
-	<li>In scenario title, which allows free text up the first step
-	starting word of the scenario (e.g. the first Given), provided this is
-	at the beginning of a line. Any keyword not at the beginning of a line,
-	i.e. not preceded by a newline character, will be ignored.</li>
-	<li>Between executable steps, using keyword "!--" (which can be
-	changed via i18n properties).</li>
-	<li>Between example table rows, using separator "|--".</li>
+    <li>In scenario title, which allows free text up the first step
+    starting word of the scenario (e.g. the first Given), provided this is
+    at the beginning of a line. Any keyword not at the beginning of a line,
+    i.e. not preceded by a newline character, will be ignored.</li>
+    <li>Between executable steps, using keyword "!--" (which can be
+    changed via i18n properties).</li>
+    <li>Between example table rows, using separator "|--".</li>
 </ul>
 
 </body>

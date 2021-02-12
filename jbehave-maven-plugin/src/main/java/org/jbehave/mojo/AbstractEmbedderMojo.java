@@ -318,9 +318,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
                 .doVerboseFiltering(verboseFiltering)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads);
         if ( storyTimeouts != null ){
-        	embedderControls.useStoryTimeouts(storyTimeouts);
+            embedderControls.useStoryTimeouts(storyTimeouts);
         }        
-		return new UnmodifiableEmbedderControls(embedderControls);
+        return new UnmodifiableEmbedderControls(embedderControls);
     }
 
     protected class MavenEmbedderMonitor extends NullEmbedderMonitor {
@@ -387,12 +387,12 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info(sb.toString());
         }
 
-    	@Override
+        @Override
         public void scenarioExcluded(Scenario scenario, MetaFilter filter) {
             StringBuilder sb = new StringBuilder();
             sb.append("Scenario '"+scenario.getTitle()+"' excluded by filter: " + filter.asString() + "\n");
             getLog().info(sb.toString());
-    	}
+        }
 
         @Override
         public void runningWithAnnotatedEmbedderRunner(String className) {
@@ -496,14 +496,14 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         
         @Override
         public void invalidTimeoutFormat(String path) {
-        	getLog().warn("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format");
-        	getLog().warn("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"");
-    	}
+            getLog().warn("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format");
+            getLog().warn("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"");
+        }
 
-    	@Override
+        @Override
         public void usingTimeout(String path, long timeout) {
-        	getLog().info("Using timeout for story " + path + " of "+timeout+" secs.");
-    	}
+            getLog().info("Using timeout for story " + path + " of "+timeout+" secs.");
+        }
 
         @Override
         public String toString() {

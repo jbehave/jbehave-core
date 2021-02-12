@@ -28,9 +28,9 @@ Examples:
 
 Scenario: 2 x 3 success with given stories
 
-GivenStories: 	org/jbehave/core/junit/story/Init.story,
-				org/jbehave/core/junit/story/Greetings.story,
-				org/jbehave/core/junit/story/GreetingsFromExtraterrestrials.story
+GivenStories:     org/jbehave/core/junit/story/Init.story,
+                org/jbehave/core/junit/story/Greetings.story,
+                org/jbehave/core/junit/story/GreetingsFromExtraterrestrials.story
 
 Given a variable x with value 3
 When I multiply x by 2
@@ -38,8 +38,8 @@ Then x should equal 6
 
 Scenario: 2 x 3 fail with given stories
 
-GivenStories: 	org/jbehave/core/junit/story/Init.story,
-				org/jbehave/core/junit/story/Greetings.story
+GivenStories:     org/jbehave/core/junit/story/Init.story,
+                org/jbehave/core/junit/story/Greetings.story
 
 Given a variable x with value 3
 When I multiply x by 2
@@ -47,8 +47,8 @@ Then x should equal 7
 
 Scenario: parameterized given stories
 
-GivenStories: 	org/jbehave/core/junit/story/ParameterizedGreetings.story#{0},
-				org/jbehave/core/junit/story/ParameterizedGreetings.story#{1}
+GivenStories:     org/jbehave/core/junit/story/ParameterizedGreetings.story#{0},
+                org/jbehave/core/junit/story/ParameterizedGreetings.story#{1}
 
 Given a Greeting to Parameterized Stories
 And a Greeting to <name>
@@ -64,7 +64,7 @@ Examples:
 
 Scenario: non-parameterized given stories with example tables
 
-GivenStories: 	org/jbehave/core/junit/story/Greetings.story
+GivenStories:     org/jbehave/core/junit/story/Greetings.story
 
 Given a Greeting to Parameterized Stories
 And a Greeting to <name>

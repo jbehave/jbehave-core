@@ -17,5 +17,5 @@ import org.needle4j.injection.InjectionProvider;
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NeedleInjectionProvider {
-	// Nothing here
+    // Nothing here
 }

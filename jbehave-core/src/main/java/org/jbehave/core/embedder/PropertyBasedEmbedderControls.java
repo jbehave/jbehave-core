@@ -59,9 +59,9 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
     }
 
     @Override
-	public boolean failOnStoryTimeout() {
+    public boolean failOnStoryTimeout() {
         return propertyAs(FAIL_ON_STORY_TIMEOUT, Boolean.class, super.failOnStoryTimeout()); 
-	}
+    }
 
     @Override
     public int threads() {

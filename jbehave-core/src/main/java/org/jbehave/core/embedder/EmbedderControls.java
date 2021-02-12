@@ -17,7 +17,7 @@ public class EmbedderControls {
     private boolean verboseFiltering = false;
     private String storyTimeouts = "300";
     private int threads = 1;
-	private boolean failOnStoryTimeout = false;
+    private boolean failOnStoryTimeout = false;
 
     public EmbedderControls() {
     }
@@ -54,11 +54,11 @@ public class EmbedderControls {
         return storyTimeouts;
     }
 
-	public boolean failOnStoryTimeout() {
-		return failOnStoryTimeout;
-	}
+    public boolean failOnStoryTimeout() {
+        return failOnStoryTimeout;
+    }
 
-	public int threads() {
+    public int threads() {
        return threads;
     }
 

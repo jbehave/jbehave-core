@@ -25,42 +25,42 @@ import static java.util.regex.Pattern.compile;
 
 public class GherkinStoryParser extends TransformingStoryParser {
 
-	public GherkinStoryParser(){
-		this(new RegexStoryParser());
-	}
+    public GherkinStoryParser(){
+        this(new RegexStoryParser());
+    }
 
-	public GherkinStoryParser(StoryParser delegate){
-		super(delegate, new GherkinTransformer());
-	}
+    public GherkinStoryParser(StoryParser delegate){
+        super(delegate, new GherkinTransformer());
+    }
 
-	public static class GherkinTransformer implements StoryTransformer {
+    public static class GherkinTransformer implements StoryTransformer {
 
-		private LocalizedKeywords keywords;
-		
-		public GherkinTransformer() {
-			this(new LocalizedKeywords());
-		}
+        private LocalizedKeywords keywords;
+        
+        public GherkinTransformer() {
+            this(new LocalizedKeywords());
+        }
 
-		public GherkinTransformer(LocalizedKeywords keywords) {
-			this.keywords = keywords;
-		}
+        public GherkinTransformer(LocalizedKeywords keywords) {
+            this.keywords = keywords;
+        }
 
-		@Override
+        @Override
         public String transform(String storyAsText) {
-			final StringBuffer out = new StringBuffer();
+            final StringBuffer out = new StringBuffer();
 
-			Formatter formatter = new Formatter(){
-				@Override
+            Formatter formatter = new Formatter(){
+                @Override
                 public void uri(String uri) {
-					out.append(uri).append("\n");
-				}
+                    out.append(uri).append("\n");
+                }
 
-				@Override
+                @Override
                 public void feature(Feature feature) {
-					out.append(feature.getName()).append("\n\n");
-					writeNarrative(feature.getDescription());
-					writeMeta(feature.getTags());
-				}
+                    out.append(feature.getName()).append("\n\n");
+                    writeNarrative(feature.getDescription());
+                    writeMeta(feature.getTags());
+                }
 
                 private void writeMeta(List<Tag> tags) {
                     if (tags.isEmpty()) {
@@ -73,21 +73,21 @@ public class GherkinStoryParser extends TransformingStoryParser {
                     out.append("\n");
                 }
 
-				private void writeNarrative(String description) {
+                private void writeNarrative(String description) {
                     boolean matches = false;
-					Matcher findingNarrative = compile(".*" + keywords.narrative() + "(.*?)", DOTALL).matcher(description);
-			        if (findingNarrative.matches()) {
-			            String narrative = findingNarrative.group(1).trim();
-			            matches = writeNarrativeWithDefaultSyntax(out, narrative);
-			            if (!matches){
-			                matches = writeNarrativeWithAlternativeSyntax(out, narrative);
-			            }
-			        }
+                    Matcher findingNarrative = compile(".*" + keywords.narrative() + "(.*?)", DOTALL).matcher(description);
+                    if (findingNarrative.matches()) {
+                        String narrative = findingNarrative.group(1).trim();
+                        matches = writeNarrativeWithDefaultSyntax(out, narrative);
+                        if (!matches){
+                            matches = writeNarrativeWithAlternativeSyntax(out, narrative);
+                        }
+                    }
                     if (!matches){
-			        	// if narrative format does not match, write description as part of story description
-			        	out.append(description);
-			        }			       
-				}
+                        // if narrative format does not match, write description as part of story description
+                        out.append(description);
+                    }                   
+                }
 
                 private boolean writeNarrativeWithDefaultSyntax(final StringBuffer out, String narrative) {
                     boolean matches = false;
@@ -123,69 +123,69 @@ public class GherkinStoryParser extends TransformingStoryParser {
                     return matches;
                 }
 
-				@Override
+                @Override
                 public void background(Background background) {
                     out.append(keywords.lifecycle()+background.getName()).append("\n")
                        .append(keywords.before()+"\n");
-				}
+                }
 
-				@Override
+                @Override
                 public void scenario(Scenario scenario) {
-					out.append("\n").append(keywords.scenario()+scenario.getName()).append("\n\n");
-	                writeMeta(scenario.getTags());
-				}
+                    out.append("\n").append(keywords.scenario()+scenario.getName()).append("\n\n");
+                    writeMeta(scenario.getTags());
+                }
 
-				@Override
+                @Override
                 public void scenarioOutline(ScenarioOutline scenarioOutline) {
-					out.append("\n").append(keywords.scenario()+scenarioOutline.getName()).append("\n\n");
+                    out.append("\n").append(keywords.scenario()+scenarioOutline.getName()).append("\n\n");
                     writeMeta(scenarioOutline.getTags());
-				}
+                }
 
-				@Override
+                @Override
                 public void examples(Examples examples) {
-					out.append("\n").append(keywords.examplesTable()+examples.getName()).append("\n");
-					writeRows(examples.getRows());
-				}
+                    out.append("\n").append(keywords.examplesTable()+examples.getName()).append("\n");
+                    writeRows(examples.getRows());
+                }
 
-				@Override
+                @Override
                 public void step(Step step) {
-					out.append(step.getKeyword()+step.getName()).append("\n");
-					writeRows(step.getRows());
-				}
+                    out.append(step.getKeyword()+step.getName()).append("\n");
+                    writeRows(step.getRows());
+                }
 
-				@Override
+                @Override
                 public void eof() {
-				}
+                }
 
-				@Override
+                @Override
                 public void syntaxError(String state, String event,
-						List<String> legalEvents, String uri, Integer line) {
-				}
+                        List<String> legalEvents, String uri, Integer line) {
+                }
 
-				@Override
+                @Override
                 public void done() {
-				}
+                }
 
-				@Override
+                @Override
                 public void close() {
-				}
-				
-				private void writeRows(List<? extends Row> rows) {
-					if ( rows != null && rows.size() > 0 ){
-						for ( Row row : rows ){
-							out.append("|");
-							for ( String c : row.getCells() ){
-								out.append(c).append("|");
-							}
-							out.append("\n");
-						}
-					}
-				}
+                }
+                
+                private void writeRows(List<? extends Row> rows) {
+                    if ( rows != null && rows.size() > 0 ){
+                        for ( Row row : rows ){
+                            out.append("|");
+                            for ( String c : row.getCells() ){
+                                out.append(c).append("|");
+                            }
+                            out.append("\n");
+                        }
+                    }
+                }
 
-			};
-			new Parser(formatter).parse(storyAsText, "", 0);
-			return out.toString();
-		}
-	}
+            };
+            new Parser(formatter).parse(storyAsText, "", 0);
+            return out.toString();
+        }
+    }
 
 }

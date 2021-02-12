@@ -5,12 +5,12 @@ import org.jbehave.core.annotations.When;
 
 public class GivenWhen {
 
-	@Given("")
-	public void given(){		
-	}
+    @Given("")
+    public void given(){
+    }
 
-	@When("")
-	public void when(){		
-	}
-	
+    @When("")
+    public void when(){
+    }
+
 }

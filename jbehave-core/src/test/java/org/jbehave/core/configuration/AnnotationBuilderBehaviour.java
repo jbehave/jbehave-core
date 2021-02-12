@@ -173,7 +173,7 @@ class AnnotationBuilderBehaviour {
     void shouldBuildCandidateStepsFromPackages() {
         AnnotationBuilder annotatedWithPackages = new AnnotationBuilder(AnnotatedWithPackages.class);
         List<CandidateSteps> candidateSteps = annotatedWithPackages.buildCandidateSteps();
-		assertThatStepsInstancesAre(candidateSteps, GivenOnly.class, GivenWhen.class, GivenWhenThen.class);
+        assertThatStepsInstancesAre(candidateSteps, GivenOnly.class, GivenWhen.class, GivenWhenThen.class);
     }
 
     
@@ -258,16 +258,16 @@ class AnnotationBuilderBehaviour {
 
     }
 
-	@UsingEmbedder(batch = true, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, skip = true, verboseFailures = true, verboseFiltering = true, 
-			storyTimeouts = "**/longs/*.story:60,**/shorts/*.story:10", failOnStoryTimeout = true, threads = 2)
-	@UsingSteps(instances = { MySteps.class })
-	static class AnnotedEmbedderControls extends InjectableEmbedder {
+    @UsingEmbedder(batch = true, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, skip = true, verboseFailures = true, verboseFiltering = true, 
+            storyTimeouts = "**/longs/*.story:60,**/shorts/*.story:10", failOnStoryTimeout = true, threads = 2)
+    @UsingSteps(instances = { MySteps.class })
+    static class AnnotedEmbedderControls extends InjectableEmbedder {
 
-		@Override
+        @Override
         public void run() {
-		}
+        }
 
-	}
+    }
 
     @Configure(keywords = MyKeywords.class)
     @UsingEmbedder(metaFilters = "+embedder injectable", systemProperties = "one=One,two=Two")

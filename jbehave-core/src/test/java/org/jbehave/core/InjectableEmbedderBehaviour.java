@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class InjectableEmbedderBehaviour {
 
-	@Test
+    @Test
     void shouldRunStoriesAsPathsUsingInjected() {
         // Given
         Embedder embedder = mock(Embedder.class);

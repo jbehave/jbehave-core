@@ -52,11 +52,11 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
     }
     
     @Override
-	public boolean failOnStoryTimeout() {
+    public boolean failOnStoryTimeout() {
         return delegate.failOnStoryTimeout();
-	}
+    }
 
-	@Override
+    @Override
     public int threads() {
         return delegate.threads();
     }

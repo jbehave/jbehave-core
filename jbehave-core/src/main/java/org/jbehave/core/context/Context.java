@@ -7,32 +7,32 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * Holds context-related information
  */
 public class Context {
-	
-	private ThreadLocal<String> currentStory = new ThreadLocal<>();
-	private ThreadLocal<String> currentScenario = new ThreadLocal<>();
+    
+    private ThreadLocal<String> currentStory = new ThreadLocal<>();
+    private ThreadLocal<String> currentScenario = new ThreadLocal<>();
 
     public String getCurrentStory() {
-		return currentStory.get();
-	}
+        return currentStory.get();
+    }
 
-	public void setCurrentStory(String currentStory) {
-		this.currentStory.set(currentStory);
-	}
+    public void setCurrentStory(String currentStory) {
+        this.currentStory.set(currentStory);
+    }
 
-	public String getCurrentScenario() {
-		return currentScenario.get();
-	}
+    public String getCurrentScenario() {
+        return currentScenario.get();
+    }
 
-	public void setCurrentScenario(String currentScenario) {
-		this.currentScenario.set(currentScenario);
-	}
+    public void setCurrentScenario(String currentScenario) {
+        this.currentScenario.set(currentScenario);
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append("story="+getCurrentStory())
-				.append("scenario="+getCurrentScenario())
-				.build();
-	}
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("story="+getCurrentStory())
+                .append("scenario="+getCurrentScenario())
+                .build();
+    }
 
 }

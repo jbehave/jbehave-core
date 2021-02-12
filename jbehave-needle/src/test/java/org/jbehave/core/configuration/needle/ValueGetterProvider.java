@@ -6,25 +6,25 @@ import org.needle4j.injection.InjectionTargetInformation;
 
 public class ValueGetterProvider implements InjectionProvider<ValueGetter> {
 
-	@Override
+    @Override
     public boolean verify(InjectionTargetInformation target) {
-		return target.getType().isAssignableFrom(ValueGetter.class);
-	}
+        return target.getType().isAssignableFrom(ValueGetter.class);
+    }
 
-	@Override
+    @Override
     public ValueGetter getInjectedObject(Class<?> injectionPointType) {
-		return new ValueGetter() {
+        return new ValueGetter() {
 
-			@Override
+            @Override
             public Object getValue() {
-				return VALUE;
-			}
+                return VALUE;
+            }
 
-		};
-	}
+        };
+    }
 
-	@Override
+    @Override
     public Object getKey(InjectionTargetInformation target) {
-		return target.getType().getCanonicalName();
-	}
+        return target.getType().getCanonicalName();
+    }
 }

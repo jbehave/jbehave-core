@@ -8,15 +8,15 @@ import java.lang.annotation.Annotation;
  */
 public class AnnotationRequired extends RuntimeException {
 
-	/**
-	 * Used when an annotation is required and not found
-	 * 
-	 * @param annotatedClass the annotated Class 
-	 * @param missingAnnotation the missing Annotation class
-	 */
-	public AnnotationRequired(Class<?> annotatedClass,
-			Class<? extends Annotation> missingAnnotation) {
-		super(annotatedClass + " requires to be annotated by " + missingAnnotation + ".");
-	}
+    /**
+     * Used when an annotation is required and not found
+     * 
+     * @param annotatedClass the annotated Class 
+     * @param missingAnnotation the missing Annotation class
+     */
+    public AnnotationRequired(Class<?> annotatedClass,
+            Class<? extends Annotation> missingAnnotation) {
+        super(annotatedClass + " requires to be annotated by " + missingAnnotation + ".");
+    }
 
 }

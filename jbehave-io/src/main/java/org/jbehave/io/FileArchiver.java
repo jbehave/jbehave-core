@@ -8,16 +8,16 @@ import java.util.List;
  */
 public interface FileArchiver {
 
-	boolean isArchive(File file);
+    boolean isArchive(File file);
 
-	void archive(File archive, File directory);
-	
-	void unarchive(File archive, File directory);
+    void archive(File archive, File directory);
 
-	List<File> listContent(File directory);
+    void unarchive(File archive, File directory);
 
-	File directoryOf(File archive);	
+    List<File> listContent(File directory);
 
-	File relativeTo(File file, File directory);
+    File directoryOf(File archive);
+
+    File relativeTo(File file, File directory);
 
 }

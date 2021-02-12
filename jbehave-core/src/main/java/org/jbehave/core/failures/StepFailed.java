@@ -8,12 +8,12 @@ import org.jbehave.core.model.OutcomesTable;
 @SuppressWarnings("serial")
 public class StepFailed extends UUIDExceptionWrapper {
 
-	public StepFailed(String step, Throwable cause) {
-		super("'" + step + "': " + cause.getMessage(), cause);
-	}
+    public StepFailed(String step, Throwable cause) {
+        super("'" + step + "': " + cause.getMessage(), cause);
+    }
 
-	public StepFailed(String step, OutcomesTable table) {
-		super("'" + step + "': "+table, table.failureCause());
-	}
+    public StepFailed(String step, OutcomesTable table) {
+        super("'" + step + "': "+table, table.failureCause());
+    }
 
 }

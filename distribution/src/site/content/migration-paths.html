@@ -15,26 +15,26 @@
 <p>From the Java point of view, the most significant changes are:</p>
 
 <ul>
-	<li>Changed method names for filter exclusion from 'notAllowed' to 'excluded'</li>
-	<li>Rename Status NOT_ALLOWED to EXCLUDED</li>
-	<li>Changed default scenario type in @BeforeScenario/@AfterScenario annotations.</li>
-	<li>Deprecated use of date format String parameter in OutcomesTable.  Use map parameter instead.</li>
-	<li>Removed deprecated org.jbehave.core.reporters.StoryReporterBuilder.Format.
-		Use org.jbehave.core.reporters.Format instead.</li>
-	<li>Removed deprecated SameThreadExecutors.</li>
-	<li>Removed deprecated methods in step collectors.</li>
-	<li>Removed deprecated methods in StoryReporter, StepMonitor and EmbedderMonitor.</li>
-	<li>JUnitStory is now a subtype of JUnitStories.</li>
-	<li>Ant tasks no longer supported.  Use JUnit support instead.</li>
-	<li>Hudson/Jenkins plugins no longer supported.</li>
-	<li>CrossReference and story navigator no longer supported</li>
-	<li>StoryRunner no longer supported.  Use PerformableTree instead.</li>
-	<li>Adding CandidateSteps via an Embedder no longer supported.
-		Use InjectableStepsFactory instead.</li>
-	<li>Embedder controls storyTimeoutInSecs and storyTimeoutInSecsByPath no longer supported.
-		Use storyTimeouts instead.</li>
-	<li>Stop reporting BeforeStories/AfterStories steps as stories. New hooks are introduced: org.jbehave.core.reporters.StoryReporter#beforeStoriesSteps and org.jbehave.core.reporters.StoryReporter#afterStoriesSteps</li>
-	<li>Fix typo in StoryReporter method: lifecyle -> lifecycle</li>
+    <li>Changed method names for filter exclusion from 'notAllowed' to 'excluded'</li>
+    <li>Rename Status NOT_ALLOWED to EXCLUDED</li>
+    <li>Changed default scenario type in @BeforeScenario/@AfterScenario annotations.</li>
+    <li>Deprecated use of date format String parameter in OutcomesTable.  Use map parameter instead.</li>
+    <li>Removed deprecated org.jbehave.core.reporters.StoryReporterBuilder.Format.
+        Use org.jbehave.core.reporters.Format instead.</li>
+    <li>Removed deprecated SameThreadExecutors.</li>
+    <li>Removed deprecated methods in step collectors.</li>
+    <li>Removed deprecated methods in StoryReporter, StepMonitor and EmbedderMonitor.</li>
+    <li>JUnitStory is now a subtype of JUnitStories.</li>
+    <li>Ant tasks no longer supported.  Use JUnit support instead.</li>
+    <li>Hudson/Jenkins plugins no longer supported.</li>
+    <li>CrossReference and story navigator no longer supported</li>
+    <li>StoryRunner no longer supported.  Use PerformableTree instead.</li>
+    <li>Adding CandidateSteps via an Embedder no longer supported.
+        Use InjectableStepsFactory instead.</li>
+    <li>Embedder controls storyTimeoutInSecs and storyTimeoutInSecsByPath no longer supported.
+        Use storyTimeouts instead.</li>
+    <li>Stop reporting BeforeStories/AfterStories steps as stories. New hooks are introduced: org.jbehave.core.reporters.StoryReporter#beforeStoriesSteps and org.jbehave.core.reporters.StoryReporter#afterStoriesSteps</li>
+    <li>Fix typo in StoryReporter method: lifecyle -> lifecycle</li>
 </ul>
 
 <h2>From 3.x to 4.0</h2>
@@ -84,17 +84,17 @@ compatibility.</p>
 completely backward compatible. The only exceptions being:</p>
 
 <ul>
-	<li><b>GivenScenarios</b> keyword has changed to <b>GivenStories</b>.
-	Full backward compatibility can be nonetheless ensures by configuring
-	the keywords bundle entry to <b>GivenScenarios</b> until the migration
-	has been completed. See <a href="stories-in-your-language.html">stories
-	in your language</a> on how to configure and override default keywords to
-	suit your needs.</li>
-	<li>Regex-based story parser now enforces that step keywords must
-	be at the start of a new line. This allow keywords to be found in the
-	step text and in the examples table. The convention of having keywords
-	at start of line is already universally adopted and but may encounter
-	the occasional failure due spurious spaces before the keywords.</li>
+    <li><b>GivenScenarios</b> keyword has changed to <b>GivenStories</b>.
+    Full backward compatibility can be nonetheless ensures by configuring
+    the keywords bundle entry to <b>GivenScenarios</b> until the migration
+    has been completed. See <a href="stories-in-your-language.html">stories
+    in your language</a> on how to configure and override default keywords to
+    suit your needs.</li>
+    <li>Regex-based story parser now enforces that step keywords must
+    be at the start of a new line. This allow keywords to be found in the
+    step text and in the examples table. The convention of having keywords
+    at start of line is already universally adopted and but may encounter
+    the occasional failure due spurious spaces before the keywords.</li>
 </ul>
 
 <p>From the Java point of view, significant changes have occurred,
@@ -105,48 +105,48 @@ used without change in JBehave 3.</p>
 <p>On the configuration side, the main changes are:</p>
 
 <ul>
-	<li>Terminology has changed throughout to refer to <b>Story</b> in
-	place of <b>Scenario</b> where this refers to the textual or Java
-	representation reflecting the fact that scenarios in JBehave 2 were
-	already stories in all but name. Terminology concerning report
-	rendering has been changed to view generation.</li>
-	<li>The Ant tasks and Maven goals have also been renamed to
-	reflect the terminology change.</li>
-	<li>The root package has changed from <b>org.jbehave.scenario</b>
-	to <b>org.jbehave.core</b> to avoid classpath clashes.</li>
-	<li><b>JUnitStory</b> does not extend JUnit's TestCase any more.
-	To ensure the class is recognised as a JUnit test, you must make the
-	source code of jbehave-core available to your IDE. Alternatively, check
-	the <a href="faq.html">FAQ</a> for other workarounds.</li>
-	<li>The concerns of running stories and view generation has been
-	centralised in an embeddable component - <b>Embedder</b> - around which
-	there are thin wrappers for running in multiple environments, e.g.
-	JUnit, Ant/Maven, Spring etc. Using the Embedder, the user can choose
-	to run multiple textual story using a single Java entry point. The
-	embedder behaviours can be controlled via <b>EmbedderControls</b>.</li>
-	<li>JUnitStory is now a JUnit-specific extension of <b>ConfigurableEmbedder</b>
-	and allows the overriding of the default MostUsefulConfiguration only
-	via the <b>useConfiguration</b> method, and the specification of <b>Steps</b>
-	only via the <b>addSteps</b> method. Equivalently, the user can
-	override the methods <b>configuration()</b> and <b>candidateSteps()</b>.</li>
-	<li>Configuration has been consolidated into a single builder and
-	moved to <b>org.jbehave.core.configuration</b> package. Configuration
-	and CandidateSteps are now fully specifiable via <a
-		href="configuration.html">annotations</a>, with or without <a
-		href="dependency-injection.html">dependency injection</a>.</li>
-	<li>The textual story lookup paradigm has shifted from an <b>Embeddable</b>
-	class to a story path, which can be resolved from the class via the <b>StoryPathResolver</b>,
-	and its implementations <b>UnderscoredCamelCaseResolver</b> and <b>CasePreservingResolver</b>.
-	As such, the <b>StoryLoader</b> implementations only define the model
-	story from a story path. The <b>FilePrintStreamFactory</b>
-	correspondingly now handles only story paths.</li>
+    <li>Terminology has changed throughout to refer to <b>Story</b> in
+    place of <b>Scenario</b> where this refers to the textual or Java
+    representation reflecting the fact that scenarios in JBehave 2 were
+    already stories in all but name. Terminology concerning report
+    rendering has been changed to view generation.</li>
+    <li>The Ant tasks and Maven goals have also been renamed to
+    reflect the terminology change.</li>
+    <li>The root package has changed from <b>org.jbehave.scenario</b>
+    to <b>org.jbehave.core</b> to avoid classpath clashes.</li>
+    <li><b>JUnitStory</b> does not extend JUnit's TestCase any more.
+    To ensure the class is recognised as a JUnit test, you must make the
+    source code of jbehave-core available to your IDE. Alternatively, check
+    the <a href="faq.html">FAQ</a> for other workarounds.</li>
+    <li>The concerns of running stories and view generation has been
+    centralised in an embeddable component - <b>Embedder</b> - around which
+    there are thin wrappers for running in multiple environments, e.g.
+    JUnit, Ant/Maven, Spring etc. Using the Embedder, the user can choose
+    to run multiple textual story using a single Java entry point. The
+    embedder behaviours can be controlled via <b>EmbedderControls</b>.</li>
+    <li>JUnitStory is now a JUnit-specific extension of <b>ConfigurableEmbedder</b>
+    and allows the overriding of the default MostUsefulConfiguration only
+    via the <b>useConfiguration</b> method, and the specification of <b>Steps</b>
+    only via the <b>addSteps</b> method. Equivalently, the user can
+    override the methods <b>configuration()</b> and <b>candidateSteps()</b>.</li>
+    <li>Configuration has been consolidated into a single builder and
+    moved to <b>org.jbehave.core.configuration</b> package. Configuration
+    and CandidateSteps are now fully specifiable via <a
+        href="configuration.html">annotations</a>, with or without <a
+        href="dependency-injection.html">dependency injection</a>.</li>
+    <li>The textual story lookup paradigm has shifted from an <b>Embeddable</b>
+    class to a story path, which can be resolved from the class via the <b>StoryPathResolver</b>,
+    and its implementations <b>UnderscoredCamelCaseResolver</b> and <b>CasePreservingResolver</b>.
+    As such, the <b>StoryLoader</b> implementations only define the model
+    story from a story path. The <b>FilePrintStreamFactory</b>
+    correspondingly now handles only story paths.</li>
 </ul>
 
 <h2>Next?</h2>
 
 <span class="followup">JBehave development has been
 example-driven and the examples illustrate all the features. Be sure check out the <a
-	href="running-examples.html">running examples</a>, as it's the quickest
+    href="running-examples.html">running examples</a>, as it's the quickest
 and most instructive way to get up to speed with the changes outlined
 above.</span>
 

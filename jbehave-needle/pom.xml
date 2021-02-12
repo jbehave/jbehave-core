@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.jbehave</groupId>
-		<artifactId>jbehave</artifactId>
-		<version>5.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>jbehave-needle</artifactId>
-	<name>JBehave Needle</name>
-	<description>Extension of JBehave Core that supports Needle mocking and dependency injection</description>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave</artifactId>
+        <version>5.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>jbehave-needle</artifactId>
+    <name>JBehave Needle</name>
+    <description>Extension of JBehave Core that supports Needle mocking and dependency injection</description>
 
-	<dependencies>
+    <dependencies>
        <dependency>
            <groupId>org.jbehave</groupId>
            <artifactId>jbehave-core</artifactId>
@@ -31,5 +31,5 @@
             <version>1.7.25</version>
             <scope>test</scope>
         </dependency>
-	</dependencies>
+    </dependencies>
 </project>

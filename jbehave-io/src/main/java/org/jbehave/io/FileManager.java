@@ -15,16 +15,16 @@ import java.util.List;
  */
 public interface FileManager {
 
-	List<File> list();
+    List<File> list();
 
-	List<File> listContent(File file, boolean relativePaths);
+    List<File> listContent(File file, boolean relativePaths);
 
-	void delete(List<File> files);
+    void delete(List<File> files);
 
-	List<File> upload(List<FileItem> fileItems, List<String> errors);
+    List<File> upload(List<FileItem> fileItems, List<String> errors);
 
     void unarchiveFiles(List<File> files, List<String> errors);
 
     File getUploadDirectory();
-	
+    
 }

@@ -508,7 +508,7 @@ class StepCandidateBehaviour {
         assertThat(nonPending.isPending(), is(false));
     }
 
-	@Test
+    @Test
     void shouldNotCreateStepOfWrongType() {
         NamedTypeSteps steps = new NamedTypeSteps();
         List<StepCandidate> candidates = steps.listCandidates();

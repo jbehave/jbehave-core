@@ -10,26 +10,26 @@
 
 <p>Effective communication of behaviour is the main objective of
 BDD. Therefore, writing stories in the <a
-	href="http://en.wikipedia.org/wiki/Language">language</a> spoken by the
+    href="http://en.wikipedia.org/wiki/Language">language</a> spoken by the
 business users is essential. Both the patterns used to match the
 scenario steps to Java methods and the <a
-	href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>
+    href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>
 need to be expressed in the appropriate language.</p>
 
 <p>By default, JBehave uses English as the story language, but
 supports stories to be written in any language. The <a
-	href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>
+    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>
 provides keywords in any given locale for which a properties bundle is
 found, by default in <b>i18n/keywords_[locale].properties</b> in the <b>jbehave-core</b>
 jar.</p>
 <p>To write storeis in a given language, we need to specify three
 elements:</p>
 <ul>
-	<li>a locale, e.g. <b>new Locale("it")</b></li>
-	<li>a story pattern, as typically the extension of the story
-	resources is language specific, e.g. <b>**/*.storia</b>.</li>
-	<li>one or more steps instances with patterns written in the
-	appropriate language, e.g. <b>new ItTraderSteps()</b></li>
+    <li>a locale, e.g. <b>new Locale("it")</b></li>
+    <li>a story pattern, as typically the extension of the story
+    resources is language specific, e.g. <b>**/*.storia</b>.</li>
+    <li>one or more steps instances with patterns written in the
+    appropriate language, e.g. <b>new ItTraderSteps()</b></li>
 </ul>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
@@ -41,7 +41,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
         ClassLoader classLoader = this.getClass().getClassLoader();
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         Keywords keywords = new LocalizedKeywords(locale());
-		Properties properties = new Properties();
+        Properties properties = new Properties();
         properties.setProperty("encoding", "UTF-8");
         Configuration configuration = new MostUsefulConfiguration()
                 .useKeywords(keywords)
@@ -55,7 +55,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
                     .withPathResolver(new ResolveToSimpleName())
                     .withDefaultFormats()
                     .withFormats(CONSOLE, TXT, HTML, XML)
-					.withViewResources(properties)
+                    .withViewResources(properties)
                     .withFailureTrace(false)
                     .withKeywords(keywords))
                 .useParameterConverters(
@@ -129,7 +129,7 @@ the keywords used in the reporting of the story execution, e.g. <b>Pending</b>,
 
 <span class="followup">A working example of story running in
 different languages can be found in <b>trader-i18n</b> example (see <a
-	href="running-examples.html">running examples</a>).</span>
+    href="running-examples.html">running examples</a>).</span>
 
 <h2>Which encoding should I use for textual stories and Java source
 classes?</h2>
@@ -143,7 +143,7 @@ configured to use UTF-8 for textual and Java resources.</span>
 
 <p>JBehave supports a number of languages out-of-the-box, allowing
 users to simply specify the locale in the <a
-	href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.
+    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.
 You can verify which language is supported by looking at the <b>i18n/</b>
 directory in the <b>jbehave-core-resources.zip</b>. If you'd like your
 language to be supported, you can contribute the keywords in that

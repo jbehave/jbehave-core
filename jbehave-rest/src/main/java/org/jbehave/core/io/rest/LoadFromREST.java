@@ -25,24 +25,24 @@ public class LoadFromREST implements ResourceLoader {
     
     @Override
     public String loadResourceAsText(String resourcePath) {
-		try {
-			Type type = client.getType();
+        try {
+            Type type = client.getType();
             return text(get(uri(resourcePath, type)), type);
-		} catch (Exception cause) {
-			throw new InvalidStoryResource(resourcePath, cause);
-		}
-	}
+        } catch (Exception cause) {
+            throw new InvalidStoryResource(resourcePath, cause);
+        }
+    }
 
-	protected String uri(String resourcePath, Type type) {
-		return resourcePath;
-	}
+    protected String uri(String resourcePath, Type type) {
+        return resourcePath;
+    }
 
-	protected String text(String entity, Type type) {
-		return entity;
-	}
+    protected String text(String entity, Type type) {
+        return entity;
+    }
 
-	private String get(String uri) {
-		return client.get(uri);
-	}
+    private String get(String uri) {
+        return client.get(uri);
+    }
 
 }

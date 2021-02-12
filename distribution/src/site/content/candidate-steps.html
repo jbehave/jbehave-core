@@ -10,9 +10,9 @@
 
 <p>JBehave uses method annotations in Java classes to associate an
 executable Java method to a <a
-	href="javadoc/core/org/jbehave/core/steps/StepCandidate.html">StepCandidate</a>.
+    href="javadoc/core/org/jbehave/core/steps/StepCandidate.html">StepCandidate</a>.
 Each step candidate corresponds to one Java method and to one <a
-	href="javadoc/core/org/jbehave/core/steps/StepType.html">StepType</a>.
+    href="javadoc/core/org/jbehave/core/steps/StepType.html">StepType</a>.
 A step candidate holds the regex pattern contained in the annotation
 value, which is used to do the matching with the textual steps in the
 scenarios.</p>
@@ -45,7 +45,7 @@ public class TraderSteps { // Look, Ma', I'm just a POJO
 </script>
 
 <p>For each method annotated with one of the <a
-	href="annotations.html">step annotations</a>, a step candidate is
+    href="annotations.html">step annotations</a>, a step candidate is
 created. Note that each method can supports <a href="aliases.html">aliases</a>
 and a different step candidate is created for each alias.</p>
 
@@ -53,7 +53,7 @@ and a different step candidate is created for each alias.</p>
 or more annotated methods, JBehave collects a list of step candidates,
 which are then used to match the textual steps found in the scenarios
 being run. For each given <a
-	href="javadoc/core/org/jbehave/core/steps/StepType.html">StepType</a>,
+    href="javadoc/core/org/jbehave/core/steps/StepType.html">StepType</a>,
 <b>the regex pattern must be unique</b>.</p>
 
 <p>Hence, the following two methods are allowed to have the same
@@ -93,13 +93,13 @@ running the scenario:</p>
 <p>Note that in the example above <b>TraderSteps</b> is a POJO, i.e.
 it does not need to extend any JBehave class. JBehave provides the 
 <a
-	href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>
+    href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>
 as a factory to create from these POJO steps instances the <a
-	href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
+    href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
 it needs to extract the step candidates. The <a
-	href="javadoc/core/org/jbehave/core/steps/InstanceStepsFactory.html">InstanceStepsFactory</a>
+    href="javadoc/core/org/jbehave/core/steps/InstanceStepsFactory.html">InstanceStepsFactory</a>
 takes each steps instance provided by the user and wraps it in a <a
-	href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a>
+    href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a>
 instance, which is the default implementation of <b>CandidateSteps</b>:
 </p>
 
@@ -122,7 +122,7 @@ public class TraderStory extends JUnitStory {
 steps instances as POJOs and to not extend the Steps class directly. This
 allow you not to have any tie-ins with the Steps class implementation
 (which may be subject to change) and also to use <a
-	href="dependency-injection.html">dependency injection</a> to compose
+    href="dependency-injection.html">dependency injection</a> to compose
 your steps instances using your preferred container.</span>
 
 <div class="clear">

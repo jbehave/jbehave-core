@@ -52,9 +52,9 @@ public class NullEmbedderMonitor implements EmbedderMonitor {
     public void storiesExcluded(List<Story> excluded, MetaFilter filter, boolean verbose) {
     }
 
-	@Override
+    @Override
     public void scenarioExcluded(Scenario scenario, MetaFilter filter) {
-	}
+    }
 
     @Override
     public void batchFailed(BatchFailures failures) {
@@ -130,16 +130,16 @@ public class NullEmbedderMonitor implements EmbedderMonitor {
     public void usingControls(EmbedderControls embedderControls) {
     }
 
-	public String getSearchDirectory() {
-		return null;
-	}
+    public String getSearchDirectory() {
+        return null;
+    }
 
-	@Override
+    @Override
     public void invalidTimeoutFormat(String path) {
-	}
+    }
 
-	@Override
+    @Override
     public void usingTimeout(String path, long timeout) {
-	}
+    }
 
 }

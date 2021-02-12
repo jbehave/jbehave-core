@@ -21,55 +21,55 @@ import com.google.gson.reflect.TypeToken;
  */
 public class IndexFromXWiki extends IndexWithBreadcrumbs {
 
-	private static final String INDEX_URI = "{0}?media=json";
-	private static final String PAGE_URI = "{0}/{1}";
+    private static final String INDEX_URI = "{0}?media=json";
+    private static final String PAGE_URI = "{0}/{1}";
 
-	public IndexFromXWiki() {
-		this(null, null);
-	}
+    public IndexFromXWiki() {
+        this(null, null);
+    }
 
-	public IndexFromXWiki(String username, String password) {
-		this(username, password, new ToLowerCase());
-	}
+    public IndexFromXWiki(String username, String password) {
+        this(username, password, new ToLowerCase());
+    }
 
-	public IndexFromXWiki(String username, String password, ResourceNameResolver nameResolver) {
-		super(new RESTClient(Type.JSON, username, password), nameResolver);
-	}
+    public IndexFromXWiki(String username, String password, ResourceNameResolver nameResolver) {
+        super(new RESTClient(Type.JSON, username, password), nameResolver);
+    }
 
-	@Override
+    @Override
     protected Map<String, Resource> createIndexFromEntity(String rootURI, String entity) {
-		Collection<Page> pages = parse(entity);
-		Map<String, Resource> index = new HashMap<>();
-		for (Page page : pages) {
-			String parentName = (page.parent != null ? resolveName(page.parent) : null);
-			String uri = format(PAGE_URI, rootURI, page.name);
-			Resource resource = new Resource(uri, resolveName(page.name), parentName);
-			index.put(resource.getName(), resource);
-		}
-		return index;
-	}
+        Collection<Page> pages = parse(entity);
+        Map<String, Resource> index = new HashMap<>();
+        for (Page page : pages) {
+            String parentName = (page.parent != null ? resolveName(page.parent) : null);
+            String uri = format(PAGE_URI, rootURI, page.name);
+            Resource resource = new Resource(uri, resolveName(page.name), parentName);
+            index.put(resource.getName(), resource);
+        }
+        return index;
+    }
 
-	@Override
+    @Override
     protected String uri(String rootPath) {
-		return format(INDEX_URI, rootPath);
-	}
+        return format(INDEX_URI, rootPath);
+    }
 
-	private Collection<Page> parse(String entity) {
-		Gson gson = new Gson();
-		return gson.fromJson(
-				jsonMember(entity, "pageSummaries"),
-				new TypeToken<Collection<Page>>() {
-				}.getType());
-	}
+    private Collection<Page> parse(String entity) {
+        Gson gson = new Gson();
+        return gson.fromJson(
+                jsonMember(entity, "pageSummaries"),
+                new TypeToken<Collection<Page>>() {
+                }.getType());
+    }
 
-	private String jsonMember(String entity, String memberName) {
-		return new JsonParser().parse(entity).getAsJsonObject().get(memberName)
-				.toString();
-	}
+    private String jsonMember(String entity, String memberName) {
+        return new JsonParser().parse(entity).getAsJsonObject().get(memberName)
+                .toString();
+    }
 
-	private static class Page {
-		private String name;
-		private String parent;
-	}
+    private static class Page {
+        private String name;
+        private String parent;
+    }
 
 }

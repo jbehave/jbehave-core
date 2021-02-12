@@ -320,7 +320,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     public boolean invoked(){
-    	return invoked;
+        return invoked;
     }
     
     public void invokeDelayed() {

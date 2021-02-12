@@ -29,7 +29,7 @@ public interface EmbedderMonitor {
 
     void storiesExcluded(List<Story> excluded, MetaFilter filter, boolean verbose);
 
-	void scenarioExcluded(Scenario scenario, MetaFilter filter);
+    void scenarioExcluded(Scenario scenario, MetaFilter filter);
 
     void batchFailed(BatchFailures failures);
 

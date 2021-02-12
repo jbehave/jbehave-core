@@ -15,7 +15,7 @@ class IndexFromXWikiBehaviour {
 
     @Test
     void canIndexFromXWiki() {
-    	IndexFromXWiki indexer = new IndexFromXWiki();
+        IndexFromXWiki indexer = new IndexFromXWiki();
         String rootPath = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages";
         String entity = read("xwiki-index.json");
         Map<String, Resource> index = indexer.createIndexFromEntity(rootPath, entity);

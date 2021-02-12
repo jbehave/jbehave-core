@@ -86,14 +86,14 @@ public class Meta {
         return properties.isEmpty();
     }
     
-	public String asString(Keywords keywords) {
-		StringBuilder sb = new StringBuilder();
-		for (String name : getPropertyNames()) {
-			sb.append(keywords.metaProperty()).append(name).append(SPACE)
-					.append(getProperty(name)).append(SPACE);
-		}
-		return sb.toString().trim();
-	}
+    public String asString(Keywords keywords) {
+        StringBuilder sb = new StringBuilder();
+        for (String name : getPropertyNames()) {
+            sb.append(keywords.metaProperty()).append(name).append(SPACE)
+                    .append(getProperty(name)).append(SPACE);
+        }
+        return sb.toString().trim();
+    }
 
     @Override
     public String toString() {

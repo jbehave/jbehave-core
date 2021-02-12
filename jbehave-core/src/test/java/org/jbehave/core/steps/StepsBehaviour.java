@@ -577,7 +577,7 @@ class StepsBehaviour {
             super(configuration);
         }
 
-		@Given("un dato che")
+        @Given("un dato che")
         public void given() {
             givens++;
         }

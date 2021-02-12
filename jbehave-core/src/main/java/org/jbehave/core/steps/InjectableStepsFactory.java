@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface InjectableStepsFactory {
 
-	List<CandidateSteps> createCandidateSteps();
+    List<CandidateSteps> createCandidateSteps();
 
     Object createInstanceOfType(Class<?> type);
 

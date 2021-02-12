@@ -10,16 +10,16 @@ import org.junit.runners.model.InitializationError;
  */
 public class NeedleAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
 
-	private NeedleAnnotationBuilder annotationBuilder;
+    private NeedleAnnotationBuilder annotationBuilder;
 
-	public NeedleAnnotatedEmbedderRunner(Class<?> testClass) throws InitializationError {
-		super(testClass);
-		this.annotationBuilder = new NeedleAnnotationBuilder(testClass());
-	}
+    public NeedleAnnotatedEmbedderRunner(Class<?> testClass) throws InitializationError {
+        super(testClass);
+        this.annotationBuilder = new NeedleAnnotationBuilder(testClass());
+    }
 
-	@Override
+    @Override
     public AnnotationBuilder annotationBuilder() {
-		return annotationBuilder;
-	}
+        return annotationBuilder;
+    }
 
 }

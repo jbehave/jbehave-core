@@ -26,44 +26,44 @@ import static org.hamcrest.Matchers.is;
 
 class NeedleAnnotatedEmbedderRunnerBehaviour {
 
-	@Test
-	void shouldCreateWithGuiceAnnotatedBuilder() throws InitializationError {
-		AnnotatedEmbedderRunner runner = new NeedleAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
-		assertThat(runner.annotationBuilder(), instanceOf(NeedleAnnotationBuilder.class));
-	}
+    @Test
+    void shouldCreateWithGuiceAnnotatedBuilder() throws InitializationError {
+        AnnotatedEmbedderRunner runner = new NeedleAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
+        assertThat(runner.annotationBuilder(), instanceOf(NeedleAnnotationBuilder.class));
+    }
 
-	@RunWith(NeedleAnnotatedEmbedderRunner.class)
-	@Configure()
-	@UsingSteps(instances = Steps.class)
-	@UsingEmbedder()
-	@UsingNeedle
-	public static class RunningWithAnnotatedEmbedderRunner extends InjectableEmbedder {
+    @RunWith(NeedleAnnotatedEmbedderRunner.class)
+    @Configure()
+    @UsingSteps(instances = Steps.class)
+    @UsingEmbedder()
+    @UsingNeedle
+    public static class RunningWithAnnotatedEmbedderRunner extends InjectableEmbedder {
 
-		@Override
+        @Override
         @Test
-		public void run() {
+        public void run() {
             assertThat(true, is(true));
         }
 
-		@org.junit.Test
-		public void testSteps() {
-			final List<CandidateSteps> candidateSteps = injectedEmbedder().stepsFactory().createCandidateSteps();
-			assertThat(candidateSteps.size(), is(1));
-		}
+        @org.junit.Test
+        public void testSteps() {
+            final List<CandidateSteps> candidateSteps = injectedEmbedder().stepsFactory().createCandidateSteps();
+            assertThat(candidateSteps.size(), is(1));
+        }
 
-	}
+    }
 
-	public static class Steps {
-		@NeedleInjectionProvider
-		InjectionProvider<ValueGetter> provider = new ValueGetterProvider();
+    public static class Steps {
+        @NeedleInjectionProvider
+        InjectionProvider<ValueGetter> provider = new ValueGetterProvider();
 
-		@Inject
-		private ValueGetter getter;
+        @Inject
+        private ValueGetter getter;
 
-		@Given("Some")
-		public boolean complete() {
-			return ValueGetter.VALUE.equals(getter.getValue());
-		}
-	}
+        @Given("Some")
+        public boolean complete() {
+            return ValueGetter.VALUE.equals(getter.getValue());
+        }
+    }
 
 }

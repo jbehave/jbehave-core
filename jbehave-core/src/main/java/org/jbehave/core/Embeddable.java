@@ -26,7 +26,7 @@ import org.jbehave.core.junit.JUnitStory;
  */
 public interface Embeddable {
 
-	void useEmbedder(Embedder embedder);
+    void useEmbedder(Embedder embedder);
 
     void run();
 

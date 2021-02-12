@@ -1,10 +1,10 @@
 package org.jbehave.core.failures;
 
 public final class SilentlyAbsorbingFailure implements FailureStrategy {
-	
-	@Override
+
+    @Override
     public void handleFailure(Throwable throwable) {
-		// do nothing
-	}
+        // do nothing
+    }
 
 }

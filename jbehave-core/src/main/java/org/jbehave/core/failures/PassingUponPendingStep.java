@@ -2,9 +2,9 @@ package org.jbehave.core.failures;
 
 public final class PassingUponPendingStep implements PendingStepStrategy {
 
-	@Override
+    @Override
     public void handleFailure(Throwable throwable) {
-		// do nothing
-	}
+        // do nothing
+    }
 
 }

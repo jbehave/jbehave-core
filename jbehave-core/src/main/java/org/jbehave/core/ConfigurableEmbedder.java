@@ -49,49 +49,49 @@ import org.jbehave.core.steps.InjectableStepsFactory;
  */
 public abstract class ConfigurableEmbedder implements Embeddable {
 
-	private Embedder embedder = new Embedder();
-	private Configuration configuration;
-	private InjectableStepsFactory stepsFactory;
+    private Embedder embedder = new Embedder();
+    private Configuration configuration;
+    private InjectableStepsFactory stepsFactory;
 
-	@Override
+    @Override
     public void useEmbedder(Embedder embedder) {
-		this.embedder = embedder;
-	}
+        this.embedder = embedder;
+    }
 
-	public void useConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
+    public void useConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
 
-	public Configuration configuration() {
-		return configuration;
-	}
+    public Configuration configuration() {
+        return configuration;
+    }
 
-	public boolean hasConfiguration() {
-		return configuration != null;
-	}
+    public boolean hasConfiguration() {
+        return configuration != null;
+    }
 
-	public void useStepsFactory(InjectableStepsFactory stepsFactory) {
-		this.stepsFactory = stepsFactory;
-	}
+    public void useStepsFactory(InjectableStepsFactory stepsFactory) {
+        this.stepsFactory = stepsFactory;
+    }
 
-	public InjectableStepsFactory stepsFactory() {
-		return stepsFactory;
-	}
+    public InjectableStepsFactory stepsFactory() {
+        return stepsFactory;
+    }
 
-	public boolean hasStepsFactory() {
-		return stepsFactory != null;
-	}
+    public boolean hasStepsFactory() {
+        return stepsFactory != null;
+    }
 
-	public Embedder configuredEmbedder() {
-		if (configuration == null) {
-			configuration = configuration();
-		}
-		embedder.useConfiguration(configuration);
-		if (stepsFactory == null) {
-			stepsFactory = stepsFactory();
-		}
-		embedder.useStepsFactory(stepsFactory);
-		return embedder;
-	}
+    public Embedder configuredEmbedder() {
+        if (configuration == null) {
+            configuration = configuration();
+        }
+        embedder.useConfiguration(configuration);
+        if (stepsFactory == null) {
+            stepsFactory = stepsFactory();
+        }
+        embedder.useStepsFactory(stepsFactory);
+        return embedder;
+    }
 
 }

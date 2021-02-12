@@ -5,5 +5,5 @@ package ${package}.steps;
 
 public interface SpecialService {
 
-	boolean makeHappy();
+    boolean makeHappy();
 }

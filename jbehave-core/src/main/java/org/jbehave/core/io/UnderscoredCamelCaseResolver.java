@@ -33,20 +33,20 @@ import static java.util.regex.Pattern.compile;
  */
 public class UnderscoredCamelCaseResolver extends AbstractStoryPathResolver {
 
-	public static final String NUMBERS_AS_LOWER_CASE_LETTERS_PATTERN = "([A-Z].*?)([A-Z]|\\z)";
-	public static final String NUMBERS_AS_UPPER_CASE_LETTERS_PATTERN = "([A-Z0-9].*?)([A-Z0-9]|\\z)";
-	private static final String UNDERSCORE = "_";
-	private final String resolutionPattern;
+    public static final String NUMBERS_AS_LOWER_CASE_LETTERS_PATTERN = "([A-Z].*?)([A-Z]|\\z)";
+    public static final String NUMBERS_AS_UPPER_CASE_LETTERS_PATTERN = "([A-Z0-9].*?)([A-Z0-9]|\\z)";
+    private static final String UNDERSCORE = "_";
+    private final String resolutionPattern;
     private final Locale locale;
     private String wordToRemove = "";
 
     public UnderscoredCamelCaseResolver() {
-		this(DEFAULT_EXTENSION);
-	}
+        this(DEFAULT_EXTENSION);
+    }
 
-	public UnderscoredCamelCaseResolver(String extension) {
-		this(extension, NUMBERS_AS_LOWER_CASE_LETTERS_PATTERN);
-	}
+    public UnderscoredCamelCaseResolver(String extension) {
+        this(extension, NUMBERS_AS_LOWER_CASE_LETTERS_PATTERN);
+    }
 
     public UnderscoredCamelCaseResolver(String extension,
             String resolutionPattern) {
@@ -60,22 +60,22 @@ public class UnderscoredCamelCaseResolver extends AbstractStoryPathResolver {
         this.locale = locale;
     }
 
-	@Override
-	protected String resolveName(
-			Class<? extends Embeddable> embeddableClass) {
+    @Override
+    protected String resolveName(
+            Class<? extends Embeddable> embeddableClass) {
         String simpleName = embeddableClass.getSimpleName();
         simpleName = simpleName.replace(wordToRemove, "");
         Matcher matcher = compile(resolutionPattern).matcher(
                 simpleName);
-		int startAt = 0;
-		StringBuilder builder = new StringBuilder();
-		while (matcher.find(startAt)) {
-			builder.append(matcher.group(1).toLowerCase(locale));
-			builder.append(UNDERSCORE);
-			startAt = matcher.start(2);
-		}
-		return builder.substring(0, builder.length() - 1);
-	}
+        int startAt = 0;
+        StringBuilder builder = new StringBuilder();
+        while (matcher.find(startAt)) {
+            builder.append(matcher.group(1).toLowerCase(locale));
+            builder.append(UNDERSCORE);
+            startAt = matcher.start(2);
+        }
+        return builder.substring(0, builder.length() - 1);
+    }
 
     public StoryPathResolver removeFromClassName(String wordToRemove) {
         this.wordToRemove = wordToRemove;

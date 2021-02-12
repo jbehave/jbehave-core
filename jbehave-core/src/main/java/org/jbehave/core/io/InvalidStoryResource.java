@@ -12,9 +12,9 @@ public class InvalidStoryResource extends RuntimeException {
         super("Invalid story resource for " + storyPath, cause);
     }
 
-	public InvalidStoryResource(String storyPath, InputStream stream,
-			Throwable cause) {
-		super("Invalid story resource for " + storyPath + " from input stream " + stream, cause);
-	}
+    public InvalidStoryResource(String storyPath, InputStream stream,
+            Throwable cause) {
+        super("Invalid story resource for " + storyPath + " from input stream " + stream, cause);
+    }
 
 }

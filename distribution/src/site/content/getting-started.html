@@ -38,7 +38,7 @@ Then the grid should look like
 ..X..
 </pre>
 <p>Steps must start with one of the keywords highlighted (see <a
-	href="concepts.html">Concepts</a> for more details) and are not limited
+    href="concepts.html">Concepts</a> for more details) and are not limited
 to a single line. Also, unless otherwise indicated, a story has at least
 one implicit scenario, each of which is a collection of steps.</p>
 
@@ -47,7 +47,7 @@ one implicit scenario, each of which is a collection of steps.</p>
 <p>Define your <b>GridSteps</b> class, a simple POJO, which will contain the Java
 methods that are mapped to the textual steps. The methods need to
 annotated with one of the JBehave <a
-	href="javadoc/core/org/jbehave/core/annotations/package-summary.html">annotations</a>
+    href="javadoc/core/org/jbehave/core/annotations/package-summary.html">annotations</a>
 and the annotated value should contain a regex pattern that matches the
 textual step:</p>
 
@@ -84,12 +84,12 @@ public class GridSteps { // Look, Ma', I'm a POJO!
 <h3>Configure a Java Embeddable class</h3>
 
 <p>Define your <a
-	href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a>
+    href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a>
 class which provides the link between the JBehave's executor framework (called <a
     href="javadoc/core/org/jbehave/core/Embedder.html">Embedder</a>) and the textual stories.
 The simplest configuration is a one-to-one mapping between a Java class and a textual story file.  
 So we'll extend <a
-	href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a> and give it 
+    href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a> and give it
 a name that can be (conventionally) mapped to the textual story filename, e.g. <b>ICanToggleACell.java</b>:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
@@ -124,7 +124,7 @@ be executed.</p>
 <p>Open your favourite IDE, the <b>ICanToggleACell.java</b> class
 will allow itself to run as a <a href="http://junit.org">JUnit</a> test.
 Be sure to check that you have all the required <a
-	href="dependencies.html">dependencies</a> in your classpath.</p>
+    href="dependencies.html">dependencies</a> in your classpath.</p>
 
 <h3>View generated reports</h3>
 
@@ -139,7 +139,7 @@ example-driven and it is very instructive to go through one or more
 working examples in the source repository, which illustrate the features of JBehave.  
 The <b>gameoflife</b> example contains much of the above and is ready to be run. 
 Be sure to read about <a href="running-examples.html">running examples</a> and <a
-	href="running-stories.html">running stories</a>.</span>
+    href="running-stories.html">running stories</a>.</span>
 
 </body>
 </html>

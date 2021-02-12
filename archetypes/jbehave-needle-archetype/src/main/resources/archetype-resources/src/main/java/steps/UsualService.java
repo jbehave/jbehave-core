@@ -5,9 +5,9 @@ package ${package}.steps;
 
 public interface UsualService {
 
-	void goodSoul();
+    void goodSoul();
 
-	void isStillStep();
+    void isStillStep();
 
-	void aStep();
+    void aStep();
 }

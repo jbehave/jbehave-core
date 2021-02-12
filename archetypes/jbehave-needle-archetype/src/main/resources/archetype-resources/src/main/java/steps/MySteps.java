@@ -15,30 +15,30 @@ import ${package}.steps.UsualService;
 
 public class MySteps {
 
-	@Inject
-	private UsualService stubbedService;
+    @Inject
+    private UsualService stubbedService;
 
-	@Inject
-	private SpecialService service;
+    @Inject
+    private SpecialService service;
 
-	@Then("I shall be happy")
-	public void makeHappy() {
-		service.makeHappy();
-	}
+    @Then("I shall be happy")
+    public void makeHappy() {
+        service.makeHappy();
+    }
 
-	@Given("I am a pending step")
-	public void givenIAmAPendingStep() {
-		stubbedService.aStep();
-	}
+    @Given("I am a pending step")
+    public void givenIAmAPendingStep() {
+        stubbedService.aStep();
+    }
 
-	@Given("I am still pending step")
-	public void givenIAmStillPendingStep() {
-		stubbedService.isStillStep();
-	}
+    @Given("I am still pending step")
+    public void givenIAmStillPendingStep() {
+        stubbedService.isStillStep();
+    }
 
-	@When("a good soul will implement me")
-	public void whenAGoodSoulWillImplementMe() {
-		stubbedService.goodSoul();
-	}
+    @When("a good soul will implement me")
+    public void whenAGoodSoulWillImplementMe() {
+        stubbedService.goodSoul();
+    }
 
 }

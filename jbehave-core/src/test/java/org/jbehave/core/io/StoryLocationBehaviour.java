@@ -15,8 +15,8 @@ class StoryLocationBehaviour {
     void shouldAllowClasspathResources() {
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = "org/jbehave/core/io/stories/my_pending_story";
-		StoryLocation storyLocation = new StoryLocation(codeLocation, storyPath);
-		assertThat(storyLocation.getCodeLocation(), equalTo(codeLocation));
+        StoryLocation storyLocation = new StoryLocation(codeLocation, storyPath);
+        assertThat(storyLocation.getCodeLocation(), equalTo(codeLocation));
         assertThat(storyLocation.getStoryPath(), equalTo(storyPath));
         assertThat(storyLocation.getURL(), equalTo(codeLocation.toExternalForm() + storyPath));
         assertThat(storyLocation.getPath(), equalTo(storyPath));

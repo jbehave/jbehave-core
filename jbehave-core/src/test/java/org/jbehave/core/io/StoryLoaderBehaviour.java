@@ -31,7 +31,7 @@ class StoryLoaderBehaviour {
         String loadedStoryAsText = loader.loadStoryAsText(storyPath);
         
         // Then
-		assertThat(loadedStoryAsText, equalTo(storyAsText));
+        assertThat(loadedStoryAsText, equalTo(storyAsText));
 
     }
 
@@ -79,7 +79,7 @@ class StoryLoaderBehaviour {
         String loadedStoryAsText = loader.loadStoryAsText(storyPath);
         
         // Then
-		assertThat(loadedStoryAsText, equalTo(storyAsText));
+        assertThat(loadedStoryAsText, equalTo(storyAsText));
     }
 
     @Test

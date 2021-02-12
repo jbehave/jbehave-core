@@ -25,72 +25,72 @@ import org.jbehave.core.io.rest.xwiki.UploadToXWiki;
 
 public class RESTSteps {
 
-	private String providerName;
-	private Map<String, Resource> index;
+    private String providerName;
+    private Map<String, Resource> index;
 
-	@Given("REST provider is $name")
-	public void givenRESTProvider(String name) {
-		this.providerName = name;
-	}
+    @Given("REST provider is $name")
+    public void givenRESTProvider(String name) {
+        this.providerName = name;
+    }
 
-	@When("index is retrieved from $uri")
-	public void indexIsRetrieved(String uri) {
-		ResourceIndexer indexer = resourceIndexer();
-		index = indexer.indexResources(uri);
-	}
+    @When("index is retrieved from $uri")
+    public void indexIsRetrieved(String uri) {
+        ResourceIndexer indexer = resourceIndexer();
+        index = indexer.indexResources(uri);
+    }
 
-	@Then("the index is not empty")
-	public void indexIsNotEmpty() {
-		assertThat(index.isEmpty(), is(false));
-	}
+    @Then("the index is not empty")
+    public void indexIsNotEmpty() {
+        assertThat(index.isEmpty(), is(false));
+    }
 
-	@When("story $name text contains '$text'")
-	public void storyIsLoaded(String name, String text) {
-		ResourceLoader loader = resourceLoader();
-		Resource resource = index.get(name);
-		String asText = loader.loadResourceAsText(resource.getURI());
-		assertThat(asText, containsString(text));
-	}
+    @When("story $name text contains '$text'")
+    public void storyIsLoaded(String name, String text) {
+        ResourceLoader loader = resourceLoader();
+        Resource resource = index.get(name);
+        String asText = loader.loadResourceAsText(resource.getURI());
+        assertThat(asText, containsString(text));
+    }
 
-	@When("stories in $sourcePath are exported to $rootURI")
-	public void whenStoriesAreExported(String sourcePath, String rootURI) {
-		ResourceExporter exporter = new ExportFromFilesystem(resourceIndexer(), resourceupLoader(), sourcePath, ".story", "", "**/*.story");
-		exporter.exportResources(rootURI);
-	}
+    @When("stories in $sourcePath are exported to $rootURI")
+    public void whenStoriesAreExported(String sourcePath, String rootURI) {
+        ResourceExporter exporter = new ExportFromFilesystem(resourceIndexer(), resourceupLoader(), sourcePath, ".story", "", "**/*.story");
+        exporter.exportResources(rootURI);
+    }
 
-	@When("story $name is uploaded appending '$text'")
-	public void storyIsUploaded(String name, String text) {
-		ResourceUploader uploader = resourceupLoader();
-		Resource resource = index.get(name);
-		resource.setContent(resource.getContent()+" "+text);
-		uploader.uploadResource(resource);
-	}
+    @When("story $name is uploaded appending '$text'")
+    public void storyIsUploaded(String name, String text) {
+        ResourceUploader uploader = resourceupLoader();
+        Resource resource = index.get(name);
+        resource.setContent(resource.getContent()+" "+text);
+        uploader.uploadResource(resource);
+    }
 
-	private ResourceIndexer resourceIndexer() {
-		if (providerName.equals("Redmine")) {
-			return new IndexFromRedmine();
-		} else if (providerName.equals("XWiki")) {
-			return new IndexFromXWiki();
-		}
-		throw new RuntimeException("Provider not supported: " + providerName);
-	}
+    private ResourceIndexer resourceIndexer() {
+        if (providerName.equals("Redmine")) {
+            return new IndexFromRedmine();
+        } else if (providerName.equals("XWiki")) {
+            return new IndexFromXWiki();
+        }
+        throw new RuntimeException("Provider not supported: " + providerName);
+    }
 
-	private ResourceLoader resourceLoader() {
-		if (providerName.equals("Redmine")) {
-			return new LoadFromRedmine(Type.JSON);
-		} else if (providerName.equals("XWiki")) {
-			return new LoadFromXWiki(Type.JSON);
-		}
-		throw new RuntimeException("Provider not supported: " + providerName);
-	}
+    private ResourceLoader resourceLoader() {
+        if (providerName.equals("Redmine")) {
+            return new LoadFromRedmine(Type.JSON);
+        } else if (providerName.equals("XWiki")) {
+            return new LoadFromXWiki(Type.JSON);
+        }
+        throw new RuntimeException("Provider not supported: " + providerName);
+    }
 
-	private ResourceUploader resourceupLoader() {
-		if (providerName.equals("Redmine")) {
-			return new UploadToRedmine(Type.JSON, "jbehave", "jbehave");
-		} else if (providerName.equals("XWiki")) {
-			return new UploadToXWiki(Type.XML, "jbehave", "jbehave");
-		}
-		throw new RuntimeException("Provider not supported: " + providerName);
-	}
+    private ResourceUploader resourceupLoader() {
+        if (providerName.equals("Redmine")) {
+            return new UploadToRedmine(Type.JSON, "jbehave", "jbehave");
+        } else if (providerName.equals("XWiki")) {
+            return new UploadToXWiki(Type.XML, "jbehave", "jbehave");
+        }
+        throw new RuntimeException("Provider not supported: " + providerName);
+    }
 
 }

@@ -16,10 +16,10 @@ public interface ViewGenerator {
             Properties viewResources);
 
     void generateReportsView(File outputDirectory, List<String> formats,
-			Properties viewResources);
+            Properties viewResources);
 
-	ReportsCount getReportsCount();
+    ReportsCount getReportsCount();
 
-	Properties defaultViewProperties();
-	
+    Properties defaultViewProperties();
+    
 }

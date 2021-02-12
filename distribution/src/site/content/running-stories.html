@@ -19,7 +19,7 @@ easily, c.f. <a href="faq.html">FAQ</a>.</p>
 <p>You can also run stories using the JBehave <a href="maven-goals.html">Maven
 goals</a>, which provide a facade around the Embedder functionality.</p>
 <p>JBehave provides the <a
-	href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>
+    href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>
 as the core entry point to running stories. The Embedder can be
 configured in multiple way, c.f. the <a href="configuration.html">configuration</a>.</p>
 
@@ -28,23 +28,23 @@ configured in multiple way, c.f. the <a href="configuration.html">configuration<
 <p>Stories can be run in different modes:</p>
 
 <ul>
-	<li>as embeddables: An <a
-		href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a> is
-	an abstraction of a running mode, which can run a single story, e.g. if
-	extending <a href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a>
-	or can run multiple stories, e.g. if extending <a
-		href="javadoc/core/org/jbehave/core/junit/JUnitStories.html">JUnitStories</a>.
-	The Embeddable instances allow their <a href="configuration.html">configuration</a>.
-	</li>
-	<li>as paths: once we have specified an instance of an <a
-		href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>,
-	with its configuration, we run stories specified by paths.</li>
-	<li>with annotated embedder runner: an <a
-		href="javadoc/core/org/jbehave/core/junit/AnnotatedEmbedderRunner.html">AnnotatedEmbedderRunner</a>
-	is an implementation of the JUnit Runner, which allows annotated
-	specification of the Embedder to be used to run the stories. C.f. <a
-		href="configuration.html">configuration</a> on how to use
-	annotatations to configure the Embedder.</li>
+    <li>as embeddables: An <a
+        href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a> is
+    an abstraction of a running mode, which can run a single story, e.g. if
+    extending <a href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a>
+    or can run multiple stories, e.g. if extending <a
+        href="javadoc/core/org/jbehave/core/junit/JUnitStories.html">JUnitStories</a>.
+    The Embeddable instances allow their <a href="configuration.html">configuration</a>.
+    </li>
+    <li>as paths: once we have specified an instance of an <a
+        href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>,
+    with its configuration, we run stories specified by paths.</li>
+    <li>with annotated embedder runner: an <a
+        href="javadoc/core/org/jbehave/core/junit/AnnotatedEmbedderRunner.html">AnnotatedEmbedderRunner</a>
+    is an implementation of the JUnit Runner, which allows annotated
+    specification of the Embedder to be used to run the stories. C.f. <a
+        href="configuration.html">configuration</a> on how to use
+    annotatations to configure the Embedder.</li>
     <li>with annotated path runner: an <a
         href="javadoc/core/org/jbehave/core/junit/AnnotatedPathRunner.html">AnnotatedPathRunner</a>
     is an extension of AnnotatedEmbedderRunner which creates a JUnit suite containing each story path
@@ -64,21 +64,21 @@ example we use JUnit annotatation to denote different running instances:
 <![CDATA[
 public class TraderStoryRunner {
 
-	@Test
-	public void runClasspathLoadedStoriesAsJUnit() {
-		// Embedder defines the configuration and candidate steps
-		Embedder embedder = new TraderEmbedder();
-        List<String> storyPaths = ... // use StoryFinder to look up paths
-		embedder.runStoriesAsPaths(storyPaths);
-	}
-
-	@Test
-	public void runURLLoadedStoriesAsJUnit() {
-		// Embedder defines the configuration and candidate steps
-		Embedder embedder = new URLTraderEmbedder();
+    @Test
+    public void runClasspathLoadedStoriesAsJUnit() {
+        // Embedder defines the configuration and candidate steps
+        Embedder embedder = new TraderEmbedder();
         List<String> storyPaths = ... // use StoryFinder to look up paths
         embedder.runStoriesAsPaths(storyPaths);
-	}
+    }
+
+    @Test
+    public void runURLLoadedStoriesAsJUnit() {
+        // Embedder defines the configuration and candidate steps
+        Embedder embedder = new URLTraderEmbedder();
+        List<String> storyPaths = ... // use StoryFinder to look up paths
+        embedder.runStoriesAsPaths(storyPaths);
+    }
 
 }
 ]]>

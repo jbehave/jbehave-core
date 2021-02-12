@@ -7,7 +7,7 @@ public class StoryDuration {
 
     private static final int CANCEL_TIMEOUT_RATIO = 20;
 
-	private long startedAtMillis;
+    private long startedAtMillis;
     private long durationInMillis;
     private final long timeoutInSecs;
     private final long cancelTimeoutInSecs;
@@ -31,29 +31,29 @@ public class StoryDuration {
     }
 
     public StoryDuration setDurationInSecs(long durationInSecs) {
-		this.durationInMillis = durationInSecs * 1000;		
-		return this;
-	}
+        this.durationInMillis = durationInSecs * 1000;
+        return this;
+    }
 
     public StoryDuration update() {
-		this.durationInMillis = elapsedTimeInMillis();		
-		return this;
-	}
+        this.durationInMillis = elapsedTimeInMillis();
+        return this;
+    }
 
     private long elapsedTimeInMillis() {
         return System.currentTimeMillis() - startedAtMillis;
     }    
 
-	public boolean timedOut() {
-		return timeoutInSecs != 0 && getDurationInSecs() > timeoutInSecs;
-	}
+    public boolean timedOut() {
+        return timeoutInSecs != 0 && getDurationInSecs() > timeoutInSecs;
+    }
 
     public boolean cancelTimedOut() {
         return cancelTimeoutInSecs == 0 || getDurationInSecs() > timeoutInSecs + cancelTimeoutInSecs;
     }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
-	}
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
+    }
 }

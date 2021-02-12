@@ -346,7 +346,7 @@ class JUnitDescriptionGeneratorBehaviour {
     }
 
     @Test
-    void shouldCountBeforeScenarioStepWithAnyType()	{
+    void shouldCountBeforeScenarioStepWithAnyType()    {
         when(givenStories.getPaths()).thenReturn(Collections.emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);

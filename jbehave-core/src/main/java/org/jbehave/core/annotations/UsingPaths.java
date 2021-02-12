@@ -16,7 +16,7 @@ import org.jbehave.core.io.StoryFinder;
 public @interface UsingPaths {
 
     String searchIn();
-	String[] includes() default {"**/*.story"};
+    String[] includes() default {"**/*.story"};
     String[] excludes() default {};
     Class<? extends StoryFinder> storyFinder() default StoryFinder.class;
 

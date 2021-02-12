@@ -25,18 +25,18 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingSteps(instances = { NeedleTraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
-		PendingSteps.class, PriorityMatchingSteps.class, SandpitSteps.class })
+        PendingSteps.class, PriorityMatchingSteps.class, SandpitSteps.class })
 @UsingNeedle
 public class AnnotatedEmbedderUsingNeedleAndSteps extends InjectableEmbedder {
 
-	@Override
+    @Override
     @org.junit.Test
-	public void run() {
-		injectedEmbedder().runStoriesAsPaths(storyPaths());
-	}
+    public void run() {
+        injectedEmbedder().runStoriesAsPaths(storyPaths());
+    }
 
-	protected List<String> storyPaths() {
-		return new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "");
-	}
+    protected List<String> storyPaths() {
+        return new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "");
+    }
 
 }

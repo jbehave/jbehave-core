@@ -10,10 +10,10 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitReportingRunner.class)
 public class CoreStoriesFailingUponPending extends CoreStories {
 
-	@Override
+    @Override
     public Configuration configuration() {
-		return super.configuration()       		
-					.usePendingStepStrategy(new FailingUponPendingStep());
-	}
+        return super.configuration()               
+                    .usePendingStepStrategy(new FailingUponPendingStep());
+    }
 
 }

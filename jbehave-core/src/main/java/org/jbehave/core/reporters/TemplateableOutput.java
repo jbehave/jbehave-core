@@ -382,11 +382,11 @@ public class TemplateableOutput extends NullStoryReporter {
         }
 
         public String getOutcome(){
-        	return keywords.outcome();
+            return keywords.outcome();
         }
         
         public String getMetaFilter(){
-        	return keywords.metaFilter();
+            return keywords.metaFilter();
         }
         
         public String getYes() {
@@ -554,7 +554,7 @@ public class TemplateableOutput extends NullStoryReporter {
         }
 
         public MetaFilter getMetaFilter(Outcome outcome){
-        	return lifecycle.getMetaFilter(outcome);
+            return lifecycle.getMetaFilter(outcome);
         }
         
         public List<String> getAfterSteps(Outcome outcome){

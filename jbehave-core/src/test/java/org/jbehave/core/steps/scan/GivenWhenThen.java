@@ -6,16 +6,16 @@ import org.jbehave.core.annotations.When;
 
 public class GivenWhenThen {
 
-	@Given("")
-	public void given(){		
-	}
+    @Given("")
+    public void given(){
+    }
 
-	@When("")
-	public void when(){		
-	}
-	
-	@Then("")
-	public void then(){		
-	}
+    @When("")
+    public void when(){
+    }
+
+    @Then("")
+    public void then(){
+    }
 
 }

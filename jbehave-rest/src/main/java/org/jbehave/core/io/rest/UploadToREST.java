@@ -32,16 +32,16 @@ public class UploadToREST implements ResourceUploader {
         }
     }
 
-	protected String uri(String resourcePath, Type type) {
-		return resourcePath;
-	}
+    protected String uri(String resourcePath, Type type) {
+        return resourcePath;
+    }
 
-	protected String entity(Resource resource, Type type) {
-		return resource.getContent();
-	}
+    protected String entity(Resource resource, Type type) {
+        return resource.getContent();
+    }
 
-	private void put(String uri, String entity) {
-		client.put(uri, entity);
-	}
+    private void put(String uri, String entity) {
+        client.put(uri, entity);
+    }
 
 }

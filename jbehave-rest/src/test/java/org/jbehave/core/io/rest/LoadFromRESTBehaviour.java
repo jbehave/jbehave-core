@@ -14,16 +14,16 @@ import static org.mockito.Mockito.when;
 
 class LoadFromRESTBehaviour {
 
-	@Test
-	void canLoadFromREST() {
-	    RESTClient client = mock(RESTClient.class);
-	    when(client.getType()).thenReturn(Type.JSON);
-	    String url = "http://wiki/page";
+    @Test
+    void canLoadFromREST() {
+        RESTClient client = mock(RESTClient.class);
+        when(client.getType()).thenReturn(Type.JSON);
+        String url = "http://wiki/page";
         String entity = "Some content";
         when(client.get(url)).thenReturn(entity);
-		ResourceLoader loader = new LoadFromREST(client);
-		String text = loader.loadResourceAsText(url);
-		assertThat(text, containsString(entity));
-	}
+        ResourceLoader loader = new LoadFromREST(client);
+        String text = loader.loadResourceAsText(url);
+        assertThat(text, containsString(entity));
+    }
 
 }

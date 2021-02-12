@@ -35,7 +35,7 @@ public class OrganizationDaoImpl implements OrganizationDao {
   public Organization findByName(String orgName) {
     List<Organization> query = sessionFactory.getCurrentSession()
             .createQuery("from Organization where name = :name")
-		    .setParameter("name", orgName)
+            .setParameter("name", orgName)
             .list();
     if (query.size() == 1) {
       return query.get(0);

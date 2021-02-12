@@ -11,42 +11,42 @@
 <p>Reporting is an essential element of BDD as it allows to monitor
 the outcome of the stories that have been run. At the heart of JBehave's
 reporting is the <a
-	href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>,
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>,
 to which events are reported as they occur.</p>
 
 <p>Currently, the story reporters supported are:</p>
 <ul>
-	<li><a
-		href="javadoc/core/org/jbehave/core/reporters/ConsoleOutput.html">ConsoleOutput</a>:
-	a text-based console output</li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/reporters/IdeOnlyConsoleOutput.html">IdeOnlyConsoleOutput</a>:
-	a text-based console output, which only reports events when running in
-	IDEs (Eclipse and IDEA supported).</li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/reporters/TxtOutput.html">TxtOutput</a>:
-	a text-based file output</li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/reporters/HtmlOutput.html">HtmlOutput</a>:
-	an HTML file output</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/ConsoleOutput.html">ConsoleOutput</a>:
+    a text-based console output</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/IdeOnlyConsoleOutput.html">IdeOnlyConsoleOutput</a>:
+    a text-based console output, which only reports events when running in
+    IDEs (Eclipse and IDEA supported).</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/TxtOutput.html">TxtOutput</a>:
+    a text-based file output</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/HtmlOutput.html">HtmlOutput</a>:
+    an HTML file output</li>
     <li><a
         href="javadoc/core/org/jbehave/core/reporters/HtmlTemplateOutput.html">HtmlTemplateOutput</a>:
     an HTML template-based file output.  By default, a Freemarker-based template processor is used but a different 
     implementation based on a different templating system can be provided.</li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/reporters/XmlOutput.html">XmlOutput</a>:
-	an XML file output</li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/reporters/PostStoryStatisticsCollector.html">PostStoryStatisticsCollector</a>:
-	collects statistics and stores them as properties after story is run</li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/reporters/DelegatingStoryReporter.html">DelegatingStoryReporter</a>:
-	used by the StoryReporterBuilder to delegate to any number of reporters
-	as a proxy.</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/XmlOutput.html">XmlOutput</a>:
+    an XML file output</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/PostStoryStatisticsCollector.html">PostStoryStatisticsCollector</a>:
+    collects statistics and stores them as properties after story is run</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/DelegatingStoryReporter.html">DelegatingStoryReporter</a>:
+    used by the StoryReporterBuilder to delegate to any number of reporters
+    as a proxy.</li>
 </ul>
 
 <p>The <a
-	href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>
 allows to configure multiple story reporters with pre-configured
 formats: CONSOLE, TXT, HTML, HTML_TEMPLATE and XML.</p>
 <script type="syntaxhighlighter" class="brush: java">
@@ -101,20 +101,20 @@ public abstract class TraderStory extends JUnitStory {
 </script>
 
 <p>Note that we use the <a
-	href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>
 to implement a builder pattern for file-based reporters via the <a
-	href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.html">FilePrintStreamFactory</a>.
+    href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.html">FilePrintStreamFactory</a>.
 The file path resolution strategy from a story path to a report file
 path is definable via the <a
-	href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.FilePathResolver.html">FilePathResolver</a>.
+    href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.FilePathResolver.html">FilePathResolver</a>.
 By default, it uses the <a
-	href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.ResolveToPackagedName.html">ResolveToPackagedName</a>
+    href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.ResolveToPackagedName.html">ResolveToPackagedName</a>
 whereby the story path is resolved to a Java package. So, e.g., if the
 story path is <b>com/example/my_cool.story</b>, we'll end up with file
 report outputs of the form: <b>com.example.my_cool.[format]</b> (where <b>format</b>
 is any of <b>txt,html,xml</b> in the example above). An alternative
 strategy, is the <a
-	href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.ResolveToSimpleName.html">ResolveToSimpleName</a>,
+    href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.ResolveToSimpleName.html">ResolveToSimpleName</a>,
 whereby only the simple name portion, without the package structure, is
 considered, i.e. we'd end up with file report outputs of the form: <b>my_cool.[format]</b></p>
 
@@ -147,20 +147,20 @@ a code location URL and a story path.</p>
 
 <p>The code location URLs can be created from different sources, via
 static methods in the <a
-	href="javadoc/core/org/jbehave/core/io/CodeLocations.html">CodeLocations</a>
+    href="javadoc/core/org/jbehave/core/io/CodeLocations.html">CodeLocations</a>
 utility class:</p>
 
 <ul>
-	<li><a
-		href="javadoc/core/org/jbehave/core/io/CodeLocations.html#codeLocationFromClass(java.lang.Class)">codeLocationFromClass(java.lang.Class)</a>:
-	returns the code location of the class resource</li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/io/CodeLocations.html#codeLocationFromPath(java.lang.String)">codeLocationFromFromPath(java.lang.String)</a>:
-	returns the code location of a local file path</li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/io/CodeLocations.html#codeLocationFromURL(java.lang.String)">codeLocationFromFromURL(java.lang.String)</a>:
-	returns the code location of a generic url (from its String external
-	form representation)</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/io/CodeLocations.html#codeLocationFromClass(java.lang.Class)">codeLocationFromClass(java.lang.Class)</a>:
+    returns the code location of the class resource</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/io/CodeLocations.html#codeLocationFromPath(java.lang.String)">codeLocationFromFromPath(java.lang.String)</a>:
+    returns the code location of a local file path</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/io/CodeLocations.html#codeLocationFromURL(java.lang.String)">codeLocationFromFromURL(java.lang.String)</a>:
+    returns the code location of a generic url (from its String external
+    form representation)</li>
 </ul>
 
 <h2>View Generation</h2>
@@ -176,14 +176,14 @@ switched off if one prefers the raw content accessible via a URL:</p>
 
 <pre class="brush: java">
     Properties viewResources = new Properties();
-	viewResources("decorateNonHtml","false");
+    viewResources("decorateNonHtml","false");
     new StoryReporterBuilder().useViewResources(viewResources);        
 </pre>
 
 <p>The view generation is the responsibility of the <a
-	href="javadoc/core/org/jbehave/core/reporters/ViewGenerator.html">ViewGenerator</a>.
+    href="javadoc/core/org/jbehave/core/reporters/ViewGenerator.html">ViewGenerator</a>.
 JBehave provides an implementation (<a
-	href="javadoc/core/org/jbehave/core/reporters/FreemarkerViewGenerator.html">FreemarkerViewGenerator.</a>)
+    href="javadoc/core/org/jbehave/core/reporters/FreemarkerViewGenerator.html">FreemarkerViewGenerator.</a>)
 based on <a href="http://freemarker.org">Freemarker</a> to allow a
 templateable and easily styleable way to generate the view.  JBehave also provides a more generic <a
     href="javadoc/core/org/jbehave/core/reporters/TemplateableViewGenerator.html">TemplateableViewGenerator</a>  
@@ -204,7 +204,7 @@ found in the <b>jbehave-site-resources.zip</b>.</p>
 goal which will derive the view directory from the configured Embedder
 and unpack to it the resources specified as normal project dependencies
 (provided they match the type and artifactId filters, see <a
-	href="maven-goals.html">maven goals</a> for more details).</span>
+    href="maven-goals.html">maven goals</a> for more details).</span>
 
 <h2>Reporting Statistics</h2>
 

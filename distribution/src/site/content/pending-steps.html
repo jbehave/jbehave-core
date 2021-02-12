@@ -71,8 +71,8 @@ the <a href="javadoc/core/org/jbehave/core/steps/Configuration.html">Configurati
  
 <pre class="brush: java">
     Configuration configuration = new MostUsefulConfiguration()
-	   .useStepMonitor(new PrintStreamStepMonitor()) // default is SilentStepMonitor()
-	   .doDryRun(true); // default is "false"
+       .useStepMonitor(new PrintStreamStepMonitor()) // default is SilentStepMonitor()
+       .doDryRun(true); // default is "false"
     new InstanceStepsFactory(configuration, new MySteps());
 </pre>
 

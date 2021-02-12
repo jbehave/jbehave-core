@@ -37,7 +37,7 @@ import org.jbehave.core.model.Meta.Property;
  * 
  * <pre>
  * MetaFilter filter = new MetaFilter(
- * 		&quot;+author Mauro -theme smoke testing +map *API -skip&quot;);
+ *         &quot;+author Mauro -theme smoke testing +map *API -skip&quot;);
  * filter.excluded(new Meta(asList(&quot;map someAPI&quot;)));
  * </pre>
  * 
@@ -49,7 +49,7 @@ import org.jbehave.core.model.Meta.Property;
  * 
  * <pre>
  * MetaFilter filter = new MetaFilter(
- * 		&quot;groovy: (a == '11' | a == '22') &amp;&amp; b == '33'&quot;);
+ *         &quot;groovy: (a == '11' | a == '22') &amp;&amp; b == '33'&quot;);
  * </pre>
  * <p>
  * Custom {@link MetaMatcher} instances can also be provided as a map, indexed
@@ -69,13 +69,13 @@ import org.jbehave.core.model.Meta.Property;
 public class MetaFilter {
 
     private static final String NO_FILTER = "";
-	private static final String GROOVY = "groovy:";
+    private static final String GROOVY = "groovy:";
 
-	public static final MetaFilter EMPTY = new MetaFilter();
+    public static final MetaFilter EMPTY = new MetaFilter();
 
     private final String filterAsString;
     private final EmbedderMonitor monitor;
-	private final Map<String, MetaMatcher> metaMatchers;
+    private final Map<String, MetaMatcher> metaMatchers;
     private final MetaMatcher filterMatcher;
 
     public MetaFilter() {
@@ -87,15 +87,15 @@ public class MetaFilter {
     }
 
     public MetaFilter(String filterAsString, EmbedderMonitor monitor) {
-    	this(filterAsString, monitor, new HashMap<String, MetaMatcher>());
+        this(filterAsString, monitor, new HashMap<String, MetaMatcher>());
     }
 
     public MetaFilter(String filterAsString, Map<String,MetaMatcher> metaMatchers) {
-    	this(filterAsString, new PrintStreamEmbedderMonitor(), metaMatchers);
+        this(filterAsString, new PrintStreamEmbedderMonitor(), metaMatchers);
     }
 
     public MetaFilter(String filterAsString, EmbedderMonitor monitor, Map<String,MetaMatcher> metaMatchers) {
-		this.filterAsString = filterAsString == null ? NO_FILTER : filterAsString;
+        this.filterAsString = filterAsString == null ? NO_FILTER : filterAsString;
         this.monitor = monitor;
         this.metaMatchers = metaMatchers;
         this.filterMatcher = createMetaMatcher(this.filterAsString, this.metaMatchers);
@@ -110,11 +110,11 @@ public class MetaFilter {
      * @return A MetaMatcher used to match the filter content
      */
     protected MetaMatcher createMetaMatcher(String filterAsString, Map<String, MetaMatcher> metaMatchers) {
-    	for ( String key : metaMatchers.keySet() ){
-    		if ( filterAsString.startsWith(key)){
-    			return metaMatchers.get(key);
-    		}
-    	}
+        for ( String key : metaMatchers.keySet() ){
+            if ( filterAsString.startsWith(key)){
+                return metaMatchers.get(key);
+            }
+        }
         if (filterAsString.startsWith(GROOVY)) {
             return new GroovyMetaMatcher();
         }
@@ -297,8 +297,8 @@ public class MetaFilter {
         }
     }
 
-	public boolean isEmpty() {
-		return EMPTY == this;
-	}
+    public boolean isEmpty() {
+        return EMPTY == this;
+    }
 
 }

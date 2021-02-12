@@ -2,12 +2,12 @@ package org.jbehave.core.failures;
 
 public final class RethrowingFailure implements FailureStrategy {
 
-	@Override
+    @Override
     public void handleFailure(Throwable throwable) throws Throwable {
-	    if ( throwable instanceof UUIDExceptionWrapper ){
-	        throw throwable.getCause();
-	    }
-		throw throwable;
-	}
+        if ( throwable instanceof UUIDExceptionWrapper ){
+            throw throwable.getCause();
+        }
+        throw throwable;
+    }
 
 }

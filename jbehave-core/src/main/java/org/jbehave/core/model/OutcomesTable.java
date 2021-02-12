@@ -39,7 +39,7 @@ public class OutcomesTable {
     private static final String VALUE_SEPARATOR = "|";
 
     private final Keywords keywords;
-	private final Map<Type,String> formats;
+    private final Map<Type,String> formats;
     private final List<Outcome<?>> outcomes = new ArrayList<>();
     private final List<Outcome<?>> failedOutcomes = new ArrayList<>();
     private UUIDExceptionWrapper failureCause;

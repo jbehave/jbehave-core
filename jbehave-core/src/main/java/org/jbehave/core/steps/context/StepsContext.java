@@ -15,7 +15,7 @@ public class StepsContext {
     private static final String OBJECT_ALREADY_STORED_MESSAGE = "Object key '%s' has been already stored before.";
     private static final String OBJECT_NOT_STORED_MESSAGE = "Object key '%s' has not been stored";
 
-	private static final ThreadLocal<Map<String, Object>> exampleObjects = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, Object>> exampleObjects = new ThreadLocal<>();
     private static final ThreadLocal<Map<String, Object>> scenarioObjects = new ThreadLocal<>();
     private static final ThreadLocal<Map<String, Object>> storyObjects = new ThreadLocal<>();
     private static final ThreadLocal<Set<String>> keysStored = new ThreadLocal<>();
@@ -112,7 +112,7 @@ public class StepsContext {
     }
 
     @SuppressWarnings("serial")
-	public static class ObjectNotStoredException extends RuntimeException {
+    public static class ObjectNotStoredException extends RuntimeException {
 
         public ObjectNotStoredException(String message) {
             super(message);
@@ -120,7 +120,7 @@ public class StepsContext {
     }
 
     @SuppressWarnings("serial")
-	public static class ObjectAlreadyStoredException extends RuntimeException {
+    public static class ObjectAlreadyStoredException extends RuntimeException {
 
         public ObjectAlreadyStoredException(String message) {
             super(message);

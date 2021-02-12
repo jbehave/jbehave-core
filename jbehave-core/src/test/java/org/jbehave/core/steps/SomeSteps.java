@@ -91,7 +91,7 @@ public class SomeSteps extends Steps {
     }
 
     public ExamplesTable aMethodReturningExamplesTable(String value){
-    	return new ExamplesTable(value);
+        return new ExamplesTable(value);
     }
 
     @AsParameters

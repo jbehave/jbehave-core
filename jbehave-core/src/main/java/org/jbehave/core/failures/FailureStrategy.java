@@ -10,6 +10,6 @@ package org.jbehave.core.failures;
  */
 public interface FailureStrategy {
 
-	void handleFailure(Throwable throwable) throws Throwable;
+    void handleFailure(Throwable throwable) throws Throwable;
 
 }

@@ -15,23 +15,23 @@ injection.</p>
 
 <p>JBehave supports the following dependency injection containers:
 <ul>
-	<li><a href="http://code.google.com/p/google-guice/">Guice</a>
-	(when the extension module <b>jbehave-guice</b> is added to the
-	classpath),</li>
+    <li><a href="http://code.google.com/p/google-guice/">Guice</a>
+    (when the extension module <b>jbehave-guice</b> is added to the
+    classpath),</li>
 
-	<li><a href="http://needle.spree.de/">Needle</a>
-	(when the extension module <b>jbehave-needle</b> is added to the
-	classpath),</li>
-	
-	<li><a href="http://picocontainer.org">PicoContainer</a> (when the
-	extension module <b>jbehave-pico</b> is added to the classpath),</li>
+    <li><a href="http://needle.spree.de/">Needle</a>
+    (when the extension module <b>jbehave-needle</b> is added to the
+    classpath),</li>
 
-	<li><a href="http://springframework.org">Spring</a> (when the
-	extension module <b>jbehave-spring</b> is added to the classpath),</li>
+    <li><a href="http://picocontainer.org">PicoContainer</a> (when the
+    extension module <b>jbehave-pico</b> is added to the classpath),</li>
+
+    <li><a href="http://springframework.org">Spring</a> (when the
+    extension module <b>jbehave-spring</b> is added to the classpath),</li>
 
     <li><a href="http://www.seamframework.org/Weld">Weld</a> (when the
     extension module <b>jbehave-weld</b> is added to the classpath).</li>
-	
+
 </ul>
 </p>
 
@@ -127,18 +127,18 @@ public class RunningWithAnnotatedEmbedderRunner extends InjectableEmbedder {
         return new StoryFinder().findPaths(searchInDirectory, asList("**/*.story"), null);
     }
 
-	public static class Steps {
-		@NeedleInjectionProvider
-		InjectionProvider<ValueGetter> provider = new ValueGetterProvider();
+    public static class Steps {
+        @NeedleInjectionProvider
+        InjectionProvider<ValueGetter> provider = new ValueGetterProvider();
 
-		@Inject
-		private ValueGetter getter;
+        @Inject
+        private ValueGetter getter;
 
-		@Given("Some")
-		public boolean complete() {
-			return ValueGetter.VALUE.equals(getter.getValue());
-		}
-	}
+        @Given("Some")
+        public boolean complete() {
+            return ValueGetter.VALUE.equals(getter.getValue());
+        }
+    }
 }
 ]]>
 </script>
@@ -202,7 +202,7 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
 
 <p>When using Spring, we can specify the context from separate
 locations for configuration and steps.<script type="syntaxhighlighter"
-	class="brush: java">
+    class="brush: java">
 <![CDATA[
 @RunWith(SpringAnnotatedEmbedderRunner.class)
 @Configure()
@@ -286,7 +286,7 @@ system whose behaviour is being verified.</p>
 <h3>Using Guice</h3>
 
 <p>CandidateSteps can be created with Guice using the <a
-	href="javadoc/guice/org/jbehave/core/steps/guice/GuiceStepsFactory.html">GuiceStepsFactory</a>:
+    href="javadoc/guice/org/jbehave/core/steps/guice/GuiceStepsFactory.html">GuiceStepsFactory</a>:
 </p>
 
 <script type="syntaxhighlighter" class="brush: java">
@@ -339,19 +339,19 @@ public class GuiceTraderSteps extends TraderSteps {
 <h3>Using Needle</h3>
 
 <p>CandidateSteps can be created with Needle using the <a
-	href="javadoc/guice/org/jbehave/core/steps/needle/NeedleStepsFactory.html">NeedleStepsFactory</a>:
+    href="javadoc/guice/org/jbehave/core/steps/needle/NeedleStepsFactory.html">NeedleStepsFactory</a>:
 </p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     @Override
     public InjectableStepsFactory stepsFactory() {
-		final Class<?>[] steps = new Class<?>[] { MySteps.class };
+        final Class<?>[] steps = new Class<?>[] { MySteps.class };
 
-		final Set<InjectionProvider<?>> providers = new HashSet<InjectionProvider<?>>();
-		// always inject the same instance
-		providers.add(DefaultInstanceInjectionProvider.providerFor(...));
-		return new NeedleStepsFactory(configuration(), providers, steps);
+        final Set<InjectionProvider<?>> providers = new HashSet<InjectionProvider<?>>();
+        // always inject the same instance
+        providers.add(DefaultInstanceInjectionProvider.providerFor(...));
+        return new NeedleStepsFactory(configuration(), providers, steps);
     }    
 ]]>
 </script>
@@ -368,9 +368,9 @@ public class MySteps {
     
     @Given("I make trade")
     public void doNothing() {
-    	tradingService.newStock(....);
+        tradingService.newStock(....);
     }
-	......
+    ......
 
 }
 </pre>
@@ -378,7 +378,7 @@ public class MySteps {
 <h3>Using PicoContainer</h3>
 
 <p>CandidateSteps can be created with PicoContainer using the <a
-	href="javadoc/pico/org/jbehave/core/steps/pico/PicoStepsFactory.html">PicoStepsFactory</a>:
+    href="javadoc/pico/org/jbehave/core/steps/pico/PicoStepsFactory.html">PicoStepsFactory</a>:
 </p>
 
 <script type="syntaxhighlighter" class="brush: java">
@@ -407,7 +407,7 @@ public class MySteps {
 <h3>Using Spring</h3>
 
 <p>CandidateSteps can be created with Spring using the <a
-	href="javadoc/spring/org/jbehave/core/steps/spring/SpringStepsFactory.html">SpringStepsFactory</a>:
+    href="javadoc/spring/org/jbehave/core/steps/spring/SpringStepsFactory.html">SpringStepsFactory</a>:
 </p>
 
 <script type="syntaxhighlighter" class="brush: java">
@@ -427,7 +427,7 @@ public class MySteps {
 <h3>Using Weld</h3>
 
 <p>CandidateSteps can be created by annotating a class using the @WeldStep annotation <a
-	href="javadoc/weld/org/jbehave/core/annotations/weld/WeldStep.html">WeldStep</a>:
+    href="javadoc/weld/org/jbehave/core/annotations/weld/WeldStep.html">WeldStep</a>:
 </p>
 
 <script type="syntaxhighlighter" class="brush: java">
@@ -454,14 +454,14 @@ public class MySteps {
 @WeldStep
 public class MyTradingSteps {
 
-	@Inject  
+    @Inject
     private TradingService tradingService;
     
     @Given("I make trade")
     public void doNothing() {
-    	tradingService.newStock(....);
+        tradingService.newStock(....);
     }
-	......
+    ......
 }
 ]]>
 </script>

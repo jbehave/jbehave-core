@@ -230,7 +230,7 @@ public abstract class Configuration {
 
     public Comparator<Story> storyExecutionComparator() {
         if (storyExecutionComparator == null) {
-        	storyExecutionComparator = Comparator.comparing(Story::getPath, Comparator.naturalOrder());
+            storyExecutionComparator = Comparator.comparing(Story::getPath, Comparator.naturalOrder());
         }
         return storyExecutionComparator;
     }

@@ -7,9 +7,9 @@ import org.jbehave.examples.core.steps.RestartingSteps;
 
 public class Restarting extends CoreStory {
 
-	@Override
-	public InjectableStepsFactory stepsFactory() {
-		return new InstanceStepsFactory(configuration(), new RestartingSteps());
-	}
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        return new InstanceStepsFactory(configuration(), new RestartingSteps());
+    }
 
 }

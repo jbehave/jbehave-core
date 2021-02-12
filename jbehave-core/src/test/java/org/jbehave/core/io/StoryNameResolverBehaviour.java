@@ -46,9 +46,9 @@ class StoryNameResolverBehaviour {
     @Test
     void shouldResolveAncestorWithCustomDelegate() {
         StoryNameResolver delegate = mock(StoryNameResolver.class);
-		when(delegate.resolveName("io")).thenReturn("IO");
-		when(delegate.resolveName("camel_case.story")).thenReturn("CC");
-		StoryNameResolver resolver = new AncestorDelegatingResolver(1, delegate);
+        when(delegate.resolveName("io")).thenReturn("IO");
+        when(delegate.resolveName("camel_case.story")).thenReturn("CC");
+        StoryNameResolver resolver = new AncestorDelegatingResolver(1, delegate);
         assertThat(resolver.resolveName("org/jbehave/core/io/camel_case.story"), equalTo("IO CC"));
     }
 

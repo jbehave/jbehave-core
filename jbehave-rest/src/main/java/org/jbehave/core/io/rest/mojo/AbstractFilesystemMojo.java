@@ -49,16 +49,16 @@ public abstract class AbstractFilesystemMojo extends AbstractMojo {
     String restPassword;
 
     /**
-	 * The path of the filesystem in which the resources are found
-	 */
+     * The path of the filesystem in which the resources are found
+     */
     @Parameter(property = "jbehave.rest.resourcesPath", defaultValue = "src/main/resources/stories")
-	String resourcesPath;
+    String resourcesPath;
 
-	/**
-	 * The extension of the resources
-	 */
+    /**
+     * The extension of the resources
+     */
     @Parameter(property = "jbehave.rest.resourcesExt", defaultValue = ".story")
-	String resourcesExt;
+    String resourcesExt;
 
     ResourceIndexer newResourceIndexer() {
         if (restProvider.equals(REDMINE)) {

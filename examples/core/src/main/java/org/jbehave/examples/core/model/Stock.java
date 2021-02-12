@@ -12,7 +12,7 @@ public class Stock {
         ON, OFF
     };
 
-	private String symbol;
+    private String symbol;
     private double alertPrice;
     private AlertStatus status = OFF;
     private List<Double> prices = new ArrayList<>();
@@ -23,7 +23,7 @@ public class Stock {
     }
 
     public String getSymbol(){
-    	return symbol;
+        return symbol;
     }
     
     public void tradeAt(double price) {

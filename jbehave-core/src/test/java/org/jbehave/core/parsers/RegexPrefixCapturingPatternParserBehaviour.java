@@ -47,7 +47,7 @@ class RegexPrefixCapturingPatternParserBehaviour {
     
     @Test
     void shouldMatchStepWithPatternsUsingCustomPrefix() {
-    	RegexPrefixCapturingPatternParser parser = new RegexPrefixCapturingPatternParser("%");
+        RegexPrefixCapturingPatternParser parser = new RegexPrefixCapturingPatternParser("%");
         assertThat(parser.getPrefix(), equalTo("%"));
         assertThat(parser.toString(), containsString("prefix=%"));
         assertThatPatternMatchesStep(parser, "a house with %numberOfDoors doors and %some windows",
@@ -63,7 +63,7 @@ class RegexPrefixCapturingPatternParserBehaviour {
 
     @Test
     void shouldMatchStepWithPatternsUsingCustomCharacterClass() {
-    	RegexPrefixCapturingPatternParser parserAllowingOnlyLettersInParameterNames = new RegexPrefixCapturingPatternParser("$", "[\\p{L}]");
+        RegexPrefixCapturingPatternParser parserAllowingOnlyLettersInParameterNames = new RegexPrefixCapturingPatternParser("$", "[\\p{L}]");
         assertThatPatternMatchesStep(parserAllowingOnlyLettersInParameterNames, "a house with $numberOfFirstFloorDoors doors and $facing windows",
                 "a house with 3 doors and 4 windows", true, "numberOfFirstFloorDoors", "facing");
         assertThatPatternMatchesStep(parserAllowingOnlyLettersInParameterNames, "a house with $numberOf1stFloorDoors doors and $facing2 windows",

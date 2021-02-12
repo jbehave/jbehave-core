@@ -1,216 +1,216 @@
 
 <story path="/path/to/story" title="An interesting story &amp; special chars">
-	<meta>
-		<property keyword="@" name="author" value="Mauro"/>
-		<property keyword="@" name="theme" value="testing"/>
-	</meta>
-	<narrative keyword="Narrative:">
-		<inOrderTo keyword="In order to">renovate my house</inOrderTo>
-		<asA keyword="As a">customer</asA>
-		<iWantTo keyword="I want to">get a loan</iWantTo>
-	</narrative>
-	<lifecycle keyword="Lifecycle:">
-		<before keyword="Before:">
-			<scope keyword="Scope:" value="SCENARIO">
-				<step>Given a scenario step</step>
-			</scope>
-			<scope keyword="Scope:" value="STORY">
-				<step>Given a before story step</step>
-			</scope>
-		</before>
-		<after keyword="After:">
-			<scope keyword="Scope:" value="SCENARIO">
-				<outcome keyword="Outcome:" value="ANY">
+    <meta>
+        <property keyword="@" name="author" value="Mauro"/>
+        <property keyword="@" name="theme" value="testing"/>
+    </meta>
+    <narrative keyword="Narrative:">
+        <inOrderTo keyword="In order to">renovate my house</inOrderTo>
+        <asA keyword="As a">customer</asA>
+        <iWantTo keyword="I want to">get a loan</iWantTo>
+    </narrative>
+    <lifecycle keyword="Lifecycle:">
+        <before keyword="Before:">
+            <scope keyword="Scope:" value="SCENARIO">
+                <step>Given a scenario step</step>
+            </scope>
+            <scope keyword="Scope:" value="STORY">
+                <step>Given a before story step</step>
+            </scope>
+        </before>
+        <after keyword="After:">
+            <scope keyword="Scope:" value="SCENARIO">
+                <outcome keyword="Outcome:" value="ANY">
 
-					<step>Given a scenario step</step>
-				</outcome>
-				<!-- outcome -->
-			</scope>
-			<scope keyword="Scope:" value="STORY">
-				<outcome keyword="Outcome:" value="ANY">
+                    <step>Given a scenario step</step>
+                </outcome>
+                <!-- outcome -->
+            </scope>
+            <scope keyword="Scope:" value="STORY">
+                <outcome keyword="Outcome:" value="ANY">
 
-					<step>Given an after story step</step>
-				</outcome>
-				<!-- outcome -->
-			</scope>
-			<!-- scope -->
-		</after>
-	</lifecycle>
-	<before keyword="Before:">
-		<step outcome="successful">
-			Given a before story step
-		</step>
-	</before>
-	<scenario keyword="Scenario:" title="I ask for a loan">
-		<givenStories keyword="GivenStories:">
-			<givenStory>/given/story1</givenStory>
-			<givenStory>/given/story2</givenStory>
-		</givenStories>
-		<step outcome="successful">
-			Given a scenario step
-		</step>
-		<step outcome="successful">
-			Given I have a balance of $50
-		</step>
-		<step outcome="ignorable">
-			!-- Then ignore me
-		</step>
-		<step outcome="comment">
-			!-- A comment
-		</step>
-		<step outcome="successful">
-			When I perform inner step
-		</step>
-		<step outcome="successful">
-			When I perform inner step
-		</step>
-		<step outcome="successful">
-			When I perform inner step
-		</step>
-		<step outcome="successful">
-			When I perform composite step
-		</step>
-		<step outcome="successful">
-			When I perform inner step
-		</step>
-		<step outcome="successful">
-			When I perform composite step
-		</step>
-		<step outcome="successful">
-			When I request $20
-		</step>
-		<step outcome="successful">
-			When I ask Liz for a loan of $100
-		</step>
-		<step outcome="successful">
-			When I ask Liz for a loan of $<parameter>99</parameter>
-		</step>
-		<step outcome="successful">
-			When I write special chars &lt;&gt;&amp;&quot;
-		</step>
-		<step outcome="successful">
-			When I write special chars in parameter <parameter>&lt;&gt;&amp;&quot;</parameter>
-		</step>
-		<step outcome="successful">
-			When I write two parameters <parameter>,,,</parameter> and <parameter>&amp;&amp;&amp;</parameter>
-		</step>
-		<step outcome="hi">
-			Then I should... - try again
-		</step>
-		<step outcome="Restarted Story">
-			/path/to/story
-		</step>
-		<step outcome="failed">
-			Then I should have a balance of $30
-			<failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-				at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:85)
-				at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
-				(reflection-invoke)
-				at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
-				...</failure></step>
-		<step outcome="notPerformed">
-			Then I should have $20
-		</step>
-		<step outcome="failed">
-			Then I don&apos;t return loan
-			<failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed
-				at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:87)
-				at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:99)
-				at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
-				(reflection-invoke)
-				at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
-				...</failure><outcomes>
-			<fields>
-				<field>Description</field>
-				<field>Value</field>
-				<field>Matcher</field>
-				<field>Verified</field>
-			</fields>
+                    <step>Given an after story step</step>
+                </outcome>
+                <!-- outcome -->
+            </scope>
+            <!-- scope -->
+        </after>
+    </lifecycle>
+    <before keyword="Before:">
+        <step outcome="successful">
+            Given a before story step
+        </step>
+    </before>
+    <scenario keyword="Scenario:" title="I ask for a loan">
+        <givenStories keyword="GivenStories:">
+            <givenStory>/given/story1</givenStory>
+            <givenStory>/given/story2</givenStory>
+        </givenStories>
+        <step outcome="successful">
+            Given a scenario step
+        </step>
+        <step outcome="successful">
+            Given I have a balance of $50
+        </step>
+        <step outcome="ignorable">
+            !-- Then ignore me
+        </step>
+        <step outcome="comment">
+            !-- A comment
+        </step>
+        <step outcome="successful">
+            When I perform inner step
+        </step>
+        <step outcome="successful">
+            When I perform inner step
+        </step>
+        <step outcome="successful">
+            When I perform inner step
+        </step>
+        <step outcome="successful">
+            When I perform composite step
+        </step>
+        <step outcome="successful">
+            When I perform inner step
+        </step>
+        <step outcome="successful">
+            When I perform composite step
+        </step>
+        <step outcome="successful">
+            When I request $20
+        </step>
+        <step outcome="successful">
+            When I ask Liz for a loan of $100
+        </step>
+        <step outcome="successful">
+            When I ask Liz for a loan of $<parameter>99</parameter>
+        </step>
+        <step outcome="successful">
+            When I write special chars &lt;&gt;&amp;&quot;
+        </step>
+        <step outcome="successful">
+            When I write special chars in parameter <parameter>&lt;&gt;&amp;&quot;</parameter>
+        </step>
+        <step outcome="successful">
+            When I write two parameters <parameter>,,,</parameter> and <parameter>&amp;&amp;&amp;</parameter>
+        </step>
+        <step outcome="hi">
+            Then I should... - try again
+        </step>
+        <step outcome="Restarted Story">
+            /path/to/story
+        </step>
+        <step outcome="failed">
+            Then I should have a balance of $30
+            <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
+                at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:85)
+                at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
+                (reflection-invoke)
+                at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
+                ...</failure></step>
+        <step outcome="notPerformed">
+            Then I should have $20
+        </step>
+        <step outcome="failed">
+            Then I don&apos;t return loan
+            <failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed
+                at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:87)
+                at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:99)
+                at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
+                (reflection-invoke)
+                at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
+                ...</failure><outcomes>
+            <fields>
+                <field>Description</field>
+                <field>Value</field>
+                <field>Matcher</field>
+                <field>Verified</field>
+            </fields>
 
-			<outcome>
-				<value>I don&apos;t return all</value><value>100</value><value>&lt;50.0&gt;</value><value>No</value>
-			</outcome>
+            <outcome>
+                <value>I don&apos;t return all</value><value>100</value><value>&lt;50.0&gt;</value><value>No</value>
+            </outcome>
 
-			<outcome>
-				<value>A wrong date</value><value>01/01/2011</value><value>&quot;02/01/2011&quot;</value><value>No</value>
-			</outcome>
-		</outcomes>
-		</step>
-		<step outcome="successful">
-			Given a scenario step
-		</step>
-	</scenario>
-	<scenario keyword="Scenario:" title="Parametrised Scenario">
-		<examples keyword="Examples:">
-			<step>Given money &lt;money&gt;</step>
-			<step>Then I give it to &lt;to&gt;</step>
-			<table>
-				<headers>
-					<header>money</header>
-					<header>to</header>
-				</headers>
-				<row>
-					<value>$30</value>
-					<value>Mauro</value>
-				</row>
-				<row>
-					<value>$50</value>
-					<value>Paul</value>
-				</row>
-			</table>
-		</examples>
-		<example keyword="Example:">{money=$30, to=Mauro}</example>
-		<step outcome="successful">
-			Given a scenario step
-		</step>
-		<step outcome="successful">
-			Given money $30
-		</step>
-		<step outcome="successful">
-			Then I give it to Mauro
-		</step>
-		<step outcome="successful">
-			Given a scenario step
-		</step>
-		<example keyword="Example:">{money=$50, to=Paul}</example>
-		<step outcome="successful">
-			Given a scenario step
-		</step>
-		<step outcome="successful">
-			Given money $50
-		</step>
-		<step outcome="successful">
-			Then I give it to Paul
-		</step>
-		<step outcome="failed">
-			Then I should have a balance of $30
-			<failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-				at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:124)
-				at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
-				(reflection-invoke)
-				at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
-				...</failure></step>
-		<step outcome="successful">
-			Given a scenario step
-		</step>
-	</scenario>
-	<after keyword="After:">
-		<step outcome="successful">
-			Given an after story step
-		</step>
-	</after>
-	<cancelled keyword="STORY CANCELLED" durationKeyword="DURATION" durationInSecs="2"/>
-	<pendingMethod>@When(&quot;something \&quot;$param\&quot;&quot;)
-		@Pending
-		public void whenSomething() {
-		// PENDING
-		}
-	</pendingMethod>
-	<pendingMethod>@Then(&quot;something is &lt;param1&gt;&quot;)
-		@Pending
-		public void thenSomethingIsParam1() {
-		// PENDING
-		}
-	</pendingMethod>
+            <outcome>
+                <value>A wrong date</value><value>01/01/2011</value><value>&quot;02/01/2011&quot;</value><value>No</value>
+            </outcome>
+        </outcomes>
+        </step>
+        <step outcome="successful">
+            Given a scenario step
+        </step>
+    </scenario>
+    <scenario keyword="Scenario:" title="Parametrised Scenario">
+        <examples keyword="Examples:">
+            <step>Given money &lt;money&gt;</step>
+            <step>Then I give it to &lt;to&gt;</step>
+            <table>
+                <headers>
+                    <header>money</header>
+                    <header>to</header>
+                </headers>
+                <row>
+                    <value>$30</value>
+                    <value>Mauro</value>
+                </row>
+                <row>
+                    <value>$50</value>
+                    <value>Paul</value>
+                </row>
+            </table>
+        </examples>
+        <example keyword="Example:">{money=$30, to=Mauro}</example>
+        <step outcome="successful">
+            Given a scenario step
+        </step>
+        <step outcome="successful">
+            Given money $30
+        </step>
+        <step outcome="successful">
+            Then I give it to Mauro
+        </step>
+        <step outcome="successful">
+            Given a scenario step
+        </step>
+        <example keyword="Example:">{money=$50, to=Paul}</example>
+        <step outcome="successful">
+            Given a scenario step
+        </step>
+        <step outcome="successful">
+            Given money $50
+        </step>
+        <step outcome="successful">
+            Then I give it to Paul
+        </step>
+        <step outcome="failed">
+            Then I should have a balance of $30
+            <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
+                at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:124)
+                at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
+                (reflection-invoke)
+                at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
+                ...</failure></step>
+        <step outcome="successful">
+            Given a scenario step
+        </step>
+    </scenario>
+    <after keyword="After:">
+        <step outcome="successful">
+            Given an after story step
+        </step>
+    </after>
+    <cancelled keyword="STORY CANCELLED" durationKeyword="DURATION" durationInSecs="2"/>
+    <pendingMethod>@When(&quot;something \&quot;$param\&quot;&quot;)
+        @Pending
+        public void whenSomething() {
+        // PENDING
+        }
+    </pendingMethod>
+    <pendingMethod>@Then(&quot;something is &lt;param1&gt;&quot;)
+        @Pending
+        public void thenSomethingIsParam1() {
+        // PENDING
+        }
+    </pendingMethod>
 </story>
 

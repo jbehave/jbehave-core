@@ -20,7 +20,7 @@ public class Resource {
     private String content;
     private String syntax;
 
-	public Resource(String uri) {
+    public Resource(String uri) {
         this(uri, substringAfterLast(uri, "/"));
     }
 
@@ -54,7 +54,7 @@ public class Resource {
         return breadcrumbs;
     }
 
-	public void setBreadcrumbs(List<String> breadcrumbs) {
+    public void setBreadcrumbs(List<String> breadcrumbs) {
         this.breadcrumbs = breadcrumbs;
     }
 
@@ -75,18 +75,18 @@ public class Resource {
     }
 
     public String getSyntax() {
-		return syntax;
-	}
+        return syntax;
+    }
 
-	public void setSyntax(String syntax) {
-		this.syntax = syntax;
-	}
+    public void setSyntax(String syntax) {
+        this.syntax = syntax;
+    }
 
     public boolean hasSyntax() {
         return isNotBlank(syntax);
     }
 
-	public String toString() {
+    public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 

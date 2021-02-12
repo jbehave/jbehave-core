@@ -21,12 +21,12 @@
       <artifactId>weld-se</artifactId>
       <version>1.1.4.Final</version>
     </dependency>
-	<dependency>
-	  <groupId>javax.enterprise</groupId>
-	  <artifactId>cdi-api</artifactId>
-	  <version>1.0-SP1</version>	
-	</dependency>
-	
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <version>1.0-SP1</version>
+    </dependency>
+
   </dependencies>
 
 </project>

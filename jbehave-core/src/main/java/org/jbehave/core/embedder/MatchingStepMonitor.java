@@ -18,10 +18,10 @@ import org.jbehave.core.steps.StepType;
 public class MatchingStepMonitor extends DelegatingStepMonitor {
 
     public MatchingStepMonitor(StepMonitor... delegates) {
-		super(delegates);
-	}
+        super(delegates);
+    }
 
-	private Map<String, StepMatch> matched = new HashMap<>();
+    private Map<String, StepMatch> matched = new HashMap<>();
 
     public List<StepMatch> matched() {
         return new ArrayList<>(matched.values());
@@ -30,7 +30,7 @@ public class MatchingStepMonitor extends DelegatingStepMonitor {
     @Override
     public void stepMatchesPattern(String step, boolean matches, StepPattern pattern, Method method,
             Object stepsInstance) {
-    	super.stepMatchesPattern(step, matches, pattern, method, stepsInstance);
+        super.stepMatchesPattern(step, matches, pattern, method, stepsInstance);
         if (matches) {
             String key = pattern.type() + " " + pattern.annotated();
             StepMatch stepMatch = matched.get(key);

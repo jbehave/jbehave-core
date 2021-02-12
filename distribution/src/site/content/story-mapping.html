@@ -17,14 +17,14 @@ filters to maps against. As usual, JBehave allows multiple equivalent
 ways of mapping stories:</p>
 
 <ul>
-	<li>as embeddables: extending <a
-		href="javadoc/core/org/jbehave/core/junit/JUnitStoryMaps.html">JUnitStoryMaps</a>
-	and specifying the meta filter and story paths. Extending
-	JUnitStoryMaps allows us to configure the underlying Embedder, e.g. to
-	specify the code location in the story reporter builder to ensure the report get written
-	to the correct output directory (important when running multi-module builds).</li>
-	<li>as paths: once we have specified an instance of an Embedder,
-	with its meta filters, we map stories specified by paths.</li>
+    <li>as embeddables: extending <a
+        href="javadoc/core/org/jbehave/core/junit/JUnitStoryMaps.html">JUnitStoryMaps</a>
+    and specifying the meta filter and story paths. Extending
+    JUnitStoryMaps allows us to configure the underlying Embedder, e.g. to
+    specify the code location in the story reporter builder to ensure the report get written
+    to the correct output directory (important when running multi-module builds).</li>
+    <li>as paths: once we have specified an instance of an Embedder,
+    with its meta filters, we map stories specified by paths.</li>
 </ul>
 
 <p>A concrete example of the embeddable route woud be:</p>
@@ -90,7 +90,7 @@ public class TraderStoryMaps extends JUnitStoryMaps {
 </script>
 
 <p>The resulting output uses a <a
-	href="http://en.wikipedia.org/wiki/Swim_lane">Swim Lane</a> view to
+    href="http://en.wikipedia.org/wiki/Swim_lane">Swim Lane</a> view to
 display the results of the mapping, with one lane per meta filter.</p>
 
 <p>The maps view is by default available in the <b>target/jbehave/view/maps.html</b>.</p>

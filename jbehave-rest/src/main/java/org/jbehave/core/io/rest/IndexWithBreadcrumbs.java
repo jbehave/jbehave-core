@@ -18,126 +18,126 @@ import org.jbehave.core.io.StoryFinder;
 
 public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
 
-	private static final String EMPTY = "";
-	private static final String FULL_PATH = "{0}/{1}";
-	
-	private RESTClient client;
-	private ResourceNameResolver nameResolver;
+    private static final String EMPTY = "";
+    private static final String FULL_PATH = "{0}/{1}";
+    
+    private RESTClient client;
+    private ResourceNameResolver nameResolver;
 
-	public IndexWithBreadcrumbs(RESTClient client,
-			ResourceNameResolver nameResolver) {
-		this.client = client;
-		this.nameResolver = nameResolver;
-	}
+    public IndexWithBreadcrumbs(RESTClient client,
+            ResourceNameResolver nameResolver) {
+        this.client = client;
+        this.nameResolver = nameResolver;
+    }
 
-	@Override
+    @Override
     public Map<String, Resource> indexResources(String rootURI) {
-		String entity = get(uri(rootURI));
-		Map<String, Resource> index = createIndexFromEntity(rootURI, entity);
-		addBreadcrumbs(index);
-		return index;
-	}
+        String entity = get(uri(rootURI));
+        Map<String, Resource> index = createIndexFromEntity(rootURI, entity);
+        addBreadcrumbs(index);
+        return index;
+    }
 
-	@Override
+    @Override
     public Map<String, Resource> indexResources(String rootURI,
-			String rootPath, String syntax, String includes) {
-		Map<String, Resource> index = createIndexFromPaths(rootURI, rootPath,
-				syntax, includes);
-		addBreadcrumbs(index);
-		return index;
-	}
+            String rootPath, String syntax, String includes) {
+        Map<String, Resource> index = createIndexFromPaths(rootURI, rootPath,
+                syntax, includes);
+        addBreadcrumbs(index);
+        return index;
+    }
 
-	protected Map<String, Resource> createIndexFromPaths(String rootURI,
-			String rootPath, String syntax, String includes) {
-		Map<String, Resource> index = new HashMap<>();
-		List<String> paths = new StoryFinder().findPaths(
-				codeLocationFromPath(rootPath), includes, EMPTY);
-		for (String path : paths) {
-			addPath(rootURI, rootPath, fullPath(rootPath, path), syntax, index);
-		}
-		return index;
-	}
+    protected Map<String, Resource> createIndexFromPaths(String rootURI,
+            String rootPath, String syntax, String includes) {
+        Map<String, Resource> index = new HashMap<>();
+        List<String> paths = new StoryFinder().findPaths(
+                codeLocationFromPath(rootPath), includes, EMPTY);
+        for (String path : paths) {
+            addPath(rootURI, rootPath, fullPath(rootPath, path), syntax, index);
+        }
+        return index;
+    }
 
-	private void addPath(String rootURI, String rootPath, String path,
-			String syntax, Map<String, Resource> index) {
-		File file = new File(path);
-		String name = resolveName(fileNameWithoutExt(file));
-		String parentName = parentName(file, rootPath);
-		String uri = fullPath(rootURI, name);
-		Resource resource = new Resource(uri, name, parentName);
-		resource.setContent(contentOf(file));
-		if ( isNotBlank(syntax) ){
-			resource.setSyntax(syntax);
-		}
-		index.put(name, resource);
-		if (parentName != null) {
-			addPath(rootURI, rootPath, file.getParent(), syntax, index);
-		}
-	}
+    private void addPath(String rootURI, String rootPath, String path,
+            String syntax, Map<String, Resource> index) {
+        File file = new File(path);
+        String name = resolveName(fileNameWithoutExt(file));
+        String parentName = parentName(file, rootPath);
+        String uri = fullPath(rootURI, name);
+        Resource resource = new Resource(uri, name, parentName);
+        resource.setContent(contentOf(file));
+        if ( isNotBlank(syntax) ){
+            resource.setSyntax(syntax);
+        }
+        index.put(name, resource);
+        if (parentName != null) {
+            addPath(rootURI, rootPath, file.getParent(), syntax, index);
+        }
+    }
 
-	private String parentName(File file, String rootPath) {
-		File parent = file.getParentFile();
-		if (parent != null && !normalisedPathOf(parent).equals(rootPath)) {
-			return resolveName(parent.getName());
-		}
-		return null;
-	}
+    private String parentName(File file, String rootPath) {
+        File parent = file.getParentFile();
+        if (parent != null && !normalisedPathOf(parent).equals(rootPath)) {
+            return resolveName(parent.getName());
+        }
+        return null;
+    }
 
-	private String fullPath(String root, String path) {
-		return format(FULL_PATH, root,  path);
-	}
+    private String fullPath(String root, String path) {
+        return format(FULL_PATH, root,  path);
+    }
 
-	private String contentOf(File file) {
-		if (file.isDirectory()) {
-			return EMPTY;
-		}
-		try {
-			return FileUtils.readFileToString(file);
-		} catch (IOException e) {
-			throw new RuntimeException(
-					"Failed to read content of file " + file, e);
-		}
-	}
+    private String contentOf(File file) {
+        if (file.isDirectory()) {
+            return EMPTY;
+        }
+        try {
+            return FileUtils.readFileToString(file);
+        } catch (IOException e) {
+            throw new RuntimeException(
+                    "Failed to read content of file " + file, e);
+        }
+    }
 
-	protected void addBreadcrumbs(Map<String, Resource> index) {
-		for (Resource resource : index.values()) {
-			List<String> breadcrumbs = new ArrayList<>();
-			collectBreadcrumbs(breadcrumbs, resource, index);
-			resource.setBreadcrumbs(breadcrumbs);
-		}
-	}
+    protected void addBreadcrumbs(Map<String, Resource> index) {
+        for (Resource resource : index.values()) {
+            List<String> breadcrumbs = new ArrayList<>();
+            collectBreadcrumbs(breadcrumbs, resource, index);
+            resource.setBreadcrumbs(breadcrumbs);
+        }
+    }
 
-	private void collectBreadcrumbs(List<String> breadcrumbs,
-			Resource resource, Map<String, Resource> index) {
-		if (resource.hasParent()) {
-			String parentName = resource.getParentName();
-			breadcrumbs.add(0, parentName);
-			Resource parent = index.get(parentName);
-			if (parent != null) {
-				collectBreadcrumbs(breadcrumbs, parent, index);
-			}
-		}
-	}
+    private void collectBreadcrumbs(List<String> breadcrumbs,
+            Resource resource, Map<String, Resource> index) {
+        if (resource.hasParent()) {
+            String parentName = resource.getParentName();
+            breadcrumbs.add(0, parentName);
+            Resource parent = index.get(parentName);
+            if (parent != null) {
+                collectBreadcrumbs(breadcrumbs, parent, index);
+            }
+        }
+    }
 
-	private String get(String uri) {
-		return client.get(uri);
-	}
-	
-	protected abstract Map<String, Resource> createIndexFromEntity(
-			String rootURI, String entity);
+    private String get(String uri) {
+        return client.get(uri);
+    }
+    
+    protected abstract Map<String, Resource> createIndexFromEntity(
+            String rootURI, String entity);
 
-	protected abstract String uri(String rootPath);
+    protected abstract String uri(String rootPath);
 
-	protected String resolveName(String input){
-		return nameResolver.resolve(input);
-	}
-	
-	public static class ToLowerCase implements ResourceNameResolver {
+    protected String resolveName(String input){
+        return nameResolver.resolve(input);
+    }
+    
+    public static class ToLowerCase implements ResourceNameResolver {
 
-		@Override
+        @Override
         public String resolve(String input) {
-			return input.toLowerCase();
-		}
+            return input.toLowerCase();
+        }
 
-	}
+    }
 }
