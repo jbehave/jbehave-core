@@ -22,7 +22,7 @@ class JUnitTextManipulatorBehaviour
     }
 
     @Test
-    void shouldEscalpeDotWithOneDotLeader() {
+    void shouldEscapeDotWithOneDotLeader() {
         String actual = JUnitTextManipulator.escape("some string. with dots.");
         assertEquals("some string\u2024 with dots\u2024", actual);
     }
