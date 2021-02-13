@@ -66,13 +66,13 @@ class JUnit4StoryRunnerBehaviour {
 
     @ParameterizedTest
     @MethodSource("data")
-    void canRunExampleScenariosAndCheckNotifications(Class<? extends ConfigurableEmbedder> cls,
+    void canRunExampleScenariosAndCheckNotifications(Class<? extends ConfigurableEmbedder> testClass,
             String expectedFirstStoryName, String expectedFirstScenario, String expectedFirstStep)
             throws InitializationError, ReflectiveOperationException {
-        JUnit4StoryRunner runner = new JUnit4StoryRunner(cls);
+        JUnit4StoryRunner runner = new JUnit4StoryRunner(testClass);
         runner.run(notifier);
         verifyAllChildDescriptionsFired(runner.getDescription(), true);
-        assertThat(runner.getDescription().getDisplayName(), equalTo(cls.getName()));
+        assertThat(runner.getDescription().getDisplayName(), equalTo(testClass.getName()));
 
         Description firstStory = runner.getDescription().getChildren().get(1);
         assertThat(firstStory.getDisplayName(), equalTo(expectedFirstStoryName));

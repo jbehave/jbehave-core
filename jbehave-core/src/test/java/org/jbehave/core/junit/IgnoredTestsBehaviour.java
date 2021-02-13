@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 /**
  * The purpose of this class is to see how an IDE behaves when there is a unit test that passes and a test is ignored.
  *
- * The result in IntelliJ 2017.2.5 Community Edition is that there are two lines of info reported about test outcomes:
+ * The result in IntelliJ IDEA is that there are two lines of info reported about test outcomes:
  * (OK) IgnoredTestsTest
  *      (OK) shouldPass
  *
- * This implies to me that the jbehave-junit-runner should behave similarly that even if there are stories/scenarios
+ * This implies to me that the {@link JUnit4StoryRunner} should behave similarly that even if there are stories/scenarios
  * that are ignored (via meta tag filtering) then the highest level node should show (OK) and not (Pending).
  */
 class IgnoredTestsBehaviour {

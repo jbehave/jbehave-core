@@ -127,7 +127,7 @@ class JUnit4DescriptionGeneratorBehaviour {
         PerformableTree performableTree = mockPerformableTree(performableStory);
 
         generator = new JUnit4DescriptionGenerator(singletonList(steps), configuration);
-        generator.createDescriptionFrom(performableTree);
+        generator.createDescriptionsFrom(performableTree);
         assertEquals(0, generator.getTestCases());
     }
 
@@ -404,7 +404,7 @@ class JUnit4DescriptionGeneratorBehaviour {
     private Description createDescriptionFrom(Scenario scenario) {
         PerformableScenario performableScenario = mockPerformableScenario(scenario, null, false);
         generator = new JUnit4DescriptionGenerator(singletonList(steps), configuration);
-        return generator.createDescriptionFrom(Lifecycle.EMPTY, performableScenario);
+        return generator.createDescriptionsFrom(Lifecycle.EMPTY, performableScenario);
     }
 
     private List<Description> createDescriptionFrom(Story story) {
@@ -424,7 +424,7 @@ class JUnit4DescriptionGeneratorBehaviour {
         PerformableTree performableTree = mockPerformableTree(performableStory);
 
         generator = new JUnit4DescriptionGenerator(singletonList(steps), configuration);
-        return generator.createDescriptionFrom(performableTree);
+        return generator.createDescriptionsFrom(performableTree);
     }
 
     private PerformableTree mockPerformableTree(PerformableStory performableStory) {

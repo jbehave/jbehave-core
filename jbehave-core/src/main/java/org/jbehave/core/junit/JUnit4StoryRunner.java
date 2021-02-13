@@ -10,6 +10,7 @@ import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -22,10 +23,10 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 public class JUnit4StoryRunner extends BlockJUnit4ClassRunner {
+    private final ConfigurableEmbedder configurableEmbedder;
     private final Embedder configuredEmbedder;
     private final Configuration configuration;
-    private final Description rootDescription;
-    private final ConfigurableEmbedder configurableEmbedder;
+    private final Description description;
     private int numberOfTestCases;
 
     public JUnit4StoryRunner(Class<? extends ConfigurableEmbedder> testClass)
@@ -39,12 +40,12 @@ public class JUnit4StoryRunner extends BlockJUnit4ClassRunner {
 
         StepMonitor originalStepMonitor = configuration.stepMonitor();
         configuration.useStepMonitor(new NullStepMonitor());
-        List<Description> storyDescriptions = buildDescriptionFromStories(storyPaths);
+        List<Description> storyDescriptions = buildDescriptionsFromStories(storyPaths);
         configuration.useStepMonitor(originalStepMonitor);
 
-        rootDescription = Description.createSuiteDescription(testClass);
+        description = Description.createSuiteDescription(testClass);
         for (Description storyDescription : storyDescriptions) {
-            rootDescription.addChild(storyDescription);
+            description.addChild(storyDescription);
         }
     }
 
@@ -58,7 +59,7 @@ public class JUnit4StoryRunner extends BlockJUnit4ClassRunner {
 
     @Override
     public Description getDescription() {
-        return rootDescription;
+        return description;
     }
 
     @Override
@@ -67,21 +68,20 @@ public class JUnit4StoryRunner extends BlockJUnit4ClassRunner {
     }
 
     /**
-     * Returns a {@link Statement}: Call {@link #runChild(org.junit.runners.model.FrameworkMethod, RunNotifier)}
-     * on each object returned by {@link #getChildren()} (subject to any imposed
-     * filter and sort)
+     * Returns a {@link Statement} execution the {@link ConfigurableEmbedder#run()}
+     * with a {@link JUnit4StoryReporter}.
      */
     @Override
     protected Statement childrenInvoker(final RunNotifier notifier) {
         return new Statement() {
             @Override
             public void evaluate() {
-                JUnit4StoryReporter junitReporter = new JUnit4StoryReporter(notifier, rootDescription,
+                JUnit4StoryReporter reporter = new JUnit4StoryReporter(notifier, description,
                         configuration.keywords());
                 // tell the reporter how to handle pending steps
-                junitReporter.usePendingStepStrategy(configuration.pendingStepStrategy());
+                reporter.usePendingStepStrategy(configuration.pendingStepStrategy());
 
-                addToStoryReporterFormats(junitReporter);
+                addToStoryReporterFormats(reporter);
 
                 configurableEmbedder.run();
             }
@@ -104,20 +104,19 @@ public class JUnit4StoryRunner extends BlockJUnit4ClassRunner {
         return configuredEmbedder.stepsFactory().createCandidateSteps();
     }
 
-    private void addToStoryReporterFormats(JUnit4StoryReporter junitReporter) {
+    private void addToStoryReporterFormats(StoryReporter reporter) {
         StoryReporterBuilder storyReporterBuilder = configuration.storyReporterBuilder();
-        StoryReporterBuilder.ProvidedFormat junitReportFormat = new StoryReporterBuilder.ProvidedFormat(junitReporter);
-        storyReporterBuilder.withFormats(junitReportFormat);
+        storyReporterBuilder.withFormats(new StoryReporterBuilder.ProvidedFormat(reporter));
     }
 
-    private List<Description> buildDescriptionFromStories(List<String> storyPaths) {
+    private List<Description> buildDescriptionsFromStories(List<String> storyPaths) {
         List<CandidateSteps> candidateSteps = getCandidateSteps();
         JUnit4DescriptionGenerator descriptionGenerator = new JUnit4DescriptionGenerator(candidateSteps, configuration);
         List<Description> storyDescriptions = new ArrayList<>();
 
         addSuite(storyDescriptions, "BeforeStories");
         PerformableTree performableTree = createPerformableTree(candidateSteps, storyPaths);
-        storyDescriptions.addAll(descriptionGenerator.createDescriptionFrom(performableTree));
+        storyDescriptions.addAll(descriptionGenerator.createDescriptionsFrom(performableTree));
         addSuite(storyDescriptions, "AfterStories");
 
         numberOfTestCases += descriptionGenerator.getTestCases();

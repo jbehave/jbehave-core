@@ -10,19 +10,19 @@ import org.junit.jupiter.api.Test;
 class JUnitTextManipulatorBehaviour
 {
     @Test
-    void shouldReplaceParenthesesWithVerticalBars() {
+    void shouldEscapeParenthesesWithVerticalBars() {
         String actual = JUnitTextManipulator.escape("some string with (parentheses)");
         assertEquals("some string with |parentheses|", actual);
     }
 
     @Test
-    void shouldReplaceCrLfWithCommas() {
+    void shouldEscapeCrLfWithCommas() {
         String actual = JUnitTextManipulator.escape("some\n\r string with \r\n\ncrlf\n\n");
         assertEquals("some,  string with , crlf, ", actual);
     }
 
     @Test
-    void shouldReplaceDotWithOneDotLeader() {
+    void shouldEscalpeDotWithOneDotLeader() {
         String actual = JUnitTextManipulator.escape("some string. with dots.");
         assertEquals("some string\u2024 with dots\u2024", actual);
     }

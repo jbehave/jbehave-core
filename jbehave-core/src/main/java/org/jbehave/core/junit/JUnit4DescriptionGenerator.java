@@ -33,17 +33,15 @@ public class JUnit4DescriptionGenerator {
     public static final String AFTER_SCENARIO_STEP_NAME = "@AfterScenario";
 
     private final JUnitTextManipulator textManipulator = new JUnitTextManipulator();
-    private int testCases;
-    private final List<StepCandidate> allCandidates = new ArrayList<>();
-
-    private final EnumMap<ScenarioType, List<BeforeOrAfterStep>> beforeOrAfterScenario = new EnumMap<>(
-            ScenarioType.class);
-
-    private final List<BeforeOrAfterStep> beforeOrAfterStory = new ArrayList<>();
 
     private final Configuration configuration;
-
+    private final List<StepCandidate> allCandidates = new ArrayList<>();
+    private final List<BeforeOrAfterStep> beforeOrAfterStory = new ArrayList<>();
+    private final EnumMap<ScenarioType, List<BeforeOrAfterStep>> beforeOrAfterScenario = new EnumMap<>(
+            ScenarioType.class);
     private String previousNonAndStep;
+    private int testCases;
+
 
     public JUnit4DescriptionGenerator(List<CandidateSteps> candidateSteps, Configuration configuration) {
         this.configuration = configuration;
@@ -59,7 +57,7 @@ public class JUnit4DescriptionGenerator {
         }
     }
 
-    public List<Description> createDescriptionFrom(PerformableTree performableTree) {
+    public List<Description> createDescriptionsFrom(PerformableTree performableTree) {
         List<Description> storyDescriptions = new ArrayList<>();
         for (PerformableStory performableStory : performableTree.getRoot().getStories()) {
             if (!performableStory.isExcluded()) {
@@ -80,7 +78,7 @@ public class JUnit4DescriptionGenerator {
         return storyDescriptions;
     }
 
-    public Description createDescriptionFrom(Lifecycle lifecycle, PerformableScenario performableScenario) {
+    public Description createDescriptionsFrom(Lifecycle lifecycle, PerformableScenario performableScenario) {
         Scenario scenario = performableScenario.getScenario();
         Description scenarioDescription = createDescriptionForScenario(scenario);
         if (performableScenario.hasExamples() && !scenario.getGivenStories().requireParameters()) {
@@ -262,7 +260,7 @@ public class JUnit4DescriptionGenerator {
         List<Description> scenarioDescriptions = new ArrayList<>();
         for (PerformableScenario scenario : performableScenarios) {
             if (!scenario.isExcluded()) {
-                scenarioDescriptions.add(createDescriptionFrom(lifecycle, scenario));
+                scenarioDescriptions.add(createDescriptionsFrom(lifecycle, scenario));
             }
         }
         return scenarioDescriptions;
