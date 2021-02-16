@@ -1,9 +1,8 @@
 package org.jbehave.core.junit;
 
-import java.util.List;
-
-import org.jbehave.core.ConfigurableEmbedder;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * <p>
@@ -11,7 +10,7 @@ import org.junit.Test;
  * using the meta filters specified by {@link #metaFilters()}.
  * </p>
  */
-public abstract class JUnitStoryMaps extends ConfigurableEmbedder {
+public abstract class JUnitStoryMaps extends JupiterStories {
 
     @Override
     @Test
@@ -19,8 +18,6 @@ public abstract class JUnitStoryMaps extends ConfigurableEmbedder {
         configuredEmbedder().mapStoriesAsPaths(storyPaths());
     }
 
-    protected abstract List<String> metaFilters();
-
-    protected abstract List<String> storyPaths();
+    public abstract List<String> metaFilters();
 
 }

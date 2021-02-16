@@ -1123,7 +1123,7 @@ class EmbedderBehaviour {
         }
 
         @Override
-        protected List<String> metaFilters() {
+        public List<String> metaFilters() {
             return asList("+some property");
         }
 

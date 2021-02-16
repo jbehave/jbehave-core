@@ -1,29 +1,19 @@
 package org.jbehave.core.junit;
 
-import java.util.List;
-
-import org.jbehave.core.ConfigurableEmbedder;
-import org.jbehave.core.embedder.Embedder;
 import org.junit.Test;
 
 /**
  * <p>
- * JUnit-runnable entry-point to run multiple stories specified by {@link JUnitStories#storyPaths()}.
+ * JUnit-runnable entry-point to run multiple stories specified by {@link #storyPaths()}.
+ * The {@link #run()} method is annotated as JUnit {@link Test}.
  * </p>
  */
-public abstract class JUnitStories extends ConfigurableEmbedder {
+public abstract class JUnitStories extends JupiterStories {
 
     @Override
     @Test
     public void run() {
-        Embedder embedder = configuredEmbedder();
-        try {
-            embedder.runStoriesAsPaths(storyPaths());
-        } finally {
-            embedder.generateSurefireReport();
-        }
+        super.run();
     }
-
-    public abstract List<String> storyPaths();
 
 }

@@ -40,7 +40,7 @@ public class CoreStoryMaps extends JUnitStoryMaps {
     }
 
     @Override
-    protected List<String> metaFilters() {
+    public List<String> metaFilters() {
         return asList("+author *", "theme *","-skip");
     }
 
