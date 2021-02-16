@@ -7,8 +7,8 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 
 /**
  * <p>
- * Abstract implementation of {@link Embeddable} which allows to configure the
- * {@link Embedder} used to run the stories, using the {@link Configuration} and
+ * Abstract implementation of {@link Embeddable} which extends {@link InjectableEmbedder}
+ * to allow the configuration using the {@link Configuration} and
  * the {@link InjectableStepsFactory} specified.
  * </p>
  * <p>
@@ -47,16 +47,10 @@ import org.jbehave.core.steps.InjectableStepsFactory;
  * annotate it with JUnit's annotations.
  * </p>
  */
-public abstract class ConfigurableEmbedder implements Embeddable {
+public abstract class ConfigurableEmbedder extends InjectableEmbedder {
 
-    private Embedder embedder = new Embedder();
     private Configuration configuration;
     private InjectableStepsFactory stepsFactory;
-
-    @Override
-    public void useEmbedder(Embedder embedder) {
-        this.embedder = embedder;
-    }
 
     public void useConfiguration(Configuration configuration) {
         this.configuration = configuration;
@@ -86,6 +80,7 @@ public abstract class ConfigurableEmbedder implements Embeddable {
         if (configuration == null) {
             configuration = configuration();
         }
+        Embedder embedder = injectedEmbedder();
         embedder.useConfiguration(configuration);
         if (stepsFactory == null) {
             stepsFactory = stepsFactory();
