@@ -3,7 +3,7 @@ package org.jbehave.core.junit;
 import java.util.HashSet;
 import java.util.Set;
 
-public class JUnitTextManipulator {
+public class TextManipulator {
     private static final char ONE_DOT_LEADER = '\u2024';
 
     private final Set<String> uniqueSet = new HashSet<>();

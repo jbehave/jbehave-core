@@ -1,23 +1,7 @@
 package org.jbehave.core.junit;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.failures.BeforeOrAfterFailed;
-import org.jbehave.core.failures.FailingUponPendingStep;
-import org.jbehave.core.failures.PassingUponPendingStep;
-import org.jbehave.core.failures.PendingStepStrategy;
-import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.failures.*;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.NullStoryReporter;
@@ -27,6 +11,9 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class JUnit4StoryReporter extends NullStoryReporter {
     private final RunNotifier notifier;
@@ -96,7 +83,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
     }
 
     private Description findStoryDescription(String storyName) {
-        String escapedStoryName = JUnitTextManipulator.escape(storyName);
+        String escapedStoryName = TextManipulator.escape(storyName);
         for (Description storyDescription : rootDescription.getChildren()) {
             if (storyDescription.getDisplayName().equals(escapedStoryName)) {
                 return storyDescription;

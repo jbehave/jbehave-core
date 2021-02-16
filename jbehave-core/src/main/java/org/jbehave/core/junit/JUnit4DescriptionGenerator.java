@@ -1,11 +1,5 @@
 package org.jbehave.core.junit;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
-
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.annotations.Scope;
@@ -25,6 +19,12 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepType;
 import org.junit.runner.Description;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
+
 public class JUnit4DescriptionGenerator {
 
     public static final String BEFORE_STORY_STEP_NAME = "@BeforeStory";
@@ -32,7 +32,7 @@ public class JUnit4DescriptionGenerator {
     public static final String BEFORE_SCENARIO_STEP_NAME = "@BeforeScenario";
     public static final String AFTER_SCENARIO_STEP_NAME = "@AfterScenario";
 
-    private final JUnitTextManipulator textManipulator = new JUnitTextManipulator();
+    private final TextManipulator textManipulator = new TextManipulator();
 
     private final Configuration configuration;
     private final List<StepCandidate> allCandidates = new ArrayList<>();
