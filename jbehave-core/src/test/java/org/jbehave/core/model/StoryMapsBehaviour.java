@@ -26,7 +26,7 @@ class StoryMapsBehaviour {
         // story paths in non-natural order to verify ordering
         List<String> storyPaths = asList(storyPath2, storyPath1);
         Map<String, Story> storiesByPath = new HashMap<>();
-        for (String storyPath : storyPaths ) {
+        for (String storyPath : storyPaths) {
             storiesByPath.put(storyPath, new Story(storyPath));
         }
         

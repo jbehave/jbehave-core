@@ -53,7 +53,7 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
     }
 
     private File viewDirectory() {
-        if ( viewDirectory != null ){
+        if (viewDirectory != null) {
             return viewDirectory;
         }
         StoryReporterBuilder storyReporterBuilder = newEmbedder().configuration().storyReporterBuilder();

@@ -12,7 +12,7 @@ import org.jbehave.core.configuration.groovy.BytecodeGroovyClassLoader;
 import org.jbehave.core.configuration.groovy.GroovyResourceFinder;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
+@Target({ ElementType.TYPE })
 @Inherited
 public @interface UsingGroovy {
 

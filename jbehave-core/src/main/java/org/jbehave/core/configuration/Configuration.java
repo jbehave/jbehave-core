@@ -283,7 +283,7 @@ public abstract class Configuration {
     }
 
     public StepsContext stepsContext() {
-        if ( stepsContext == null ){
+        if (stepsContext == null) {
             stepsContext = new StepsContext();
         }
         return stepsContext;

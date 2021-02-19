@@ -79,11 +79,11 @@ public class GherkinStoryParser extends TransformingStoryParser {
                     if (findingNarrative.matches()) {
                         String narrative = findingNarrative.group(1).trim();
                         matches = writeNarrativeWithDefaultSyntax(out, narrative);
-                        if (!matches){
+                        if (!matches) {
                             matches = writeNarrativeWithAlternativeSyntax(out, narrative);
                         }
                     }
-                    if (!matches){
+                    if (!matches) {
                         // if narrative format does not match, write description as part of story description
                         out.append(description);
                     }                   
@@ -171,10 +171,10 @@ public class GherkinStoryParser extends TransformingStoryParser {
                 }
                 
                 private void writeRows(List<? extends Row> rows) {
-                    if ( rows != null && rows.size() > 0 ){
-                        for ( Row row : rows ){
+                    if (rows != null && rows.size() > 0) {
+                        for (Row row : rows) {
                             out.append("|");
-                            for ( String c : row.getCells() ){
+                            for (String c : row.getCells()) {
                                 out.append(c).append("|");
                             }
                             out.append("\n");

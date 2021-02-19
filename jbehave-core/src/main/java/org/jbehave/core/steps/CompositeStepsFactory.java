@@ -36,7 +36,7 @@ public class CompositeStepsFactory implements InjectableStepsFactory {
                 // creation failed on given factory, carry on
             }
         }
-        if ( instance == null ){
+        if (instance == null) {
             throw new StepsInstanceNotFound(type, this);
         }
         return instance;

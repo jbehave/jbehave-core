@@ -65,7 +65,7 @@ abstract class AbstractRegexParser {
     }
 
     protected String startingWithNL(String text) {
-        if ( !text.startsWith("\n") ){ // always ensure starts with newline
+        if (!text.startsWith("\n")) { // always ensure starts with newline
             return "\n" + text;
         }
         return text;

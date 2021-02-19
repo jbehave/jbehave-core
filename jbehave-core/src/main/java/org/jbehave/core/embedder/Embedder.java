@@ -436,7 +436,7 @@ public class Embedder {
     }
 
     public Map<String,MetaMatcher> metaMatchers(){
-        if (metaMatchers == null){
+        if (metaMatchers == null) {
             metaMatchers = new HashMap<>();
         }
         return metaMatchers;
@@ -458,7 +458,7 @@ public class Embedder {
     }
     
     public TimeoutParser[] timeoutParsers(){
-        if (timeoutParsers == null){
+        if (timeoutParsers == null) {
             timeoutParsers = new TimeoutParser[]{};
         }
         return timeoutParsers;

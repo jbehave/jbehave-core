@@ -82,7 +82,7 @@ public class EmbedderClassLoader extends URLClassLoader {
     private static URL toURL(String element) {
         try {
             return new File(element).toURI().toURL();
-        } catch ( Exception e ){
+        } catch (Exception e) {
             throw new InvalidClasspathElement(element, e);
         }
     }

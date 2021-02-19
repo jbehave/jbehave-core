@@ -61,7 +61,7 @@ public class CoreStories extends JUnitStories {
     public Configuration configuration() {
         // avoid re-instantiating configuration for the steps factory
         // alternative use #useConfiguration() in the constructor
-        if ( super.hasConfiguration() ){
+        if (super.hasConfiguration()) {
             return super.configuration();
         }
         Class<? extends Embeddable> embeddableClass = this.getClass();

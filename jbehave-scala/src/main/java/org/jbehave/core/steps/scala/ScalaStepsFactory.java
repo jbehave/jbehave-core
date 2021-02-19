@@ -19,7 +19,7 @@ public class ScalaStepsFactory extends AbstractStepsFactory {
     @Override
     protected List<Class<?>> stepsTypes() {
         List<Class<?>> types = new ArrayList<>();
-        for (Object object : context.getInstances() ){
+        for (Object object : context.getInstances()) {
             if (hasAnnotatedMethods(object.getClass())) {
                 types.add(object.getClass());
             }

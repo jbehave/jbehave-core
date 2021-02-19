@@ -506,16 +506,16 @@ public class ExamplesTable {
 
         public TableProperties(Properties properties){
             this.properties.putAll(properties);
-            if ( !this.properties.containsKey(HEADER_SEPARATOR_KEY) ){
+            if (!this.properties.containsKey(HEADER_SEPARATOR_KEY)) {
                 this.properties.setProperty(HEADER_SEPARATOR_KEY, HEADER_SEPARATOR);
             }
-            if ( !this.properties.containsKey(VALUE_SEPARATOR_KEY) ){
+            if (!this.properties.containsKey(VALUE_SEPARATOR_KEY)) {
                 this.properties.setProperty(VALUE_SEPARATOR_KEY, VALUE_SEPARATOR);
             }
-            if ( !this.properties.containsKey(IGNORABLE_SEPARATOR_KEY) ){
+            if (!this.properties.containsKey(IGNORABLE_SEPARATOR_KEY)) {
                 this.properties.setProperty(IGNORABLE_SEPARATOR_KEY, IGNORABLE_SEPARATOR);
             }
-            if ( !this.properties.containsKey(COMMENT_SEPARATOR_KEY) ){
+            if (!this.properties.containsKey(COMMENT_SEPARATOR_KEY)) {
                 this.properties.setProperty(COMMENT_SEPARATOR_KEY, COMMENT_SEPARATOR);
             }
             StringBuilder sb = new StringBuilder();
@@ -549,7 +549,7 @@ public class ExamplesTable {
                     if (decoratedPropertyMatcher.matches()) {
                         String[] propertyWithDecorators = decoratedPropertyMatcher.group(1).split(PIPE_REGEX);
                         propertyName = propertyWithDecorators[0];
-                        for (int i = 1; i < propertyWithDecorators.length; i++){
+                        for (int i = 1; i < propertyWithDecorators.length; i++) {
                             String decorator = propertyWithDecorators[i].toUpperCase();
                             propertyValue = decoratePropertyValue(propertyValue, Decorator.valueOf(decorator));
                         }

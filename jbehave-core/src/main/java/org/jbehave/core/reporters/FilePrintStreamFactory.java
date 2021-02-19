@@ -125,7 +125,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
         @Override
         public String resolveName(StoryLocation storyLocation, String extension) {
             String name = storyLocation.getPath();
-            if ( StringUtils.contains(name, '/') ){
+            if (StringUtils.contains(name, '/')) {
                 name = StringUtils.substringAfterLast(name, "/");
             }
             return StringUtils.substringBeforeLast(name, ".") + "." + extension;

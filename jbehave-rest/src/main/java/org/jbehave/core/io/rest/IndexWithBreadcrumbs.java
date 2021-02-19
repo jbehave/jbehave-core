@@ -66,7 +66,7 @@ public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
         String uri = fullPath(rootURI, name);
         Resource resource = new Resource(uri, name, parentName);
         resource.setContent(contentOf(file));
-        if ( isNotBlank(syntax) ){
+        if (isNotBlank(syntax)) {
             resource.setSyntax(syntax);
         }
         index.put(name, resource);

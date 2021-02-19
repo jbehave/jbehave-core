@@ -300,7 +300,7 @@ public class StepCreator {
 
     private boolean hasTable(Type[] types) {
         for (Type type : types) {
-            if ( isTable(type) ){
+            if (isTable(type)) {
                 return true;
             }
         }
@@ -331,7 +331,7 @@ public class StepCreator {
                 String rightPad = stepText.endsWith(value) ? NONE : SPACE;
                 return stepText.replace(pad(value, leftPad, rightPad), pad(markedValue, leftPad, rightPad));
             }
-            if (!hasTable){
+            if (!hasTable) {
                 return stepText.replace(NEWLINE, PARAMETER_VALUE_NEWLINE);
             }
         }
@@ -861,7 +861,7 @@ public class StepCreator {
 
         @Override
         public String asString(Keywords keywords) {
-            if ( parametrisedStep == null){
+            if (parametrisedStep == null) {
                 parametriseStep();
             }
             return parametrisedStep;

@@ -25,7 +25,7 @@ public class BatchFailures extends HashMap<String, Throwable> {
             sb.append("\n");
             sb.append(name);
             sb.append(": ");
-            sb.append( verbose ? stackTraceOf(failure) : failure);
+            sb.append(verbose ? stackTraceOf(failure) : failure);
         }
         return sb.toString();
     }

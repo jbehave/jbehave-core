@@ -281,14 +281,14 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
             }
             if (lifecycle.hasBeforeSteps()) {
                 print(format("lifecycleBeforeStart", "{0}\n", keywords.before()));
-                for (Scope scope : lifecycle.getScopes() ){
+                for (Scope scope : lifecycle.getScopes()) {
                     printWithScope(lifecycle.getBeforeSteps(scope), scope);
                 }
                 print(format("lifecycleBeforeEnd", NL));
             }
             if (lifecycle.hasAfterSteps()) {
                 print(format("lifecycleAfterStart", "{0}\n", keywords.after()));
-                for (Scope scope : lifecycle.getScopes() ){
+                for (Scope scope : lifecycle.getScopes()) {
                     printOutcomes(lifecycle, scope);
                 }
                 print(format("lifecycleAfterEnd", NL));
@@ -298,9 +298,9 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     private void printOutcomes(Lifecycle lifecycle, Scope scope) {
-        for ( AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
+        for (AfterScenario.Outcome outcome : lifecycle.getOutcomes()) {
             List<String> afterSteps = lifecycle.getAfterSteps(scope, outcome);
-            if ( !afterSteps.isEmpty() ) {
+            if (!afterSteps.isEmpty()) {
                 print(format("lifecycleAfterScopeStart", "{0} {1}\n", keywords.scope(), formatScope(scope)));
                 print(format("lifecycleOutcomeStart", "{0} {1}\n", keywords.outcome(), formatOutcome(outcome)));
                 MetaFilter metaFilter = lifecycle.getMetaFilter(outcome);
@@ -315,7 +315,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     private void printWithScope(List<String> steps, Scope scope) {
-        if ( !steps.isEmpty()) {
+        if (!steps.isEmpty()) {
             print(format("lifecycleBeforeScopeStart", "{0} {1}\n", keywords.scope(), formatScope(scope)));
             print(steps);
             print(format("lifecycleBeforeScopeEnd", "\n"));
@@ -323,7 +323,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     private String formatScope(Scope scope) {
-        switch ( scope ){
+        switch (scope) {
             case SCENARIO: return keywords.scopeScenario();
             case STORY: return keywords.scopeStory();
             default: return scope.name();
@@ -331,7 +331,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     private String formatOutcome(AfterScenario.Outcome outcome) {
-        switch ( outcome ){
+        switch (outcome) {
         case ANY: return keywords.outcomeAny();
         case SUCCESS: return keywords.outcomeSuccess();
         case FAILURE: return keywords.outcomeFailure();
@@ -463,7 +463,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     public void afterScenario(Timing timing) {
         print(format("numericParameter", EMPTY, "start", timing.getStart()));
         print(format("numericParameter", EMPTY, "end", timing.getEnd()));
-        if (cause.get() != null && !(cause.get() instanceof KnownFailure) && reportFailureTrace() ) {
+        if (cause.get() != null && !(cause.get() instanceof KnownFailure) && reportFailureTrace()) {
             print(format("afterScenarioWithFailure", "\n{0}\n",
                     new StackTraceFormatter(compressFailureTrace()).stackTrace(cause.get())));
         } else {
@@ -611,7 +611,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
 
     public boolean reportFailureTrace() {
         Boolean reportFailure = reportFailureTrace.get();
-        if ( reportFailure != null ){
+        if (reportFailure != null) {
             return reportFailure;
         }
         return false;
@@ -649,9 +649,9 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         String verbatimEnd = format(PARAMETER_VERBATIM_END, PARAMETER_VERBATIM_END);
         boolean containsVerbatim = text.contains(verbatimStart) && text.contains(verbatimEnd);
         String textToPrint;
-        if ( containsTable ) {
+        if (containsTable) {
             textToPrint = transformPrintingTable(text, tableStart, tableEnd);
-        } else if ( containsVerbatim ){
+        } else if (containsVerbatim) {
             textToPrint = transformPrintingVerbatim(text, verbatimStart, verbatimEnd);
         } else {
             textToPrint = text;

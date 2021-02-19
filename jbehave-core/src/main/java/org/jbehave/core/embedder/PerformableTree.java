@@ -77,7 +77,7 @@ public class PerformableTree {
             if (performableStory.hasIncludedScenarios()) {
                 Map<String, String> givenStoryParameters = new HashMap<>(storyParameters);
                 addMetaParameters(givenStoryParameters, storyMeta);
-                if ( story.hasGivenStories() ) {
+                if (story.hasGivenStories()) {
                     performableStory.addGivenStories(performableGivenStories(context, story.getGivenStories(),
                             givenStoryParameters));
                 }
@@ -267,7 +267,7 @@ public class PerformableTree {
                 RunContext childContext = context.childContextFor(givenStory);
                 // run given story, using any parameters provided
                 Story story = storyOfPath(context.configuration(), childContext.path());                
-                if ( givenStory.hasAnchorParameters() ){
+                if (givenStory.hasAnchorParameters()) {
                     story = storyWithMatchingScenarios(story, givenStory.getAnchorParameters());
                 }
                 parameters.putAll(givenStory.getParameters());
@@ -278,10 +278,12 @@ public class PerformableTree {
     }
 
     private Story storyWithMatchingScenarios(Story story, Map<String,String> parameters) {
-        if ( parameters.isEmpty() ) return story;
+        if (parameters.isEmpty()) {
+            return story;
+        }
         List<Scenario> scenarios = new ArrayList<>();
-        for ( Scenario scenario : story.getScenarios() ){
-            if ( matchesParameters(scenario, parameters) ){
+        for (Scenario scenario : story.getScenarios()) {
+            if (matchesParameters(scenario, parameters)) {
                 scenarios.add(scenario);
             }
         }
@@ -290,8 +292,8 @@ public class PerformableTree {
 
     private boolean matchesParameters(Scenario scenario, Map<String, String> parameters) {
         Meta meta = scenario.getMeta();
-        for ( String name : parameters.keySet() ){
-            if ( meta.hasProperty(name) ){
+        for (String name : parameters.keySet()) {
+            if (meta.hasProperty(name)) {
                 return meta.getProperty(name).equals(parameters.get(name));
             }
         }
@@ -420,7 +422,7 @@ public class PerformableTree {
 
         try {
             performCancellable(context, story);
-            if (context.restartStory()){
+            if (context.restartStory()) {
                 context.reporter().restartedStory(story, context.failure(context.state()));
                 restartingStory = true;
                 perform(context, story);
@@ -990,7 +992,7 @@ public class PerformableTree {
         }
 
         public void addExampleScenario(ExamplePerformableScenario exampleScenario) {
-            if ( exampleScenarios == null ){
+            if (exampleScenarios == null) {
                 exampleScenarios = new ArrayList<>();
             }
             exampleScenarios.add(exampleScenario);
@@ -1020,7 +1022,7 @@ public class PerformableTree {
             FailureContext context = new FailureContext();
             reportFailures(context);
             List<Throwable> failures = context.getFailures();
-            if ( failures.size() > 0 ){
+            if (failures.size() > 0) {
                 return failures.get(0);
             }
             return null;
@@ -1053,7 +1055,7 @@ public class PerformableTree {
                 context.stepsContext().resetScenario();
                 context.reporter().beforeScenario(scenario);
                 State state = context.state();
-                if ( hasExamples() ) {
+                if (hasExamples()) {
                     context.reporter().beforeExamples(scenario.getSteps(),
                             scenario.getExamplesTable());
                     for (ExamplePerformableScenario exampleScenario : exampleScenarios) {
@@ -1073,7 +1075,7 @@ public class PerformableTree {
 
         @Override
         public void reportFailures(FailureContext context) {
-            if ( hasExamples() ){
+            if (hasExamples()) {
                 for (ExamplePerformableScenario exampleScenario : exampleScenarios) {
                     exampleScenario.reportFailures(context);
                 }
@@ -1257,7 +1259,7 @@ public class PerformableTree {
         }
 
         public PerformableSteps(List<Step> steps, List<StepMatch> stepMatches) {
-            this.steps =  ( steps != null ? steps : new ArrayList<Step>() );
+            this.steps = steps != null ? steps : new ArrayList<Step>();
             this.pendingSteps = pendingSteps();
             this.matches = stepMatches;
         }
@@ -1265,8 +1267,8 @@ public class PerformableTree {
         public void add(PerformableSteps performableSteps){
             this.steps.addAll(performableSteps.steps);
             this.pendingSteps.addAll(performableSteps.pendingSteps);
-            if ( performableSteps.matches != null ){
-                if ( this.matches == null ){
+            if (performableSteps.matches != null) {
+                if (this.matches == null) {
                     this.matches = new ArrayList<>();
                 }
                 this.matches.addAll(performableSteps.matches);
@@ -1307,9 +1309,11 @@ public class PerformableTree {
         @Override
         public void reportFailures(FailureContext context) {
             // Results can be null if the steps are not executed
-            if ( results == null ) return;
-            for ( StepResult result : results ){
-                if ( result instanceof AbstractStepResult.Failed ){
+            if (results == null) {
+                return;
+            }
+            for (StepResult result : results) {
+                if (result instanceof AbstractStepResult.Failed) {
                     context.addFailure(result.getFailure());
                 }
             }
@@ -1336,7 +1340,7 @@ public class PerformableTree {
                     }
                 }
                 context.reporter().pendingMethods(methods);
-                if ( context.configuration().pendingStepStrategy() instanceof FailingUponPendingStep ){
+                if (context.configuration().pendingStepStrategy() instanceof FailingUponPendingStep) {
                      throw new PendingStepsFound(pendingSteps);
                 }
             }

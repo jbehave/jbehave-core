@@ -49,7 +49,7 @@ public class WeldStepsFactory extends AbstractStepsFactory {
     @Override
     public Object createInstanceOfType(Class<?> type) {
         for (Object o : instances) {
-            if ( type.equals(o.getClass())){
+            if (type.equals(o.getClass())) {
                 return o;
             }
         }

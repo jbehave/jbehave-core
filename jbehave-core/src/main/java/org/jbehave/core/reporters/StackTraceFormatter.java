@@ -66,13 +66,15 @@ public class StackTraceFormatter {
     }
 
     private static Replacement[] REPLACEMENTS = new Replacement[] {
-            new Replacement( // JDK 9+
+            new Replacement(
+                    // JDK 9+
                     Pattern.compile("\\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0\\(Native Method\\)\\n"
                             + "\\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke\\(NativeMethodAccessorImpl.java:\\d+\\)\\n"
                             + "\\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke\\(DelegatingMethodAccessorImpl.java:\\d+\\)\\n"
                             + "\\tat java.base/java.lang.reflect.Method.invoke\\(Method.java:\\d+\\)"),
                     "\t(reflection-invoke)"),
-            new Replacement( // JDK 1.8
+            new Replacement(
+                    // JDK 1.8
                     Pattern.compile("\\tat sun.reflect.NativeMethodAccessorImpl.invoke0\\(Native Method\\)\\n"
                             + "\\tat sun.reflect.NativeMethodAccessorImpl.invoke\\(NativeMethodAccessorImpl.java:\\d+\\)\\n"
                             + "\\tat sun.reflect.DelegatingMethodAccessorImpl.invoke\\(DelegatingMethodAccessorImpl.java:\\d+\\)\\n"

@@ -149,7 +149,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
             // story durations file not found - carry on
         }
         Map<String,Long> durations = new HashMap<>();
-        for ( Object key : p.keySet() ){
+        for (Object key : p.keySet()) {
             durations.put(toReportPath(key), toMillis(p.get(key)));
         }
         return durations;
@@ -187,9 +187,9 @@ public class TemplateableViewGenerator implements ViewGenerator {
 
     private int countStoriesWithScenarios(){
         int storyCount = 0;
-        for (Report report : reports.getReports()){
+        for (Report report : reports.getReports()) {
             Map<String, Integer> stats = report.getStats();
-            if (stats.containsKey("scenarios")){
+            if (stats.containsKey("scenarios")) {
                 if (stats.get("scenarios") > 0)
                 storyCount++;
             }

@@ -35,7 +35,7 @@ public class InstanceStepsFactory extends AbstractStepsFactory {
     @Override
     public Object createInstanceOfType(Class<?> type) {
         Object instance = stepsInstances.get(type);
-        if ( instance == null ){
+        if (instance == null) {
             throw new StepsInstanceNotFound(type, this);
         }
         return instance;

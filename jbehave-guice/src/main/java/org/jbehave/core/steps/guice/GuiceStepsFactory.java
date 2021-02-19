@@ -60,7 +60,7 @@ public class GuiceStepsFactory extends AbstractStepsFactory {
     public Object createInstanceOfType(Class<?> type) {
         List<Object> instances = new ArrayList<>();
         addInstances(injector, type, instances);
-        if ( !instances.isEmpty() ){
+        if (!instances.isEmpty()) {
             return instances.iterator().next();
         }
         return new StepsInstanceNotFound(type, this);

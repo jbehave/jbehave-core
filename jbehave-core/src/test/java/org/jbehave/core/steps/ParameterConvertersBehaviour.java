@@ -183,7 +183,7 @@ class ParameterConvertersBehaviour {
         t2.start();
         t3.start();
 
-        for (int i = 0;i < threads;i++){
+        for (int i = 0;i < threads;i++) {
             try {
                 System.out.println(queue.take() + " completed.");
             } catch (InterruptedException e) {
@@ -936,7 +936,7 @@ class ParameterConvertersBehaviour {
     }
 
     private <T> void assertThatCollectionIs(Collection<T> collection, T... expected) {
-        if ( expected.length > 0 ) {
+        if (expected.length > 0) {
             assertThat(collection, containsInAnyOrder(expected));
         } else {
             assertThat(collection, Matchers.<T>empty());

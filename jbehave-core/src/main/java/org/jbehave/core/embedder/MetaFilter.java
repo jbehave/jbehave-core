@@ -110,8 +110,8 @@ public class MetaFilter {
      * @return A MetaMatcher used to match the filter content
      */
     protected MetaMatcher createMetaMatcher(String filterAsString, Map<String, MetaMatcher> metaMatchers) {
-        for ( String key : metaMatchers.keySet() ){
-            if ( filterAsString.startsWith(key)){
+        for (String key : metaMatchers.keySet()) {
+            if (filterAsString.startsWith(key)) {
                 return metaMatchers.get(key);
             }
         }

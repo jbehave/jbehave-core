@@ -186,7 +186,7 @@ public class AnnotationBuilder {
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView)
                 .doVerboseFailures(verboseFailures).doVerboseFiltering(verboseFiltering)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads);
-        if ( StringUtils.isNotBlank(storyTimeouts) ){
+        if (StringUtils.isNotBlank(storyTimeouts)) {
             embedderControls.useStoryTimeouts(storyTimeouts);
         }
         Configuration configuration = buildConfiguration();

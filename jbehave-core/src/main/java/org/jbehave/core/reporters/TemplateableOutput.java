@@ -104,8 +104,8 @@ public class TemplateableOutput extends NullStoryReporter {
     }
 
     private void addStep(OutputStep outputStep) {
-        if ( scope == Scope.STORY){
-            if ( stage == StepCollector.Stage.BEFORE ){
+        if (scope == Scope.STORY) {
+            if (stage == StepCollector.Stage.BEFORE) {
                 this.outputStory.addBeforeStep(outputStep);
             } else {
                 this.outputStory.addAfterStep(outputStep);

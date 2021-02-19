@@ -76,7 +76,7 @@ public class Story {
     }
 
     public String getPath() {
-        if ( path == null ){
+        if (path == null) {
             return EMPTY;
         }
         return path;
@@ -87,7 +87,7 @@ public class Story {
     }
 
     public Description getDescription() {
-        if ( !hasDescription() ){
+        if (!hasDescription()) {
             return Description.EMPTY;
         }
         return description;
@@ -98,7 +98,7 @@ public class Story {
     }
 
     public Narrative getNarrative() {
-        if ( !hasNarrative() ){
+        if (!hasNarrative()) {
             return Narrative.EMPTY;
         }
         return narrative;
@@ -109,7 +109,7 @@ public class Story {
     }
 
     public Meta getMeta() {
-        if ( !hasMeta() ){
+        if (!hasMeta()) {
             return Meta.EMPTY;
         }
         return meta;
@@ -128,7 +128,7 @@ public class Story {
     }
 
     public GivenStories getGivenStories(){
-        if ( !hasGivenStories() ){
+        if (!hasGivenStories()) {
             return GivenStories.EMPTY;
         }
         return givenStories;
@@ -139,7 +139,7 @@ public class Story {
     }
 
     public Lifecycle getLifecycle(){
-        if ( !hasLifecycle() ){
+        if (!hasLifecycle()) {
             return Lifecycle.EMPTY;
         }
         return lifecycle;

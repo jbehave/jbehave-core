@@ -93,7 +93,7 @@ public class ResourceFinder {
     }
 
     private String resourcePath(String rootDirectory, String relativePath) {
-        if ( StringUtils.isBlank(rootDirectory) ){
+        if (StringUtils.isBlank(rootDirectory)) {
             return relativePath;
         }
         return rootDirectory + "/" + relativePath;

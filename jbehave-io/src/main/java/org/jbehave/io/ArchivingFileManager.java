@@ -43,7 +43,7 @@ public class ArchivingFileManager implements FileManager {
     }
     
     public List<File> listContent(File file, boolean relativePaths) {
-        if ( !archiver.isArchive(file) ){
+        if (!archiver.isArchive(file)) {
             return asList(file);
         }
         File directory = new File(uploadDirectory, archiver.directoryOf(new File(file.getName())).getPath());

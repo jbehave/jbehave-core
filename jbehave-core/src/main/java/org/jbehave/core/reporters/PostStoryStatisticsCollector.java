@@ -127,7 +127,7 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
         boolean write = false;
         if (givenStory) {
             this.givenStories--;
-            if ( has("stepsFailed") ){
+            if (has("stepsFailed")) {
                 add("scenariosFailed");
                 write = true;
             }
@@ -137,7 +137,7 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
             }
             write = true;
         }
-        if ( write ) {
+        if (write) {
             writeData();
         }
     }
@@ -189,7 +189,7 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
 
     private void countScenarios(String namespace) {
         add(namespace);
-        if (!currentScenarioExcluded){
+        if (!currentScenarioExcluded) {
             if (cause != null || outcomesFailed != null) {
                 add(namespace + "Failed");
             } else {

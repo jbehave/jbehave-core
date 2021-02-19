@@ -17,7 +17,7 @@ public class IOUtils {
             return org.apache.commons.io.IOUtils.toString(input, charset.name());
         }
         finally {
-            if ( close ) {
+            if (close) {
                 input.close();
             }
         }
@@ -50,7 +50,7 @@ public class IOUtils {
             return org.apache.commons.io.IOUtils.toString(input);
         }
         finally {
-            if ( close ) {
+            if (close) {
                 input.close();
             }
         }

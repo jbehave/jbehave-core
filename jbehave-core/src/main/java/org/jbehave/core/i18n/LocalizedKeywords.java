@@ -65,7 +65,7 @@ public class LocalizedKeywords extends Keywords {
             try {
                 keywords.put(key, bundle.getString(key));
             } catch (MissingResourceException e) {
-                if (locale == baseLocale && bundleName.equals(baseBundleName) ) {
+                if (locale == baseLocale && bundleName.equals(baseBundleName)) {
                     throw new LocalizedKeywordNotFound(key, bundleName, locale);
                 } else {
                     keywords.put(key, baseBundle.getString(key));
@@ -103,7 +103,7 @@ public class LocalizedKeywords extends Keywords {
         }
 
         private static String asString(ClassLoader classLoader) {
-            if ( classLoader instanceof URLClassLoader ){
+            if (classLoader instanceof URLClassLoader) {
                 return StringUtils.join(((URLClassLoader)classLoader).getURLs(), PATH_SEPARATOR);
             }
             return classLoader.toString();

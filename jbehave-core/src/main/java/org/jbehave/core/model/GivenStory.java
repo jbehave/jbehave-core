@@ -56,9 +56,9 @@ public class GivenStory {
 
     public Map<String, String> getAnchorParameters() {
         Map<String,String> parameters = new HashMap<>();
-        for ( String pair : anchor.trim().split(";") ){
+        for (String pair : anchor.trim().split(";")) {
             String[] split = pair.split(":");
-            if ( split.length > 1 ){
+            if (split.length > 1) {
                 parameters.put(split[0], split[1]);
             }
         }

@@ -24,7 +24,7 @@ public class TransformingStoryParser implements StoryParser {
 
     private String transform(String storyAsText) {
         String transformed = storyAsText;
-        for ( StoryTransformer transformer : transformers ){
+        for (StoryTransformer transformer : transformers) {
             transformed = transformer.transform(transformed);
         }
         return transformed;

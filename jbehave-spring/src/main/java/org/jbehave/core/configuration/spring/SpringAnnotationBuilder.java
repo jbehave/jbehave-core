@@ -50,7 +50,7 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
                 } catch (Exception e) {
                     annotationMonitor().elementCreationFailed(ApplicationContext.class, e);
                     boolean ignoreContextFailure = annotationFinder().getAnnotatedValue(UsingSpring.class, boolean.class, "ignoreContextFailure");
-                    if ( !ignoreContextFailure ){
+                    if (!ignoreContextFailure) {
                         throw new InstantiationFailed(annotatedClass(), e);
                     }
                 }

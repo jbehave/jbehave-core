@@ -43,7 +43,7 @@ public class Scenario extends StepsContainer {
     }
 
     public String getTitle() {
-        if ( title == null ){
+        if (title == null) {
             return EMPTY;
         }
         return title;
@@ -54,7 +54,7 @@ public class Scenario extends StepsContainer {
     }
 
     public GivenStories getGivenStories() {
-        if ( !hasGivenStories() ){
+        if (!hasGivenStories()) {
             return GivenStories.EMPTY;
         }
         return givenStories;
@@ -65,7 +65,7 @@ public class Scenario extends StepsContainer {
     }
 
     public ExamplesTable getExamplesTable() {
-        if ( !hasExamplesTable() ){
+        if (!hasExamplesTable()) {
             return ExamplesTable.EMPTY;
         }
         return examplesTable;
@@ -80,7 +80,7 @@ public class Scenario extends StepsContainer {
     }
 
     public Meta getMeta(){
-        if ( !hasMeta() ){
+        if (!hasMeta()) {
             return Meta.EMPTY;
         }
         return meta;

@@ -38,8 +38,8 @@ public class JarFileScanner {
 
     public JarFileScanner(URL jarURL, List<String> includes, List<String> excludes) {
         this.jarURL = jarURL;
-        this.includes = ( includes != null ? toLocalPath(includes) : Arrays.<String>asList() );
-        this.excludes = ( excludes != null ? toLocalPath(excludes) : Arrays.<String>asList() );
+        this.includes = includes != null ? toLocalPath(includes) : Arrays.<String>asList();
+        this.excludes = excludes != null ? toLocalPath(excludes) : Arrays.<String>asList();
     }
 
     /**
@@ -60,7 +60,7 @@ public class JarFileScanner {
                     boolean match = includes.size() == 0;
                     if (!match) {
                         for (String pattern : includes) {
-                            if ( patternMatches(pattern, path)) {
+                            if (patternMatches(pattern, path)) {
                                 match = true;
                                 break;
                             }
@@ -68,7 +68,7 @@ public class JarFileScanner {
                     }
                     if (match) {
                         for (String pattern : excludes) {
-                            if ( patternMatches(pattern, path)) {
+                            if (patternMatches(pattern, path)) {
                                 match = false;
                                 break;
                             }
@@ -94,7 +94,9 @@ public class JarFileScanner {
     }
 
     private boolean patternMatches(String pattern, String path) {
-        if ( isBlank(pattern) ) return false;
+        if (isBlank(pattern)) {
+            return false;
+        }
         // SelectorUtils assumes local path separator for path and pattern
         String localPath = path.replace('/', File.separatorChar);
         return SelectorUtils.matchPath(pattern, localPath);

@@ -52,7 +52,7 @@ public class ZipFileArchiver implements FileArchiver {
     public File relativeTo(File file, File directory) {
         String filePath = separatorsToUnix(file.getPath());
         String directoryPath = separatorsToUnix(directory.getPath());
-        if ( !directoryPath.endsWith(UNIX_SEPARATOR) ){
+        if (!directoryPath.endsWith(UNIX_SEPARATOR)) {
             // ensure directory has a trailing separator
             // that will be removed from the full file path
             directoryPath = directoryPath + UNIX_SEPARATOR;

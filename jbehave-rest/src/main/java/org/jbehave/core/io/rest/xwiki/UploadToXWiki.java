@@ -24,7 +24,7 @@ public class UploadToXWiki extends UploadToREST {
     @Override
     protected String entity(Resource resource, Type type) {
         Page page = new Page();
-        page.syntax = ( resource.hasSyntax() ? resource.getSyntax() : "xwiki/2.0");
+        page.syntax = resource.hasSyntax() ? resource.getSyntax() : "xwiki/2.0";
         page.title = resource.getName();
         page.content = resource.getContent();
         page.parent = resource.getParentName();

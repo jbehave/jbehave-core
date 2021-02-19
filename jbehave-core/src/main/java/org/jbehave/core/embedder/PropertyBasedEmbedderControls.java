@@ -71,7 +71,7 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
     @SuppressWarnings("unchecked")
     private <T> T propertyAs(String name, Class<T> type, T defaultValue) {
         String property = System.getProperty(name);
-        if ( property == null ){
+        if (property == null) {
             return defaultValue;
         }
         if (type == String.class) {

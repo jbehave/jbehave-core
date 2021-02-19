@@ -131,7 +131,7 @@ public class Meta {
         for (String property : meta.split(keywords.metaProperty())) {
             if (StringUtils.isNotBlank(property)) {
                 String beforeIgnorable = StringUtils.substringBefore(property,keywords.ignorable());
-                if ( StringUtils.isNotBlank(beforeIgnorable)){
+                if (StringUtils.isNotBlank(beforeIgnorable)) {
                     properties.add(beforeIgnorable);
                 }
             }

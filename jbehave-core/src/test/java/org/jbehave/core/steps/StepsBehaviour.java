@@ -96,7 +96,7 @@ class StepsBehaviour {
 
     private StepCandidate findCandidate(List<StepCandidate> candidates, String candidateAsString) {
         for (StepCandidate candidate : candidates) {
-            if ( candidateAsString.equals(candidate.toString()) ){
+            if (candidateAsString.equals(candidate.toString())) {
                 return candidate;
             }
         }

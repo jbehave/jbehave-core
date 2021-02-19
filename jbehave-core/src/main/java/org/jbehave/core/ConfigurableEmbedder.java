@@ -26,7 +26,7 @@ import org.jbehave.core.steps.InjectableStepsFactory;
  * <pre>
  * {@code
  * public Configuration configuration() {
- *   if ( super.hasConfiguration() ){
+ *   if (super.hasConfiguration()) {
  *     return super.configuration();
  *   }
  *   return new MostUsefulConfiguration()...;

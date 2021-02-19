@@ -24,7 +24,7 @@ public class PrintStreamFileMonitor implements FileMonitor {
 
     protected void print(PrintStream output, String message, Exception cause) {
         output.println(message);
-        if ( cause != null ){
+        if (cause != null) {
             cause.printStackTrace(output);
         }
     }

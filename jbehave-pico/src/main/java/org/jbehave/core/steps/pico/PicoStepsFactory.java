@@ -40,7 +40,7 @@ public class PicoStepsFactory extends AbstractStepsFactory {
     @Override
     public Object createInstanceOfType(Class<?> type) {
         Object instance = parent.getComponent(type);
-        if ( instance == null ){
+        if (instance == null) {
             throw new StepsInstanceNotFound(type, this);
         }
         return instance;

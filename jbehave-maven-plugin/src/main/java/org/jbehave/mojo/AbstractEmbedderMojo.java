@@ -287,7 +287,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         embedder.useClassLoader(classLoader);
         embedder.useEmbedderControls(embedderControls());
-        if ( executorsClass != null ){
+        if (executorsClass != null) {
             ExecutorServiceFactory executorServiceFactory = classLoader.newInstance(ExecutorServiceFactory.class, executorsClass);
             embedder.useExecutorService(executorServiceFactory.create(embedder.embedderControls()));
         }
@@ -317,7 +317,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
                 .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
                 .doVerboseFiltering(verboseFiltering)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads);
-        if ( storyTimeouts != null ){
+        if (storyTimeouts != null) {
             embedderControls.useStoryTimeouts(storyTimeouts);
         }        
         return new UnmodifiableEmbedderControls(embedderControls);

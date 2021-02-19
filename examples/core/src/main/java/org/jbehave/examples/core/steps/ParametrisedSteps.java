@@ -13,7 +13,7 @@ public class ParametrisedSteps {
 
     @Given("a value $value")
     public void givenAValue(String value){
-        if ( value.equals("bad") ){
+        if (value.equals("bad")) {
             throw new RuntimeException("Bad value");
         }
     }

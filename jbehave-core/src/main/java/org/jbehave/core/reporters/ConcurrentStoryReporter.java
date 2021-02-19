@@ -324,7 +324,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
     
     public void invokeDelayed() {
-        if ( !multiThreading ){
+        if (!multiThreading) {
             return;
         }
         synchronized (delegate) {

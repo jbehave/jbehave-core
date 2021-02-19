@@ -174,7 +174,7 @@ public class TableTransformers {
         public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
             String replacing = properties.getProperties().getProperty("replacing");
             String replacement = properties.getProperties().getProperty("replacement");
-            if ( replacing == null || replacement == null ) {
+            if (replacing == null || replacement == null) {
                 return tableAsString;
             }
             return tableAsString.replace(replacing, replacement);

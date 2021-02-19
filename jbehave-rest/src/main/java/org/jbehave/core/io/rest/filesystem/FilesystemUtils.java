@@ -10,7 +10,8 @@ import org.jbehave.core.io.rest.Resource;
 public class FilesystemUtils {
 
     public static File asFile(Resource resource, String parentPath, String ext) {
-        String childPath = ( resource.hasBreadcrumbs() ? StringUtils.join(resource.getBreadcrumbs(), "/")  : "" ) + "/" + resource.getName() + ext;
+        String childPath = (resource.hasBreadcrumbs() ? StringUtils.join(resource.getBreadcrumbs(), "/") : "") + "/"
+                + resource.getName() + ext;
         return new File(parentPath, childPath);
     }
 

@@ -88,7 +88,7 @@ class LocalizedKeywordsBehaviour {
     void shouldProvideClassLoaderPathInMessageIfResourceBundleIsNotFound() throws IOException {
         try {
             ensureKeywordsAreLocalisedFor(new Locale("en"), "unknown");
-        } catch ( ResourceBundleNotFound e ){
+        } catch (ResourceBundleNotFound e) {
             String path = StringUtils.substringAfter(e.getMessage(),"Resource bundle unknown not found for locale en in classLoader");
             assertThat(path.split(ResourceBundleNotFound.PATH_SEPARATOR).length, greaterThan(0));
         }
@@ -184,7 +184,7 @@ class LocalizedKeywordsBehaviour {
         } else {
             keywords = (baseLocale == null ? new LocalizedKeywords(locale, bundleName, cl) : new LocalizedKeywords(locale, baseLocale, bundleName, cl));
         }
-        if ( locale != null ){
+        if (locale != null) {
             assertThat(keywords.getLocale(), equalTo(locale));
         }
         return keywords;

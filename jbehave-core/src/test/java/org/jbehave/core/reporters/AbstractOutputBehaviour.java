@@ -37,10 +37,10 @@ public abstract class AbstractOutputBehaviour {
 
     protected void validateFileOutput(File file) throws IOException, SAXException {
         String out = fileContent(file);
-        if ( file.getName().endsWith(".xml") ){
+        if (file.getName().endsWith(".xml")) {
             // will throw SAXException if the xml file is not well-formed
             XMLUnit.buildTestDocument(out);
-        } else if ( file.getName().endsWith(".json") ){
+        } else if (file.getName().endsWith(".json")) {
             // will not throw JsonSyntaxException if the json file is not valid
             Gson gson = new Gson();
             JsonReader jsonReader = new JsonReader(new StringReader(out));

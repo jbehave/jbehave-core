@@ -97,8 +97,8 @@ public class SurefireReporter {
     public synchronized void generate(PerformableRoot root,
                                       File outputDirectory) {
         List<PerformableStory> stories = root.getStories();
-        if ( reportByStory ){
-            for ( PerformableStory story : stories ){
+        if (reportByStory) {
+            for (PerformableStory story : stories) {
                 String name = reportName(story.getStory().getPath());
                 File file = outputFile(outputDirectory, name);
                 generateReport(asList(story), file);
@@ -338,9 +338,9 @@ public class SurefireReporter {
         }
 
         private void collectParentNames(File file, List<String> parents) {
-            if ( file.getParent() != null ){
+            if (file.getParent() != null) {
                 String name = file.getParentFile().getName();
-                if ( !StringUtils.isBlank(name) ) {
+                if (!StringUtils.isBlank(name)) {
                     parents.add(0, name);
                 }
                 collectParentNames(file.getParentFile(), parents);

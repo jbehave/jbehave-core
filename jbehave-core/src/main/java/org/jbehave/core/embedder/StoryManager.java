@@ -160,7 +160,7 @@ public class StoryManager {
     }
 
     public void waitUntilAllDoneOrFailed(RunContext context) {
-        if ( runningStories.values().isEmpty() ) {
+        if (runningStories.values().isEmpty()) {
             return;
         }
         boolean allDone = false;
@@ -168,7 +168,7 @@ public class StoryManager {
         while (!allDone || !started) {
             allDone = true;
             for (RunningStory runningStory : runningStories.values()) {
-                if ( runningStory.isStarted() ){
+                if (runningStory.isStarted()) {
                     started = true;
                     Story story = runningStory.getStory();
                     Future<ThrowableStory> future = runningStory.getFuture();
@@ -376,7 +376,7 @@ public class StoryManager {
         }
 
         public long getDurationInMillis() {
-            if ( duration == null ){
+            if (duration == null) {
                 return 0;
             }
             return duration.getDurationInSecs() * 1000;

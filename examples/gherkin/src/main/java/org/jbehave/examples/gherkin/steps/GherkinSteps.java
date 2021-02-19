@@ -23,7 +23,7 @@ public class GherkinSteps {
     @Then("I can drive them according to wheels: $table")
     public void thenICanDriveThemAccordingTo(ExamplesTable table) {
         OutcomesTable outcomes = new OutcomesTable();
-        for ( Parameters row : table.getRowsAsParameters() ){
+        for (Parameters row : table.getRowsAsParameters()) {
             Integer wheels = row.valueAs("wheels", Integer.class);
             Boolean canDriveWith = car.canDriveWith(wheels);
             Boolean canDrive = row.valueAs("can_drive", Boolean.class);

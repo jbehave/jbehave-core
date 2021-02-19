@@ -53,7 +53,7 @@ public class ConvertedParameters implements Parameters {
     }
 
     private String valueFor(String name) {
-        if ( !values.containsKey(name) ){
+        if (!values.containsKey(name)) {
             throw new ValueNotFound(name);
         }
         return values.get(name);

@@ -53,7 +53,7 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
                     annotationMonitor().elementCreationFailed(moduleClass, e);
                 }
             }
-            if ( modules.size() > 0 ){
+            if (modules.size() > 0) {
                 container = createPicoContainer(modules);                
             }
         } else {
@@ -90,7 +90,7 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
             } catch (AmbiguousComponentResolutionException e) {
                 instance = container.getComponent(ofClass);
             }
-            if ( instance != null ){
+            if (instance != null) {
                 return instance;
             }
         }
@@ -99,7 +99,7 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
 
     @SuppressWarnings("unchecked")
     protected PicoContainer createPicoContainer(List<PicoModule> modules) {
-        if ( container != null ){
+        if (container != null) {
             return container;
         }
         @SuppressWarnings("rawtypes")

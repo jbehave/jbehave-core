@@ -202,7 +202,7 @@ public class StoryReporterBuilder {
     }
 
     public SGRCodes codes(){
-        if ( codes == null ){
+        if (codes == null) {
             return new SGRCodes();
         }
         return codes;

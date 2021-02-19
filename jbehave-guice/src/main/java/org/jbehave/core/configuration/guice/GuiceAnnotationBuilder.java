@@ -178,7 +178,7 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
     }
 
     protected Injector createInjector(List<Module> modules) {
-        if ( injector != null ){
+        if (injector != null) {
             return injector;
         }
         Injector root = Guice.createInjector(new AbstractModule() {        

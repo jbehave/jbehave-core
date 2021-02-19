@@ -587,7 +587,7 @@ class StepCandidateBehaviour {
 
     static StepCandidate candidateMatchingStep(List<StepCandidate> candidates, String stepAsString) {
         for (StepCandidate candidate : candidates) {
-            if (candidate.matches(stepAsString)){
+            if (candidate.matches(stepAsString)) {
                 return candidate ;
             }
         }

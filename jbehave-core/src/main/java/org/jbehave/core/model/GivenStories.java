@@ -36,7 +36,7 @@ public class GivenStories {
 
     private Map<String, String> parametersByAnchor(String anchor) {
         int examplesRow = -1;
-        if ( !StringUtils.isBlank(anchor) ){
+        if (!StringUtils.isBlank(anchor)) {
             try {
                 examplesRow = Integer.parseInt(anchor);
             } catch (NumberFormatException e) {
@@ -44,10 +44,10 @@ public class GivenStories {
             }
         }
         Map<String, String> parameters = null;
-        if ( examplesRow > -1 && examplesTable != null && examplesRow < examplesTable.getRowCount() ){
+        if (examplesRow > -1 && examplesTable != null && examplesRow < examplesTable.getRowCount()) {
              parameters = examplesTable.getRow(examplesRow);
         }
-        if ( parameters == null ){
+        if (parameters == null) {
             return new HashMap<>();
         }
         return parameters;
@@ -63,7 +63,7 @@ public class GivenStories {
 
     public boolean requireParameters() {
         for (GivenStory story : stories) {
-            if ( story.hasAnchor() ){
+            if (story.hasAnchor()) {
                 return true;
             }
         }
