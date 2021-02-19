@@ -157,23 +157,23 @@ class ParameterConvertersBehaviour {
         final int threads = 3;
         final ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         final BlockingQueue<String> queue = new ArrayBlockingQueue<>(threads);
-        Thread t1 = new Thread(){
+        Thread t1 = new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 assertConverterForLocale(converter, locale);
                 queue.add(Thread.currentThread().getName());
             }
         };
-        Thread t2 = new Thread(){
+        Thread t2 = new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 assertConverterForLocale(converter, locale);
                 queue.add(Thread.currentThread().getName());
             }
         };
-        Thread t3 = new Thread(){
+        Thread t3 = new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 assertConverterForLocale(converter, locale);
                 queue.add(Thread.currentThread().getName());
             }
@@ -291,8 +291,8 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertCommaSeparatedValuesToListOfNumbersWithDefaultFormat() {
         ParameterConverter<List<Number>> converter = new NumberListConverter();
-        Type listOfNumbers = new TypeLiteral<List<Number>>(){}.getType();
-        Type setOfNumbers = new TypeLiteral<Set<Number>>(){}.getType();
+        Type listOfNumbers = new TypeLiteral<List<Number>>() {}.getType();
+        Type setOfNumbers = new TypeLiteral<Set<Number>>() {}.getType();
         assertThat(converter.accept(listOfNumbers), is(true));
         assertThat(converter.accept(setOfNumbers), is(false));
         List<Number> list = converter.convertValue("3, 0.5, 6.1f, 8.00", listOfNumbers);
@@ -302,7 +302,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertCommaSeparatedValuesToSetOfNumbersWithDefaultFormat() {
         ParameterConverters parameterConverters = new ParameterConverters();
-        Type setOfNumbers = new TypeLiteral<Set<Number>>(){}.getType();
+        Type setOfNumbers = new TypeLiteral<Set<Number>>() {}.getType();
         Set<Number> set = (Set<Number>)parameterConverters.convert("3, 0.5, 6.1, 8.00", setOfNumbers);
         assertThatCollectionIs(set, 3L, 0.5, 6.1d, 8L);
     }
@@ -310,7 +310,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertCommaSeparatedValuesToListOfNumbersWithCustomFormat() {
         ParameterConverter<List<Number>> converter = new NumberListConverter(new DecimalFormat("#,####"), " ");
-        Type type = new TypeLiteral<List<Number>>(){}.getType();
+        Type type = new TypeLiteral<List<Number>>() {}.getType();
         List<Number> list = converter.convertValue("3,000 0.5 6.1f 8.00", type);
         assertThatCollectionIs(list, 3000L, 0.5, 6.1, 8L);
     }
@@ -320,21 +320,21 @@ class ParameterConvertersBehaviour {
     void shouldConvertCommaSeparatedValuesOfSpecificNumberTypes() {
         ParameterConverter converter = new NumberListConverter();
 
-        Type doubleType = new TypeLiteral<List<Double>>(){}.getType();
+        Type doubleType = new TypeLiteral<List<Double>>() {}.getType();
         List<Double> doubles = (List<Double>) converter.convertValue(
                 "3, 0.5, 0.0, 8.00, " + NAN + ", " + POSITIVE_INFINITY, doubleType);
         assertThatCollectionIs(doubles, 3.0, 0.5, 0.0, 8.0, Double.NaN, Double.POSITIVE_INFINITY);
 
-        Type floatType = new TypeLiteral<List<Float>>(){}.getType();
+        Type floatType = new TypeLiteral<List<Float>>() {}.getType();
         List<Float> floats = (List<Float>) converter.convertValue(
                 "3, 0.5, 0.0, 8.00, " + NAN + ", " + NEGATIVE_INFINITY, floatType);
         assertThatCollectionIs(floats, 3.0f, 0.5f, 0.0f, 8.0f, Float.NaN, Float.NEGATIVE_INFINITY);
 
-        Type longType = new TypeLiteral<List<Long>>(){}.getType();
+        Type longType = new TypeLiteral<List<Long>>() {}.getType();
         List<Long> longs = (List<Long>) converter.convertValue("3, 0, 8", longType);
         assertThatCollectionIs(longs, 3L, 0L, 8L);
 
-        Type intType = new TypeLiteral<List<Integer>>(){}.getType();
+        Type intType = new TypeLiteral<List<Integer>>() {}.getType();
         List<Integer> ints = (List<Integer>) converter.convertValue("3, 0, 8", intType);
         assertThatCollectionIs(ints, 3, 0, 8);
     }
@@ -364,15 +364,15 @@ class ParameterConvertersBehaviour {
     void shouldFailToConvertCommaSeparatedValuesOfInvalidNumbers() {
         NumberListConverter converter = new NumberListConverter();
         assertThrows(ParameterConversionFailed.class,
-                () -> converter.convertValue("3x, x.5", new TypeLiteral<List<Number>>(){}.getType()));
+                () -> converter.convertValue("3x, x.5", new TypeLiteral<List<Number>>() {}.getType()));
     }
 
     @Test
     void shouldConvertCommaSeparatedValuesToListOfStrings() {
         ParameterConverter<List<String>> converter = new StringListConverter();
-        Type listOfStrings = new TypeLiteral<List<String>>(){}.getType();
-        Type listOfNumbers = new TypeLiteral<List<Number>>(){}.getType();
-        Type setOfNumbers = new TypeLiteral<Set<Number>>(){}.getType();
+        Type listOfStrings = new TypeLiteral<List<String>>() {}.getType();
+        Type listOfNumbers = new TypeLiteral<List<Number>>() {}.getType();
+        Type setOfNumbers = new TypeLiteral<Set<Number>>() {}.getType();
         assertThat(converter.accept(listOfStrings), is(true));
         assertThat(converter.accept(listOfNumbers), is(false));
         assertThat(converter.accept(setOfNumbers), is(false));
@@ -450,7 +450,7 @@ class ParameterConvertersBehaviour {
     void shouldConvertMultilineTableToParameters() {
         ParameterConverter converter = new ExamplesTableParametersConverter(
                 new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
-        Type type = new TypeLiteral<List<MyParameters>>(){}.getType();
+        Type type = new TypeLiteral<List<MyParameters>>() {}.getType();
         assertThatTypesAreAccepted(converter, type);
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
         @SuppressWarnings("unchecked")
@@ -531,7 +531,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertEnumList() {
         ParameterConverter converter = new EnumListConverter();
-        Type type = new TypeLiteral<List<SomeEnum>>(){}.getType();
+        Type type = new TypeLiteral<List<SomeEnum>>() {}.getType();
 
         assertThat(converter.accept(type), is(true));
         List<Enum> list = (List<Enum>)converter.convertValue("ONE,TWO,THREE", type);
@@ -561,7 +561,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertBooleanList() {
         ParameterConverter<List<Boolean>> converter = new BooleanListConverter();
-        Type type = new TypeLiteral<List<Boolean>>(){}.getType();
+        Type type = new TypeLiteral<List<Boolean>>() {}.getType();
         assertThat(converter.accept(type), is(true));
         List<Boolean> list = converter.convertValue("true,false,true", type);
         assertThatCollectionIs(list, true, false, true);
@@ -585,7 +585,7 @@ class ParameterConvertersBehaviour {
     void shouldConvertToListOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
-        Type type = new TypeLiteral<List<Bar>>(){}.getType();
+        Type type = new TypeLiteral<List<Bar>>() {}.getType();
         List<Bar> list = (List<Bar>)parameterConverters.convert("foo", type);
         assertThatCollectionIs(list, Bar.INSTANCE);
     }
@@ -595,7 +595,7 @@ class ParameterConvertersBehaviour {
     void shouldConvertToLinkedListOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
-        Type type = new TypeLiteral<LinkedList<Bar>>(){}.getType();
+        Type type = new TypeLiteral<LinkedList<Bar>>() {}.getType();
         assertThatCollectionIs((LinkedList<Bar>) parameterConverters.convert("foo", type), Bar.INSTANCE);
     }
 
@@ -604,7 +604,7 @@ class ParameterConvertersBehaviour {
     void shouldConvertToSortedSetOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
-        Type type = new TypeLiteral<SortedSet<Bar>>(){}.getType();
+        Type type = new TypeLiteral<SortedSet<Bar>>() {}.getType();
         Set<Bar> set  = (Set<Bar>) parameterConverters.convert("foo", type);
         assertThatCollectionIs(set, Bar.INSTANCE);
     }
@@ -614,7 +614,7 @@ class ParameterConvertersBehaviour {
     void shouldConvertToNavigableSetOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
-        Type type = new TypeLiteral<NavigableSet<Bar>>(){}.getType();
+        Type type = new TypeLiteral<NavigableSet<Bar>>() {}.getType();
         Set<Bar> set  = (Set<Bar>) parameterConverters.convert("foo", type);
         assertThatCollectionIs(set, Bar.INSTANCE);
     }
@@ -623,7 +623,7 @@ class ParameterConvertersBehaviour {
     void shouldNotConvertToAnyCollectionOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
-        Type type = new TypeLiteral<Collection<Bar>>(){}.getType();
+        Type type = new TypeLiteral<Collection<Bar>>() {}.getType();
         ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
                 () -> parameterConverters.convert("foo", type));
         assertThat(exception.getMessage(), is(equalTo("No parameter converter for "
@@ -633,7 +633,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldNotConvertToListOfCustomObjectsWhenElementConverterIsNotAdded() {
         ParameterConverters parameterConverters = new ParameterConverters(new TableTransformers());
-        Type type = new TypeLiteral<List<Bar>>(){}.getType();
+        Type type = new TypeLiteral<List<Bar>>() {}.getType();
         ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
                 () -> parameterConverters.convert("foo", type));
         assertThat(exception.getMessage(), is(equalTo(
@@ -644,7 +644,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertEmptyStringToEmptyCollection() {
         ParameterConverters parameterConverters = new ParameterConverters();
-        Type type = new TypeLiteral<List<Boolean>>(){}.getType();
+        Type type = new TypeLiteral<List<Boolean>>() {}.getType();
         List<Boolean> list = (List<Boolean>) parameterConverters.convert("", type);
         assertThatCollectionIs(list);
     }
@@ -653,7 +653,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertBlankStringToEmptyCollection() {
         ParameterConverters parameterConverters = new ParameterConverters();
-        Type type = new TypeLiteral<Set<Number>>(){}.getType();
+        Type type = new TypeLiteral<Set<Number>>() {}.getType();
         Set<Number> set = (Set<Number>) parameterConverters.convert(" \t\n\r", type);
         assertThatCollectionIs(set);
     }
@@ -792,10 +792,10 @@ class ParameterConvertersBehaviour {
                 throw new IllegalStateException("Not implemented");
             }
         };
-        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set<Bar>>(){}.getType()), is(true));
-        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set<Number>>(){}.getType()), is(false));
-        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set>(){}.getType()), is(false));
-        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<List<Bar>>(){}.getType()), is(false));
+        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set<Bar>>() {}.getType()), is(true));
+        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set<Number>>() {}.getType()), is(false));
+        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set>() {}.getType()), is(false));
+        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<List<Bar>>() {}.getType()), is(false));
     }
 
     @Test
@@ -949,7 +949,7 @@ class ParameterConvertersBehaviour {
         }
         assertThat(converter.accept(WrongType.class), is(false));
         assertThat(converter.accept(mock(Type.class)), is(false));
-        assertThat(converter.accept(new TypeLiteral<List<Map<Object, Object>>>(){}.getType()), is(false));
+        assertThat(converter.accept(new TypeLiteral<List<Map<Object, Object>>>() {}.getType()), is(false));
     }
 
     static class WrongType {

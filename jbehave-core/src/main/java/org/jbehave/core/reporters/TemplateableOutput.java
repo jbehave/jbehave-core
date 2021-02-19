@@ -79,7 +79,7 @@ public class TemplateableOutput extends NullStoryReporter {
 
     @Override
     public void lifecycle(Lifecycle lifecycle) {
-        if(!lifecycle.isEmpty()){
+        if (!lifecycle.isEmpty()) {
             this.outputStory.lifecycle = new OutputLifecycle(lifecycle);            
         }
     }
@@ -257,27 +257,27 @@ public class TemplateableOutput extends NullStoryReporter {
             this.keywords = keywords;
         }
 
-        public String getLifecycle(){
+        public String getLifecycle() {
             return keywords.lifecycle();
         }
 
-        public String getScope(){
+        public String getScope() {
             return keywords.scope();
         }
 
-        public String getScopeScenario(){
+        public String getScopeScenario() {
             return keywords.scopeScenario();
         }
 
-        public String getScopeStory(){
+        public String getScopeStory() {
             return keywords.scopeStory();
         }
 
-        public String getBefore(){
+        public String getBefore() {
             return keywords.before();
         }
 
-        public String getAfter(){
+        public String getAfter() {
             return keywords.after();
         }
 
@@ -381,11 +381,11 @@ public class TemplateableOutput extends NullStoryReporter {
             return keywords.duration();
         }
 
-        public String getOutcome(){
+        public String getOutcome() {
             return keywords.outcome();
         }
         
-        public String getMetaFilter(){
+        public String getMetaFilter() {
             return keywords.metaFilter();
         }
         
@@ -506,11 +506,11 @@ public class TemplateableOutput extends NullStoryReporter {
             return narrative.iWantTo();
         }
         
-        public String getSoThat(){
+        public String getSoThat() {
             return narrative.soThat();
         }
         
-        public boolean isAlternative(){
+        public boolean isAlternative() {
             return narrative.isAlternative();
         }
 
@@ -531,11 +531,11 @@ public class TemplateableOutput extends NullStoryReporter {
             return lifecycle.hasBeforeSteps();
         }
 
-        public List<String> getBeforeSteps(){
+        public List<String> getBeforeSteps() {
             return lifecycle.getBeforeSteps();
         }
 
-        public List<String> getBeforeSteps(Scope scope){
+        public List<String> getBeforeSteps(Scope scope) {
             return lifecycle.getBeforeSteps(scope);
         }
 
@@ -543,31 +543,31 @@ public class TemplateableOutput extends NullStoryReporter {
             return lifecycle.hasAfterSteps();
         }
 
-        public List<String> getAfterSteps(){
+        public List<String> getAfterSteps() {
             return lifecycle.getAfterSteps();
         }
 
-        public List<String> getAfterSteps(Scope scope){
+        public List<String> getAfterSteps(Scope scope) {
             return lifecycle.getAfterSteps(scope);
         }
 
-        public List<String> getAfterSteps(Scope scope, Outcome outcome){
+        public List<String> getAfterSteps(Scope scope, Outcome outcome) {
             return lifecycle.getAfterSteps(scope, outcome);
         }
 
-        public Set<Outcome> getOutcomes(){
+        public Set<Outcome> getOutcomes() {
             return lifecycle.getOutcomes();
         }
 
-        public MetaFilter getMetaFilter(Outcome outcome){
+        public MetaFilter getMetaFilter(Outcome outcome) {
             return lifecycle.getMetaFilter(outcome);
         }
         
-        public List<String> getAfterSteps(Outcome outcome){
+        public List<String> getAfterSteps(Outcome outcome) {
             return lifecycle.getAfterSteps(outcome);
         }
 
-        public List<String> getAfterSteps(Outcome outcome, Meta meta){
+        public List<String> getAfterSteps(Outcome outcome, Meta meta) {
             return lifecycle.getAfterSteps(outcome, meta);
         }
 

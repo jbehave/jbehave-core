@@ -16,7 +16,7 @@ class NullStoryReporterBehaviour {
     void shouldOnlyReportOverriddenMethods() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         final PrintStream printStream = new PrintStream(out);
-        StoryReporter reporter = new NullStoryReporter(){
+        StoryReporter reporter = new NullStoryReporter() {
 
             @Override
             public void beforeStory(Story story, boolean givenStory) {

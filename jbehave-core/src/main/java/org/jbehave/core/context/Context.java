@@ -30,8 +30,8 @@ public class Context {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("story="+getCurrentStory())
-                .append("scenario="+getCurrentScenario())
+                .append("story=" + getCurrentStory())
+                .append("scenario=" + getCurrentScenario())
                 .build();
     }
 

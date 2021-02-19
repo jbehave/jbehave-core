@@ -14,7 +14,7 @@ public class ProvidedStepsFactory implements InjectableStepsFactory {
 
     private final List<CandidateSteps> candidateSteps;
 
-    public ProvidedStepsFactory(){
+    public ProvidedStepsFactory() {
         this(asList(new CandidateSteps[]{}));
     }
 

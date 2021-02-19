@@ -175,8 +175,8 @@ class CompositeCandidateStepsBehaviour {
         List<StepCandidate> candidates = steps.listCandidates();
         // find main step
         StepCandidate candidate = null;
-        for(StepCandidate cand: candidates) {
-            if(cand.getPatternAsString().equals("all buttons are enabled")) {
+        for (StepCandidate cand: candidates) {
+            if (cand.getPatternAsString().equals("all buttons are enabled")) {
                 candidate = cand;
                 break;
             }
@@ -228,7 +228,7 @@ class CompositeCandidateStepsBehaviour {
     }
 
     @Test
-    void shouldMatchCompositesWhenStepParameterIsProvided(){
+    void shouldMatchCompositesWhenStepParameterIsProvided() {
         CompositeStepsWithParameterMatching steps = new CompositeStepsWithParameterMatching();
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidateMatchingStep(candidates, "When I login");
@@ -249,17 +249,17 @@ class CompositeCandidateStepsBehaviour {
 
         @When("I login")
         @Composite(steps={"When I click the Login button"})
-        public void whenILogin(){}
+        public void whenILogin() {}
         
         @When("I click the $button button")
-        public void whenIClickTheButton(@Named("button") String button){
+        public void whenIClickTheButton(@Named("button") String button) {
             this.button = button;
         }
         
     }
     
     @Test
-    void recursiveCompositesShouldWorkWithSomeMissingParameters(){
+    void recursiveCompositesShouldWorkWithSomeMissingParameters() {
         String userName = "someUserName";
         CompositeStepsWithParameterMissing steps = new CompositeStepsWithParameterMissing();
         List<StepCandidate> candidates = steps.listCandidates();
@@ -285,10 +285,10 @@ class CompositeCandidateStepsBehaviour {
                 "Given my user name is <name>",
                 "Given I log in"
         })
-        public void logInAsUser(@Named("name")String name){}
+        public void logInAsUser(@Named("name")String name) {}
         
         @Given("my user name is $name")
-        public void setUsername(@Named("name")String name){
+        public void setUsername(@Named("name")String name) {
             this.username = name;
         }
         
@@ -298,25 +298,25 @@ class CompositeCandidateStepsBehaviour {
                 "When I type my user name into the Username field", 
                 "When I type my password into the Password field", 
                 "When I click the Login button"} )
-        public void logIn(){
+        public void logIn() {
             this.isLoggedIn = true;
         }
         
         @Given("Given I am on the Login page")
-        public void onLoginPage(){}
+        public void onLoginPage() {}
         
         @Given("When I type my user name into the Username field")
-        public void typeUsername(){}
+        public void typeUsername() {}
         
         @Given("When I type my password into the Password field")
-        public void typePassword(){}
+        public void typePassword() {}
         
         @Given("When I click the Login button")
-        public void clickLogin(){}
+        public void clickLogin() {}
     }
 
     @Test
-    void shouldIgnoreCompositesIgnorableStep(){
+    void shouldIgnoreCompositesIgnorableStep() {
         CompositeWithIgnorableStep steps = new CompositeWithIgnorableStep();
         List<StepCandidate> candidates = steps.listCandidates();
         String compositeName = "When ignore my step";
@@ -337,14 +337,14 @@ class CompositeCandidateStepsBehaviour {
 
         @When("ignore my step")
         @Composite(steps={"!-- When ignore me"})
-        public void whenIgnoreMyStep(){}
+        public void whenIgnoreMyStep() {}
 
         @When("ignore me")
-        public void whenIgnoreMe(){}
+        public void whenIgnoreMe() {}
     }
 
     @Test
-    void shouldCommentCompositesComment(){
+    void shouldCommentCompositesComment() {
         CompositeWithComment steps = new CompositeWithComment();
         List<StepCandidate> candidates = steps.listCandidates();
         String compositeName = "When comment my comment";
@@ -365,6 +365,6 @@ class CompositeCandidateStepsBehaviour {
 
         @When("comment my comment")
         @Composite(steps={"!-- comment"})
-        public void whenIgnoreMyStep(){}
+        public void whenIgnoreMyStep() {}
     }
 }

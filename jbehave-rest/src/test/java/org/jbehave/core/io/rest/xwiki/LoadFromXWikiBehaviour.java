@@ -18,7 +18,7 @@ class LoadFromXWikiBehaviour {
         LoadFromXWiki loader = new LoadFromXWiki(Type.JSON);
         String url = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story";
         String uri = loader.uri(url, Type.JSON);
-        assertThat(uri, equalTo(url+"?media=json"));
+        assertThat(uri, equalTo(url + "?media=json"));
     }
 
     @Test
@@ -26,7 +26,7 @@ class LoadFromXWikiBehaviour {
         LoadFromXWiki loader = new LoadFromXWiki(Type.XML);
         String url = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story";
         String uri = loader.uri(url, Type.XML);
-        assertThat(uri, equalTo(url+"?media=xml"));
+        assertThat(uri, equalTo(url + "?media=xml"));
     }
 
     @Test

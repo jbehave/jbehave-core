@@ -394,8 +394,8 @@ class JUnit4DescriptionGeneratorBehaviour {
     }
 
     private void mockListBeforeOrAfterScenarioCall(ScenarioType... scenarioTypes) {
-        Method method = new Object(){}.getClass().getEnclosingMethod();
-        for(ScenarioType scenarioType : scenarioTypes) {
+        Method method = new Object() {}.getClass().getEnclosingMethod();
+        for (ScenarioType scenarioType : scenarioTypes) {
             lenient().when(steps.listBeforeOrAfterScenario(scenarioType)).thenReturn(
                     singletonList(new BeforeOrAfterStep(Stage.BEFORE, method, null)));
         }
@@ -476,7 +476,7 @@ class JUnit4DescriptionGeneratorBehaviour {
                 steps.add(new Steps(scope, outcome, singletonList("Then after " + outcome + " " + scope)));
             }
         }
-        steps.add(new Steps(Scope.STEP, Outcome.ANY, singletonList("Then after "+ Scope.STEP)));
+        steps.add(new Steps(Scope.STEP, Outcome.ANY, singletonList("Then after " +Scope.STEP)));
         return steps;
     }
 

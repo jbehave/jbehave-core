@@ -185,7 +185,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
                 scenariosExcluded, scenariosPending, stepsFailed);
     }
 
-    private int countStoriesWithScenarios(){
+    private int countStoriesWithScenarios() {
         int storyCount = 0;
         for (Report report : reports.getReports()) {
             Map<String, Integer> stats = report.getStats();
@@ -338,11 +338,11 @@ public class TemplateableViewGenerator implements ViewGenerator {
             addTotalsReport();
         }
         
-        public ViewType getViewType(){
+        public ViewType getViewType() {
             return viewType;
         }
         
-        public void viewAs(ViewType viewType){
+        public void viewAs(ViewType viewType) {
             this.viewType = viewType;
         }
         

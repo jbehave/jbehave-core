@@ -42,7 +42,7 @@ class ImportToFilesystemMojoBehaviour {
         // When
         String targetPath = "target/stories";
         String targetExt = ".story";
-        ImportToFilesystemMojo mojo = new ImportToFilesystemMojo(){
+        ImportToFilesystemMojo mojo = new ImportToFilesystemMojo() {
 
             @Override
             ResourceIndexer newResourceIndexer() {

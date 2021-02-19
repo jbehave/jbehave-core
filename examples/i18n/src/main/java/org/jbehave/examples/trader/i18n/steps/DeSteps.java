@@ -42,12 +42,12 @@ public class DeSteps {
     }
 
     @Then("hat die Tabelle $rows Zeilen")
-    public void hasRows(int rows){
+    public void hasRows(int rows) {
         assertThat(table.getRowCount(), equalTo(rows));
     }
 
     @Then("in Zeile $row und Spalte $column ist: $value")
-    public void theRowValuesAre(int row, String column, String value){
+    public void theRowValuesAre(int row, String column, String value) {
         Map<String,String> rowValues = table.getRow(row-1);      
         assertThat(rowValues.get(column), equalTo(value));
     }

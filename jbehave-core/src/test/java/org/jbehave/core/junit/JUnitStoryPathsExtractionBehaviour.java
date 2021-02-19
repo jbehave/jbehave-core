@@ -39,7 +39,7 @@ class JUnitStoryPathsExtractionBehaviour {
     }
 
     @Test
-    void shouldExtractStoryPathsFromJUnitStoriesChild(){
+    void shouldExtractStoryPathsFromJUnitStoriesChild() {
         assertEquals(JUNIT_STORIES_PATHS, new ChildTestJUnitStories().storyPaths());
     }
 

@@ -179,7 +179,7 @@ public class StepFinder {
                 }
 
                 private String scoringPattern(StepCandidate candidate) {
-                    return candidate.getPatternAsString().replaceAll("\\s\\$\\w+\\s", " ").replaceAll("\\$\\w+", "");
+                    return candidate.getPatternAsString().replaceAll("\\s\\$\\w+\\s", " ").replaceAll("\\$\\w + ", "");
                 }
 
                 private String trimStartingWord(String stepAsString) {

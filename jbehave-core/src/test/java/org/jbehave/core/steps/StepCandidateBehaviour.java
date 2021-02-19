@@ -137,7 +137,7 @@ class StepCandidateBehaviour {
     @Test
     void shouldNotMatchOrIgnoreStepWhenStartingWordNotFound() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        Keywords keywords = new LocalizedKeywords(){            
+        Keywords keywords = new LocalizedKeywords() {
             
             @Override
             public String startingWordFor(StepType stepType) {

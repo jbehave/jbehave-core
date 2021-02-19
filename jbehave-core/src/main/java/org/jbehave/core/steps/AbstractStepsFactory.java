@@ -89,7 +89,7 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
     public static class StepsInstanceNotFound extends RuntimeException {
 
         public StepsInstanceNotFound(Class<?> type, InjectableStepsFactory stepsFactory) {
-            super("Steps instance not found for type "+type+" in factory "+stepsFactory);
+            super("Steps instance not found for type " + type + " in factory " + stepsFactory);
         }
 
     }

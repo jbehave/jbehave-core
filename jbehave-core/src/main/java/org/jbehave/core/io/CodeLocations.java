@@ -24,8 +24,8 @@ public class CodeLocations {
         String pathOfClass = codeLocationClass.getName().replace(".", "/") + ".class";
         URL classResource = codeLocationClass.getClassLoader().getResource(pathOfClass);
         String codeLocationPath = removeEnd(getPathFromURL(classResource), pathOfClass);
-        if(codeLocationPath.endsWith(".jar!/")) {
-            codeLocationPath=removeEnd(codeLocationPath,"!/");
+        if (codeLocationPath.endsWith(".jar!/")) {
+            codeLocationPath = removeEnd(codeLocationPath, "!/");
         }
         return codeLocationFromPath(codeLocationPath);
     }
@@ -90,7 +90,7 @@ public class CodeLocations {
             throw new InvalidCodeLocation(e.toString());
         }
 
-        if(uri.toString().startsWith("file:") || uri.toString().startsWith("jar:")) {
+        if (uri.toString().startsWith("file:") || uri.toString().startsWith("jar:")) {
             return removeStart(uri.getSchemeSpecificPart(),"file:");
         } else {
             // this is wrong, but should at least give a

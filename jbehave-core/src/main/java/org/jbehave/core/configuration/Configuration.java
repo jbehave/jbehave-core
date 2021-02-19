@@ -391,7 +391,7 @@ public abstract class Configuration {
         return this;
     }
 
-    public Configuration useStoryControls(StoryControls storyControls){
+    public Configuration useStoryControls(StoryControls storyControls) {
         this.storyControls = storyControls;
         return this;
     }

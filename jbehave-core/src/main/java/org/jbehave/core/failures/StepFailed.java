@@ -13,7 +13,7 @@ public class StepFailed extends UUIDExceptionWrapper {
     }
 
     public StepFailed(String step, OutcomesTable table) {
-        super("'" + step + "': "+table, table.failureCause());
+        super("'" + step + "': " + table, table.failureCause());
     }
 
 }

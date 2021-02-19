@@ -97,7 +97,7 @@ public class ExamplesTableFactory {
         return tableParsers.parseProperties(input, keywords);
     }
 
-    public void useKeywords(Keywords keywords){
+    public void useKeywords(Keywords keywords) {
         this.keywords = keywords;
     }
 

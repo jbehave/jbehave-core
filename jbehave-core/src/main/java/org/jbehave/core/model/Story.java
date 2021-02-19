@@ -82,7 +82,7 @@ public class Story {
         return path;
     }
 
-    public boolean hasDescription(){
+    public boolean hasDescription() {
         return description != null;
     }
 
@@ -93,7 +93,7 @@ public class Story {
         return description;
     }
 
-    public boolean hasNarrative(){
+    public boolean hasNarrative() {
         return narrative != null;
     }
 
@@ -115,11 +115,11 @@ public class Story {
         return meta;
     }
 
-    public Meta asMeta(String prefix){
+    public Meta asMeta(String prefix) {
         Properties p = new Properties();
-        p.setProperty(prefix+"path", getPath());
-        p.setProperty(prefix+"description", getDescription().asString());
-        p.setProperty(prefix+"narrative", getNarrative().toString());
+        p.setProperty(prefix + "path", getPath());
+        p.setProperty(prefix + "description", getDescription().asString());
+        p.setProperty(prefix + "narrative", getNarrative().toString());
         return new Meta(p);
     }
 
@@ -127,7 +127,7 @@ public class Story {
         return givenStories != null;
     }
 
-    public GivenStories getGivenStories(){
+    public GivenStories getGivenStories() {
         if (!hasGivenStories()) {
             return GivenStories.EMPTY;
         }
@@ -138,7 +138,7 @@ public class Story {
         return lifecycle != null;
     }
 
-    public Lifecycle getLifecycle(){
+    public Lifecycle getLifecycle() {
         if (!hasLifecycle()) {
             return Lifecycle.EMPTY;
         }

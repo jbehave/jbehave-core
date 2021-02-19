@@ -435,7 +435,7 @@ public class Embedder {
         return metaFilters;
     }
 
-    public Map<String,MetaMatcher> metaMatchers(){
+    public Map<String,MetaMatcher> metaMatchers() {
         if (metaMatchers == null) {
             metaMatchers = new HashMap<>();
         }
@@ -457,7 +457,7 @@ public class Embedder {
         return systemProperties;
     }
     
-    public TimeoutParser[] timeoutParsers(){
+    public TimeoutParser[] timeoutParsers() {
         if (timeoutParsers == null) {
             timeoutParsers = new TimeoutParser[]{};
         }
@@ -509,7 +509,7 @@ public class Embedder {
         this.systemProperties = systemProperties;
     }
 
-    public void useTimeoutParsers(TimeoutParser... timeoutParsers){
+    public void useTimeoutParsers(TimeoutParser... timeoutParsers) {
         this.timeoutParsers = timeoutParsers;        
     }
     

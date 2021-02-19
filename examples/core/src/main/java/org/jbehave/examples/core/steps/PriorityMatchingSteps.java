@@ -11,17 +11,17 @@ public class PriorityMatchingSteps {
     private String param;
 
     @Given("a step that has $param")
-    public void has(String param){
+    public void has(String param) {
         this.param = param;
     }
     
     @Given(value="a step that has exactly one $param", priority=1)
-    public void hasExactlyOne(String param){
+    public void hasExactlyOne(String param) {
         this.param = param;
     }
 
     @Then("the parameter value is \"$param\"")
-    public void theParamValue(String param){
+    public void theParamValue(String param) {
        assertThat(this.param, equalTo(param));
     }
 

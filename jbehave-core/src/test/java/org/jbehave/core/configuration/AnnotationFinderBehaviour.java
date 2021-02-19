@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class AnnotationFinderBehaviour {
 
     @Test
-    void shouldFindIfAnnotationIsPresent(){
+    void shouldFindIfAnnotationIsPresent() {
         AnnotationFinder annotated = new AnnotationFinder(Annotated.class);
         assertThat(annotated.isAnnotationPresent(MyAnnotationWithoutMembers.class), is(true));        
     }
 
     @Test
-    void shouldFindIfAnnotationValueIsPresent(){
+    void shouldFindIfAnnotationValueIsPresent() {
         AnnotationFinder annotated = new AnnotationFinder(Annotated.class);
         assertThat(annotated.isAnnotationValuePresent(MyAnnotationWithoutMembers.class, "flag"), is(false));        
         assertThat(annotated.isAnnotationValuePresent(MyAnnotationWithMembers.class, "flag"), is(true));        
@@ -34,7 +34,7 @@ class AnnotationFinderBehaviour {
     }
 
     @Test
-    void shouldInheritValues(){
+    void shouldInheritValues() {
         AnnotationFinder inheritingAnnotated = new AnnotationFinder(InheritingAnnotated.class);
         List<String> annotatedValues = inheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values");
         assertThat(annotatedValues.size(), equalTo(3));
@@ -44,7 +44,7 @@ class AnnotationFinderBehaviour {
     }
 
     @Test
-    void shouldInheritValuesWithoutDuplicates(){
+    void shouldInheritValuesWithoutDuplicates() {
         AnnotationFinder inheritingAnnotated = new AnnotationFinder(InheritingAnnotatedWithDuplicates.class);
         List<String> annotatedValues = inheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values");
         assertThat(annotatedValues.size(), equalTo(3));
@@ -54,7 +54,7 @@ class AnnotationFinderBehaviour {
     }
 
     @Test
-    void shouldNotInheritValuesIfInheritFlagIsFalse(){
+    void shouldNotInheritValuesIfInheritFlagIsFalse() {
         AnnotationFinder notInheritingAnnotated = new AnnotationFinder(NotInheritingAnnotated.class);
         List<String> annotatedValues = notInheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values");
         assertThat(annotatedValues.size(), equalTo(2));

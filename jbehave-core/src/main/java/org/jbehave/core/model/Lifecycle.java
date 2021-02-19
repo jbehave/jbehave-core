@@ -80,7 +80,7 @@ public class Lifecycle {
         return after;
     }
 
-    public Set<Outcome> getOutcomes(){
+    public Set<Outcome> getOutcomes() {
         Set<Outcome> outcomes = new LinkedHashSet<>();
         for (Steps steps : after) {
             outcomes.add(steps.outcome);
@@ -88,7 +88,7 @@ public class Lifecycle {
         return outcomes;
     }
 
-    public MetaFilter getMetaFilter(Outcome outcome){
+    public MetaFilter getMetaFilter(Outcome outcome) {
         for (Steps steps : after) {
             if (outcome.equals(steps.outcome) && isNotBlank(steps.metaFilter)) {
                 return new MetaFilter(steps.metaFilter);

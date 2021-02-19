@@ -83,8 +83,8 @@ class InstanceStepsFactoryBehaviour {
         }
 
         @AsParameterConverter
-        public String convert(String value){
-            return value+"Converted";
+        public String convert(String value) {
+            return value + "Converted";
         }
     }
     

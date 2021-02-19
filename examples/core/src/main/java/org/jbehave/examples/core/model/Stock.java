@@ -22,7 +22,7 @@ public class Stock {
         this.alertPrice = alertPrice;
     }
 
-    public String getSymbol(){
+    public String getSymbol() {
         return symbol;
     }
     

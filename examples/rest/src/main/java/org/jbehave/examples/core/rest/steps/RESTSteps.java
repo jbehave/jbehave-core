@@ -62,7 +62,7 @@ public class RESTSteps {
     public void storyIsUploaded(String name, String text) {
         ResourceUploader uploader = resourceupLoader();
         Resource resource = index.get(name);
-        resource.setContent(resource.getContent()+" "+text);
+        resource.setContent(resource.getContent()+" " +text);
         uploader.uploadResource(resource);
     }
 

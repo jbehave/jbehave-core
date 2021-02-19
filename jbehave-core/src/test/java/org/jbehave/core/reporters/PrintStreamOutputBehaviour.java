@@ -65,7 +65,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     void shouldOutputStoryToTxtWhenExcludedByFilter() throws IOException {
         // Given
         String name = "stream-story-excluded.txt";
-        File file = newFile("target/"+ name);
+        File file = newFile("target/" +name);
         StoryReporter reporter = new TxtOutput(createPrintStream(file));
 
         // When
@@ -80,7 +80,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     void shouldOutputStoryToTxtUsingCustomPatterns() throws IOException {
         // Given
         String name = "stream-story-custom-patterns.txt";
-        File file = newFile("target/"+ name);
+        File file = newFile("target/" +name);
         Properties patterns = new Properties();
         patterns.setProperty("pending", "{0} - {1} - need to implement me\n");
         patterns.setProperty("failed", "{0} <<< {1}\n");

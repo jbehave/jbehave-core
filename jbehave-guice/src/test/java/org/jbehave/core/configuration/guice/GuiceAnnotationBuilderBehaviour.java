@@ -100,7 +100,7 @@ class GuiceAnnotationBuilderBehaviour {
 
     @Test
     void shouldBuildConfigurationFromAnnotationsUsingInjectorWithoutParent() {
-        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class){
+        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class) {
 
             @Override
             protected Injector createInjector(List<Module> modules) {

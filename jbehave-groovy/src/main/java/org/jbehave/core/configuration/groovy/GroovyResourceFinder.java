@@ -12,7 +12,7 @@ public class GroovyResourceFinder {
     private String include;
     private String exclude;
 
-    public GroovyResourceFinder(){
+    public GroovyResourceFinder() {
         this(CodeLocations.codeLocationFromPath("src/main/groovy"), "**/*.groovy", "");
     }
 

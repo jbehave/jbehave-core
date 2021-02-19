@@ -75,22 +75,22 @@ public class Scenario extends StepsContainer {
         return id;
     }
 
-    public boolean hasMeta(){
+    public boolean hasMeta() {
         return meta != null;
     }
 
-    public Meta getMeta(){
+    public Meta getMeta() {
         if (!hasMeta()) {
             return Meta.EMPTY;
         }
         return meta;
     }
 
-    public Meta asMeta(String prefix){
+    public Meta asMeta(String prefix) {
         Properties p = new Properties();
-        p.setProperty(prefix+"title", getTitle());
-        p.setProperty(prefix+"givenStories", getGivenStories().asString());
-        p.setProperty(prefix+"examplesTable", getExamplesTable().asString());
+        p.setProperty(prefix + "title", getTitle());
+        p.setProperty(prefix + "givenStories", getGivenStories().asString());
+        p.setProperty(prefix + "examplesTable", getExamplesTable().asString());
         return new Meta(p);
     }
 

@@ -34,7 +34,7 @@ public class StoryTimeouts {
         this.parsers.addAll(asList(new SimpleTimeoutParser(), new DigitTimeoutParser()));
     }
 
-    public StoryTimeouts withParsers(TimeoutParser...parsers){
+    public StoryTimeouts withParsers(TimeoutParser...parsers) {
         this.parsers.addAll(0, asList(parsers));
         return this;
     }
@@ -121,7 +121,7 @@ public class StoryTimeouts {
                     return parser.asSeconds(timeout);
                 }
             }
-            throw new TimeoutFormatException("No format found for timeout: "+timeout);
+            throw new TimeoutFormatException("No format found for timeout: " + timeout);
         }
 
         public String getTimeoutAsString() {

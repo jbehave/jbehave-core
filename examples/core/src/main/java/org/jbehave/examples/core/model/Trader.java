@@ -41,7 +41,7 @@ public class Trader implements Comparable<Trader>{
         this.stocks.addAll(stocks);
     }
 
-    public void sellAllStocks(){
+    public void sellAllStocks() {
         this.stocks = asList(new Stock[]{});
     }
 

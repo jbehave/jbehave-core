@@ -65,7 +65,7 @@ public class SurefireReporter {
             return this;
         }
 
-        public Options withNamingStrategy(TestCaseNamingStrategy strategy){
+        public Options withNamingStrategy(TestCaseNamingStrategy strategy) {
             this.namingStrategy = strategy;
             return this;
         }

@@ -50,22 +50,22 @@ public class CoreStoriesWithCorrelation extends CoreStories {
     }
 
     @When("a failure occurs in story $count")
-    public void whenSomethingHappens(int count){
-        throw new RuntimeException("BUM! in story "+count);
+    public void whenSomethingHappens(int count) {
+        throw new RuntimeException("BUM! in story " +count);
     }
     
     @AfterScenario(uponOutcome = Outcome.FAILURE)
     public void afterScenarioFailure(UUIDExceptionWrapper failure) throws Exception {
         System.out.println("After Failed Scenario ...");
-        File file = new File("target/failures/"+failure.getUUID().toString());
+        File file = new File("target/failures/" +failure.getUUID().toString());
         file.getParentFile().mkdirs();
         file.createNewFile();
         failures.add(file.toString());
-        System.out.println("Failure: "+file);
+        System.out.println("Failure: " +file);
     }
 
     @AfterStories
-    public void afterStories(){
+    public void afterStories() {
         assertThat(failures.size(), equalTo(2));
     }
 }

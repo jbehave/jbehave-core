@@ -25,11 +25,11 @@ import static java.util.regex.Pattern.compile;
 
 public class GherkinStoryParser extends TransformingStoryParser {
 
-    public GherkinStoryParser(){
+    public GherkinStoryParser() {
         this(new RegexStoryParser());
     }
 
-    public GherkinStoryParser(StoryParser delegate){
+    public GherkinStoryParser(StoryParser delegate) {
         super(delegate, new GherkinTransformer());
     }
 
@@ -49,7 +49,7 @@ public class GherkinStoryParser extends TransformingStoryParser {
         public String transform(String storyAsText) {
             final StringBuffer out = new StringBuffer();
 
-            Formatter formatter = new Formatter(){
+            Formatter formatter = new Formatter() {
                 @Override
                 public void uri(String uri) {
                     out.append(uri).append("\n");

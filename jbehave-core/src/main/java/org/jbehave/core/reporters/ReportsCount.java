@@ -54,15 +54,15 @@ public class ReportsCount {
         return scenariosPending;
     }
     
-    public int getStepFailed(){
+    public int getStepFailed() {
         return stepsFailed;
     }
 
-    public boolean failed(){
+    public boolean failed() {
         return scenariosFailed > 0 || stepsFailed > 0;
     }
 
-    public boolean pending(){
+    public boolean pending() {
         return scenariosPending > 0 || storiesPending > 0;
     }
 

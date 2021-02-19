@@ -20,11 +20,11 @@ public class StoryMap {
         this.stories = stories;        
     }
 
-    public String getMetaFilter(){
+    public String getMetaFilter() {
         return metaFilter;
     }
     
-    public List<Story> getStories(){
+    public List<Story> getStories() {
         return new ArrayList<>(stories);
     }
     

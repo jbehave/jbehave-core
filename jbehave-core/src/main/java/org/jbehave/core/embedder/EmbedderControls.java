@@ -42,7 +42,7 @@ public class EmbedderControls {
         return ignoreFailureInView;
     }
 
-    public boolean verboseFailures(){
+    public boolean verboseFailures() {
         return verboseFailures;
     }
 
@@ -87,12 +87,12 @@ public class EmbedderControls {
         return this;
     }
 
-    public EmbedderControls doVerboseFailures(boolean verboseFailures){
+    public EmbedderControls doVerboseFailures(boolean verboseFailures) {
         this.verboseFailures = verboseFailures;
         return this;        
     }
 
-    public EmbedderControls doVerboseFiltering(boolean verboseFiltering){
+    public EmbedderControls doVerboseFiltering(boolean verboseFiltering) {
         this.verboseFiltering = verboseFiltering;
         return this;        
     }

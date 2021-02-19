@@ -502,7 +502,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         @Override
         public void usingTimeout(String path, long timeout) {
-            getLog().info("Using timeout for story " + path + " of "+timeout+" secs.");
+            getLog().info("Using timeout for story " + path + " of "+timeout + " secs.");
         }
 
         @Override

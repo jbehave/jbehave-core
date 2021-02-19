@@ -39,7 +39,7 @@ class FilePrintStreamFactoryBehaviour {
     }
     
     @Test
-    void shouldAllowOverrideOfDefaultConfiguration(){
+    void shouldAllowOverrideOfDefaultConfiguration() {
         // Given
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = "org/jbehave/examples/trader/stories/my_given.story";
@@ -92,12 +92,12 @@ class FilePrintStreamFactoryBehaviour {
     }
     
     @Test
-    void shouldFailIfPrintStreamCannotBeCreated(){
+    void shouldFailIfPrintStreamCannotBeCreated() {
         // Given
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = "org/jbehave/examples/trader/stories/my_given.story";
         FileConfiguration configuration = new FileConfiguration("ext");
-        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration){
+        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration) {
             @Override
             protected File outputDirectory() {
                 return new File((String)null);

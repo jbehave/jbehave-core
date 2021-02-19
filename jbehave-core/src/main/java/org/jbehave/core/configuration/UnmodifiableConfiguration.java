@@ -75,7 +75,7 @@ public class UnmodifiableConfiguration extends Configuration {
     }
 
     @Override
-    public ParameterControls parameterControls(){
+    public ParameterControls parameterControls() {
         return delegate.parameterControls();
     }
     
@@ -250,7 +250,7 @@ public class UnmodifiableConfiguration extends Configuration {
 
     @SuppressWarnings("serial")
     public static class ModificationNotAllowed extends RuntimeException {
-        public ModificationNotAllowed(){
+        public ModificationNotAllowed() {
             super("Configuration elements are unmodifiable");
         }
     }

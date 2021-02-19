@@ -13,10 +13,10 @@ public class RestartingSteps {
     private int restartingStory;
 
     @When("I restart scenario")
-    public void restartScenario(){
+    public void restartScenario() {
         if (restartingScenario < 1) {
             restartingScenario++;
-            throw new RestartingScenarioFailure("Restarting scenario: "+restartingScenario);
+            throw new RestartingScenarioFailure("Restarting scenario: " +restartingScenario);
         }
     }
     
@@ -26,10 +26,10 @@ public class RestartingSteps {
     }
 
     @When("I restart story")
-    public void restartStory(){
+    public void restartStory() {
         if (restartingStory < 1) {
             restartingStory++;
-            throw new RestartingStoryFailure("Restarting story: "+restartingStory);
+            throw new RestartingStoryFailure("Restarting story: " +restartingStory);
         }
     }
     

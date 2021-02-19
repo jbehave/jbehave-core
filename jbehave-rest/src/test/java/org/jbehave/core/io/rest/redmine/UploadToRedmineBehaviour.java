@@ -19,7 +19,7 @@ class UploadToRedmineBehaviour {
         UploadToRedmine uploader = new UploadToRedmine(Type.JSON);
         String resourcePath = "http://demo.redmine.org/project/jbehave/wiki/some_story";
         String text = uploader.uri(resourcePath, Type.JSON);
-        assertThat(text, equalTo(resourcePath+".json"));
+        assertThat(text, equalTo(resourcePath + ".json"));
     }
 
     @Test

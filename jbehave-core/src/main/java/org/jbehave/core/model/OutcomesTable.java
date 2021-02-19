@@ -105,15 +105,15 @@ public class OutcomesTable {
         return keywords.outcomeFields();
     }
 
-    public Map<Type, String> getFormats(){
+    public Map<Type, String> getFormats() {
         return formats;
     }
 
-    public String getFormat(Type type){
+    public String getFormat(Type type) {
         return formats.get(type);
     }
 
-    public String getFormat(String typeName){
+    public String getFormat(String typeName) {
         try {
             return getFormat(Class.forName(typeName));
         } catch (ClassNotFoundException e) {
@@ -125,7 +125,7 @@ public class OutcomesTable {
      * @deprecated Use {@link #getFormat(Type)}
      */
     @Deprecated
-    public String getDateFormat(){
+    public String getDateFormat() {
         return getFormat(Date.class);
     }
 

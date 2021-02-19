@@ -297,7 +297,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
     
     @Override
-    public void restartedStory(Story story, Throwable cause){
+    public void restartedStory(Story story, Throwable cause) {
         perform(reporter ->  reporter.restartedStory(story, cause), restartedStory, story, cause);
     }
 
@@ -319,7 +319,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
         return delegate;
     }
 
-    public boolean invoked(){
+    public boolean invoked() {
         return invoked;
     }
     

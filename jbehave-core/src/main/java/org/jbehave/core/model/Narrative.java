@@ -39,7 +39,7 @@ public class Narrative {
         return iWantTo;
     }
 
-    public String soThat(){
+    public String soThat() {
         return soThat;
     }
     
@@ -47,7 +47,7 @@ public class Narrative {
         return EMPTY == this;
     }
 
-    public boolean isAlternative(){
+    public boolean isAlternative() {
         return inOrderTo.isEmpty();
     }
 

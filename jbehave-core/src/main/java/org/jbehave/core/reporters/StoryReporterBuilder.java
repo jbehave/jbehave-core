@@ -106,8 +106,8 @@ import static java.util.Arrays.asList;
  * non-default parameters, such as the custom output patterns:
  * 
  * <pre>
- * new StoryReporterBuilder(){
- *   public StoryReporter reporterFor(String storyPath, Format format){
+ * new StoryReporterBuilder() {
+ *   public StoryReporter reporterFor(String storyPath, Format format) {
  *       FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocation));
  *       switch (format) {
  *           case TXT:
@@ -201,7 +201,7 @@ public class StoryReporterBuilder {
         return keywords;
     }
 
-    public SGRCodes codes(){
+    public SGRCodes codes() {
         if (codes == null) {
             return new SGRCodes();
         }

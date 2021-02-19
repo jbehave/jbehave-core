@@ -128,7 +128,7 @@ public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
 
     protected abstract String uri(String rootPath);
 
-    protected String resolveName(String input){
+    protected String resolveName(String input) {
         return nameResolver.resolve(input);
     }
     

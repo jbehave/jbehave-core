@@ -126,7 +126,7 @@ class IOUtilsBehaviour {
     private String createLongString() {
         StringBuilder sb=new StringBuilder();
         sb.append("*");
-        for(int i=0;i<20;i++) {
+        for (int i=0;i<20;i++) {
             sb.append(sb);
         }
         return sb.toString();

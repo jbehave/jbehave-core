@@ -29,7 +29,7 @@ public class StepPattern {
      * Returns the step pattern as provided in the method annotation
      * @return The String representing the annotated pattern
      */
-    public String annotated(){
+    public String annotated() {
         return annotated;        
     }
     
@@ -37,7 +37,7 @@ public class StepPattern {
      * Return the step pattern as resolved by the step matcher
      * @return The String representing the resolved pattern
      */
-    public String resolved(){
+    public String resolved() {
         return resolved;
     }
 

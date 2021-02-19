@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 class SpringStoryReporterBuilderBehaviour {
 
     @Test
-    void shouldAllowUseOfGettersAndSetters(){
+    void shouldAllowUseOfGettersAndSetters() {
         SpringStoryReporterBuilder builder = new SpringStoryReporterBuilder();
         
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());

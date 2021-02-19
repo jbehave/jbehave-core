@@ -71,7 +71,7 @@ class TableTransformersBehaviour {
     @Test
     void shouldTransformTableWithCustomTransformer() {
         TableTransformers tableTransformers = new TableTransformers();
-        tableTransformers.useTransformer("myTransformer", new TableTransformer(){
+        tableTransformers.useTransformer("myTransformer", new TableTransformer() {
 
             @Override
             public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {

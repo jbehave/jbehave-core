@@ -50,11 +50,11 @@ public class SpringEmbedderControls extends EmbedderControls {
         doIgnoreFailureInView(ignoreFailureInView);
     }
 
-    public boolean isVerboseFailures(){
+    public boolean isVerboseFailures() {
         return verboseFailures();
     }
 
-    public void setVerboseFailures(boolean verboseFailures){
+    public void setVerboseFailures(boolean verboseFailures) {
         doVerboseFailures(verboseFailures);
     }
 
@@ -62,7 +62,7 @@ public class SpringEmbedderControls extends EmbedderControls {
         return verboseFiltering();
     }
 
-    public void setVerboseFiltering(boolean verboseFiltering){
+    public void setVerboseFiltering(boolean verboseFiltering) {
         doVerboseFiltering(verboseFiltering);
     }
 

@@ -10,14 +10,14 @@ import org.junit.jupiter.api.Test;
 class StoryDurationBehaviour {
 
     @Test
-    void shouldTimeout(){
+    void shouldTimeout() {
         StoryDuration duration = new StoryDuration(1);
         sleep(2);
         assertThat(duration.update().timedOut(), is(true));
     }
 
     @Test
-    void shouldNotTimeout(){
+    void shouldNotTimeout() {
         StoryDuration duration = new StoryDuration(0);
         sleep(2);
         assertThat(duration.update().timedOut(), is(false));

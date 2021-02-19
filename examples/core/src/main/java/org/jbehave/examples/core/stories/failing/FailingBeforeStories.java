@@ -22,7 +22,7 @@ public class FailingBeforeStories extends CoreStory {
     }
 
     @BeforeStories
-    public void beforeStories(){
+    public void beforeStories() {
         throw new RuntimeException("Bum go the stories");
     }
 }

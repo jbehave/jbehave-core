@@ -212,7 +212,7 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
             if (byScope.isEmpty()) {
                 continue;
             }
-            Scope scope = parseScope(findScope(keywords().scope()+byScope));
+            Scope scope = parseScope(findScope(keywords().scope() + byScope));
             Steps steps = new Steps(scope, findSteps(startingWithNL(byScope)));
             list.add(steps);
         }
@@ -226,7 +226,7 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
             if (byScope.isEmpty()) {
                 continue;
             }
-            Scope scope = parseScope(findScope(keywords().scope()+byScope));
+            Scope scope = parseScope(findScope(keywords().scope() + byScope));
             for (String byOutcome : byScope.split(keywords().outcome())) {
                 byOutcome = byOutcome.trim();
                 if (byOutcome.isEmpty()) {
@@ -319,7 +319,7 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
         GivenStories givenStories = findScenarioGivenStories(scenarioWithoutTitle);
         useExamplesTableForGivenStories(givenStories, examplesTable);
         List<String> rawSteps = new ArrayList<>();
-        if(examplesTableAsString.trim().isEmpty()) {
+        if (examplesTableAsString.trim().isEmpty()) {
             rawSteps.addAll(findSteps(scenarioWithoutTitle));
         } else {
             int afterExampleIndex = scenarioWithoutTitle.indexOf(examplesTableAsString) + examplesTableAsString.length();
@@ -407,13 +407,13 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
     private Pattern findingLifecycleOutcome() {
         String startingWords = concatenateInitialStartingWords();
         String outcomes = concatenateWithOr(keywords().outcomeAny(), keywords().outcomeSuccess(), keywords().outcomeFailure());
-        return compile("\\s*("+ outcomes +")\\s*(" + keywords().metaFilter() + "|" + startingWords + ").*", DOTALL);
+        return compile("\\s*(" + outcomes + ")\\s*(" + keywords().metaFilter() + "|" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingLifecycleFilters() {
         String startingWords = concatenateInitialStartingWords();
         String filters = concatenateWithOr(keywords().metaFilter());
-        return compile("\\s*("+ filters +"[\\w\\+\\-\\_\\s]*)(" + startingWords + ").*", DOTALL);
+        return compile("\\s*(" + filters + "[\\w\\+\\-\\_\\s]*)(" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingScenarioTitle() {

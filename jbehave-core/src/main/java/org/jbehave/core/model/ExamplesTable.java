@@ -316,7 +316,7 @@ public class ExamplesTable {
         return tableRows.getRows().size();
     }
 
-    public boolean metaByRow(){
+    public boolean metaByRow() {
         return lastTableProperties().isMetaByRow();
     }
 
@@ -506,7 +506,7 @@ public class ExamplesTable {
         private final Properties properties = new Properties();
         private final String propertiesAsString;
 
-        public TableProperties(Properties properties){
+        public TableProperties(Properties properties) {
             this.properties.putAll(properties);
             if (!this.properties.containsKey(HEADER_SEPARATOR_KEY)) {
                 this.properties.setProperty(HEADER_SEPARATOR_KEY, HEADER_SEPARATOR);
@@ -612,7 +612,7 @@ public class ExamplesTable {
             return parseBoolean(properties.getProperty("trim", "true"));
         }
 
-        public boolean isMetaByRow(){
+        public boolean isMetaByRow() {
             return parseBoolean(properties.getProperty("metaByRow", "false"));
         }
 

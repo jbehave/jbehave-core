@@ -12,7 +12,7 @@ import org.jbehave.core.model.ExamplesTable;
 public class PerformanceSteps {
 
     @Given("a step with a long tabular argument: $table")
-    public void givenALongTable(ExamplesTable table){
+    public void givenALongTable(ExamplesTable table) {
         
     }
     
@@ -37,7 +37,7 @@ public class PerformanceSteps {
         StringBuilder builder = new StringBuilder();        
         builder.append("|h0|h1|h2|h3|h4|h5|h6|h7|h8|h9|\n");
         for (int i = 0; i < numberOfLines; i++) {
-            builder.append("|c"+i+"0|c"+i+"1|c"+i+"2|c"+i+"3|c"+i+"4|c"+i+"5|c"+i+"6|c"+i+"7|c"+i+"8|c"+i+"9|\n");
+            builder.append("|c"+i + "0|c"+i + "1|c"+i + "2|c"+i + "3|c"+i + "4|c"+i + "5|c"+i + "6|c"+i + "7|c"+i + "8|c"+i + "9|\n");
         }
         return builder.toString();
     }

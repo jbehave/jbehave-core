@@ -113,7 +113,7 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeGivenStories(){
+    public void beforeGivenStories() {
     }
 
     @Override
@@ -125,7 +125,7 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void afterGivenStories(){
+    public void afterGivenStories() {
     }
 
     @Override

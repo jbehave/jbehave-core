@@ -97,7 +97,8 @@ public class EmbedderClassLoader extends URLClassLoader {
     public static class InstantiationFailed extends RuntimeException {
 
         public InstantiationFailed(String className, Class<?> type, ClassLoader classLoader, Throwable cause) {
-            super("Instantiation failed for" + className + " of type " + type + " using class loader "+classLoader, cause);
+            super("Instantiation failed for" + className + " of type " + type + " using class loader " + classLoader,
+                    cause);
         }
 
     }

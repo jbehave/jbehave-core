@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 class FreemarkerViewGeneratorBehaviour {
 
     @Test
-    void shouldCountEvents(){
+    void shouldCountEvents() {
         // Given
         FreemarkerViewGenerator generator = new FreemarkerViewGenerator();
 
@@ -38,7 +38,7 @@ class FreemarkerViewGeneratorBehaviour {
     }
 
     @Test
-    void shouldFindIndexedReportFiles(){
+    void shouldFindIndexedReportFiles() {
         // Given
         FreemarkerViewGenerator generator = new FreemarkerViewGenerator();
 
@@ -53,7 +53,7 @@ class FreemarkerViewGeneratorBehaviour {
     }
 
     @Test
-    void shouldHandleMissingOutputDirectory(){
+    void shouldHandleMissingOutputDirectory() {
         // Given
         FreemarkerViewGenerator generator = new FreemarkerViewGenerator();
 
@@ -64,7 +64,7 @@ class FreemarkerViewGeneratorBehaviour {
     
     
     @Test
-    void shouldHandleInvalidReportFile(){
+    void shouldHandleInvalidReportFile() {
         // Given
         Map<String, File> filesByFormat = new HashMap<>();
         filesByFormat.put("format", null);
@@ -80,7 +80,7 @@ class FreemarkerViewGeneratorBehaviour {
 
     
     @Test
-    void shouldFailToCreateReportsFromInvalidFiles(){
+    void shouldFailToCreateReportsFromInvalidFiles() {
         // Given
         FreemarkerViewGenerator generator = new FreemarkerViewGenerator();
 
@@ -93,7 +93,7 @@ class FreemarkerViewGeneratorBehaviour {
     }
     
     @Test
-    void shouldFormatTimeDurantionInMillis(){
+    void shouldFormatTimeDurantionInMillis() {
         long s = 1000;
         long m = 60 * s;
         long h = 60 * m;

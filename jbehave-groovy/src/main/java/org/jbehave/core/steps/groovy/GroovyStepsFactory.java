@@ -11,7 +11,7 @@ public class GroovyStepsFactory extends AbstractStepsFactory {
 
     private final GroovyContext context;
 
-    public GroovyStepsFactory(Configuration configuration, GroovyContext context){
+    public GroovyStepsFactory(Configuration configuration, GroovyContext context) {
         super(configuration);
         this.context = context;
     }

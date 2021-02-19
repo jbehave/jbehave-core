@@ -21,7 +21,7 @@ class StepFailureBehaviour {
 
         // Then
         assertThat(message, equalTo("'"
-                + stepAsString + "': "+cause.getMessage()));
+                + stepAsString + "': " +cause.getMessage()));
     }
 
     @Test

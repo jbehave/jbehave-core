@@ -39,7 +39,7 @@ class GoogleOdtLoaderBehaviour {
         when(content.getUri()).thenReturn("http://docs.google.com");
         when(mediaSource.getInputStream()).thenReturn(inputStream);
 
-        LoadOdtFromGoogle storyLoader = new LoadOdtFromGoogle("user", "password", "https://docs.google.com/feeds/default/private/full/", service){
+        LoadOdtFromGoogle storyLoader = new LoadOdtFromGoogle("user", "password", "https://docs.google.com/feeds/default/private/full/", service) {
 
             @Override
             DocumentQuery documentQuery(String title) {

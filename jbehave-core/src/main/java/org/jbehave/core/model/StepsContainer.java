@@ -20,7 +20,7 @@ abstract class StepsContainer {
         return trim ? trim(steps) : steps;
     }
 
-    private List<String> trim(List<String> steps){
+    private List<String> trim(List<String> steps) {
         return steps.stream()
                 .map(String::trim)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));

@@ -123,12 +123,12 @@ public class StoryControls {
         return this;
     }
 
-    public StoryControls useStoryMetaPrefix(String storyMetaPrefix){
+    public StoryControls useStoryMetaPrefix(String storyMetaPrefix) {
         this.storyMetaPrefix = storyMetaPrefix;
         return this;        
     }
 
-    public StoryControls useScenarioMetaPrefix(String scenarioMetaPrefix){
+    public StoryControls useScenarioMetaPrefix(String scenarioMetaPrefix) {
         this.scenarioMetaPrefix = scenarioMetaPrefix;
         return this;        
     }

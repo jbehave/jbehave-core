@@ -20,7 +20,7 @@ class LoadFromRedmineBehaviour {
         LoadFromRedmine loader = new LoadFromRedmine(Type.JSON);
         String url = "http://demo.redmine.org/project/jbehave/wiki/some_story";
         String text = loader.uri(url, Type.JSON);
-        assertThat(text, equalTo(url+".json"));
+        assertThat(text, equalTo(url + ".json"));
     }
 
     @Test
@@ -36,7 +36,7 @@ class LoadFromRedmineBehaviour {
         LoadFromRedmine loader = new LoadFromRedmine(Type.XML);
         String url = "http://demo.redmine.org/project/jbehave/wiki/some_story";
         String text = loader.uri(url, Type.XML);
-        assertThat(text, equalTo(url+".xml"));
+        assertThat(text, equalTo(url + ".xml"));
     }
 
     @Test

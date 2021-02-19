@@ -100,7 +100,7 @@ class StepsBehaviour {
                 return candidate;
             }
         }
-        throw new RuntimeException("StepCandidate "+candidateAsString+" not found amongst "+candidates);
+        throw new RuntimeException("StepCandidate "+candidateAsString + " not found amongst " +candidates);
     }
 
     @Test
@@ -258,7 +258,7 @@ class StepsBehaviour {
     }
 
     @Test
-    void shouldAllowLocalizationOfSteps(){
+    void shouldAllowLocalizationOfSteps() {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
         LocalizedSteps steps = new LocalizedSteps(configuration);
@@ -319,7 +319,7 @@ class StepsBehaviour {
     }
 
     @Test
-    void shouldNotCreateStepIfStartingWordNotFound(){
+    void shouldNotCreateStepIfStartingWordNotFound() {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
         LocalizedSteps steps = new LocalizedSteps(configuration);

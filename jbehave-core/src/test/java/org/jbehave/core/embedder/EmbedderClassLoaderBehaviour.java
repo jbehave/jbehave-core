@@ -46,7 +46,7 @@ class EmbedderClassLoaderBehaviour {
     }
 
     @Test
-    void shouldNotIgnoreAnIndividualClasspathElementThatIsNull(){
+    void shouldNotIgnoreAnIndividualClasspathElementThatIsNull() {
         List<String> elements = asList("target/classes", null);
         assertThrows(EmbedderClassLoader.InvalidClasspathElement.class, () -> new EmbedderClassLoader(elements));
     }

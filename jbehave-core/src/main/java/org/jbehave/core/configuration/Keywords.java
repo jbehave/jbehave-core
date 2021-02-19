@@ -389,31 +389,31 @@ public class Keywords {
         return outcome;
     }
 
-    public String outcomeAny(){
+    public String outcomeAny() {
         return outcomeAny;
     }
 
-    public String outcomeSuccess(){
+    public String outcomeSuccess() {
         return outcomeSuccess;
     }
 
-    public String outcomeFailure(){
+    public String outcomeFailure() {
         return outcomeFailure;
     }
 
-    public String outcomeDescription(){
+    public String outcomeDescription() {
         return outcomeDescription;
     }
 
-    public String outcomeValue(){
+    public String outcomeValue() {
         return outcomeValue;
     }
 
-    public String outcomeMatcher(){
+    public String outcomeMatcher() {
         return outcomeMatcher;
     }
 
-    public String outcomeVerified(){
+    public String outcomeVerified() {
         return outcomeVerified;
     }
 

@@ -20,13 +20,13 @@ public class RegexStepMatcher implements StepMatcher {
     }
 
     @Override
-    public boolean matches(String stepWithoutStartingWord){
+    public boolean matches(String stepWithoutStartingWord) {
         matcher(stepWithoutStartingWord);
         return matcher.matches();
     }
 
     @Override
-    public boolean find(String stepWithoutStartingWord){
+    public boolean find(String stepWithoutStartingWord) {
         matcher(stepWithoutStartingWord);
         return matcher.find();
     }
@@ -36,12 +36,12 @@ public class RegexStepMatcher implements StepMatcher {
         return matcher.group(matchedPosition);
     }
 
-    private void matcher(String patternToMatch){
+    private void matcher(String patternToMatch) {
         matcher = regexPattern.matcher(patternToMatch);
     }
 
     @Override
-    public String[] parameterNames(){
+    public String[] parameterNames() {
         return parameterNames;
     }
 

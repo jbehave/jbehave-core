@@ -350,7 +350,7 @@ public class StepCreator {
         return pad(value, PARAMETER_VALUE_START, PARAMETER_VALUE_END);
     }
 
-    private String pad(String value, String left, String right){
+    private String pad(String value, String left, String right) {
         return new StringBuilder().append(left).append(value).append(right).toString();
     }
 
@@ -478,7 +478,7 @@ public class StepCreator {
             parameter = matchedParameter(position);
             List<String> delimitedNames = delimitedNameFor(parameter);
 
-            for(String delimitedName : delimitedNames) {
+            for (String delimitedName : delimitedNames) {
                 if (isTableName(namedParameters, delimitedName)) {
                     parameter = parameterControls.replaceAllDelimitedNames(parameter, delimitedName,
                             namedParameter(namedParameters, delimitedName));
@@ -494,7 +494,7 @@ public class StepCreator {
     private String replaceAllDelimitedNames(List<String> delimitedNames, int position, boolean annotated,
                                             String parameter, Map<String, String> namedParameters) {
         String parameterWithDelimitedNames = parameter;
-        for(String delimitedName : delimitedNames) {
+        for (String delimitedName : delimitedNames) {
             monitorUsingTableNameForParameter(delimitedName, position, annotated);
             parameterWithDelimitedNames = parameterControls.replaceAllDelimitedNames(parameterWithDelimitedNames,
                     delimitedName, namedParameter(namedParameters, delimitedName));
@@ -504,8 +504,8 @@ public class StepCreator {
 
     private int numberOfPreviousFromContext(ParameterName[] names, int currentPosition) {
         int number = 0;
-        
-        for(int i=currentPosition-1; i>=0; i--){
+
+        for (int i = currentPosition - 1; i >= 0; i--) {
             if (names[i].fromContext) {
                 number++;
             }
@@ -534,7 +534,7 @@ public class StepCreator {
         List<String> delimitedNames = new ArrayList<>();
         if (parameterControls.delimiterNamedParameters()) {
             Matcher matcher = delimitedNamePattern.matcher(parameter);
-            while(matcher.find()) {
+            while (matcher.find()) {
                 delimitedNames.add(matcher.group(1));
             }
         }
@@ -657,7 +657,7 @@ public class StepCreator {
     static class DelegatingStep extends AbstractStep {
         private final Step step;
 
-        DelegatingStep(Step step){
+        DelegatingStep(Step step) {
             this.step = step;
         }
 
@@ -739,13 +739,13 @@ public class StepCreator {
 
         @Override
         public String asString(Keywords keywords) {
-            return method.getName()+";"+meta.asString(keywords);
+            return method.getName() + ";" + meta.asString(keywords);
         }
     }
 
     class UponAnyStep extends DelegatingStep {
 
-        UponAnyStep(Step step){
+        UponAnyStep(Step step) {
             super(step);
         }
 

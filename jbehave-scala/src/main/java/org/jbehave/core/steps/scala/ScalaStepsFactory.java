@@ -11,7 +11,7 @@ public class ScalaStepsFactory extends AbstractStepsFactory {
 
     private final ScalaContext context;
 
-    public ScalaStepsFactory(Configuration configuration, ScalaContext context){
+    public ScalaStepsFactory(Configuration configuration, ScalaContext context) {
         super(configuration);
         this.context = context;
     }

@@ -80,7 +80,7 @@ public class SGRCodes {
 
     private final Map<String, SGRCode> codes;
 
-    public SGRCodes(){
+    public SGRCodes() {
         this(DEFAULT_CODES);
     }
 
@@ -92,16 +92,16 @@ public class SGRCodes {
         codes.put(key, code);
     }
 
-    public boolean hasCode(String key){
+    public boolean hasCode(String key) {
         return codes.containsKey(key);
     }
 
-    public SGRCode getCode(String key){
+    public SGRCode getCode(String key) {
         if (codes.containsKey(key)) {
             return codes.get(key);
         }
 
-        throw new RuntimeException("No code found for key "+key);
+        throw new RuntimeException("No code found for key " + key);
     }
 
 }

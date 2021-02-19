@@ -44,18 +44,18 @@ public class FrSteps {
     }
 
     @Then("la table a $rows rangs")
-    public void hasRows(int rows){
+    public void hasRows(int rows) {
         assertThat(table.getRowCount(), equalTo(rows));
     }
 
     @Then("au rang $row et en colonne $column on trouve: $value")
-    public void theRowValuesAre(int row, String column, String value){
+    public void theRowValuesAre(int row, String column, String value) {
         Map<String,String> rowValues = table.getRow(row-1);      
         assertThat(rowValues.get(column), equalTo(value));
     }
 
     @Then("les valeurs multipliées par $multiplier sont: $table")
-    public void theResultsMultipliedByAre(int multiplier, ExamplesTable results){
+    public void theResultsMultipliedByAre(int multiplier, ExamplesTable results) {
         OutcomesTable outcomes = new OutcomesTable(new LocalizedKeywords(new Locale("fr")));
         for (int row = 0; row < results.getRowCount(); row++) {
             Parameters expected = results.getRowAsParameters(row);

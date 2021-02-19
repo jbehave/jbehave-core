@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 public class PtStories extends LocalizedStories {
     
     @Override
-    protected Locale locale(){
+    protected Locale locale() {
         return new Locale("pt");
     }
 

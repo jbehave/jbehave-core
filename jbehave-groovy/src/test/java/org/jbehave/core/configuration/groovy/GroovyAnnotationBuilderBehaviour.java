@@ -67,7 +67,7 @@ class GroovyAnnotationBuilderBehaviour {
     }
     
     public static class TestGroovyResourceFinder extends GroovyResourceFinder {
-        public TestGroovyResourceFinder(){
+        public TestGroovyResourceFinder() {
             super(CodeLocations.codeLocationFromPath("src/test/java"), "**/configuration/groovy/*.groovy", "");
         }
     }

@@ -42,11 +42,11 @@ public class SpringStoryReporterBuilder extends StoryReporterBuilder {
         withCodeLocation(codeLocation);
     }
 
-    public Keywords getKeywords(){
+    public Keywords getKeywords() {
         return keywords();
     }
     
-    public void setKeywords(Keywords keywords){
+    public void setKeywords(Keywords keywords) {
         withKeywords(keywords);
     }
     

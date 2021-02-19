@@ -38,12 +38,12 @@ public class ItSteps {
     }
 
     @Then("la tabella ha $rows righe")
-    public void hasRows(int rows){
+    public void hasRows(int rows) {
         assertThat(table.getRowCount(), equalTo(rows));
     }
 
     @Then("alla riga $row e colonna $column troviamo: $value")
-    public void theRowValuesAre(int row, String column, String value){
+    public void theRowValuesAre(int row, String column, String value) {
         Map<String,String> rowValues = table.getRow(row-1);      
         assertThat(rowValues.get(column), equalTo(value));
     }

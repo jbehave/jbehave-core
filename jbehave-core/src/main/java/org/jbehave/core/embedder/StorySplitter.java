@@ -18,7 +18,7 @@ public class StorySplitter {
         for (Story story: stories) {
             if (story.getLifecycle().getExamplesTable().getRowCount() > 1) {
                 splitStories.addAll(splitStory(story));
-            }else {
+            } else {
                 splitStories.add(story);
             }
         }

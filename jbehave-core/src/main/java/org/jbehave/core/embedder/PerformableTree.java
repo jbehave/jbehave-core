@@ -165,9 +165,9 @@ public class PerformableTree {
                                  .convert(value, String.class));
                     }
                     Map<String, String> parameters = new LinkedHashMap<String, String>(scenarioParametersCopy);
-                    for(Map.Entry<String, String> storyExamplesTableRowEntry: storyExamplesTableRow.entrySet()) {
+                    for (Map.Entry<String, String> storyExamplesTableRowEntry: storyExamplesTableRow.entrySet()) {
                         String key = storyExamplesTableRowEntry.getKey();
-                        if(!parameters.containsKey(key)) {
+                        if (!parameters.containsKey(key)) {
                             parameters.put(key, storyExamplesTableRowEntry.getValue());
                         }
                     }
@@ -448,7 +448,7 @@ public class PerformableTree {
             context.currentPath(story.getPath());
         }
 
-        if(context.configuration.dryRun()){
+        if (context.configuration.dryRun()) {
             context.reporter().dryRun();
         }
 
@@ -729,7 +729,7 @@ public class PerformableTree {
             return failures;
         }
         
-        public EmbedderMonitor embedderMonitor(){
+        public EmbedderMonitor embedderMonitor() {
             return embedderMonitor;
         }
 
@@ -790,7 +790,7 @@ public class PerformableTree {
             failures.add(failure);
         }
 
-        public List<Throwable> getFailures(){
+        public List<Throwable> getFailures() {
             return failures;
         }
 
@@ -870,7 +870,7 @@ public class PerformableTree {
             return story;
         }
 
-        public Keywords getKeywords(){
+        public Keywords getKeywords() {
             return keywords;
         }
 
@@ -1266,7 +1266,7 @@ public class PerformableTree {
             this.matches = stepMatches;
         }
 
-        public void add(PerformableSteps performableSteps){
+        public void add(PerformableSteps performableSteps) {
             this.steps.addAll(performableSteps.steps);
             this.pendingSteps.addAll(performableSteps.pendingSteps);
             if (performableSteps.matches != null) {

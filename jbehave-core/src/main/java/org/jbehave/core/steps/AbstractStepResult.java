@@ -160,7 +160,7 @@ public abstract class AbstractStepResult implements StepResult {
         return this;
     }
 
-    public Timing getTiming(){
+    public Timing getTiming() {
         return timing;
     }
     
@@ -235,7 +235,7 @@ public abstract class AbstractStepResult implements StepResult {
         for (int i = 0; i < types.length; i++) {
             Class<?> type = types[i];
             sb.append(type.getName());
-            if (i+1 < types.length) {
+            if (i + 1 < types.length) {
                 sb.append(",");
             }
         }

@@ -90,7 +90,7 @@ public class SomeSteps extends Steps {
         this.args = args;
     }
 
-    public ExamplesTable aMethodReturningExamplesTable(String value){
+    public ExamplesTable aMethodReturningExamplesTable(String value) {
         return new ExamplesTable(value);
     }
 
@@ -100,7 +100,7 @@ public class SomeSteps extends Steps {
         String col2;
     }
 
-    public ExamplesTable aFailingMethodReturningExamplesTable(String value){
+    public ExamplesTable aFailingMethodReturningExamplesTable(String value) {
         throw new RuntimeException(value);
     }
     

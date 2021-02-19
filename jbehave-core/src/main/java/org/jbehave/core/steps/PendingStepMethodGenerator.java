@@ -38,12 +38,12 @@ public class PendingStepMethodGenerator {
 
     private String methodName(StepType stepType, String stepPattern) {
         String name = stepType.name().toLowerCase() + WordUtils.capitalize(stepPattern);
-        char filteredName[]=new char[name.length()];
-        int index=0;
-        for(int i=0;i<name.length();i++) {
-            char ch=name.charAt(i);
-            if(Character.isJavaIdentifierPart(ch) && ch!='$' && ch!=127) {
-                filteredName[index++]=ch;
+        char filteredName[] = new char[name.length()];
+        int index = 0;
+        for (int i = 0; i < name.length(); i++) {
+            char ch = name.charAt(i);
+            if (Character.isJavaIdentifierPart(ch) && ch != '$' && ch != 127) {
+                filteredName[index++] = ch;
             }
         }
         return new String(filteredName,0,index);

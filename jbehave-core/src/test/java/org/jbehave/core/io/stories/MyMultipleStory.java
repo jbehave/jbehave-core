@@ -13,7 +13,7 @@ public abstract class MyMultipleStory extends JUnitStory {
     public MyMultipleStory() {
         // Making sure this doesn't output to the build while it's running
         useConfiguration(new MostUsefulConfiguration()
-                .useStoryReporterBuilder(new StoryReporterBuilder(){
+                .useStoryReporterBuilder(new StoryReporterBuilder() {
                     @Override
                     public StoryReporter build(String storyPath) {
                         return new TxtOutput(new PrintStream(new ByteArrayOutputStream()));

@@ -9,7 +9,7 @@ public class BatchFailures extends HashMap<String, Throwable> {
 
     private final boolean verbose;
 
-    public BatchFailures(){
+    public BatchFailures() {
         this(false);
     }
 

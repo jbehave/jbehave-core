@@ -145,12 +145,12 @@ public class BeforeAfterSteps {
     }
     
     @Given("a setup")
-    public void givenASetup(){
+    public void givenASetup() {
         System.out.println("Doing a setup");
     }
 
     @Then("a teardown")
-    public void thenATeardown(){
+    public void thenATeardown() {
         System.out.println("Doing a teardown");
     }
 }

@@ -407,7 +407,7 @@ public class StoryManager {
             return false;
         }
         
-        public boolean isStarted(){
+        public boolean isStarted() {
             return enqueuedStory.getStartedAtMillis() != 0;
         }
     }
