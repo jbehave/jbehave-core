@@ -24,12 +24,19 @@ public class Game {
     private void notifyObserver() {
         observer.gridChanged(new Grid() {
             @Override
-            public int getHeight() { return height; }
+            public int getHeight() {
+                return height;
+            }
+
             @Override
-            public int getWidth() { return width; }
+            public int getWidth() {
+                return width;
+            }
+
             @Override
-            public boolean cellToggledAt(int column, int row) { return cells.contains(new Cell(column, row)); }
-            
+            public boolean cellToggledAt(int column, int row) {
+                return cells.contains(new Cell(column, row));
+            }
         });
     }
 
@@ -46,5 +53,4 @@ public class Game {
     public void nextGeneration() {
         throw new UnsupportedOperationException("TODO");
     }
-
 }

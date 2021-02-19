@@ -369,13 +369,21 @@ public class Keywords {
         return duration;
     }
 
-    public String scope() { return scope; }
+    public String scope() {
+        return scope;
+    }
 
-    public String scopeStep() { return scopeStep; }
+    public String scopeStep() {
+        return scopeStep;
+    }
 
-    public String scopeScenario() { return scopeScenario; }
+    public String scopeScenario() {
+        return scopeScenario;
+    }
 
-    public String scopeStory() { return scopeStory; }
+    public String scopeStory() {
+        return scopeStory;
+    }
 
     public String outcome() {
         return outcome;

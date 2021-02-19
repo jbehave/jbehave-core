@@ -371,8 +371,7 @@ public class StepCreator {
 
         if (type instanceof Class) {
             ((Class) type).isAnnotationPresent(AsParameters.class);
-        }
-        else if (type instanceof ParameterizedType) {
+        } else if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             result = isExamplesTableParameters(rawClass(parameterizedType)) || isExamplesTableParameters(argumentClass(parameterizedType));
         }
@@ -458,8 +457,7 @@ public class StepCreator {
                     parameter = replaceAllDelimitedNames(delimitedNames, position, annotated, parameter,
                             namedParameters);
                 }
-            }
-            else if (overrideWithTableParameters && isTableName(namedParameters, name)) {
+            } else if (overrideWithTableParameters && isTableName(namedParameters, name)) {
                 parameter = namedParameter(namedParameters, name);
                 if (parameter != null) {
                     monitorUsingTableNameForParameter(name, position, annotated); 
@@ -721,8 +719,7 @@ public class StepCreator {
             return perform(storyReporter, storyFailureIfItHappened);
         }
 
-        private class UUIDExceptionWrapperInjector implements ParameterConverter<UUIDExceptionWrapper>
-        {
+        private class UUIDExceptionWrapperInjector implements ParameterConverter<UUIDExceptionWrapper> {
             private final UUIDExceptionWrapper storyFailureIfItHappened;
 
             public UUIDExceptionWrapperInjector(UUIDExceptionWrapper storyFailureIfItHappened) {
@@ -842,8 +839,7 @@ public class StepCreator {
             } catch (Throwable t) {
                 return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, t)).withParameterValues(
                         parametrisedStep).setTimings(timer.stop());
-            }
-            finally {
+            } finally {
                 stepMonitor.afterPerforming(parametrisedStep, dryRun, method);
             }
         }

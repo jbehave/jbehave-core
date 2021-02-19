@@ -169,8 +169,7 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
             lifecycle = findingLifecycle.group(1).trim();
             String examplesTableAsString = findExamplesTable(findingLifecycle.group(0));
             examplesTable = parseExamplesTable(examplesTableAsString);
-        }
-        else {
+        } else {
             lifecycle = NONE;
             examplesTable = ExamplesTable.EMPTY;
         }

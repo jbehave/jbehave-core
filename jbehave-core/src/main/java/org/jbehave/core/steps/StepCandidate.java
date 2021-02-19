@@ -234,13 +234,11 @@ public class StepCandidate {
         if (keywords.isAndStep(composedStep)) {
             if (previousNonAndStep != null) {
                 stepType = keywords.stepTypeFor(previousNonAndStep);
-            }
-            else {
+            } else {
                 // cannot handle AND step with no previous step
                 return null;
             }
-        }
-        else {
+        } else {
             stepType = keywords.stepTypeFor(composedStep);
         }
         for (StepCandidate candidate : allCandidates) {

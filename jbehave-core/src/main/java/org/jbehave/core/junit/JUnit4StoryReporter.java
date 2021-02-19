@@ -68,8 +68,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
                 notifier.fireTestStarted(testState.currentStep);
             }
             testState.givenStoryLevel++;
-        }
-        else {
+        } else {
             Description storyDescription = findStoryDescription(story.getName());
             testState.currentStoryDescription = storyDescription;
             notifier.fireTestStarted(storyDescription);
@@ -87,8 +86,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
         for (Description storyDescription : rootDescription.getChildren()) {
             if (storyDescription.getDisplayName().equals(escapedStoryName)) {
                 return storyDescription;
-            }
-            else
+            } else
                 // Related to issue #28: When a story does not contain any scenarios, isTest returns true,
                 // but getMethodName still returns null, because it cannot be parsed by JUnit as a method name.
                 if (storyDescription.isTest() && storyDescription.getMethodName() != null && storyDescription
@@ -110,8 +108,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
             }
             prepareNextStep();
             processBeforeScenario();
-        }
-        else {
+        } else {
             if (!testState.failedSteps.contains(testState.currentStoryDescription)) {
                 notifier.fireTestFinished(testState.currentStoryDescription);
                 if (testState.currentStoryDescription.isTest()) {
@@ -189,8 +186,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
                 notifier.fireTestStarted(currentScenario);
                 notifier.fireTestFinished(currentScenario);
                 testState.moveToNextScenario();
-            }
-            else {
+            } else {
                 testState.moveToNextScenario();
                 processAfterStory();
             }
@@ -217,8 +213,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
                 notifier.fireTestStarted(currentStep);
                 notifier.fireTestFinished(currentStep);
                 prepareNextStep();
-            }
-            else {
+            } else {
                 testState.moveToNextStep();
                 processAfterScenario();
             }
@@ -280,8 +275,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
         if (!testState.isGivenStoryRunning()) {
             if (testState.currentStep != null) {
                 finishStep(testState);
-            }
-            else {
+            } else {
                 prepareNextStep();
             }
         }
@@ -308,8 +302,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
     private void finishStep(TestState testState) {
         if (testState.currentStepStatus == StepStatus.FINISHED && !testState.parentSteps.isEmpty()) {
             notifier.fireTestFinished(testState.parentSteps.poll());
-        }
-        else {
+        } else {
             notifier.fireTestFinished(testState.currentStep);
             testState.currentStepStatus = StepStatus.FINISHED;
             prepareNextStep();
@@ -327,8 +320,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
                 // having failed.
                 testState.failedSteps.add(testState.currentStep);
                 finishStep(testState);
-            }
-            else {
+            } else {
                 notifier.fireTestIgnored(testState.currentStep);
                 prepareNextStep();
             }

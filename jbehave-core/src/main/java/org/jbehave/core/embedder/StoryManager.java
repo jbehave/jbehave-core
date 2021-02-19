@@ -139,8 +139,7 @@ public class StoryManager {
     private void filterRunning(RunContext context, Story story) {
         if (context.filter(story).excluded()) {
             excludedBy(context.getFilter()).add(story);
-        }
-        else {
+        } else {
             runningStories.put(story.getPath(), runningStory(story));
         }
     }

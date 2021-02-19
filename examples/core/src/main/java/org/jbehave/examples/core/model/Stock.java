@@ -10,7 +10,7 @@ public class Stock {
 
     public enum AlertStatus {
         ON, OFF
-    };
+    }
 
     private String symbol;
     private double alertPrice;

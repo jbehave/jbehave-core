@@ -16,7 +16,7 @@ public class RESTClient {
 
     public enum Type {
         JSON, XML
-    };
+    }
 
     private static final String APPLICATION_TYPE = "application/{0}";
     private String username;

@@ -18,7 +18,8 @@ public class TableParsers {
 
     private static final String ROW_SEPARATOR_PATTERN = "\r?\n";
 
-    public TableParsers(){}
+    public TableParsers() {
+    }
 
     public TablePropertiesQueue parseProperties(String tableAsString, Keywords keywords) {
         return parseProperties(tableAsString, keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator(),

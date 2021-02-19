@@ -8,8 +8,7 @@ public class Timing {
     private long start;
     private long end;
 
-    public Timing()
-    {
+    public Timing() {
     }
 
     public Timing(Timer timer) {

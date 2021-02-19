@@ -324,7 +324,9 @@ public class TemplateableViewGenerator implements ViewGenerator {
     }
 
     public static class Reports {
-        public enum ViewType { LIST };
+        public enum ViewType {
+            LIST
+        }
 
         private final Map<String, Report> reports = new HashMap<>();
         private final StoryNameResolver nameResolver;

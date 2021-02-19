@@ -475,7 +475,9 @@ public class ExamplesTable {
 
     public static final class TableProperties {
 
-        public enum Decorator { LOWERCASE, UPPERCASE, VERBATIM, TRIM };
+        public enum Decorator {
+            LOWERCASE, UPPERCASE, VERBATIM, TRIM
+        }
 
         private static final String COMMA = ",";
         private static final String COMMA_REGEX = "\\,";

@@ -93,7 +93,9 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         },
         XML {
             @Override
-            public Object escapeValue(Object object) { return EscapeMode.XML.escapeString(asString(object)); }
+            public Object escapeValue(Object object) {
+                return EscapeMode.XML.escapeString(asString(object));
+            }
         },
         JSON {
             @Override

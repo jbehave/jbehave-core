@@ -35,8 +35,7 @@ abstract class AbstractRegexParser {
         List<String> elements = new ArrayList<>();
         StringBuilder element = new StringBuilder();
         String[] elementsAsText = text.split(keyword);
-        for (int i = 0; i < elementsAsText.length; i++)
-        {
+        for (int i = 0; i < elementsAsText.length; i++) {
             String elementAsText = elementsAsText[i];
             element.append(elementAsText);
             if (isLastLineNotComment(elementAsText)) {

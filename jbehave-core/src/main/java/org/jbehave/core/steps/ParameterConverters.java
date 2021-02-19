@@ -486,18 +486,15 @@ public class ParameterConverters {
         if (collectionType.isInterface()) {
             if (Set.class == collectionType) {
                 return new HashSet<>();
-            }
-            else if (List.class == collectionType) {
+            } else if (List.class == collectionType) {
                 return new ArrayList<>();
-            }
-            else if (SortedSet.class == collectionType || NavigableSet.class == collectionType) {
+            } else if (SortedSet.class == collectionType || NavigableSet.class == collectionType) {
                 return new TreeSet<>();
             }
         }
         try {
             return (Collection<E>) collectionType.getConstructor().newInstance();
-        }
-        catch (@SuppressWarnings("unused") Throwable t) {
+        } catch (@SuppressWarnings("unused") Throwable t) {
             // Could not instantiate Collection type, swallowing exception quietly
         }
         return null;
@@ -821,8 +818,7 @@ public class ParameterConverters {
         }
 
         @Override
-        public List<String> convertValue(String value, Type type)
-        {
+        public List<String> convertValue(String value, Type type) {
             if (value.trim().isEmpty()) {
                 return Collections.emptyList();
             }

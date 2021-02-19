@@ -276,21 +276,18 @@ public class AnnotationBuilder {
                 Constructor<V> constructor =
                         ofClass.getConstructor(ClassLoader.class);
                 return constructor.newInstance(annotatedClass.getClassLoader());
-            }
-            catch(NoSuchMethodException ns){
+            } catch (NoSuchMethodException ns){
             }
             // by class constructor
             try {
                 Constructor<V> constructor =
                         ofClass.getConstructor(Class.class);
                 return constructor.newInstance(annotatedClass);
-            }
-            catch(NoSuchMethodException ns){
+            } catch (NoSuchMethodException ns){
             }                 
             // by class instance
             return ofClass.newInstance();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             annotationMonitor.elementCreationFailed(ofClass, e);
             throw new InstantiationFailed(ofClass, type, e);
         }

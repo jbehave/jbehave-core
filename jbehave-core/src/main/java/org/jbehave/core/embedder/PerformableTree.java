@@ -100,8 +100,7 @@ public class PerformableTree {
         if (storyExamplesTable.isEmpty()) {
             storyExamplesTableRows = new ArrayList<Map<String, String>>();
             storyExamplesTableRows.add(new HashMap<String, String>());
-        }
-        else {
+        } else {
             storyExamplesTableRows = storyExamplesTable.getRows();
         }
 
@@ -175,8 +174,7 @@ public class PerformableTree {
                     addExampleScenario(context, scenario, performableScenario, story, storyAndScenarioMeta,
                             parameters, exampleIndex);
                 }
-            }
-            else if (!storyExamplesTableRow.isEmpty()) {
+            } else if (!storyExamplesTableRow.isEmpty()) {
                     addExampleScenario(context, scenario, performableScenario, story, storyAndScenarioMeta,
                             new HashMap<>(storyExamplesTableRow), -1);
             } else { // plain old scenario
@@ -1006,9 +1004,13 @@ public class PerformableTree {
             return excluded;
         }
 
-        public Status getStatus() { return status; }
+        public Status getStatus() {
+            return status;
+        }
 
-        public Timing getTiming() { return timing; }
+        public Timing getTiming() {
+            return timing;
+        }
 
         public Scenario getScenario() {
             return scenario;

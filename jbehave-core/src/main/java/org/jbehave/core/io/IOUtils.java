@@ -15,8 +15,7 @@ public class IOUtils {
     public static String toString(InputStream input, Charset charset, boolean close) throws IOException {
         try {
             return org.apache.commons.io.IOUtils.toString(input, charset.name());
-        }
-        finally {
+        } finally {
             if (close) {
                 input.close();
             }
@@ -48,8 +47,7 @@ public class IOUtils {
     public static String toString(Reader input, boolean close) throws IOException {
         try {
             return org.apache.commons.io.IOUtils.toString(input);
-        }
-        finally {
+        } finally {
             if (close) {
                 input.close();
             }

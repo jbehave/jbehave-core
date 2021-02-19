@@ -523,9 +523,13 @@ public class TemplateableOutput extends NullStoryReporter {
             this.lifecycle = lifecycle;
         }
 
-        public Set<Scope> getScopes() { return lifecycle.getScopes(); };
+        public Set<Scope> getScopes() {
+            return lifecycle.getScopes();
+        }
 
-        public boolean hasBeforeSteps() { return lifecycle.hasBeforeSteps(); }
+        public boolean hasBeforeSteps() {
+            return lifecycle.hasBeforeSteps();
+        }
 
         public List<String> getBeforeSteps(){
             return lifecycle.getBeforeSteps();
@@ -535,7 +539,9 @@ public class TemplateableOutput extends NullStoryReporter {
             return lifecycle.getBeforeSteps(scope);
         }
 
-        public boolean hasAfterSteps() { return lifecycle.hasAfterSteps(); }
+        public boolean hasAfterSteps() {
+            return lifecycle.hasAfterSteps();
+        }
 
         public List<String> getAfterSteps(){
             return lifecycle.getAfterSteps();

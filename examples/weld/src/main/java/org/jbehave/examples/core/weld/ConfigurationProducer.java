@@ -24,7 +24,8 @@ import org.jbehave.core.steps.ParameterConverters.DateConverter;
 @ApplicationScoped
 public class ConfigurationProducer {
     
-    public ConfigurationProducer() {}
+    public ConfigurationProducer() {
+    }
 
     @Produces @WeldConfiguration
     public Configuration getConfiguration() {

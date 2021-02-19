@@ -8,8 +8,8 @@ import org.jbehave.core.embedder.EmbedderControls;
  *
  * @author Valery Yatsynovich
  */
-public class SpringEmbedderControls extends EmbedderControls
-{
+public class SpringEmbedderControls extends EmbedderControls {
+
     public boolean isBatch() {
         return batch();
     }

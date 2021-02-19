@@ -83,8 +83,7 @@ public class JUnit4DescriptionGenerator {
         Description scenarioDescription = createDescriptionForScenario(scenario);
         if (performableScenario.hasExamples() && !scenario.getGivenStories().requireParameters()) {
             insertDescriptionForExamples(lifecycle, performableScenario, scenarioDescription);
-        }
-        else {
+        } else {
             if (hasGivenStories(scenario)) {
                 insertGivenStories(scenario, scenarioDescription);
             }
@@ -195,8 +194,7 @@ public class JUnit4DescriptionGenerator {
         StepCandidate matchingStep = findMatchingStep(step);
         if (matchingStep == null) {
             addNonExistingStep(description, stringStepOneLine, step);
-        }
-        else {
+        } else {
             addExistingStep(description, stringStepOneLine, matchingStep);
         }
     }
@@ -204,8 +202,7 @@ public class JUnit4DescriptionGenerator {
     private void addExistingStep(Description description, String stringStepOneLine, StepCandidate matchingStep) {
         if (matchingStep.isComposite()) {
             addCompositeSteps(description, stringStepOneLine, matchingStep);
-        }
-        else {
+        } else {
             addRegularStep(description, stringStepOneLine, matchingStep);
         }
     }
@@ -216,8 +213,7 @@ public class JUnit4DescriptionGenerator {
             if (isStep(keywords.stepWithoutStartingWord(stepAsString, StepType.IGNORABLE))) {
                 addIgnorableStep(description, stringStepOneLine);
             }
-        }
-        else {
+        } else {
             addPendingStep(description, stringStepOneLine);
         }
     }

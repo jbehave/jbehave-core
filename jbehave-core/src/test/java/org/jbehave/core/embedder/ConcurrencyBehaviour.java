@@ -262,8 +262,7 @@ class ConcurrencyBehaviour {
             if(customStoryPath != null) {
                 return new StoryFinder().findPaths(
                         codeLocationFromClass(this.getClass()), customStoryPath, "");
-            }
-            else {
+            } else {
                 return new StoryFinder().findPaths(
                         codeLocationFromClass(this.getClass()), "**/*.story", "");
             }
