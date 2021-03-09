@@ -65,8 +65,7 @@ public class IndexFromConfluence implements ResourceIndexer {
         Page page = confluence.loadPage(href, true);
         Resource resource = new Resource(page.getSelfReference(), page.getTitle());
         resource.setContent(page.getBody());
-        if (pattern == null ||
-                (pattern != null && Pattern.matches(pattern, page.getTitle()))) {
+        if (pattern == null || (pattern != null && Pattern.matches(pattern, page.getTitle()))) {
             result.put(page.getTitle(), resource);
         }
         if (page.hasChildren()) {

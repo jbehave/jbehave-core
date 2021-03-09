@@ -252,22 +252,22 @@ public class MetaFilter {
 
         @Override
         public void parse(String filterAsString) {
-            String groovyString = "public class GroovyMatcher {\n" +
-                    "public org.jbehave.core.model.Meta meta\n" +
-                    "  public boolean match() {\n" +
-                    "    return (" + filterAsString.substring(GROOVY.length()) + ")\n" +
-                    "  }\n" +
-                    "  def propertyMissing(String name) {\n" +
-                    "    if (!meta.hasProperty(name)) {\n" +
-                    "      return false\n" +
-                    "    }\n" +
-                    "    def v = meta.getProperty(name)\n" +
-                    "    if (v.equals('')) {\n" +
-                    "      return true\n" +
-                    "    }\n" +
-                    "    return v\n" +
-                    "  }\n" +
-                    "}";
+            String groovyString = "public class GroovyMatcher {\n"
+                    + "public org.jbehave.core.model.Meta meta\n"
+                    + "  public boolean match() {\n"
+                    + "    return (" + filterAsString.substring(GROOVY.length()) + ")\n"
+                    + "  }\n"
+                    + "  def propertyMissing(String name) {\n"
+                    + "    if (!meta.hasProperty(name)) {\n"
+                    + "      return false\n"
+                    + "    }\n"
+                    + "    def v = meta.getProperty(name)\n"
+                    + "    if (v.equals('')) {\n"
+                    + "      return true\n"
+                    + "    }\n"
+                    + "    return v\n"
+                    + "  }\n"
+                    + "}";
 
             GroovyClassLoader loader = new GroovyClassLoader(getClass().getClassLoader());
             groovyClass = loader.parseClass(groovyString);
