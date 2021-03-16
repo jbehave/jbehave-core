@@ -14,6 +14,7 @@ import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.DelegatingStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.*;
+import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.Timer;
 import org.jbehave.core.steps.StepCreator.PendingStep;

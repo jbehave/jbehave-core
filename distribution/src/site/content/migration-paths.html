@@ -37,6 +37,8 @@
         Use storyTimeouts instead.</li>
     <li>Stop reporting BeforeStories/AfterStories steps as stories. New hooks are introduced: org.jbehave.core.reporters.StoryReporter#beforeStoriesSteps and org.jbehave.core.reporters.StoryReporter#afterStoriesSteps</li>
     <li>Fix typo in StoryReporter method: lifecyle -> lifecycle</li>
+    <li>Replace StoryReporter#beforeStep(String) hook with StoryReporter#beforeStep(Step)</li>
+    <li>Invoke StoryReporter#beforeStep(Step) hook before all steps (including comment, pending, ignorable), previously the hook was invoked only for parameterized steps</li>
 </ul>
 
 <h2>From 3.x to 4.0</h2>

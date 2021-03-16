@@ -654,6 +654,34 @@ public class StepCreator {
         }
     }
 
+    public static abstract class ReportingAbstractStep extends AbstractStep {
+
+        private final StepExecutionType stepKind;
+        private final String stepAsString;
+
+        public ReportingAbstractStep(StepExecutionType stepKind, String stepAsString) {
+            this.stepKind = stepKind;
+            this.stepAsString = stepAsString;
+        }
+
+        @Override
+        public final StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+            storyReporter.beforeStep(new org.jbehave.core.model.Step(stepKind, stepAsString));
+            return perform();
+        }
+
+        protected abstract StepResult perform();
+
+        @Override
+        public String asString(Keywords keywords) {
+            return stepAsString;
+        }
+
+        protected String getStepAsString() {
+            return stepAsString;
+        }
+    }
+
     static class DelegatingStep extends AbstractStep {
         private final Step step;
 
@@ -784,10 +812,9 @@ public class StepCreator {
         }
     }
 
-    public class ParametrisedStep extends AbstractStep {
+    public class ParametrisedStep extends ReportingAbstractStep {
         private Object[] convertedParameters;
         private String parametrisedStep;
-        private final String stepAsString;
         private final Method method;
         private final String stepWithoutStartingWord;
         private final Map<String, String> namedParameters;
@@ -795,7 +822,7 @@ public class StepCreator {
 
         public ParametrisedStep(String stepAsString, Method method, String stepWithoutStartingWord,
                 Map<String, String> namedParameters, List<Step> composedSteps) {
-            this.stepAsString = stepAsString;
+            super(StepExecutionType.EXECUTABLE, stepAsString);
             this.method = method;
             this.stepWithoutStartingWord = stepWithoutStartingWord;
             this.namedParameters = namedParameters;
@@ -808,8 +835,8 @@ public class StepCreator {
         }
 
         @Override
-        public StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            storyReporter.beforeStep(stepAsString);
+        public StepResult perform() {
+            String stepAsString = getStepAsString();
             Timer timer = new Timer().start();
             try {
                 parametriseStep();
@@ -852,7 +879,7 @@ public class StepCreator {
                 // step parametrisation failed, but still return
                 // notPerformed StepResult
             }
-            return notPerformed(stepAsString).withParameterValues(parametrisedStep);
+            return notPerformed(getStepAsString()).withParameterValues(parametrisedStep);
         }
 
         @Override
@@ -871,7 +898,7 @@ public class StepCreator {
             convertedParameters = method == null ? parameterValues
                     : convertParameterValues(parameterValues, types, names);
             addNamedParametersToExamplesTables();
-            parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, parameterValues);
+            parametrisedStep = parametrisedStep(getStepAsString(), namedParameters, types, parameterValues);
         }
 
         private void addNamedParametersToExamplesTables() {
@@ -883,28 +910,27 @@ public class StepCreator {
         }
     }
 
-    public static class PendingStep extends AbstractStep {
-        private final String stepAsString;
+    public static class PendingStep extends ReportingAbstractStep {
         private final String previousNonAndStep;
         private Method method;
 
         public PendingStep(String stepAsString, String previousNonAndStep) {
-            this.stepAsString = stepAsString;
+            super(StepExecutionType.PENDING, stepAsString);
             this.previousNonAndStep = previousNonAndStep;
         }
 
         @Override
-        public StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            return pending(stepAsString);
+        protected StepResult perform() {
+            return pending(getStepAsString());
         }
 
         @Override
         public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            return pending(stepAsString);
+            return perform();
         }
 
         public String stepAsString() {
-            return stepAsString;
+            return getStepAsString();
         }
 
         public String previousNonAndStepAsString() {
@@ -918,58 +944,47 @@ public class StepCreator {
         public boolean annotated() {
             return method != null;
         }
-
-        @Override
-        public String asString(Keywords keywords) {
-            return stepAsString;
-        }
-
     }
 
-    public static class IgnorableStep extends AbstractStep {
-        private final String stepAsString;
+    public static class IgnorableStep extends ReportingAbstractStep {
 
         public IgnorableStep(String stepAsString) {
-            this.stepAsString = stepAsString;
+            super(StepExecutionType.IGNORABLE, stepAsString);
         }
 
         @Override
-        public StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            return ignorable(stepAsString);
+        protected StepResult perform() {
+            return ignorable(getStepAsString());
         }
 
         @Override
         public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            return ignorable(stepAsString);
-        }
-        
-        @Override
-        public String asString(Keywords keywords) {
-            return stepAsString;
+            return perform();
         }
     }
 
-    public static class Comment extends AbstractStep {
-        private final String stepAsString;
+    public static class Comment extends ReportingAbstractStep {
 
         public Comment(String stepAsString) {
-            this.stepAsString = stepAsString;
+            super(StepExecutionType.COMMENT, stepAsString);
         }
 
         @Override
-        public StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            return comment(stepAsString);
+        protected StepResult perform() {
+            return comment(getStepAsString());
         }
 
         @Override
         public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            return comment(stepAsString);
+            return perform();
         }
+    }
 
-        @Override
-        public String asString(Keywords keywords) {
-            return stepAsString;
-        }
+    public static enum StepExecutionType {
+        EXECUTABLE,
+        PENDING,
+        IGNORABLE,
+        COMMENT
     }
 
     private class MethodInvoker {

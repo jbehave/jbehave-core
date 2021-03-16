@@ -18,9 +18,11 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
@@ -681,7 +683,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
     private void reportStep(StoryReporter reporter, String step, Stage stage) {
         reporter.beforeScenarioSteps(stage);
-        reporter.beforeStep(step);
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, step));
         reporter.successful(step);
         reporter.afterScenarioSteps(stage);
     }

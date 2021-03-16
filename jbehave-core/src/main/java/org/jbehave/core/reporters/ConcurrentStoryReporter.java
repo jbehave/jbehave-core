@@ -86,7 +86,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
             beforeExamples = StoryReporter.class.getMethod("beforeExamples", List.class, ExamplesTable.class);
             example = StoryReporter.class.getMethod("example", Map.class, int.class);
             afterExamples = StoryReporter.class.getMethod("afterExamples");
-            beforeStep = StoryReporter.class.getMethod("beforeStep", String.class);
+            beforeStep = StoryReporter.class.getMethod("beforeStep", Step.class);
             successful = StoryReporter.class.getMethod("successful", String.class);
             ignorable = StoryReporter.class.getMethod("ignorable", String.class);
             comment = StoryReporter.class.getMethod("comment", String.class);
@@ -242,7 +242,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeStep(String step) {
+    public void beforeStep(Step step) {
         perform(reporter ->  reporter.beforeStep(step), beforeStep, step);
     }
 

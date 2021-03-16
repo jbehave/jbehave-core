@@ -6,6 +6,7 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.*;
 import org.jbehave.core.steps.*;
+import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.junit.jupiter.api.Test;
 

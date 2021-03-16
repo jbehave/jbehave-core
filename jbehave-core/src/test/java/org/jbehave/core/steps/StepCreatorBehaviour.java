@@ -15,6 +15,7 @@ import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.*;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.context.StepsContext;
 import org.jbehave.core.steps.context.StepsContext.ObjectAlreadyStoredException;
 import org.jbehave.core.steps.context.StepsContext.ObjectNotStoredException;
@@ -89,7 +90,7 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
     @Test
@@ -109,7 +110,7 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
     @Test
@@ -130,38 +131,53 @@ class StepCreatorBehaviour {
 
     @Test
     void shouldCreatePendingAsStepResults() {
+        // Given
+        StoryReporter storyReporter = mock(StoryReporter.class);
+
         // When
         String stepAsString = "When I'm pending";
         Step pendingStep = StepCreator.createPendingStep(stepAsString, null);
 
         // Then
         assertThat(pendingStep.asString(new Keywords()), equalTo(stepAsString));
-        assertThat(pendingStep.perform(null, null), instanceOf(Pending.class));
-        assertThat(pendingStep.doNotPerform(null, null), instanceOf(Pending.class));
+        assertThat(pendingStep.perform(storyReporter, null), instanceOf(Pending.class));
+        verifyBeforeStep(storyReporter, StepExecutionType.PENDING, stepAsString);
+        assertThat(pendingStep.doNotPerform(storyReporter, null), instanceOf(Pending.class));
+        verifyNoMoreInteractions(storyReporter);
     }
 
     @Test
     void shouldCreateIgnorableAsStepResults() {
+        // Given
+        StoryReporter storyReporter = mock(StoryReporter.class);
+
         // When
         String stepAsString = "!-- Then ignore me";
         Step ignorableStep = StepCreator.createIgnorableStep(stepAsString);
 
         // Then
         assertThat(ignorableStep.asString(new Keywords()), equalTo(stepAsString));
-        assertThat(ignorableStep.perform(null, null), instanceOf(Ignorable.class));
-        assertThat(ignorableStep.doNotPerform(null, null), instanceOf(Ignorable.class));
+        assertThat(ignorableStep.perform(storyReporter, null), instanceOf(Ignorable.class));
+        verifyBeforeStep(storyReporter, StepExecutionType.IGNORABLE, stepAsString);
+        assertThat(ignorableStep.doNotPerform(storyReporter, null), instanceOf(Ignorable.class));
+        verifyNoMoreInteractions(storyReporter);
     }
 
     @Test
     void shouldCreateCommentAsStepResults() {
+        // Given
+        StoryReporter storyReporter = mock(StoryReporter.class);
+
         // When
         String stepAsString = "!-- A comment";
         Step comment = StepCreator.createComment(stepAsString);
 
         // Then
         assertThat(comment.asString(new Keywords()), equalTo(stepAsString));
-        assertThat(comment.perform(null, null), instanceOf(Comment.class));
-        assertThat(comment.doNotPerform(null, null), instanceOf(Comment.class));
+        assertThat(comment.perform(storyReporter, null), instanceOf(Comment.class));
+        verifyBeforeStep(storyReporter, StepExecutionType.COMMENT, stepAsString);
+        assertThat(comment.doNotPerform(storyReporter, null), instanceOf(Comment.class));
+        verifyNoMoreInteractions(storyReporter);
     }
 
     @Test
@@ -190,7 +206,7 @@ class StepCreatorBehaviour {
         String expected = "When I use parameters " + PARAMETER_VALUE_START + firstParameterValue + PARAMETER_VALUE_END
                 + " and " + PARAMETER_VALUE_START + secondParameterValue + PARAMETER_VALUE_END;
         assertThat(stepResult.parametrisedStep(), equalTo(expected));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
     @Test
@@ -225,7 +241,7 @@ class StepCreatorBehaviour {
         String expected = "When I use parameters " + PARAMETER_VALUE_START + firstParameterValue + PARAMETER_VALUE_END
                 + " and " + PARAMETER_VALUE_START + secondParameterValue + PARAMETER_VALUE_END;
         assertThat(stepResult.parametrisedStep(), equalTo(expected));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
     @Test
@@ -465,7 +481,7 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat((String) stepsInstance.args, equalTo("value"));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
     @Test
@@ -489,7 +505,7 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat(result.parametrisedStep(), equalTo(stepAsString));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
     @Test
@@ -514,7 +530,7 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat((String) stepsInstance.args, equalTo("value"));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
     @SuppressWarnings("unchecked")
@@ -545,7 +561,7 @@ class StepCreatorBehaviour {
         Map<String, String> results = (Map<String, String>) stepsInstance.args;
         assertThat(results.get("theme"), equalTo("distinct theme"));
         assertThat(results.get("variant"), equalTo("distinct variant <with non variable inside>"));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
     @SuppressWarnings("unchecked")
@@ -577,8 +593,9 @@ class StepCreatorBehaviour {
         Map<String, String> results = (Map<String, String>) stepsInstance.args;
         assertThat(results.get("theme"), equalTo("distinct theme"));
         assertThat(results.get("variant"), equalTo("distinct variant with story variable value"));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
+
     @SuppressWarnings("unchecked")
     @Test
     void shouldMatchParametersByNamedAnnotationsIfConfiguredToNotUseDelimiterNamedParamters() throws Exception {
@@ -607,7 +624,7 @@ class StepCreatorBehaviour {
         Map<String, String> results = (Map<String, String>) stepsInstance.args;
         assertThat(results.get("theme"), equalTo("a theme"));
         assertThat(results.get("variant"), equalTo("a variant"));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
     @Test
@@ -655,8 +672,8 @@ class StepCreatorBehaviour {
         assertThat(stepResultRead, instanceOf(Successful.class));
         assertThat(stepsInstance.args, instanceOf(String.class));
         assertThat((String) stepsInstance.args, is("someValue"));
-        verify(storyReporter).beforeStep(stepAsString);
-        verify(storyReporter).beforeStep(readStepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, readStepAsString);
     }
 
     @Test
@@ -681,7 +698,7 @@ class StepCreatorBehaviour {
         assertThat(stepResult, instanceOf(Failed.class));
         Throwable cause = stepResult.getFailure().getCause();
         assertThat(cause, instanceOf(ObjectNotStoredException.class));
-        verify(storyReporter).beforeStep(stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
     @Test
@@ -720,8 +737,8 @@ class StepCreatorBehaviour {
         assertThat(stepResultSecondWrite, instanceOf(Failed.class));
         Throwable cause = stepResultSecondWrite.getFailure().getCause();
         assertThat(cause, instanceOf(ObjectAlreadyStoredException.class));
-        verify(storyReporter).beforeStep(stepAsString);
-        verify(storyReporter).beforeStep(stepAsString2);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString2);
     }
 
     @Test
@@ -737,6 +754,11 @@ class StepCreatorBehaviour {
 
         // Second Example
         shouldStoreAndReadObjects(methodStoring, false);
+    }
+
+    private void verifyBeforeStep(StoryReporter storyReporter, StepExecutionType type, String stepAsString) {
+        verify(storyReporter).beforeStep(argThat(arg -> stepAsString.equals(arg.getStepAsString())
+                && type.equals(arg.getExecutionType())));
     }
 
     private StepCreator stepCreatorUsing(SomeSteps stepsInstance, StepMatcher stepMatcher, ParameterControls parameterControls) {

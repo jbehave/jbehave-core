@@ -167,7 +167,7 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeStep(String step) {
+    public void beforeStep(Step step) {
         delegate(reporter -> reporter.beforeStep(step));
     }
 

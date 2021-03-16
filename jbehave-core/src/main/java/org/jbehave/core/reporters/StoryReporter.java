@@ -67,7 +67,7 @@ public interface StoryReporter {
 
     void afterExamples();
 
-    void beforeStep(String step);
+    void beforeStep(Step step);
     
     void successful(String step);
 

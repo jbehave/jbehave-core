@@ -22,6 +22,7 @@ import org.jbehave.core.model.Lifecycle.Steps;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 
 class StoryNarrator {
@@ -61,10 +62,10 @@ class StoryNarrator {
         reporter.beforeScenarioSteps(null);
         reportSuccessfulStep(reporter, "Given I have a balance of $50");
         String ignorable = "!-- Then ignore me";
-        reporter.beforeStep(ignorable);
+        reporter.beforeStep(new Step(StepExecutionType.IGNORABLE, ignorable));
         reporter.ignorable(ignorable);
         String comment = "!-- A comment";
-        reporter.beforeStep(comment);
+        reporter.beforeStep(new Step(StepExecutionType.COMMENT, comment));
         reporter.comment(comment);
         reportCompositeStep(reporter);
         reportSuccessfulStep(reporter, "When I request $20");
@@ -77,7 +78,7 @@ class StoryNarrator {
                 + " and "
                 + StepCreator.PARAMETER_VALUE_START + "&&&" +StepCreator.PARAMETER_VALUE_END);
         String restarted = "Then I should... - try again";
-        reporter.beforeStep(restarted);
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, restarted));
         reporter.restarted(restarted, new RestartingScenarioFailure("hi")); // !
         reporter.restartedStory(story, new RestartingStoryFailure("Restarted Story"));
         reporter.storyCancelled(story, new StoryDuration(1).setDurationInSecs(2));
@@ -87,7 +88,7 @@ class StoryNarrator {
             reportPendingStep(reporter, "Then I should have a balance of $30");
         }
         String notPerformed = "Then I should have $20";
-        reporter.beforeStep(notPerformed);
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, notPerformed));
         reporter.notPerformed(notPerformed);
         OutcomesTable outcomesTable = new OutcomesTable(new LocalizedKeywords(),  mapOf(Date.class, "dd/MM/yyyy"));
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
@@ -99,7 +100,7 @@ class StoryNarrator {
             outcomesTable.verify();
         } catch (UUIDExceptionWrapper e) {
             String failedOutcomes = "Then I don't return loan";
-            reporter.beforeStep(failedOutcomes);
+            reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, failedOutcomes));
             reporter.failedOutcomes(failedOutcomes, ((OutcomesFailed) e.getCause()).outcomesTable());
         }
         reporter.afterScenarioSteps(null);
@@ -162,17 +163,17 @@ class StoryNarrator {
     }
 
     private static void reportPendingStep(StoryReporter reporter, String step) {
-        reporter.beforeStep(step);
+        reporter.beforeStep(new Step(StepExecutionType.PENDING, step));
         reporter.pending(step);
     }
 
     private static void reportSuccessfulStep(StoryReporter reporter, String step) {
-        reporter.beforeStep(step);
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, step));
         reporter.successful(step);
     }
 
     private static void reportFailedStep(StoryReporter reporter, String step, Throwable cause) {
-        reporter.beforeStep(step);
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, step));
         reporter.failed(step, cause);
     }
 
@@ -180,10 +181,10 @@ class StoryNarrator {
         String compositeStep = "When I perform composite step";
         String innerStep = "When I perform inner step";
 
-        reporter.beforeStep(compositeStep);
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, compositeStep));
         reporter.beforeComposedSteps();
         reportSuccessfulStep(reporter, innerStep);
-        reporter.beforeStep(compositeStep);
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, compositeStep));
         reporter.beforeComposedSteps();
         reportSuccessfulStep(reporter, innerStep);
         reportSuccessfulStep(reporter, innerStep);
