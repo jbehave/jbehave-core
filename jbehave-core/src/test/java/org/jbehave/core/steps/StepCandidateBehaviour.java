@@ -21,6 +21,7 @@ import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.context.StepsContext;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +44,7 @@ import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.jbehave.core.steps.StepType.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 class StepCandidateBehaviour {
@@ -204,7 +206,7 @@ class StepCandidateBehaviour {
         StepResult result = candidate.createMatchedStep(stepAsString, namedParameters, emptyList())
                 .perform(reporter, null);
         result.describeTo(reporter);
-        verify(reporter).beforeStep(stepAsString);
+        verifyBeforeExecutableStep(reporter, stepAsString);
         verify(reporter).successful(
                 "Then I live on the " + PARAMETER_VALUE_START + "1st" + PARAMETER_VALUE_END + " floor");
     }
@@ -291,7 +293,7 @@ class StepCandidateBehaviour {
         assertThat(steps.ith, equalTo("first"));
         assertThat(steps.nth, equalTo("ground"));
         result.describeTo(reporter);
-        verify(reporter).beforeStep(stepAsString);
+        verifyBeforeExecutableStep(reporter, stepAsString);
         verify(reporter).successful(
                 "When I live on the " + PARAMETER_VALUE_START + "first" + PARAMETER_VALUE_END + " floor but some call it the " + PARAMETER_VALUE_START + "ground" + PARAMETER_VALUE_END );
     }
@@ -311,7 +313,7 @@ class StepCandidateBehaviour {
         assertThat(steps.ith, equalTo("first"));
         assertThat(steps.nth, equalTo("ground"));
         result.describeTo(reporter);
-        verify(reporter).beforeStep(stepAsString);
+        verifyBeforeExecutableStep(reporter, stepAsString);
         verify(reporter).successful(
                 "When I live on the " + PARAMETER_VALUE_START + "first" + PARAMETER_VALUE_END + " floor but some call it the " + PARAMETER_VALUE_START + "ground" + PARAMETER_VALUE_END );
     }
@@ -405,7 +407,7 @@ class StepCandidateBehaviour {
         StepResult perform = step.perform(reporter, null);
         assertThat(perform, instanceOf(AbstractStepResult.Pending.class));
         assertThat(perform.parametrisedStep(), equalTo(stepAsString));
-        verify(reporter).beforeStep(stepAsString);
+        verifyBeforeExecutableStep(reporter, stepAsString);
         StepResult doNotPerform = step.doNotPerform(reporter, null);
         assertThat(doNotPerform, instanceOf(NotPerformed.class));
         assertThat(doNotPerform.parametrisedStep(), equalTo(stepAsString));
@@ -432,7 +434,7 @@ class StepCandidateBehaviour {
     private void performStep(StepCandidate candidate, String stepAsString) {
         StoryReporter reporter = mock(StoryReporter.class);
         candidate.createMatchedStep(stepAsString, namedParameters, emptyList()).perform(reporter, null);
-        verify(reporter).beforeStep(stepAsString);
+        verifyBeforeExecutableStep(reporter, stepAsString);
     }
 
     @Test
@@ -447,7 +449,7 @@ class StepCandidateBehaviour {
         UUIDExceptionWrapper failure = stepResult.getFailure();
         assertThat(failure.getCause(), instanceOf(OutcomesFailed.class));
         assertThat(failure.getMessage(), equalTo(stepAsString));
-        verify(reporter).beforeStep(stepAsString);
+        verifyBeforeExecutableStep(reporter, stepAsString);
     }
 
     @Test
@@ -463,7 +465,7 @@ class StepCandidateBehaviour {
             throw new AssertionError("should have barfed");
         } catch (RestartingScenarioFailure e) {
             assertThat(e.getMessage(), is(equalTo("Bar restarting")));
-            verify(reporter).beforeStep(stepAsString);
+            verifyBeforeExecutableStep(reporter, stepAsString);
         }
     }
 
@@ -489,10 +491,10 @@ class StepCandidateBehaviour {
         assertThat(steps.givenTimes, equalTo(0));
         assertThat(steps.whenName, nullValue());
         assertThat(steps.whenTimes, equalTo(0));
-        verify(reporter).beforeStep(stepAsString00);
-        verify(reporter).beforeStep(stepAsString01);
-        verify(reporter).beforeStep(stepAsString10);
-        verify(reporter).beforeStep(stepAsString11);
+        verifyBeforeExecutableStep(reporter, stepAsString00);
+        verifyBeforeExecutableStep(reporter, stepAsString01);
+        verifyBeforeExecutableStep(reporter, stepAsString10);
+        verifyBeforeExecutableStep(reporter, stepAsString11);
     }
     
     @Test
@@ -519,7 +521,7 @@ class StepCandidateBehaviour {
         step.createMatchedStep(stepAsString0, namedParameters, emptyList()).perform(reporter, null);
         assertThat(steps.givenName, equalTo("xyz"));
         assertThat(steps.whenName, nullValue());
-        verify(reporter).beforeStep(stepAsString0);
+        verifyBeforeExecutableStep(reporter, stepAsString0);
         assertThrows(StartingWordNotFound.class,
                 () -> step.createMatchedStep("Then foo named xyz", namedParameters, emptyList()));
     }
@@ -603,6 +605,11 @@ class StepCandidateBehaviour {
             }
         }
         return null;
+    }
+
+    private void verifyBeforeExecutableStep(StoryReporter storyReporter, String stepAsString) {
+        verify(storyReporter).beforeStep(argThat(arg -> stepAsString.equals(arg.getStepAsString())
+                && StepExecutionType.EXECUTABLE.equals(arg.getExecutionType())));
     }
 
 }

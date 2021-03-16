@@ -11,6 +11,7 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.*;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.*;
+import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.context.StepsContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;

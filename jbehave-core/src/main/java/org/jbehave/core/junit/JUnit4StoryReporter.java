@@ -3,9 +3,11 @@ package org.jbehave.core.junit;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.*;
 import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.NullStoryReporter;
 import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -235,7 +237,10 @@ public class JUnit4StoryReporter extends NullStoryReporter {
     }
 
     @Override
-    public void beforeStep(String title) {
+    public void beforeStep(Step step) {
+        if (step.getExecutionType() != StepExecutionType.EXECUTABLE) {
+            return;
+        }
         TestState testState = this.testState.get();
         if (!testState.isGivenStoryRunning() && testState.currentStep != null) {
             // Lifecycle Before story steps

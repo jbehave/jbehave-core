@@ -25,7 +25,7 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeStep(String step) {
+    public void beforeStep(Step step) {
     }
 
     @Override

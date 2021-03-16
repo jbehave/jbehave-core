@@ -15,8 +15,10 @@ import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -250,7 +252,7 @@ class JUnit4StoryReporterBehaviour {
         reportBeforeStory(story, false);
         verifyStoryStarted();
 
-        reporter.beforeStep(beforeStoryStep.getDisplayName());
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, beforeStoryStep.getDisplayName()));
         reportSuccessfulStep(composedBefore);
         reporter.successful(beforeStoryStep.getDisplayName());
         verifyStepSuccess(beforeStoryStep);
@@ -263,8 +265,8 @@ class JUnit4StoryReporterBehaviour {
         reportScenarioFinish(reporter);
         verifyScenarioFinished();
 
-        reporter.beforeStep(afterStoryStep.getDisplayName());
-        reporter.beforeStep(composedAfter.getDisplayName());
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, afterStoryStep.getDisplayName()));
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, composedAfter.getDisplayName()));
         reportSuccessfulStep(composedComposedAfter);
         reporter.successful(composedAfter.getDisplayName());
         verifyStepSuccess(composedAfter);
@@ -340,12 +342,9 @@ class JUnit4StoryReporterBehaviour {
         reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
-        reporter.beforeStep("child");
-        reporter.successful("child");
-        reporter.beforeStep("comp1");
-        reporter.successful("comp1");
-        reporter.beforeStep("comp2");
-        reporter.successful("comp2");
+        reportStepSuccess(reporter, "child");
+        reportStepSuccess(reporter, "comp1");
+        reportStepSuccess(reporter, "comp2");
         reportScenarioFinish(reporter);
         reportStoryFinish(reporter);
 
@@ -393,12 +392,9 @@ class JUnit4StoryReporterBehaviour {
 
         reportBefore();
         reporter.example(null, 0);
-        reporter.beforeStep("child");
-        reporter.successful("child");
-        reporter.beforeStep("comp1");
-        reporter.successful("comp1");
-        reporter.beforeStep("comp2");
-        reporter.successful("comp2");
+        reportStepSuccess(reporter, "child");
+        reportStepSuccess(reporter, "comp1");
+        reportStepSuccess(reporter, "comp2");
         reportStepSuccess(reporter);
         reportScenarioFinish(reporter);
         reportStoryFinish(reporter);
@@ -513,22 +509,26 @@ class JUnit4StoryReporterBehaviour {
     }
 
     private void reportSuccessfulStep(Description step) {
-        reporter.beforeStep(step.getDisplayName());
-        reporter.successful(step.getDisplayName());
+        reportStepSuccess(reporter, step.getDisplayName());
         verifyStepSuccess(step);
     }
 
     private void reportStepSuccess(JUnit4StoryReporter reporter) {
-        reporter.beforeStep("child");
-        reporter.successful("child");
+        reportStepSuccess(reporter, "child");
+    }
+
+    private void reportStepSuccess(JUnit4StoryReporter reporter, String step) {
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, step));
+        reporter.successful(step);
     }
 
     private void reportStepFailure(JUnit4StoryReporter reporter) {
-        reporter.beforeStep("child");
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "child"));
         reporter.failed("child", new UUIDExceptionWrapper(new Exception("FAIL")));
     }
 
     private void reportIgnorable(JUnit4StoryReporter reporter) {
+        reporter.beforeStep(new Step(StepExecutionType.IGNORABLE, "!-- Comment"));
         reporter.ignorable("!-- Comment");
     }
 
@@ -538,7 +538,7 @@ class JUnit4StoryReporterBehaviour {
         // Begin Given Story
         reportBeforeStory(givenStory, true);
         reportBeforeScenario("givenScenario");
-        reporter.beforeStep("givenStep");
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "givenStep"));
         reporter.successful("givenStep");
         reportAfter();
         // End Given Story
@@ -562,7 +562,7 @@ class JUnit4StoryReporterBehaviour {
         reportBeforeStory(givenStory, true);
         reportBeforeScenario("givenScenario");
         reporter.example(Collections.singletonMap("givenKey", "givenValue"), 0);
-        reporter.beforeStep("givenStep");
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "givenStep"));
         reporter.successful("givenStep");
         reportAfter();
         // End Given Story

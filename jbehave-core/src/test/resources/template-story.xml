@@ -103,7 +103,7 @@
         <step outcome="failed">
             Then I should have a balance of $30
             <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-                at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:85)
+                at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:86)
                 at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
                 (reflection-invoke)
                 at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
@@ -115,7 +115,7 @@
             Then I don&apos;t return loan
             <failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed
                 at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:87)
-                at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:99)
+                at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:100)
                 at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
                 (reflection-invoke)
                 at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
@@ -185,7 +185,7 @@
         <step outcome="failed">
             Then I should have a balance of $30
             <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-                at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:124)
+                at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:125)
                 at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
                 (reflection-invoke)
                 at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)

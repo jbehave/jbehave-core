@@ -151,8 +151,8 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void beforeStep(String step) {
-        print(format("beforeStep", "{0}\n", step));
+    public void beforeStep(Step step) {
+        print(format("beforeStep", "{0}\n", step.getStepAsString()));
     }
 
     @Override

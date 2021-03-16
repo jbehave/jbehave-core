@@ -13,6 +13,7 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractCandidateSteps.DuplicateCandidateFound;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -22,6 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -91,7 +93,8 @@ class StepsBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         findCandidate(candidates, candidateAsString).createMatchedStep(stepAsString, tableRow, Collections.emptyList())
                 .perform(reporter, null);
-        verify(reporter).beforeStep(stepAsString);
+        verify(reporter).beforeStep(argThat(arg -> stepAsString.equals(arg.getStepAsString())
+                && StepExecutionType.EXECUTABLE.equals(arg.getExecutionType())));
     }
 
     private StepCandidate findCandidate(List<StepCandidate> candidates, String candidateAsString) {

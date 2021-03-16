@@ -7,10 +7,12 @@ import org.jbehave.core.embedder.MatchingStepMonitor;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.*;
+import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.Comment;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.PendingStep;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
 import org.junit.jupiter.api.Test;
 
@@ -231,7 +233,10 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         PendingStep pendingStep = (PendingStep) step;
         assertThat(pendingStep.stepAsString(), equalTo(stepAsString));
         assertThat(pendingStep.previousNonAndStepAsString(), equalTo(previousNonAndStep));
-        Throwable throwable = step.perform(null, null).getFailure();
+        StoryReporter reporter = mock(StoryReporter.class);
+        Throwable throwable = step.perform(reporter, null).getFailure();
+        verify(reporter).beforeStep(argThat(arg -> stepAsString.equals(arg.getStepAsString())
+                && StepExecutionType.PENDING.equals(arg.getExecutionType())));
         assertThat(throwable, instanceOf(PendingStepFound.class));
         assertThat(throwable.getMessage(), equalTo(stepAsString));
 
@@ -241,6 +246,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
     void shouldCreateIgnorableSteps() {
         // Given
         StepCandidate candidate = mock(StepCandidate.class);
+        StoryReporter reporter = mock(StoryReporter.class);
 
         String stepAsString = "my ignorable step";
         when(candidate.ignore(stepAsString)).thenReturn(true);
@@ -250,14 +256,17 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         List<Step> executableSteps = stepCollector.collectScenarioSteps(steps, createScenario(stepAsString), parameters, stepMonitor);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
-        StepResult result = executableSteps.get(0).perform(null, null);
+        StepResult result = executableSteps.get(0).perform(reporter, null);
         assertThat(result, Matchers.instanceOf(Ignorable.class));
+        verify(reporter).beforeStep(argThat(arg -> stepAsString.equals(arg.getStepAsString())
+                && StepExecutionType.IGNORABLE.equals(arg.getExecutionType())));
     }
 
     @Test
     void shouldCreateComment() {
         // Given
         StepCandidate candidate = mock(StepCandidate.class);
+        StoryReporter reporter = mock(StoryReporter.class);
 
         String stepAsString = "comment";
         when(candidate.comment(stepAsString)).thenReturn(true);
@@ -267,8 +276,10 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         List<Step> executableSteps = stepCollector.collectScenarioSteps(steps, createScenario(stepAsString), parameters, stepMonitor);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
-        StepResult result = executableSteps.get(0).perform(null, null);
+        StepResult result = executableSteps.get(0).perform(reporter, null);
         assertThat(result, Matchers.instanceOf(Comment.class));
+        verify(reporter).beforeStep(argThat(arg -> stepAsString.equals(arg.getStepAsString())
+                && StepExecutionType.COMMENT.equals(arg.getExecutionType())));
     }
 
     @Test
