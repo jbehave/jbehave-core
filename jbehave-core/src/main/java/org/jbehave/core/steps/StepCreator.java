@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -656,21 +657,33 @@ public class StepCreator {
 
     public static abstract class ReportingAbstractStep extends AbstractStep {
 
-        private final StepExecutionType stepKind;
+        private final StepExecutionType stepExecutionType;
         private final String stepAsString;
 
-        public ReportingAbstractStep(StepExecutionType stepKind, String stepAsString) {
-            this.stepKind = stepKind;
+        public ReportingAbstractStep(StepExecutionType stepExecutionType, String stepAsString) {
+            this.stepExecutionType = stepExecutionType;
             this.stepAsString = stepAsString;
         }
 
         @Override
         public final StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            storyReporter.beforeStep(new org.jbehave.core.model.Step(stepKind, stepAsString));
-            return perform();
+            return execute(storyReporter, stepExecutionType, this::perform);
         }
 
         protected abstract StepResult perform();
+
+        @Override
+        public final StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+            return execute(storyReporter, StepExecutionType.NOT_PERFORMED, this::doNotPerform);
+        }
+
+        protected abstract StepResult doNotPerform();
+
+        private StepResult execute(StoryReporter storyReporter, StepExecutionType stepExecutionType,
+                Supplier<StepResult> stepResultSupplier) {
+            storyReporter.beforeStep(new org.jbehave.core.model.Step(stepExecutionType, stepAsString));
+            return stepResultSupplier.get();
+        }
 
         @Override
         public String asString(Keywords keywords) {
@@ -872,7 +885,7 @@ public class StepCreator {
         }
 
         @Override
-        public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+        public StepResult doNotPerform() {
             try {
                 parametriseStep();
             } catch (Throwable t) {
@@ -925,7 +938,7 @@ public class StepCreator {
         }
 
         @Override
-        public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+        public StepResult doNotPerform() {
             return perform();
         }
 
@@ -958,7 +971,7 @@ public class StepCreator {
         }
 
         @Override
-        public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+        public StepResult doNotPerform() {
             return perform();
         }
     }
@@ -975,7 +988,7 @@ public class StepCreator {
         }
 
         @Override
-        public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+        public StepResult doNotPerform() {
             return perform();
         }
     }
@@ -984,7 +997,8 @@ public class StepCreator {
         EXECUTABLE,
         PENDING,
         IGNORABLE,
-        COMMENT
+        COMMENT,
+        NOT_PERFORMED;
     }
 
     private class MethodInvoker {

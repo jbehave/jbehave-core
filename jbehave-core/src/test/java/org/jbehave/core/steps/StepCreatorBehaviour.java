@@ -143,6 +143,7 @@ class StepCreatorBehaviour {
         assertThat(pendingStep.perform(storyReporter, null), instanceOf(Pending.class));
         verifyBeforeStep(storyReporter, StepExecutionType.PENDING, stepAsString);
         assertThat(pendingStep.doNotPerform(storyReporter, null), instanceOf(Pending.class));
+        verifyBeforeStep(storyReporter, StepExecutionType.NOT_PERFORMED, stepAsString);
         verifyNoMoreInteractions(storyReporter);
     }
 
@@ -160,6 +161,7 @@ class StepCreatorBehaviour {
         assertThat(ignorableStep.perform(storyReporter, null), instanceOf(Ignorable.class));
         verifyBeforeStep(storyReporter, StepExecutionType.IGNORABLE, stepAsString);
         assertThat(ignorableStep.doNotPerform(storyReporter, null), instanceOf(Ignorable.class));
+        verifyBeforeStep(storyReporter, StepExecutionType.NOT_PERFORMED, stepAsString);
         verifyNoMoreInteractions(storyReporter);
     }
 
@@ -177,6 +179,7 @@ class StepCreatorBehaviour {
         assertThat(comment.perform(storyReporter, null), instanceOf(Comment.class));
         verifyBeforeStep(storyReporter, StepExecutionType.COMMENT, stepAsString);
         assertThat(comment.doNotPerform(storyReporter, null), instanceOf(Comment.class));
+        verifyBeforeStep(storyReporter, StepExecutionType.NOT_PERFORMED, stepAsString);
         verifyNoMoreInteractions(storyReporter);
     }
 

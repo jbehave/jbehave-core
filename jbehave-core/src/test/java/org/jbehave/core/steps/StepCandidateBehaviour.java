@@ -411,6 +411,8 @@ class StepCandidateBehaviour {
         StepResult doNotPerform = step.doNotPerform(reporter, null);
         assertThat(doNotPerform, instanceOf(NotPerformed.class));
         assertThat(doNotPerform.parametrisedStep(), equalTo(stepAsString));
+        verify(reporter).beforeStep(argThat(arg -> stepAsString.equals(arg.getStepAsString())
+                && StepExecutionType.NOT_PERFORMED.equals(arg.getExecutionType())));
         verifyNoMoreInteractions(reporter);
     }
 
