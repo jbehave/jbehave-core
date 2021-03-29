@@ -31,6 +31,7 @@ import static java.util.Arrays.asList;
 import static org.codehaus.plexus.util.StringUtils.isBlank;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ExamplesTableBehaviour {
 
@@ -54,6 +55,20 @@ public class ExamplesTableBehaviour {
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
+    }
+
+    @Test
+    void shouldGetColumn() {
+        ExamplesTable table = new ExamplesTable(tableAsString);
+        assertThat(table.getColumn("one"), equalTo(asList("11", "21")));
+        assertThat(table.getColumn("two"), equalTo(asList("12", "22")));
+    }
+
+    @Test
+    void shouldFailIfColumnDoesNotExist() {
+        ExamplesTable table = new ExamplesTable(tableAsString);
+        ColumnNotFound exception = assertThrows(ColumnNotFound.class, () -> table.getColumn("three"));
+        assertThat(exception.getMessage(), equalTo("The 'three' column does not exist"));
     }
 
     @Test
