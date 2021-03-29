@@ -356,6 +356,15 @@ public class ExamplesTable {
         return rows;
     }
 
+    public List<String> getColumn(String column) {
+        if (!getHeaders().contains(column)) {
+            throw new ColumnNotFound(column);
+        }
+        return tableRows.getRows().stream()
+                                  .map(rows -> rows.get(column))
+                                  .collect(Collectors.toList());
+    }
+
     private <T> T mapToType(Parameters parameters, Class<T> type, Map<String, String> fieldNameMapping) {
         try {
             T instance = type.newInstance();
@@ -463,6 +472,13 @@ public class ExamplesTable {
     public static class RowNotFound extends RuntimeException {
         public RowNotFound(int row) {
             super(Integer.toString(row));
+        }
+    }
+
+    @SuppressWarnings("serial")
+    public static class ColumnNotFound extends RuntimeException {
+        public ColumnNotFound(String column) {
+            super(String.format("The '%s' column does not exist", column));
         }
     }
 
