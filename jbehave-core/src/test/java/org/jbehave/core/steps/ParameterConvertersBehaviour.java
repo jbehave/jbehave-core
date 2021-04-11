@@ -309,7 +309,8 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertCommaSeparatedValuesToListOfNumbersWithCustomFormat() {
-        ParameterConverter<List<Number>> converter = new NumberListConverter(new DecimalFormat("#,####"), " ");
+        DecimalFormat numberFormat = new DecimalFormat("#,####", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        ParameterConverter<List<Number>> converter = new NumberListConverter(numberFormat, " ");
         Type type = new TypeLiteral<List<Number>>() {}.getType();
         List<Number> list = converter.convertValue("3,000 0.5 6.1f 8.00", type);
         assertThatCollectionIs(list, 3000L, 0.5, 6.1, 8L);
