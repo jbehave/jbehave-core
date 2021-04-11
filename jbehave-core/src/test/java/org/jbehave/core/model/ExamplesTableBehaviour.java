@@ -15,6 +15,10 @@ import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.Parameters;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -26,12 +30,14 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static org.codehaus.plexus.util.StringUtils.isBlank;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class ExamplesTableBehaviour {
 
@@ -376,65 +382,47 @@ public class ExamplesTableBehaviour {
 
     }
 
-    @Test
-    void shouldReplaceNamedParameterValues() {
-        // Given
-        ExamplesTableFactory factory = createFactory();
-
-        // When
-        String tableAsString = "|Name|Value|\n|name1|<value>|";
-        Map<String, String> namedParameters = new HashMap<>();
-        namedParameters.put("value", "value1");
-        ExamplesTable table = factory.createExamplesTable(tableAsString).withNamedParameters(namedParameters);
-
-        // Then
-        Parameters firstRow = table.getRowsAsParameters(true).get(0);
-        Map<String, String> firstRowValues = firstRow.values();
-        assertThat(firstRowValues.containsKey("Value"), is(true));
-        assertThat(firstRow.<String>valueAs("Value", String.class), is("value1"));
+    static Stream<Arguments> tablesWithNamedParameters() {
+        return Stream.of(
+                arguments("|Name|Value|\n|name1|<value>|", "value1", "value1"),
+                arguments("|Name|Value|\n|name1|foo-<value>-bar|", "value1", "foo-value1-bar"),
+                arguments("|Name|Value|\n|name1|<value>|", "value having the \\ backslash and the $ dollar character",
+                        "value having the \\ backslash and the $ dollar character")
+        );
     }
 
-    @Test
-    void shouldReplaceNamedParameterValuesInValuePart() {
+    @ParameterizedTest
+    @MethodSource("tablesWithNamedParameters")
+    void shouldReplaceNamedParameterValuesInRows(String tableAsString, String namedParameter, String expectedValue) {
         // Given
         ExamplesTableFactory factory = createFactory();
 
         // When
-        String tableAsString = "|Name|Value|\n|name1|foo-<value>-bar|";
         Map<String, String> namedParameters = new HashMap<>();
-        namedParameters.put("value", "value1");
+        namedParameters.put("value", namedParameter);
         ExamplesTable table = factory.createExamplesTable(tableAsString).withNamedParameters(namedParameters);
 
         // Then
         Parameters firstRow = table.getRowsAsParameters(true).get(0);
         Map<String, String> firstRowValues = firstRow.values();
         assertThat(firstRowValues.containsKey("Value"), is(true));
-        assertThat(firstRow.<String>valueAs("Value", String.class), is("foo-value1-bar"));
+        assertThat(firstRow.valueAs("Value", String.class), is(expectedValue));
     }
 
-    /**
-     * The values given named parameter values as strings should not suffer any modification after are replaced in table.
-     *
-     * @see {@link String#replaceAll(String, String)} to see why are not present in values the '\' and '$' characters.
-     */
-    @Test
-    void shouldKeepExactValueInReplacedNamedParameterValues() {
+    @ParameterizedTest
+    @MethodSource("tablesWithNamedParameters")
+    void shouldReplaceNamedParameterValuesInColumns(String tableAsString, String namedParameter, String expectedValue) {
         // Given
         ExamplesTableFactory factory = createFactory();
-        String problematicNamedParameterValueCharacters = "value having the \\ backslash and the $ dollar character";
 
         // When
-        String tableAsString = "|Name|Value|\n|name|<value>|";
         Map<String, String> namedParameters = new HashMap<>();
-        namedParameters.put("value", problematicNamedParameterValueCharacters);
+        namedParameters.put("value", namedParameter);
         ExamplesTable table = factory.createExamplesTable(tableAsString).withNamedParameters(namedParameters);
 
         // Then
-        Parameters firstRow = table.getRowsAsParameters(true).get(0);
-        Map<String, String> firstRowValues = firstRow.values();
-        assertThat(firstRowValues.containsKey("Value"), is(true));
-        assertThat(firstRow.<String>valueAs("Value", String.class), is(problematicNamedParameterValueCharacters));
-
+        List<String> column = table.getColumn("Value", true);
+        assertThat(column.get(0), is(expectedValue));
     }
 
     @Test

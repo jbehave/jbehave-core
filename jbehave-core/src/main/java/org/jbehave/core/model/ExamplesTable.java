@@ -33,7 +33,7 @@ import org.jbehave.core.steps.Row;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.DOTALL;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static java.util.stream.Collectors.toList;
 
 /**
  * <p>
@@ -301,15 +301,14 @@ public class ExamplesTable {
 
     private Map<String, String> replaceNamedParameters(Map<String, String> row) {
         Map<String, String> replaced = new LinkedHashMap<>();
-        for (Entry<String, String> rowEntry : row.entrySet()) {
-            String replacedValue = rowEntry.getValue();
-            for (Entry<String, String> namedParameter : namedParameters.entrySet()) {
-                replacedValue = parameterControls.replaceAllDelimitedNames(replacedValue, namedParameter.getKey(),
-                        namedParameter.getValue());
-            }
-            replaced.put(rowEntry.getKey(), replacedValue);
+        for (Entry<String, String> cell : row.entrySet()) {
+            replaced.put(cell.getKey(), replaceNamedParameters(cell.getValue()));
         }
         return replaced;
+    }
+
+    private String replaceNamedParameters(String text) {
+        return parameterControls.replaceAllDelimitedNames(text, namedParameters);
     }
 
     public int getRowCount() {
@@ -356,13 +355,18 @@ public class ExamplesTable {
         return rows;
     }
 
-    public List<String> getColumn(String column) {
-        if (!getHeaders().contains(column)) {
-            throw new ColumnNotFound(column);
+    public List<String> getColumn(String columnName) {
+        return getColumn(columnName, false);
+    }
+
+    public List<String> getColumn(String columnName, boolean replaceNamedParameters) {
+        if (!getHeaders().contains(columnName)) {
+            throw new ColumnNotFound(columnName);
         }
-        return tableRows.getRows().stream()
-                                  .map(rows -> rows.get(column))
-                                  .collect(Collectors.toList());
+        List<String> column = tableRows.getRows().stream()
+                .map(row -> row.get(columnName))
+                .collect(toList());
+        return replaceNamedParameters ? column.stream().map(this::replaceNamedParameters).collect(toList()) : column;
     }
 
     private <T> T mapToType(Parameters parameters, Class<T> type, Map<String, String> fieldNameMapping) {
@@ -477,8 +481,8 @@ public class ExamplesTable {
 
     @SuppressWarnings("serial")
     public static class ColumnNotFound extends RuntimeException {
-        public ColumnNotFound(String column) {
-            super(String.format("The '%s' column does not exist", column));
+        public ColumnNotFound(String columnName) {
+            super(String.format("The '%s' column does not exist", columnName));
         }
     }
 

@@ -157,11 +157,8 @@ public class PerformableTree {
                     scenarioParametersCopy.putAll(storyExamplesTableRow);
                     scenarioParametersCopy.putAll(scenarioParameters);
                     for (Map.Entry<String, String> scenarioParameterEntry : scenarioParametersCopy.entrySet()) {
-                        String value = scenarioParameterEntry.getValue();
-                        for (Map.Entry<String, String> storyParameterEntry: storyExamplesTableRow.entrySet()) {
-                            value = context.configuration().parameterControls().replaceAllDelimitedNames(value,
-                                    storyParameterEntry.getKey(), storyParameterEntry.getValue());
-                        }
+                        String value = context.configuration().parameterControls().replaceAllDelimitedNames(
+                                scenarioParameterEntry.getValue(), storyExamplesTableRow);
                         scenarioParameterEntry.setValue((String) context.configuration().parameterConverters()
                                  .convert(value, String.class));
                     }

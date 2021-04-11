@@ -1,5 +1,8 @@
 package org.jbehave.core.steps;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -56,6 +59,15 @@ public class ParameterControls {
 
     public String replaceAllDelimitedNames(String text, String name, String value) {
         return StringUtils.replace(text, createDelimitedName(name), value);
+    }
+
+    public String replaceAllDelimitedNames(String text, Map<String, String> namedParameters) {
+        String textWithReplacedDelimitedNames = text;
+        for (Entry<String, String> parameter : namedParameters.entrySet()) {
+            textWithReplacedDelimitedNames = replaceAllDelimitedNames(textWithReplacedDelimitedNames,
+                    parameter.getKey(), parameter.getValue());
+        }
+        return textWithReplacedDelimitedNames;
     }
 
     @Override
