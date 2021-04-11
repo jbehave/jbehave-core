@@ -453,8 +453,9 @@ public class Keywords {
         boolean isType = false;
         for (String word : startingWordsFor(stepType)) {
             isType = stepStartsWithWord(stepAsString, word);
-            if (isType)
+            if (isType) {
                 break;
+            }
         }
         return isType;
     }

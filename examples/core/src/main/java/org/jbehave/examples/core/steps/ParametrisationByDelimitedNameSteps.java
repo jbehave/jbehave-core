@@ -33,7 +33,9 @@ public class ParametrisationByDelimitedNameSteps {
   public void aCustomerHasACart(String customer) {
     assertThat(user, notNullValue());
     assertThat(customer, equalTo(user));
-    if (products == null) products = new TreeSet<>();
+    if (products == null) {
+      products = new TreeSet<>();
+    }
   }
 
   @Given("a user $user has borrowed books $isbns")

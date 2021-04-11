@@ -19,7 +19,9 @@ public class CalendarConverter extends AbstractParameterConverter<Calendar> {
     @Override
     public Calendar convertValue(String value, Type type) {
         try {
-            if (StringUtils.isBlank(value) || "none".equals(value)) return null;
+            if (StringUtils.isBlank(value) || "none".equals(value)) {
+                return null;
+            }
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(dateFormat.parse(value));
             return calendar;

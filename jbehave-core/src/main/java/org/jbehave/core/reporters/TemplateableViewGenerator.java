@@ -189,8 +189,9 @@ public class TemplateableViewGenerator implements ViewGenerator {
         for (Report report : reports.getReports()) {
             Map<String, Integer> stats = report.getStats();
             if (stats.containsKey("scenarios")) {
-                if (stats.get("scenarios") > 0)
-                storyCount++;
+                if (stats.get("scenarios") > 0) {
+                    storyCount++;
+                }
             }
         }
         return storyCount;

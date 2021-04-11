@@ -48,8 +48,9 @@ public class AnnotatedPathRunner extends AnnotatedEmbedderRunner {
     @Override
     public Description getDescription() {
         Description description = Description.createSuiteDescription(testClass());
-        for (String path : paths)
+        for (String path : paths) {
             description.addChild(createDescriptionForPath(path));
+        }
 
         return description;
     }
