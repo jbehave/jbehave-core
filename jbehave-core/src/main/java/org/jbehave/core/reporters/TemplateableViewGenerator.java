@@ -26,7 +26,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.io.IOUtils;
@@ -461,7 +460,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
 
         @Override
         public int compareTo(Report that) {
-            return CompareToBuilder.reflectionCompare(this.getName(), that.getName());
+            return this.getName().compareTo(that.getName());
         }
 
         @Override
