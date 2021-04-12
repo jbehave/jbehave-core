@@ -362,7 +362,7 @@ public class PerformableTree {
         UUIDExceptionWrapper getFailure();
     }
 
-    private final static class FineSoFar implements State {
+    private static final class FineSoFar implements State {
 
         @Override
         public State run(Step step, List<StepResult> results, StoryReporter reporter) {
@@ -392,7 +392,7 @@ public class PerformableTree {
 
     }
 
-    private final static class SomethingHappened implements State {
+    private static final class SomethingHappened implements State {
         private UUIDExceptionWrapper failure;
 
         public SomethingHappened(UUIDExceptionWrapper failure) {
@@ -1086,7 +1086,7 @@ public class PerformableTree {
 
     }
 
-    public static abstract class AbstractPerformableGivenStories implements Performable {
+    public abstract static class AbstractPerformableGivenStories implements Performable {
 
         protected void performGivenStories(RunContext context, List<PerformableStory> performableGivenStories,
                                                 GivenStories givenStories) throws InterruptedException {
@@ -1102,7 +1102,7 @@ public class PerformableTree {
 
     }
 
-    public static abstract class AbstractPerformableScenario extends AbstractPerformableGivenStories {
+    public abstract static class AbstractPerformableScenario extends AbstractPerformableGivenStories {
 
         private transient Story story;
         private transient Scenario scenario;
@@ -1245,8 +1245,8 @@ public class PerformableTree {
 
     public static class PerformableSteps implements Performable {
 
-        private transient final List<Step> steps;
-        private transient final List<PendingStep> pendingSteps;
+        private final transient List<Step> steps;
+        private final transient List<PendingStep> pendingSteps;
         private List<StepMatch> matches;
         private List<StepResult> results;
 

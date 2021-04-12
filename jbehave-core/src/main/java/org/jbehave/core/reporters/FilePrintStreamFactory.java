@@ -91,7 +91,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
     /**
      * Resolves directory from code location parent file.
      */
-    public static abstract class AbstractPathResolver implements FilePathResolver {
+    public abstract static class AbstractPathResolver implements FilePathResolver {
 
         @Override
         public String resolveDirectory(StoryLocation storyLocation, String relativeDirectory) {

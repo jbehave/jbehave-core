@@ -637,7 +637,7 @@ public class StepCreator {
         }
     }
 
-    public static abstract class AbstractStep implements Step {
+    public abstract static class AbstractStep implements Step {
 
         @Override
         public String asString(Keywords keywords) {
@@ -655,7 +655,7 @@ public class StepCreator {
         }
     }
 
-    public static abstract class ReportingAbstractStep extends AbstractStep {
+    public abstract static class ReportingAbstractStep extends AbstractStep {
 
         private final StepExecutionType stepExecutionType;
         private final String stepAsString;

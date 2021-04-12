@@ -551,7 +551,7 @@ public class ParameterConverters {
         }
     }
 
-    public static abstract class AbstractParameterConverter<T> extends AbstractChainableParameterConverter<String, T> implements ParameterConverter<T> {
+    public abstract static class AbstractParameterConverter<T> extends AbstractChainableParameterConverter<String, T> implements ParameterConverter<T> {
         public AbstractParameterConverter() {
         }
 
@@ -560,7 +560,7 @@ public class ParameterConverters {
         }
     }
 
-    public static abstract class AbstractChainableParameterConverter<T, S> implements ChainableParameterConverter<T, S> {
+    public abstract static class AbstractChainableParameterConverter<T, S> implements ChainableParameterConverter<T, S> {
 
         private final Type acceptedType;
 
@@ -600,7 +600,7 @@ public class ParameterConverters {
         }
     }
 
-    public static abstract class AbstractListParameterConverter<T> implements ParameterConverter<List<T>> {
+    public abstract static class AbstractListParameterConverter<T> implements ParameterConverter<List<T>> {
 
         private final String valueSeparator;
         private final ParameterConverter<T> elementConverter;
