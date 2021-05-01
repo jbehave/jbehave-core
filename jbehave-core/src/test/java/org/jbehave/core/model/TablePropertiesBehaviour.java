@@ -3,11 +3,17 @@ package org.jbehave.core.model;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
 import java.util.Properties;
 
+import static java.util.Collections.singletonMap;
+import static java.util.Collections.emptyMap;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -129,4 +135,66 @@ class TablePropertiesBehaviour {
         assertThat(properties.getProperties().getProperty("key2"), equalTo("tolower"));
     }
 
+    @Test
+    void cantGetMandatoryProperty() {
+        TableProperties properties = new TableProperties(createProperties(emptyMap()));
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+                () -> properties.getMandatoryIntProperty("key"));
+        assertEquals("'key' is not set in ExamplesTable properties", thrown.getMessage());
+    }
+
+    @Test
+    void canGetMandatoryIntProperty() {
+        TableProperties properties = new TableProperties(createProperties(singletonMap("key", "1")));
+        assertEquals(1, properties.getMandatoryIntProperty("key"));
+    }
+
+    @Test
+    void canGetMandatoryLongProperty() {
+        TableProperties properties = new TableProperties(createProperties(singletonMap("key", "1")));
+        assertEquals(1l, properties.getMandatoryLongProperty("key"));
+    }
+
+    @Test
+    void canGetMandatoryDoubleProperty() {
+        TableProperties properties = new TableProperties(createProperties(singletonMap("key", "1")));
+        assertEquals(1d, properties.getMandatoryDoubleProperty("key"));
+    }
+
+    @Test
+    void canGetMandatoryBooleanProperty() {
+        TableProperties properties = new TableProperties(createProperties(singletonMap("key", "true")));
+        assertTrue(properties.getMandatoryBooleanProperty("key"));
+    }
+
+    @Test
+    void canGetMandatoryNonBlankProperty() {
+        TableProperties properties = new TableProperties(createProperties(singletonMap("key", "string")));
+        assertEquals("string", properties.getMandatoryNonBlankProperty("key"));
+    }
+
+    @Test
+    void canGetMandatoryEnumProperty() {
+        TableProperties properties = new TableProperties(createProperties(singletonMap("key", "BLACK")));
+        assertEquals(TestEnum.BLACK, properties.getMandatoryEnumProperty("key", TestEnum.class));
+    }
+
+    @Test
+    void cantGetMandatoryEnumProperty() {
+        TableProperties properties = new TableProperties(createProperties(singletonMap("key", "YELLOW")));
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+                () -> properties.getMandatoryEnumProperty("key", TestEnum.class));
+        assertEquals("Value of ExamplesTable property 'key' must be from range [BLACK, WHITE], but got 'YELLOW'",
+                thrown.getMessage());
+    }
+
+    private Properties createProperties(Map<String, String> map) {
+        Properties properties = new Properties();
+        properties.putAll(map);
+        return properties;
+    }
+
+    private static enum TestEnum {
+        BLACK, WHITE
+    }
 }

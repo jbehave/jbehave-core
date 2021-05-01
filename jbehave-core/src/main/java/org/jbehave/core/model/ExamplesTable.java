@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -13,11 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -34,6 +37,8 @@ import org.jbehave.core.steps.Row;
 import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.DOTALL;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.Validate.isTrue;
+import static org.apache.commons.lang3.Validate.notBlank;
 
 /**
  * <p>
@@ -596,6 +601,41 @@ public class ExamplesTable {
                 default:
                     return value.trim();
             }
+        }
+
+        private <T> T getMandatoryNonBlankProperty(String propertyName, Function<String, T> converter) {
+            String propertyValue = properties.getProperty(propertyName);
+            isTrue(propertyValue != null, "'%s' is not set in ExamplesTable properties", propertyName);
+            notBlank(propertyValue, "ExamplesTable property '%s' is blank", propertyName);
+            return converter.apply(propertyValue);
+        }
+
+        public String getMandatoryNonBlankProperty(String propertyName) {
+            return getMandatoryNonBlankProperty(propertyName, Function.identity());
+        }
+
+        public int getMandatoryIntProperty(String propertyName) {
+            return getMandatoryNonBlankProperty(propertyName, Integer::parseInt);
+        }
+
+        public long getMandatoryLongProperty(String propertyName) {
+            return getMandatoryNonBlankProperty(propertyName, Long::parseLong);
+        }
+
+        public double getMandatoryDoubleProperty(String propertyName) {
+            return getMandatoryNonBlankProperty(propertyName, Double::parseDouble);
+        }
+
+        public boolean getMandatoryBooleanProperty(String propertyName) {
+            return getMandatoryNonBlankProperty(propertyName, Boolean::valueOf);
+        }
+
+        public <E extends Enum<E>> E getMandatoryEnumProperty(String propertyName, Class<E> enumClass) {
+            String propertyValueStr = properties.getProperty(propertyName);
+            E propertyValue = EnumUtils.getEnumIgnoreCase(enumClass, propertyValueStr);
+            isTrue(propertyValue != null, "Value of ExamplesTable property '%s' must be from range %s, but got '%s'",
+                    propertyName, Arrays.toString(enumClass.getEnumConstants()), propertyValueStr);
+            return propertyValue;
         }
 
         public String getRowSeparator() {
