@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
@@ -75,17 +77,13 @@ public class TableParsers {
 
     public List<String> parseRow(String rowAsString, boolean header, TableProperties properties) {
         String separator = header ? properties.getHeaderSeparator() : properties.getValueSeparator();
-        return parseRow(rowAsString, separator, properties.getCommentSeparator(), properties.isTrim());
+        return parseRow(rowAsString.trim(), separator, properties.getCommentSeparator(), properties.isTrim());
     }
 
-    private List<String> parseRow(String rowAsString, String separator, String commentSeparator,
-            boolean trimValues) {
-        List<String> values = new ArrayList<>();
-        for (String value : StringUtils.split(rowAsString, separator)) {
-            String stripped = StringUtils.substringBefore(value, commentSeparator);
-            String trimmed = trimValues ? stripped.trim() : stripped;
-            values.add(trimmed);
-        }
-        return values;
+    private List<String> parseRow(String rowAsString, String separator, String commentSeparator, boolean trimValues) {
+        return Stream.of(StringUtils.split(rowAsString, separator))
+                     .map(cell -> StringUtils.substringBefore(cell, commentSeparator))
+                     .map(cell -> trimValues ? cell.trim() : cell)
+                     .collect(Collectors.toList());
     }
 }

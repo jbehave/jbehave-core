@@ -1,7 +1,8 @@
 package org.jbehave.core.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.junit.jupiter.api.Test;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.model.ExamplesTable.TableRows;
+import org.junit.jupiter.api.Test;
 
 class TableParsersBehaviour {
 
@@ -21,12 +22,15 @@ class TableParsersBehaviour {
     void shouldParseTableUsingProperties() {
         // Given
         String table = "!key-1  !key-2  !\n"
+                     + "   |--- ignoe me \n"
                      + "|val-1-1|val-1-2|\n"
+                     + "|--- and me      \n"
                      + "|val-2-1|val-2-2|\n";
 
         Properties properties = new Properties();
         properties.put("headerSeparator", "!");
         properties.put("valueSeparator", "|");
+        properties.put("ExamplesTableIgnorableSeparator", "|--");
         TableProperties tableProperties = new TableProperties(properties);
 
         // When

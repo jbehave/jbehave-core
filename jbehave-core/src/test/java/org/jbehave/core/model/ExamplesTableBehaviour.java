@@ -1,24 +1,14 @@
 package org.jbehave.core.model;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jbehave.core.annotations.AsParameters;
-import org.jbehave.core.annotations.Parameter;
-import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.model.ExamplesTable.*;
-import org.jbehave.core.model.TableTransformers.TableTransformer;
-import org.jbehave.core.steps.ConvertedParameters.ValueNotFound;
-import org.jbehave.core.steps.ParameterControls;
-import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
-import org.jbehave.core.steps.Parameters;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
+import static java.util.Arrays.asList;
+import static org.codehaus.plexus.util.StringUtils.isBlank;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -29,15 +19,35 @@ import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static org.codehaus.plexus.util.StringUtils.isBlank;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jbehave.core.annotations.AsParameters;
+import org.jbehave.core.annotations.Parameter;
+import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.model.ExamplesTable.ColumnNotFound;
+import org.jbehave.core.model.ExamplesTable.RowNotFound;
+import org.jbehave.core.model.ExamplesTable.TableProperties;
+import org.jbehave.core.model.TableTransformers.TableTransformer;
+import org.jbehave.core.steps.ConvertedParameters.ValueNotFound;
+import org.jbehave.core.steps.ParameterControls;
+import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.Parameters;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class ExamplesTableBehaviour {
 
