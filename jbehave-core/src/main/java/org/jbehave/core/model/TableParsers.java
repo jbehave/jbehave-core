@@ -52,13 +52,14 @@ public class TableParsers {
 
         String[] rows = tableAsString.split(ROW_SEPARATOR_PATTERN);
         for (String row : rows) {
-            if (row.startsWith(properties.getIgnorableSeparator()) || row.isEmpty()) {
+            String trimmedRow = row.trim();
+            if (trimmedRow.startsWith(properties.getIgnorableSeparator()) || trimmedRow.isEmpty()) {
                 // skip ignorable or empty lines
                 continue;
             } else if (headers.isEmpty()) {
-                headers.addAll(parseRow(row, true, properties));
+                headers.addAll(parseRow(trimmedRow, true, properties));
             } else {
-                List<String> columns = parseRow(row, false, properties);
+                List<String> columns = parseRow(trimmedRow, false, properties);
                 Map<String, String> map = new LinkedHashMap<>();
                 for (int column = 0; column < columns.size(); column++) {
                     if (column < headers.size()) {
@@ -79,23 +80,11 @@ public class TableParsers {
 
     private List<String> parseRow(String rowAsString, String separator, String commentSeparator,
             boolean trimValues) {
-        StringBuilder regex = new StringBuilder();
-        for (char c : separator.toCharArray()) {
-            regex.append("\\").append(c);
-        }
         List<String> values = new ArrayList<>();
-        for (String value : rowAsString.split(regex.toString(), -1)) {
+        for (String value : StringUtils.split(rowAsString, separator)) {
             String stripped = StringUtils.substringBefore(value, commentSeparator);
             String trimmed = trimValues ? stripped.trim() : stripped;
             values.add(trimmed);
-        }
-        // ignore a leading and a trailing empty value
-        if (StringUtils.isBlank(values.get(0))) {
-            values.remove(0);
-        }
-        int lastIndex = values.size() - 1;
-        if (lastIndex != -1 && StringUtils.isBlank(values.get(lastIndex))) {
-            values.remove(lastIndex);
         }
         return values;
     }
