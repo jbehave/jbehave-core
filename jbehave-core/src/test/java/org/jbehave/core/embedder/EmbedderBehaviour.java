@@ -2,7 +2,11 @@ package org.jbehave.core.embedder;
 
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.InjectableEmbedder;
-import org.jbehave.core.annotations.*;
+import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.UsingEmbedder;
+import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder.EmbedderFailureStrategy;
@@ -22,9 +26,17 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMap;
 import org.jbehave.core.model.StoryMaps;
-import org.jbehave.core.reporters.*;
-import org.jbehave.core.steps.*;
+import org.jbehave.core.reporters.PrintStreamStepdocReporter;
+import org.jbehave.core.reporters.ReportsCount;
+import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.ViewGenerator;
+import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepFinder;
+import org.jbehave.core.steps.Steps;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
@@ -34,19 +46,36 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class EmbedderBehaviour {
 
@@ -57,9 +86,9 @@ class EmbedderBehaviour {
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         String myEmbeddableName = MyStoryMaps.class.getName();
-        List<String> classNames = asList(myEmbeddableName);
+        List<String> classNames = singletonList(myEmbeddableName);
         Embeddable myEmbeddable = new MyStoryMaps();
-        List<Embeddable> embeddables = asList(myEmbeddable);
+        List<Embeddable> embeddables = singletonList(myEmbeddable);
         EmbedderClassLoader classLoader = mock(EmbedderClassLoader.class);
         when(classLoader.newInstance(Embeddable.class, myEmbeddableName)).thenReturn(myEmbeddable);
 
@@ -102,7 +131,7 @@ class EmbedderBehaviour {
         }
 
         // When
-        List<StoryMap> maps = asList(new StoryMap("filter", new HashSet<>(stories.values())));
+        List<StoryMap> maps = singletonList(new StoryMap("filter", new HashSet<>(stories.values())));
         StoryMaps storyMaps = new StoryMaps(maps);
         when(mapper.getStoryMaps()).thenReturn(storyMaps);
         embedder.mapStoriesAsPaths(storyPaths);
@@ -415,10 +444,7 @@ class EmbedderBehaviour {
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
-        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
-        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
-                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
+        RunContext runContext = mockRunContext(performableTree, monitor, configuration, stepsFactory, filter);
 
         InOrder performOrder = inOrder(performableTree);
 
@@ -427,7 +453,7 @@ class EmbedderBehaviour {
 
         // Then
         performOrder.verify(performableTree).performBeforeOrAfterStories(isA(RunContext.class), eq(Stage.BEFORE));
-        for (String storyPath : Arrays.asList(resolver.resolve(MyOtherEmbeddable.class), resolver.resolve(MyStory.class))) {
+        for (String storyPath : asList(resolver.resolve(MyOtherEmbeddable.class), resolver.resolve(MyStory.class))) {
             performOrder.verify(performableTree).perform(isA(RunContext.class), eq(stories.get(storyPath)));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
@@ -474,10 +500,7 @@ class EmbedderBehaviour {
         // When
         MetaFilter filter = mock(MetaFilter.class);
         when(filter.excluded(meta)).thenReturn(true);
-        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
-        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
-                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
+        RunContext runContext = mockRunContext(performableTree, monitor, configuration, stepsFactory, filter);
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
@@ -544,10 +567,7 @@ class EmbedderBehaviour {
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
-        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
-        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
-                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
+        RunContext runContext = mockRunContext(performableTree, monitor, configuration, stepsFactory, filter);
 
         // When
         embedder.runStoriesAsPaths(storyPaths);
@@ -585,10 +605,7 @@ class EmbedderBehaviour {
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
-        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
-        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
-                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
+        RunContext runContext = mockRunContext(performableTree, monitor, configuration, stepsFactory, filter);
 
         for (String storyPath : storyPaths) {
             doThrow(new RuntimeException(storyPath + " failed")).when(performableTree).perform(runContext, stories.get(storyPath));
@@ -630,10 +647,7 @@ class EmbedderBehaviour {
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
-        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
-        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
-                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
+        RunContext runContext = mockRunContext(performableTree, monitor, configuration, stepsFactory, filter);
 
         for (String storyPath : storyPaths) {
             doNothing().when(performableTree).perform(runContext, stories.get(storyPath));
@@ -672,10 +686,7 @@ class EmbedderBehaviour {
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
-        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
-        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
-                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
+        RunContext runContext = mockRunContext(performableTree, monitor, configuration, stepsFactory, filter);
 
         BatchFailures failures = new BatchFailures();
         for (String storyPath : storyPaths) {
@@ -720,10 +731,7 @@ class EmbedderBehaviour {
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
-        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
-        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
-                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
+        RunContext runContext = mockRunContext(performableTree, monitor, configuration, stepsFactory, filter);
 
         // When
         embedder.runStoriesAsPaths(storyPaths);
@@ -744,7 +752,7 @@ class EmbedderBehaviour {
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
         String runWithEmbedderRunner = RunningWithAnnotatedEmbedderRunner.class.getName();
         // When
-        embedder.runStoriesWithAnnotatedEmbedderRunner(asList(runWithEmbedderRunner));
+        embedder.runStoriesWithAnnotatedEmbedderRunner(singletonList(runWithEmbedderRunner));
         // Then
         assertThat(RunningWithAnnotatedEmbedderRunner.hasRun, is(true));
     }
@@ -756,7 +764,7 @@ class EmbedderBehaviour {
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
         String runWithEmbedderRunner = NotEmbeddableWithAnnotatedEmbedderRunner.class.getName();
         // When
-        embedder.runStoriesWithAnnotatedEmbedderRunner(asList(runWithEmbedderRunner));
+        embedder.runStoriesWithAnnotatedEmbedderRunner(singletonList(runWithEmbedderRunner));
         // Then
         assertThat(NotEmbeddableWithAnnotatedEmbedderRunner.hasRun, is(false));
     }
@@ -777,7 +785,7 @@ class EmbedderBehaviour {
         // Given
         Embedder embedder = new Embedder();
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
-        List<String> classNames = asList("UnexistingRunner");
+        List<String> classNames = singletonList("UnexistingRunner");
         // When
         assertThrows(ClassLoadingFailed.class, () -> embedder.runStoriesWithAnnotatedEmbedderRunner(classNames));
         // Then fail as expected
@@ -796,7 +804,7 @@ class EmbedderBehaviour {
         embedder.configuration().useViewGenerator(viewGenerator);
 
         File outputDirectory = new File("target/output");
-        List<String> formats = asList("html");
+        List<String> formats = singletonList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 1, 2, 0, 0, 1, 0));
         embedder.generateReportsView(outputDirectory, formats, viewResources);
@@ -819,7 +827,7 @@ class EmbedderBehaviour {
         embedder.configuration().useViewGenerator(viewGenerator);
 
         File outputDirectory = new File("target/output");
-        List<String> formats = asList("html");
+        List<String> formats = singletonList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 0, 2, 1, 0, 0, 1));
 
@@ -844,7 +852,7 @@ class EmbedderBehaviour {
         embedder.configuration().useViewGenerator(viewGenerator).usePendingStepStrategy(new FailingUponPendingStep());
 
         File outputDirectory = new File("target/output");
-        List<String> formats = asList("html");
+        List<String> formats = singletonList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 1, 2, 0, 0, 1, 0));
         assertThrows(RunningStoriesFailed.class,
@@ -869,7 +877,7 @@ class EmbedderBehaviour {
         embedder.configuration().useViewGenerator(viewGenerator);
 
         File outputDirectory = new File("target/output");
-        List<String> formats = asList("html");
+        List<String> formats = singletonList("html");
         Properties viewResources = new Properties();
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
@@ -892,7 +900,7 @@ class EmbedderBehaviour {
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
         List<String> formats
-                = asList("html");
+                = singletonList("html");
         Properties viewResources = new Properties();
         doThrow(new RuntimeException()).when(viewGenerator)
                 .generateReportsView(outputDirectory, formats, viewResources);
@@ -913,7 +921,7 @@ class EmbedderBehaviour {
         Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
-        List<String> formats = asList("html");
+        List<String> formats = singletonList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 1, 2, 1, 1, 1, 1));
         assertThrows(RunningStoriesFailed.class,
@@ -933,7 +941,7 @@ class EmbedderBehaviour {
         Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
-        List<String> formats = asList("html");
+        List<String> formats = singletonList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 0, 0, 0, 0, 0, 1));
         assertThrows(RunningStoriesFailed.class,
@@ -953,7 +961,7 @@ class EmbedderBehaviour {
         Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
-        List<String> formats = asList("html");
+        List<String> formats = singletonList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 1, 2, 1, 0, 1, 1));
         embedder.generateReportsView(outputDirectory, formats, viewResources);
@@ -977,7 +985,7 @@ class EmbedderBehaviour {
         embedder.useEmbedderFailureStrategy(failureStategy);
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
-        List<String> formats = asList("html");
+        List<String> formats = singletonList("html");
         Properties viewResources = new Properties();
 
         // When
@@ -1109,6 +1117,17 @@ class EmbedderBehaviour {
         assertThat(embedderAsString, containsString(PrintStreamEmbedderMonitor.class.getSimpleName()));
     }
 
+    private RunContext mockRunContext(PerformableTree performableTree, EmbedderMonitor monitor,
+            Configuration configuration, InjectableStepsFactory stepsFactory, MetaFilter filter) {
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
+        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        RunContext runContext = new RunContext(configuration, allStepCandidates, monitor, filter, new BatchFailures());
+        when(performableTree
+                .newRunContext(eq(configuration), isA(AllStepCandidates.class), eq(monitor), isA(MetaFilter.class),
+                        isA(BatchFailures.class))).thenReturn(runContext);
+        return runContext;
+    }
+
     private String dos2unix(String string) {
         return string.replace("\r\n", "\n");
     }
@@ -1124,12 +1143,12 @@ class EmbedderBehaviour {
 
         @Override
         public List<String> metaFilters() {
-            return asList("+some property");
+            return singletonList("+some property");
         }
 
         @Override
         public List<String> storyPaths() {
-            return asList("**/*.story");
+            return singletonList("**/*.story");
         }
 
     }
@@ -1142,7 +1161,7 @@ class EmbedderBehaviour {
         return story;
     }
 
-    private class MyEmbeddable implements Embeddable {
+    private static class MyEmbeddable implements Embeddable {
 
         @Override
         public void useEmbedder(Embedder embedder) {
@@ -1153,7 +1172,7 @@ class EmbedderBehaviour {
         }
     }
 
-    private class MyOtherEmbeddable implements Embeddable {
+    private static class MyOtherEmbeddable implements Embeddable {
 
         @Override
         public void useEmbedder(Embedder embedder) {
@@ -1164,13 +1183,13 @@ class EmbedderBehaviour {
         }
     }
 
-    private abstract class MyAbstractEmbeddable implements Embeddable {
+    private abstract static class MyAbstractEmbeddable implements Embeddable {
     }
 
-    private class MyStory extends JUnitStory {
+    private static class MyStory extends JUnitStory {
     }
 
-    private class MyFailingEmbeddable extends JUnitStory {
+    private static class MyFailingEmbeddable extends JUnitStory {
 
         @Override
         public void run() {

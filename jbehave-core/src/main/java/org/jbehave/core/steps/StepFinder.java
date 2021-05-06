@@ -104,7 +104,7 @@ public class StepFinder {
      *            the list {@link CandidateSteps} instances
      * @return A List of {@link StepCandidate}
      */
-    public List<StepCandidate> collectCandidates(List<CandidateSteps> candidateSteps) {
+    private List<StepCandidate> collectCandidates(List<CandidateSteps> candidateSteps) {
         List<StepCandidate> collected = new ArrayList<>();
         for (CandidateSteps steps : candidateSteps) {
             collected.addAll(steps.listCandidates());

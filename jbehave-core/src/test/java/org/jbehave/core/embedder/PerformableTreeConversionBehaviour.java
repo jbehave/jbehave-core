@@ -4,19 +4,38 @@ import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.BatchFailures;
-import org.jbehave.core.model.*;
-import org.jbehave.core.steps.*;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.ParameterControls;
+import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.Step;
+import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepMonitor;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 class PerformableTreeConversionBehaviour {
 
@@ -27,10 +46,10 @@ class PerformableTreeConversionBehaviour {
         PerformableTree performableTree = new PerformableTree();
         Configuration configuration = mock(Configuration.class);
         when(configuration.storyControls()).thenReturn(new StoryControls());
-        List<CandidateSteps> candidateSteps = Collections.emptyList();
+        AllStepCandidates allStepCandidates = mock(AllStepCandidates.class);
         EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
         BatchFailures failures = mock(BatchFailures.class);
-        PerformableTree.RunContext context = spy(performableTree.newRunContext(configuration, candidateSteps,
+        PerformableTree.RunContext context = spy(performableTree.newRunContext(configuration, allStepCandidates,
                 embedderMonitor, new MetaFilter(), failures));
 
         StoryControls storyControls = mock(StoryControls.class);
@@ -48,15 +67,15 @@ class PerformableTreeConversionBehaviour {
         scenarioExampleSecond.put("var1","#G<var2>");
         scenarioExampleSecond.put("var3","#H");
         ExamplesTable scenarioExamplesTable = new ExamplesTable("").withRows(
-                Arrays.asList(scenarioExample, scenarioExampleSecond));
+                asList(scenarioExample, scenarioExampleSecond));
 
         String scenarioTitle = "scenario title";
-        Scenario scenario = new Scenario(scenarioTitle, new Meta(), givenStories, scenarioExamplesTable, Collections.<String>emptyList());
+        Scenario scenario = new Scenario(scenarioTitle, new Meta(), givenStories, scenarioExamplesTable, emptyList());
 
         Narrative narrative = mock(Narrative.class);
         Lifecycle lifecycle = mock(Lifecycle.class);
         Story story = new Story(null, null, new Meta(), narrative, givenStories, lifecycle,
-                Collections.singletonList(scenario));
+                singletonList(scenario));
 
         ExamplesTable storyExamplesTable = mock(ExamplesTable.class);
         when(lifecycle.getExamplesTable()).thenReturn(storyExamplesTable);
@@ -67,7 +86,7 @@ class PerformableTreeConversionBehaviour {
         storyExampleSecondRow.put("var1","#C");
         storyExampleSecondRow.put("var2","#D");
 
-        when(storyExamplesTable.getRows()).thenReturn(Arrays.asList(storyExampleFirstRow, storyExampleSecondRow));
+        when(storyExamplesTable.getRows()).thenReturn(asList(storyExampleFirstRow, storyExampleSecondRow));
 
         Keywords keywords = mock(Keywords.class);
         when(configuration.keywords()).thenReturn(keywords);
@@ -77,14 +96,14 @@ class PerformableTreeConversionBehaviour {
         StepCollector stepCollector = mock(StepCollector.class);
         when(configuration.stepCollector()).thenReturn(stepCollector);
         Map<Stage, List<Step>> lifecycleSteps = new EnumMap<>(Stage.class);
-        lifecycleSteps.put(Stage.BEFORE, Collections.<Step>emptyList());
-        lifecycleSteps.put(Stage.AFTER, Collections.<Step>emptyList());
-        when(stepCollector.collectLifecycleSteps(eq(candidateSteps), eq(lifecycle), isEmptyMeta(), eq(Scope.STORY),
+        lifecycleSteps.put(Stage.BEFORE, emptyList());
+        lifecycleSteps.put(Stage.AFTER, emptyList());
+        when(stepCollector.collectLifecycleSteps(eq(emptyList()), eq(lifecycle), isEmptyMeta(), eq(Scope.STORY),
                 any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
-        when(stepCollector.collectLifecycleSteps(eq(candidateSteps), eq(lifecycle), isEmptyMeta(), eq(Scope.SCENARIO),
+        when(stepCollector.collectLifecycleSteps(eq(emptyList()), eq(lifecycle), isEmptyMeta(), eq(Scope.SCENARIO),
                 any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
 
-        performableTree.addStories(context, Collections.singletonList(story));
+        performableTree.addStories(context, singletonList(story));
         List<PerformableTree.PerformableScenario> performableScenarios = performableTree.getRoot().getStories().get(0)
                 .getScenarios();
 
@@ -121,8 +140,9 @@ class PerformableTreeConversionBehaviour {
         return argThat(meta -> meta.getPropertyNames().isEmpty());
     }
 
-    private class SharpParameterConverters extends ParameterConverters {
+    private static class SharpParameterConverters extends ParameterConverters {
 
+        @Override
         public Object convert(String value, Type type) {
             if (type == String.class) {
                 return value.replace("#", value.substring(1).toLowerCase());

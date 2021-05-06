@@ -3,6 +3,7 @@ package org.jbehave.core.steps;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jbehave.core.annotations.ScenarioType;
@@ -55,17 +56,32 @@ public class CompositeCandidateSteps extends AbstractCandidateSteps {
     }
 
     @Override
-    public List<BeforeOrAfterStep> listBeforeOrAfterStories() {
+    public List<BeforeOrAfterStep> listBeforeStories() {
         return Collections.emptyList();
     }
 
     @Override
-    public List<BeforeOrAfterStep> listBeforeOrAfterStory(boolean givenStory) {
+    public List<BeforeOrAfterStep> listAfterStories() {
         return Collections.emptyList();
     }
 
     @Override
-    public List<BeforeOrAfterStep> listBeforeOrAfterScenario(ScenarioType type) {
+    public List<BeforeOrAfterStep> listBeforeStory(boolean givenStory) {
         return Collections.emptyList();
+    }
+
+    @Override
+    public List<BeforeOrAfterStep> listAfterStory(boolean givenStory) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Map<ScenarioType, List<BeforeOrAfterStep>> listBeforeScenario() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Map<ScenarioType, List<BeforeOrAfterStep>> listAfterScenario() {
+        return Collections.emptyMap();
     }
 }

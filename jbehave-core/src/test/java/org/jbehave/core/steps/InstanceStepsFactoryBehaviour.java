@@ -21,11 +21,12 @@ class InstanceStepsFactoryBehaviour {
 
     @Test
     void shouldCreateCandidateSteps() {
-        InjectableStepsFactory factory = new InstanceStepsFactory(new MostUsefulConfiguration(), new MySteps());
+        MostUsefulConfiguration configuration = new MostUsefulConfiguration();
+        InjectableStepsFactory factory = new InstanceStepsFactory(configuration, new MySteps());
         List<CandidateSteps> candidateSteps = factory.createCandidateSteps();
         assertThat(candidateSteps.size(), equalTo(1));
         assertThat(candidateSteps.get(0), instanceOf(Steps.class));
-        ParameterConverters converters = candidateSteps.get(0).configuration().parameterConverters();
+        ParameterConverters converters = configuration.parameterConverters();
         assertThat((String)converters.convert("value", String.class), equalTo("valueConverted"));
     }
 

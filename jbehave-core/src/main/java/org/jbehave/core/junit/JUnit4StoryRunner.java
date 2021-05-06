@@ -9,6 +9,7 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
+import org.jbehave.core.embedder.AllStepCandidates;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -111,11 +112,13 @@ public class JUnit4StoryRunner extends BlockJUnit4ClassRunner {
 
     private List<Description> buildDescriptionsFromStories(List<String> storyPaths) {
         List<CandidateSteps> candidateSteps = getCandidateSteps();
-        JUnit4DescriptionGenerator descriptionGenerator = new JUnit4DescriptionGenerator(candidateSteps, configuration);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        JUnit4DescriptionGenerator descriptionGenerator = new JUnit4DescriptionGenerator(allStepCandidates,
+                configuration);
         List<Description> storyDescriptions = new ArrayList<>();
 
         addSuite(storyDescriptions, "BeforeStories");
-        PerformableTree performableTree = createPerformableTree(candidateSteps, storyPaths);
+        PerformableTree performableTree = createPerformableTree(allStepCandidates, storyPaths);
         storyDescriptions.addAll(descriptionGenerator.createDescriptionsFrom(performableTree));
         addSuite(storyDescriptions, "AfterStories");
 
@@ -124,10 +127,11 @@ public class JUnit4StoryRunner extends BlockJUnit4ClassRunner {
         return storyDescriptions;
     }
 
-    private PerformableTree createPerformableTree(List<CandidateSteps> candidateSteps, List<String> storyPaths) {
+    private PerformableTree createPerformableTree(AllStepCandidates allStepCandidates,
+            List<String> storyPaths) {
         BatchFailures failures = new BatchFailures(configuredEmbedder.embedderControls().verboseFailures());
         PerformableTree performableTree = configuredEmbedder.performableTree();
-        RunContext context = performableTree.newRunContext(configuration, candidateSteps,
+        RunContext context = performableTree.newRunContext(configuration, allStepCandidates,
                 configuredEmbedder.embedderMonitor(), configuredEmbedder.metaFilter(), failures);
         performableTree.addStories(context, configuredEmbedder.storyManager().storiesOfPaths(storyPaths));
         return performableTree;

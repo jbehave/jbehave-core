@@ -1,6 +1,7 @@
 package org.jbehave.core.junit;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,6 +14,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -22,7 +24,6 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.embedder.AllStepCandidates;
 import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
@@ -50,9 +52,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.BeforeOrAfterStep;
-import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepCandidate;
-import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,7 +72,7 @@ class JUnit4DescriptionGeneratorBehaviour {
     private static final Class<?> STEPS_TYPE = Object.class;
 
     @Mock private StepCandidate stepCandidate;
-    @Mock private CandidateSteps steps;
+    @Mock private AllStepCandidates allStepCandidates;
     @Mock private GivenStories givenStories;
     @Mock private Configuration configuration;
 
@@ -80,12 +80,14 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @BeforeEach
     void beforeEach() {
-        when(steps.listCandidates()).thenReturn(singletonList(stepCandidate));
+        lenient().when(allStepCandidates.getBeforeScenarioSteps(any())).thenReturn(emptyList());
+        lenient().when(allStepCandidates.getAfterScenarioSteps(any())).thenReturn(emptyList());
     }
 
     @Test
     void shouldCountSteps() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -97,7 +99,8 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldNotCountComments() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -109,7 +112,8 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldCountIgnoredSteps() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -126,14 +130,15 @@ class JUnit4DescriptionGeneratorBehaviour {
 
         PerformableTree performableTree = mockPerformableTree(performableStory);
 
-        generator = new JUnit4DescriptionGenerator(singletonList(steps), configuration);
+        generator = new JUnit4DescriptionGenerator(allStepCandidates, configuration);
         generator.createDescriptionsFrom(performableTree);
         assertEquals(0, generator.getTestCases());
     }
 
     @Test
     void shouldGenerateDescriptionForStory() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -171,7 +176,7 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldStripLinebreaksFromScenarioDescriptions() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         Scenario scenario = mock(Scenario.class);
         when(scenario.getGivenStories()).thenReturn(givenStories);
@@ -184,7 +189,7 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldStripCarriageReturnsFromScenarioDescriptions() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         Scenario scenario = mock(Scenario.class);
         when(scenario.getGivenStories()).thenReturn(givenStories);
@@ -197,7 +202,8 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldCopeWithSeeminglyDuplicateSteps() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -213,7 +219,7 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldCopeWithDuplicateGivenStories() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         Story story = createStory(createScenario(), createScenario());
         when(givenStories.getPaths()).thenReturn(singletonList("/some/path/to/GivenStory.story"));
@@ -227,7 +233,7 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldGenerateDescriptionForGivenStories() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         Scenario scenario = createScenario();
         when(givenStories.getPaths()).thenReturn(singletonList("/some/path/to/GivenStory.story"));
@@ -238,7 +244,8 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldGenerateDescriptionForExampleTablesOnScenario() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -261,7 +268,8 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldGenerateChildrenForComposedSteps() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         Scenario scenario = createScenario(GIVEN_STEP);
@@ -273,7 +281,7 @@ class JUnit4DescriptionGeneratorBehaviour {
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(false);
         when(stepCandidate.matches(GIVEN_STEP, null)).thenReturn(true);
         when(stepCandidate.isComposite()).thenReturn(true);
-        when(steps.listCandidates()).thenReturn(asList(stepCandidate, composedStep1, composedStep2));
+        when(allStepCandidates.getRegularSteps()).thenReturn(asList(stepCandidate, composedStep1, composedStep2));
 
         Description description = createDescriptionFrom(scenario);
 
@@ -289,13 +297,14 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldCreateDescriptionForAndStep() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
         Scenario scenario = createScenario(GIVEN_STEP, "And Step2");
         when(stepCandidate.matches(GIVEN_STEP, null)).thenReturn(true);
-        when(stepCandidate.matches("And Step2", StepType.GIVEN.toString() + " ")).thenReturn(true);
+        when(stepCandidate.matches("And Step2", StepType.GIVEN + " ")).thenReturn(true);
         when(stepCandidate.getStepType()).thenReturn(StepType.GIVEN);
         when(stepCandidate.getStartingWord()).thenReturn("GIVEN");
         Description description = createDescriptionFrom(scenario);
@@ -304,7 +313,8 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldGenerateDescriptionForPendingSteps() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         Scenario scenario = createScenario(GIVEN_STEP);
@@ -318,7 +328,8 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldSkipExampleTablesForParameterizedGivenStories() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -339,15 +350,16 @@ class JUnit4DescriptionGeneratorBehaviour {
     }
 
     @Test
-    void shouldExcludeFilteredOutScenarios()  {
+    void shouldExcludeFilteredOutScenarios() {
         Story story = createStory(createScenario(GIVEN_STEP));
         createDescriptionFrom(true, story);
         assertEquals(0, generator.getTestCases());
     }
 
     @Test
-    void shouldCountBeforeScenarioStepWithAnyType()    {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+    void shouldCountBeforeScenarioStepWithAnyType() {
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -359,7 +371,8 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldCountBeforeScenarioStepWithNormalType() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -371,7 +384,8 @@ class JUnit4DescriptionGeneratorBehaviour {
 
     @Test
     void shouldCountBeforeScenarioStepWithAnyAndNormalTypes() {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -382,8 +396,9 @@ class JUnit4DescriptionGeneratorBehaviour {
     }
 
     @Test
-    void shouldCountBeforeScenarioStepWithExampleType()  {
-        when(givenStories.getPaths()).thenReturn(Collections.emptyList());
+    void shouldCountBeforeScenarioStepWithExampleType() {
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(givenStories.getPaths()).thenReturn(emptyList());
         when(configuration.keywords()).thenReturn(new Keywords());
         when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
         when(stepCandidate.getStepsType()).then((Answer<Class<?>>) invocation -> STEPS_TYPE);
@@ -396,14 +411,14 @@ class JUnit4DescriptionGeneratorBehaviour {
     private void mockListBeforeOrAfterScenarioCall(ScenarioType... scenarioTypes) {
         Method method = new Object() {}.getClass().getEnclosingMethod();
         for (ScenarioType scenarioType : scenarioTypes) {
-            lenient().when(steps.listBeforeOrAfterScenario(scenarioType)).thenReturn(
-                    singletonList(new BeforeOrAfterStep(Stage.BEFORE, method, null)));
+            lenient().when(allStepCandidates.getBeforeScenarioSteps(scenarioType)).thenReturn(
+                    singletonList(new BeforeOrAfterStep(method, 0, null)));
         }
     }
 
     private Description createDescriptionFrom(Scenario scenario) {
         PerformableScenario performableScenario = mockPerformableScenario(scenario, null, false);
-        generator = new JUnit4DescriptionGenerator(singletonList(steps), configuration);
+        generator = new JUnit4DescriptionGenerator(allStepCandidates, configuration);
         return generator.createDescriptionsFrom(Lifecycle.EMPTY, performableScenario);
     }
 
@@ -423,7 +438,7 @@ class JUnit4DescriptionGeneratorBehaviour {
 
         PerformableTree performableTree = mockPerformableTree(performableStory);
 
-        generator = new JUnit4DescriptionGenerator(singletonList(steps), configuration);
+        generator = new JUnit4DescriptionGenerator(allStepCandidates, configuration);
         return generator.createDescriptionsFrom(performableTree);
     }
 

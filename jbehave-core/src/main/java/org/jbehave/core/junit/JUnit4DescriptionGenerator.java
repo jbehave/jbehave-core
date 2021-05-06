@@ -9,21 +9,20 @@ import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableStory;
+import org.jbehave.core.embedder.AllStepCandidates;
 import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.BeforeOrAfterStep;
-import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepCandidate;
-import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepType;
 import org.junit.runner.Description;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.function.Function;
 
 public class JUnit4DescriptionGenerator {
 
@@ -35,26 +34,13 @@ public class JUnit4DescriptionGenerator {
     private final TextManipulator textManipulator = new TextManipulator();
 
     private final Configuration configuration;
-    private final List<StepCandidate> allCandidates = new ArrayList<>();
-    private final List<BeforeOrAfterStep> beforeOrAfterStory = new ArrayList<>();
-    private final EnumMap<ScenarioType, List<BeforeOrAfterStep>> beforeOrAfterScenario = new EnumMap<>(
-            ScenarioType.class);
+    private final AllStepCandidates allStepCandidates;
     private String previousNonAndStep;
     private int testCases;
 
-
-    public JUnit4DescriptionGenerator(List<CandidateSteps> candidateSteps, Configuration configuration) {
+    public JUnit4DescriptionGenerator(AllStepCandidates allStepCandidates, Configuration configuration) {
         this.configuration = configuration;
-        for (ScenarioType type : ScenarioType.values()) {
-            beforeOrAfterScenario.put(type, new ArrayList<>());
-        }
-        for (CandidateSteps candidateStep : candidateSteps) {
-            allCandidates.addAll(candidateStep.listCandidates());
-            for (ScenarioType scenarioType : ScenarioType.values()) {
-                beforeOrAfterScenario.get(scenarioType).addAll(candidateStep.listBeforeOrAfterScenario(scenarioType));
-            }
-            beforeOrAfterStory.addAll(candidateStep.listBeforeOrAfterStory(false));
-        }
+        this.allStepCandidates = allStepCandidates;
     }
 
     public List<Description> createDescriptionsFrom(PerformableTree performableTree) {
@@ -64,14 +50,16 @@ public class JUnit4DescriptionGenerator {
                 Story story = performableStory.getStory();
                 Lifecycle lifecycle = story.getLifecycle();
                 Description storyDescription = createDescriptionForStory(story);
-                addBeforeOrAfterStep(Stage.BEFORE, beforeOrAfterStory, storyDescription, BEFORE_STORY_STEP_NAME);
+                addBeforeOrAfterStep(allStepCandidates.getBeforeStorySteps(false), storyDescription,
+                        BEFORE_STORY_STEP_NAME);
                 addSteps(storyDescription, lifecycle.getBeforeSteps(Scope.STORY));
                 List<PerformableScenario> scenarios = performableStory.getScenarios();
                 for (Description scenarioDescription : getScenarioDescriptions(lifecycle, scenarios)) {
                     storyDescription.addChild(scenarioDescription);
                 }
                 addSteps(storyDescription, lifecycle.getAfterSteps(Scope.STORY, Outcome.ANY));
-                addBeforeOrAfterStep(Stage.AFTER, beforeOrAfterStory, storyDescription, AFTER_STORY_STEP_NAME);
+                addBeforeOrAfterStep(allStepCandidates.getAfterStorySteps(false), storyDescription,
+                        AFTER_STORY_STEP_NAME);
                 storyDescriptions.add(storyDescription);
             }
         }
@@ -94,19 +82,21 @@ public class JUnit4DescriptionGenerator {
 
     private void addScenarioSteps(Lifecycle lifecycle, ScenarioType scenarioType, Scenario scenario,
             Description scenarioDescription) {
-        addBeforeOrAfterScenarioStep(scenarioType, Stage.BEFORE, scenarioDescription, BEFORE_SCENARIO_STEP_NAME);
+        addBeforeOrAfterScenarioStep(allStepCandidates::getBeforeScenarioSteps, scenarioType, scenarioDescription,
+                BEFORE_SCENARIO_STEP_NAME);
         addSteps(scenarioDescription, lifecycle.getBeforeSteps(Scope.SCENARIO));
         addScenarioSteps(lifecycle, scenarioDescription, scenario);
         addSteps(scenarioDescription, lifecycle.getAfterSteps(Scope.SCENARIO, Outcome.ANY));
-        addBeforeOrAfterScenarioStep(scenarioType, Stage.AFTER, scenarioDescription, AFTER_SCENARIO_STEP_NAME);
+        addBeforeOrAfterScenarioStep(allStepCandidates::getAfterScenarioSteps, scenarioType, scenarioDescription,
+                AFTER_SCENARIO_STEP_NAME);
     }
 
-    private void addBeforeOrAfterScenarioStep(ScenarioType scenarioType, Stage stage, Description description,
-            String stepName) {
+    private void addBeforeOrAfterScenarioStep(Function<ScenarioType, List<BeforeOrAfterStep>> stepsProvider,
+            ScenarioType scenarioType, Description description, String stepName) {
         List<BeforeOrAfterStep> beforeOrAfterSteps = new ArrayList<>();
-        beforeOrAfterSteps.addAll(beforeOrAfterScenario.get(scenarioType));
-        beforeOrAfterSteps.addAll(beforeOrAfterScenario.get(ScenarioType.ANY));
-        addBeforeOrAfterStep(stage, beforeOrAfterSteps, description, stepName);
+        beforeOrAfterSteps.addAll(stepsProvider.apply(scenarioType));
+        beforeOrAfterSteps.addAll(stepsProvider.apply(ScenarioType.ANY));
+        addBeforeOrAfterStep(beforeOrAfterSteps, description, stepName);
     }
 
     private void addScenarioSteps(Lifecycle lifecycle, Description scenarioDescription, Scenario scenario) {
@@ -123,14 +113,11 @@ public class JUnit4DescriptionGenerator {
         }
     }
 
-    private void addBeforeOrAfterStep(Stage stage, List<BeforeOrAfterStep> beforeOrAfterSteps, Description description,
+    private void addBeforeOrAfterStep(List<BeforeOrAfterStep> beforeOrAfterSteps, Description description,
             String stepName) {
-        for (BeforeOrAfterStep beforeOrAfterStep : beforeOrAfterSteps) {
-            if (beforeOrAfterStep.getStage() == stage) {
-                testCases++;
-                addBeforeOrAfterStep(beforeOrAfterStep, description, stepName);
-                break;
-            }
+        if (!beforeOrAfterSteps.isEmpty()) {
+            testCases++;
+            addBeforeOrAfterStep(beforeOrAfterSteps.get(0), description, stepName);
         }
     }
 
@@ -263,7 +250,7 @@ public class JUnit4DescriptionGenerator {
     }
 
     private StepCandidate findMatchingStep(String stringStep) {
-        for (StepCandidate step : allCandidates) {
+        for (StepCandidate step : allStepCandidates.getRegularSteps()) {
             if (step.matches(stringStep, previousNonAndStep)) {
                 if (step.getStepType() != StepType.AND) {
                     previousNonAndStep = step.getStartingWord() + " ";

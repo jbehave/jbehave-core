@@ -8,19 +8,42 @@ import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
-import org.jbehave.core.failures.*;
-import org.jbehave.core.model.*;
+import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.failures.FailingUponPendingStep;
+import org.jbehave.core.failures.IgnoringStepsFailure;
+import org.jbehave.core.failures.PendingStepsFound;
+import org.jbehave.core.failures.RestartingScenarioFailure;
+import org.jbehave.core.failures.RestartingStoryFailure;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.GivenStory;
+import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.DelegatingStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.*;
+import org.jbehave.core.steps.AbstractStepResult;
+import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.Step;
+import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepResult;
 import org.jbehave.core.steps.Timer;
 import org.jbehave.core.steps.StepCreator.PendingStep;
+import org.jbehave.core.steps.Timing;
 import org.jbehave.core.steps.context.StepsContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -48,11 +71,11 @@ public class PerformableTree {
     }
 
     public void addStories(RunContext context, List<Story> stories) {
-        root.addBeforeSteps(context.beforeOrAfterStoriesSteps(Stage.BEFORE));
+        root.addBeforeSteps(context.beforeStoriesSteps());
         for (Story story : stories) {
             root.add(performableStory(context, story, NO_PARAMETERS));
         }
-        root.addAfterSteps(context.beforeOrAfterStoriesSteps(Stage.AFTER));
+        root.addAfterSteps(context.afterStoriesSteps());
     }
 
     private PerformableStory performableStory(RunContext context, Story story, Map<String, String> storyParameters) {
@@ -70,7 +93,7 @@ public class PerformableTree {
             Map<Stage, PerformableSteps> lifecycleSteps = context.lifecycleSteps(story.getLifecycle(), storyMeta,
                     Scope.STORY);
 
-            performableStory.addBeforeSteps(context.beforeOrAfterStorySteps(story, Stage.BEFORE));
+            performableStory.addBeforeSteps(context.beforeStorySteps(storyMeta));
             performableStory.addBeforeSteps(lifecycleSteps.get(Stage.BEFORE));
             performableStory.addAll(performableScenarios(context, story, storyParameters, filteredStory));
 
@@ -85,7 +108,7 @@ public class PerformableTree {
             }
 
             performableStory.addAfterSteps(lifecycleSteps.get(Stage.AFTER));
-            performableStory.addAfterSteps(context.beforeOrAfterStorySteps(story, Stage.AFTER));
+            performableStory.addAfterSteps(context.afterStorySteps(storyMeta));
 
         }
 
@@ -181,14 +204,13 @@ public class PerformableTree {
 
                 // run before scenario steps, if allowed
                 if (runBeforeAndAfterScenarioSteps) {
-                    normalScenario.addBeforeSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE,
-                            ScenarioType.NORMAL));
+                    normalScenario.addBeforeSteps(
+                            context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.NORMAL));
                 }
                 performableScenario.useNormalScenario(normalScenario);
                 // after scenario steps, if allowed
                 if (runBeforeAndAfterScenarioSteps) {
-                    normalScenario.addAfterSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER,
-                            ScenarioType.NORMAL));
+                    normalScenario.addAfterSteps(context.afterScenarioSteps(storyAndScenarioMeta, ScenarioType.NORMAL));
                 }
             }
         }
@@ -220,12 +242,10 @@ public class PerformableTree {
         ExamplePerformableScenario exampleScenario = new ExamplePerformableScenario(story, scenario, parameters,
                 exampleIndex);
         exampleScenario.setStoryAndScenarioMeta(storyAndScenarioMeta);
-        exampleScenario.addBeforeSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE,
-                ScenarioType.EXAMPLE));
+        exampleScenario.addBeforeSteps(context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.EXAMPLE));
         addStepsWithLifecycle(exampleScenario, context, story.getLifecycle(), parameters, scenario,
                 storyAndScenarioMeta);
-        exampleScenario.addAfterSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER,
-                ScenarioType.EXAMPLE));
+        exampleScenario.addAfterSteps(context.afterScenarioSteps(storyAndScenarioMeta, ScenarioType.EXAMPLE));
         return exampleScenario;
     }
 
@@ -244,15 +264,13 @@ public class PerformableTree {
         Map<Stage, PerformableSteps> lifecycleSteps = context.lifecycleSteps(lifecycle, storyAndScenarioMeta,
                 Scope.SCENARIO);
 
-        performableScenario.addBeforeSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE,
-                ScenarioType.ANY));
+        performableScenario.addBeforeSteps(context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
         performableScenario.addBeforeSteps(lifecycleSteps.get(Stage.BEFORE));
         addMetaParameters(parameters, storyAndScenarioMeta);
         performableScenario.addGivenStories(performableGivenStories(context, scenario.getGivenStories(), parameters));
         performableScenario.addSteps(context.scenarioSteps(lifecycle, storyAndScenarioMeta, scenario, parameters));
         performableScenario.addAfterSteps(lifecycleSteps.get(Stage.AFTER));
-        performableScenario.addAfterSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER,
-                ScenarioType.ANY));
+        performableScenario.addAfterSteps(context.afterScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
     }
 
     private List<PerformableStory> performableGivenStories(RunContext context, GivenStories givenStories,
@@ -490,20 +508,27 @@ public class PerformableTree {
      */
     public static class RunContext {
         private final Configuration configuration;
-        private final List<CandidateSteps> candidateSteps;
+        private final boolean givenStory;
+
+        private final AllStepCandidates allStepCandidates;
         private final EmbedderMonitor embedderMonitor;
         private final MetaFilter filter;
         private final BatchFailures failures;
         private final StepsContext stepsContext;
-        private Map<Story, StoryDuration> cancelledStories = new HashMap<>();
-        private Map<String, List<PendingStep>> pendingStories = new HashMap<>();
-        private boolean givenStory;
+        private final Map<Story, StoryDuration> cancelledStories = new HashMap<>();
+        private final Map<String, List<PendingStep>> pendingStories = new HashMap<>();
         private final ThreadLocal<StoryRunContext> storyRunContext = ThreadLocal.withInitial(StoryRunContext::new);
 
-        public RunContext(Configuration configuration, List<CandidateSteps> candidateSteps, EmbedderMonitor embedderMonitor,
-                MetaFilter filter, BatchFailures failures) {
+        public RunContext(Configuration configuration, AllStepCandidates allStepCandidates,
+                EmbedderMonitor embedderMonitor, MetaFilter filter, BatchFailures failures) {
+            this(configuration, allStepCandidates, embedderMonitor, filter, failures, false);
+        }
+
+        private RunContext(Configuration configuration, AllStepCandidates allStepCandidates,
+                EmbedderMonitor embedderMonitor, MetaFilter filter, BatchFailures failures, boolean givenStory) {
             this.configuration = configuration;
-            this.candidateSteps = candidateSteps;
+            this.givenStory = givenStory;
+            this.allStepCandidates = allStepCandidates;
             this.embedderMonitor = embedderMonitor;
             this.filter = filter;
             this.failures = failures;
@@ -574,25 +599,40 @@ public class PerformableTree {
             return filter;
         }
 
-        public PerformableSteps beforeOrAfterStoriesSteps(Stage stage) {
-            return new PerformableSteps(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps,
-                    stage));
+        public PerformableSteps beforeStoriesSteps() {
+            return new PerformableSteps(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(
+                    allStepCandidates.getBeforeStoriesSteps()));
         }
 
-        public PerformableSteps beforeOrAfterStorySteps(Story story, Stage stage) {
-            return new PerformableSteps(configuration.stepCollector().collectBeforeOrAfterStorySteps(candidateSteps,
-                    story, stage, givenStory));
+        public PerformableSteps afterStoriesSteps() {
+            return new PerformableSteps(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(
+                    allStepCandidates.getAfterStoriesSteps()));
         }
 
-        public PerformableSteps beforeOrAfterScenarioSteps(Meta storyAndScenarioMeta, Stage stage, ScenarioType type) {
-            return new PerformableSteps(configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps,
-                    storyAndScenarioMeta, stage, type));
+        public PerformableSteps beforeStorySteps(Meta storyMeta) {
+            return new PerformableSteps(configuration.stepCollector()
+                    .collectBeforeOrAfterStorySteps(allStepCandidates.getBeforeStorySteps(givenStory), storyMeta));
+        }
+
+        public PerformableSteps afterStorySteps(Meta storyMeta) {
+            return new PerformableSteps(configuration.stepCollector()
+                    .collectBeforeOrAfterStorySteps(allStepCandidates.getAfterStorySteps(givenStory), storyMeta));
+        }
+
+        public PerformableSteps beforeScenarioSteps(Meta storyAndScenarioMeta, ScenarioType type) {
+            return new PerformableSteps(configuration.stepCollector()
+                    .collectBeforeScenarioSteps(allStepCandidates.getBeforeScenarioSteps(type), storyAndScenarioMeta));
+        }
+
+        public PerformableSteps afterScenarioSteps(Meta storyAndScenarioMeta, ScenarioType type) {
+            return new PerformableSteps(configuration.stepCollector()
+                    .collectAfterScenarioSteps(allStepCandidates.getAfterScenarioSteps(type), storyAndScenarioMeta));
         }
 
         private Map<Stage, PerformableSteps> lifecycleSteps(Lifecycle lifecycle, Meta meta, Scope scope) {
             MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
-            Map<Stage, List<Step>> steps = configuration.stepCollector().collectLifecycleSteps(candidateSteps,
-                    lifecycle, meta, scope, monitor);
+            Map<Stage, List<Step>> steps = configuration.stepCollector().collectLifecycleSteps(
+                    allStepCandidates.getRegularSteps(), lifecycle, meta, scope, monitor);
             Map<Stage, PerformableSteps> performableSteps = new EnumMap<>(Stage.class);
             for (Map.Entry<Stage, List<Step>> entry : steps.entrySet()) {
                 performableSteps.put(entry.getKey(), new PerformableSteps(entry.getValue(), monitor.matched()));
@@ -604,10 +644,11 @@ public class PerformableTree {
                 Map<String, String> parameters) {
             MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
             StepCollector stepCollector = configuration.stepCollector();
-            Map<Stage, List<Step>> beforeOrAfterStepSteps = stepCollector.collectLifecycleSteps(candidateSteps,
-                    lifecycle, meta, Scope.STEP, monitor);
+            Map<Stage, List<Step>> beforeOrAfterStepSteps = stepCollector.collectLifecycleSteps(
+                    allStepCandidates.getRegularSteps(), lifecycle, meta, Scope.STEP, monitor);
             List<Step> steps = new LinkedList<>();
-            for (Step step : stepCollector.collectScenarioSteps(candidateSteps, scenario, parameters, monitor)) {
+            for (Step step : stepCollector.collectScenarioSteps(allStepCandidates.getRegularSteps(), scenario,
+                    parameters, monitor)) {
                 steps.addAll(beforeOrAfterStepSteps.get(Stage.BEFORE));
                 steps.add(step);
                 steps.addAll(beforeOrAfterStepSteps.get(Stage.AFTER));
@@ -616,9 +657,9 @@ public class PerformableTree {
         }
 
         public RunContext childContextFor(GivenStory givenStory) {
-            RunContext child = new RunContext(configuration, candidateSteps, embedderMonitor, filter, failures);
+            RunContext child = new RunContext(configuration, allStepCandidates, embedderMonitor, filter,
+                    failures, true);
             child.currentRunContext().pathIs(configuration.pathCalculator().calculate(path(), givenStory.getPath()));
-            child.givenStory = true;
             return child;
         }
 
@@ -1353,9 +1394,8 @@ public class PerformableTree {
 
     }
 
-    public RunContext newRunContext(Configuration configuration, List<CandidateSteps> candidateSteps,
+    public RunContext newRunContext(Configuration configuration, AllStepCandidates allStepCandidates,
             EmbedderMonitor embedderMonitor, MetaFilter filter, BatchFailures failures) {
-        return new RunContext(configuration, candidateSteps, embedderMonitor, filter, failures);
+        return new RunContext(configuration, allStepCandidates, embedderMonitor, filter, failures);
     }
-
 }

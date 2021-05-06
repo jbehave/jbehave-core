@@ -15,12 +15,11 @@ import static java.text.MessageFormat.format;
 public abstract class AbstractCandidateSteps implements CandidateSteps {
     private final Configuration configuration;
 
-    public AbstractCandidateSteps(Configuration configuration) {
+    protected AbstractCandidateSteps(Configuration configuration) {
         this.configuration = configuration;
     }
 
-    @Override
-    public Configuration configuration() {
+    protected Configuration configuration() {
         return configuration;
     }
 

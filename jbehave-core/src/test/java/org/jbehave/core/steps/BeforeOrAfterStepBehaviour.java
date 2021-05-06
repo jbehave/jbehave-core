@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 
 import static org.jbehave.core.steps.SomeSteps.methodFor;
-import static org.jbehave.core.steps.StepCollector.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -17,7 +16,7 @@ class BeforeOrAfterStepBehaviour {
         StepCreator stepCreator = mock(StepCreator.class);
 
         Method method = methodFor("aMethodWith");
-        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(Stage.BEFORE, method, stepCreator);
+        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(method, 0, stepCreator);
 
         Meta meta = mock(Meta.class);
         beforeOrAfterStep.createStepWith(meta);
@@ -30,7 +29,7 @@ class BeforeOrAfterStepBehaviour {
         StepCreator stepCreator = mock(StepCreator.class);
 
         Method method = methodFor("aMethodWith");
-        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(Stage.AFTER, method, stepCreator);
+        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(method, 0, stepCreator);
 
         Meta meta = mock(Meta.class);
         beforeOrAfterStep.createStepUponOutcome(meta);

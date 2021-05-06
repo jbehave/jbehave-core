@@ -1,22 +1,26 @@
 package org.jbehave.core.steps;
 
 import org.jbehave.core.annotations.AfterScenario.Outcome;
-import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * StepCollector that marks unmatched steps as {@link Pending}. It uses a
- * {@link StepFinder} to collect and prioritise {@link StepCandidate}s.
+ * {@link StepFinder} to prioritise {@link StepCandidate}s.
  */
 public class MarkUnmatchedStepsAsPending implements StepCollector {
 
@@ -37,111 +41,63 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
     }
 
     @Override
-    public List<Step> collectBeforeOrAfterStoriesSteps(List<CandidateSteps> candidateSteps, Stage stage) {
-        List<Step> steps = new ArrayList<>();
-        for (CandidateSteps candidates : candidateSteps) {
-            steps.addAll(createSteps(candidates.listBeforeOrAfterStories(), stage));
-        }
-        return steps;
+    public List<Step> collectBeforeOrAfterStoriesSteps(List<BeforeOrAfterStep> beforeOrAfterStoriesSteps) {
+        return beforeOrAfterStoriesSteps.stream().map(BeforeOrAfterStep::createStep).collect(Collectors.toList());
     }
 
     @Override
-    public List<Step> collectBeforeOrAfterStorySteps(List<CandidateSteps> candidateSteps, Story story, Stage stage,
-                                                     boolean givenStory) {
-        List<Step> steps = new ArrayList<>();
-        for (CandidateSteps candidates : candidateSteps) {
-            steps.addAll(createSteps(candidates.listBeforeOrAfterStory(givenStory), story.getMeta(), stage));
-        }
-        return steps;
+    public List<Step> collectBeforeOrAfterStorySteps(List<BeforeOrAfterStep> beforeOrAfterStorySteps, Meta storyMeta) {
+        return createSteps(beforeOrAfterStorySteps, storyMeta);
     }
 
     @Override
-    public List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Meta storyAndScenarioMeta, Stage stage, ScenarioType type) {
-        List<Step> steps = new ArrayList<>();
-        for (CandidateSteps candidates : candidateSteps) {
-            List<BeforeOrAfterStep> beforeOrAfterScenarioSteps = candidates.listBeforeOrAfterScenario(type);
-            if (stage == Stage.BEFORE) {
-                steps.addAll(createSteps(beforeOrAfterScenarioSteps, storyAndScenarioMeta, stage));
-            } else {
-                steps.addAll(0, createStepsUponOutcome(beforeOrAfterScenarioSteps, storyAndScenarioMeta, stage));
-            }
-        }
-        return steps;
+    public List<Step> collectBeforeScenarioSteps(List<BeforeOrAfterStep> beforeScenarioSteps, Meta storyAndScenarioMeta) {
+        return createSteps(beforeScenarioSteps, storyAndScenarioMeta);
     }
 
     @Override
-    public Map<Stage, List<Step>> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle,
-                                                        Meta storyAndScenarioMeta, Scope scope, StepMonitor stepMonitor) {
-        List<StepCandidate> allCandidates = stepFinder.collectCandidates(candidateSteps);
+    public List<Step> collectAfterScenarioSteps(List<BeforeOrAfterStep> afterScenarioSteps, Meta storyAndScenarioMeta) {
+        return afterScenarioSteps.stream().map(step -> step.createStepUponOutcome(storyAndScenarioMeta)).collect(
+                Collectors.toList());
+    }
+
+    @Override
+    public Map<Stage, List<Step>> collectLifecycleSteps(List<StepCandidate> stepCandidates, Lifecycle lifecycle,
+            Meta storyAndScenarioMeta, Scope scope, StepMonitor stepMonitor) {
         Map<String, String> namedParameters = new HashMap<>();
+        List<Step> beforeSteps = collectMatchedSteps(lifecycle.getBeforeSteps(scope), namedParameters, stepCandidates,
+                null, stepMonitor);
+        List<Step> afterSteps = Stream.of(Outcome.values())
+                .map(outcome -> collectMatchedSteps(lifecycle.getAfterSteps(scope, outcome, storyAndScenarioMeta),
+                        namedParameters, stepCandidates, outcome, stepMonitor))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
         Map<Stage, List<Step>> steps = new EnumMap<>(Stage.class);
-        steps.put(Stage.BEFORE,
-                collectLifecycleBeforeSteps(allCandidates, lifecycle, scope, namedParameters, stepMonitor));
-        steps.put(Stage.AFTER,
-                collectLifecycleAfterSteps(allCandidates, lifecycle, storyAndScenarioMeta, scope, namedParameters,
-                        stepMonitor));
+        steps.put(Stage.BEFORE, beforeSteps);
+        steps.put(Stage.AFTER, afterSteps);
         return steps;
     }
 
     @Override
-    public List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario,
-                                           Map<String, String> parameters, StepMonitor stepMonitor) {
+    public List<Step> collectScenarioSteps(List<StepCandidate> stepCandidates, Scenario scenario,
+            Map<String, String> parameters, StepMonitor stepMonitor) {
+        return collectMatchedSteps(scenario.getSteps(), parameters, stepCandidates, null, stepMonitor);
+    }
+
+    private List<Step> createSteps(List<BeforeOrAfterStep> beforeOrAfterSteps, Meta meta) {
+        return beforeOrAfterSteps.stream().map(step -> step.createStepWith(meta)).collect(Collectors.toList());
+    }
+
+    private List<Step> collectMatchedSteps(List<String> stepsAsString, Map<String, String> namedParameters,
+            List<StepCandidate> stepCandidates, Outcome outcome, StepMonitor stepMonitor) {
         List<Step> steps = new ArrayList<>();
-        addMatchedSteps(scenario.getSteps(), steps, parameters, stepFinder.collectCandidates(candidateSteps), null,
-                stepMonitor);
-        return steps;
-    }
-
-    private List<Step> createSteps(List<BeforeOrAfterStep> beforeOrAfter, Stage stage) {
-        return createSteps(beforeOrAfter, null, stage);
-    }
-
-    private List<Step> createSteps(List<BeforeOrAfterStep> beforeOrAfter, Meta meta, Stage stage) {
-        List<Step> steps = new ArrayList<>();
-        for (BeforeOrAfterStep step : beforeOrAfter) {
-            if (stage == step.getStage()) {
-                steps.add(meta == null ? step.createStep() : step.createStepWith(meta));
-            }
-        }
-        return steps;
-    }
-
-    private List<Step> createStepsUponOutcome(List<BeforeOrAfterStep> beforeOrAfter, Meta storyAndScenarioMeta, Stage stage) {
-        List<Step> steps = new ArrayList<>();
-        for (BeforeOrAfterStep step : beforeOrAfter) {
-            if (stage == step.getStage()) {
-                steps.add(step.createStepUponOutcome(storyAndScenarioMeta));
-            }
-        }
-        return steps;
-    }
-
-    private List<Step> collectLifecycleBeforeSteps(List<StepCandidate> allCandidates, Lifecycle lifecycle, Scope scope,
-                                                   Map<String, String> namedParameters, StepMonitor stepMonitor) {
-        List<Step> beforeSteps = new ArrayList<>();
-        addMatchedSteps(lifecycle.getBeforeSteps(scope), beforeSteps, namedParameters, allCandidates, null,
-                stepMonitor);
-        return beforeSteps;
-    }
-
-    private List<Step> collectLifecycleAfterSteps(List<StepCandidate> allCandidates, Lifecycle lifecycle,
-                                                  Meta storyAndScenarioMeta, Scope scope, Map<String, String> namedParameters, StepMonitor stepMonitor) {
-        List<Step> afterSteps = new ArrayList<>();
-        for (Outcome outcome : Outcome.values()) {
-            addMatchedSteps(lifecycle.getAfterSteps(scope, outcome, storyAndScenarioMeta), afterSteps, namedParameters,
-                    allCandidates, outcome, stepMonitor);
-        }
-        return afterSteps;
-    }
-
-    private void addMatchedSteps(List<String> stepsAsString, List<Step> steps, Map<String, String> namedParameters,
-                                 List<StepCandidate> allCandidates, Outcome outcome, StepMonitor stepMonitor) {
         String previousNonAndStep = null;
         for (String stepAsString : stepsAsString) {
             // pending is default step, overridden below
             Step step = StepCreator.createPendingStep(stepAsString, previousNonAndStep);
             List<StepCandidate> prioritisedCandidates = stepFinder.prioritise(stepAsString,
-                    new ArrayList<>(allCandidates));
+                    new ArrayList<>(stepCandidates));
             for (StepCandidate candidate : prioritisedCandidates) {
                 candidate.useStepMonitor(stepMonitor);
                 if (candidate.ignore(stepAsString)) {
@@ -182,5 +138,6 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
             }
             steps.add(step);
         }
+        return steps;
     }
 }
