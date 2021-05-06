@@ -87,7 +87,7 @@ public class TableParsers {
         for (String value : rowAsString.split(regex.toString(), -1)) {
             String stripped = StringUtils.substringBefore(value, commentSeparator);
             String trimmed = trimValues ? stripped.trim() : stripped;
-            values.add(StringUtils.substringBefore(trimmed, commentSeparator));
+            values.add(trimmed);
         }
         // ignore a leading and a trailing empty value
         if (StringUtils.isBlank(values.get(0))) {
