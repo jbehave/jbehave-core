@@ -1,5 +1,8 @@
 package org.jbehave.core.parsers;
 
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.compile;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -8,9 +11,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
-
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.regex.Pattern.compile;
 
 abstract class AbstractRegexParser {
 

@@ -1,10 +1,10 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.junit.jupiter.api.Test;
 
 class StackTraceFormatterBehaviour {
 

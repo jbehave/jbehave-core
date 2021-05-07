@@ -1,14 +1,14 @@
 package org.jbehave.core.io.rest.redmine;
 
-import com.thoughtworks.xstream.security.AnyTypePermission;
-import org.jbehave.core.io.rest.LoadFromREST;
-import org.jbehave.core.io.rest.RESTClient.Type;
+import static java.text.MessageFormat.format;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 
-import static java.text.MessageFormat.format;
+import org.jbehave.core.io.rest.LoadFromREST;
+import org.jbehave.core.io.rest.RESTClient.Type;
 
 /**
  * Loads resource from Redmine wiki pages using the REST API

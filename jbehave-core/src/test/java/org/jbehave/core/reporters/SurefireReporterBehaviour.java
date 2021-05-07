@@ -1,12 +1,7 @@
 package org.jbehave.core.reporters;
 
-import org.apache.commons.io.IOUtils;
-import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
-import org.jbehave.core.embedder.PerformableTree.*;
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.model.*;
-import org.jbehave.core.steps.StepType;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,8 +11,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import org.apache.commons.io.IOUtils;
+import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
+import org.jbehave.core.embedder.PerformableTree.NormalPerformableScenario;
+import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
+import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
+import org.jbehave.core.embedder.PerformableTree.PerformableSteps;
+import org.jbehave.core.embedder.PerformableTree.PerformableStory;
+import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.model.Description;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.StepPattern;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.StepType;
+import org.junit.jupiter.api.Test;
 
 
 class SurefireReporterBehaviour {

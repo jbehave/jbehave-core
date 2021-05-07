@@ -1,10 +1,10 @@
 package org.jbehave.examples.core;
 
-import org.jbehave.core.io.StoryFinder;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 import java.util.List;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import org.jbehave.core.io.StoryFinder;
 
 public class CoreStoriesFailing extends CoreStories {
 

@@ -1,6 +1,14 @@
 package org.jbehave.examples.core.guice;
 
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.jbehave.core.reporters.Format.XML;
+
 import java.text.SimpleDateFormat;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
@@ -26,14 +34,6 @@ import org.jbehave.examples.core.steps.PriorityMatchingSteps;
 import org.jbehave.examples.core.steps.SandpitSteps;
 import org.jbehave.examples.core.steps.SearchSteps;
 import org.junit.runner.RunWith;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
-
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
 
 /**
  * Run stories via annotated embedder configuration and steps using Guice. The

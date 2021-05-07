@@ -1,5 +1,9 @@
 package org.jbehave.examples.core.spring;
 
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
+
+import java.util.List;
+
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.spring.SpringStepsFactory;
@@ -10,10 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.List;
-
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
  * Run stories using Spring's {@link SpringJUnit4ClassRunner} to inject the

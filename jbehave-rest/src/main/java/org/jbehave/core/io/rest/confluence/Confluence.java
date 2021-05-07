@@ -4,10 +4,10 @@ import static java.text.MessageFormat.format;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.security.AnyTypePermission;
-import org.jbehave.core.io.rest.RESTClient;
-
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
+
+import org.jbehave.core.io.rest.RESTClient;
 
 public class Confluence {
 

@@ -1,5 +1,9 @@
 package org.jbehave.examples.core.steps;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -25,12 +29,6 @@ import org.jbehave.examples.core.model.Stock.AlertStatus;
 import org.jbehave.examples.core.model.Trader;
 import org.jbehave.examples.core.persistence.TraderPersister;
 import org.jbehave.examples.core.service.TradingService;
-
-import static java.util.Arrays.asList;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
 
 /**
  * POJO holding the candidate steps for the trader example.  

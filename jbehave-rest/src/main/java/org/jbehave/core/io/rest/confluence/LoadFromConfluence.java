@@ -1,5 +1,9 @@
 package org.jbehave.core.io.rest.confluence;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.rest.RESTClient;
 import org.jbehave.core.io.rest.RESTClient.Type;
@@ -9,10 +13,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class LoadFromConfluence implements ResourceLoader {
 

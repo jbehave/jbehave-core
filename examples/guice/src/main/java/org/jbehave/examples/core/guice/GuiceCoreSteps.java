@@ -1,9 +1,9 @@
 package org.jbehave.examples.core.guice;
 
+import com.google.inject.Inject;
+
 import org.jbehave.examples.core.service.TradingService;
 import org.jbehave.examples.core.steps.TraderSteps;
-
-import com.google.inject.Inject;
 
 /**
  * POJO annotated to allow Guice injection.

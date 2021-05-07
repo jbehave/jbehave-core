@@ -1,10 +1,10 @@
 package org.jbehave.io;
 
-import org.apache.commons.fileupload.FileItem;
-
 import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
+
+import org.apache.commons.fileupload.FileItem;
 
 public class PrintStreamFileMonitor implements FileMonitor {
 

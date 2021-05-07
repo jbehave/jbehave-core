@@ -1,5 +1,3 @@
-import java.util.Date;
-
 class NotAnnotatedSteps {
 
   def aDate(Date date) {

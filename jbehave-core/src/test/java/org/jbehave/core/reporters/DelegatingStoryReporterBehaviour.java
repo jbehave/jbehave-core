@@ -1,5 +1,13 @@
 package org.jbehave.core.reporters;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
@@ -10,14 +18,6 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
-
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 
 class DelegatingStoryReporterBehaviour {
 

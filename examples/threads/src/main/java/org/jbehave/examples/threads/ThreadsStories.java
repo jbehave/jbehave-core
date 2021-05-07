@@ -1,5 +1,9 @@
 package org.jbehave.examples.threads;
 
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,10 +24,6 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.threads.steps.ThreadsSteps;
 import org.junit.runner.RunWith;
-
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
 
 @RunWith(JUnit4StoryRunner.class)
 public class ThreadsStories extends JUnitStories {

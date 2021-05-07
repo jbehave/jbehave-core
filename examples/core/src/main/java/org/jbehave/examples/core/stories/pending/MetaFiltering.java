@@ -1,8 +1,8 @@
 package org.jbehave.examples.core.stories.pending;
 
-import org.jbehave.examples.core.CoreStory;
-
 import java.util.Arrays;
+
+import org.jbehave.examples.core.CoreStory;
 
 public class MetaFiltering extends CoreStory {
 

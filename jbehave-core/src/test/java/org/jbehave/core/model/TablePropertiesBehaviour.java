@@ -1,20 +1,20 @@
 package org.jbehave.core.model;
 
-import org.jbehave.core.model.ExamplesTable.TableProperties;
-import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-import java.util.Properties;
-
-import static java.util.Collections.singletonMap;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.Map;
+import java.util.Properties;
+
+import org.jbehave.core.model.ExamplesTable.TableProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Valery Yatsynovich

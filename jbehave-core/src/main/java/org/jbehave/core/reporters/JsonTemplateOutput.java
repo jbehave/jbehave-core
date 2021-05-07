@@ -1,8 +1,8 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.configuration.Keywords;
-
 import java.io.File;
+
+import org.jbehave.core.configuration.Keywords;
 
 /**
  * A templateable output that generates JSON. By default it uses

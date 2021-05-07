@@ -1,5 +1,8 @@
 package org.jbehave.core.model;
 
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.compile;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -8,9 +11,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.regex.Pattern.compile;
 
 public class GivenStory {
 

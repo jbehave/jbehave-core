@@ -1,10 +1,9 @@
 package org.jbehave.core.model;
 
-import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.jbehave.core.model.OutcomesTable.Outcome;
-import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
-import org.jbehave.core.reporters.TemplateableViewGenerator;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -12,10 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.model.OutcomesTable.Outcome;
+import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
+import org.junit.jupiter.api.Test;
 
 class OutcomesTableBehaviour {
 

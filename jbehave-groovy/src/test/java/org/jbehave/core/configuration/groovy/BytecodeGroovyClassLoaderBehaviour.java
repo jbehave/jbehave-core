@@ -4,12 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-import groovy.lang.GroovyClassLoader;
-
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
+
+import groovy.lang.GroovyClassLoader;
 
 class BytecodeGroovyClassLoaderBehaviour {
 

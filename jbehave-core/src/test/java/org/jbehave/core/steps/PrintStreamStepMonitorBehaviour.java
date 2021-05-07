@@ -1,8 +1,7 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.model.StepPattern;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -12,8 +11,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.model.StepPattern;
+import org.junit.jupiter.api.Test;
 
 class PrintStreamStepMonitorBehaviour {
 

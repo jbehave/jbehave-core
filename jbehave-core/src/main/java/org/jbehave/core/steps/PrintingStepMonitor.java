@@ -1,6 +1,6 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.model.StepPattern;
+import static java.util.Arrays.asList;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
+import org.jbehave.core.model.StepPattern;
 
 /**
  * Abstract {@code StepMonitor} that prints to output which should be defined in child implementations.

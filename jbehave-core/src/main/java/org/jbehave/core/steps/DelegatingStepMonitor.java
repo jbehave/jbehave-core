@@ -1,13 +1,13 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.model.StepPattern;
+import static java.util.Arrays.asList;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Queue;
 
-import static java.util.Arrays.asList;
+import org.jbehave.core.model.StepPattern;
 
 /**
  * Monitor which collects other {@link StepMonitor}s and delegates all invocations to the collected monitors.

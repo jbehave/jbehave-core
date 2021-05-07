@@ -1,20 +1,26 @@
 package org.jbehave.examples.core;
 
-import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.JUnit4StoryRunner;
-import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.reporters.*;
-import org.junit.runner.RunWith;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.io.StoryFinder;
+import org.jbehave.core.junit.JUnit4StoryRunner;
+import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.reporters.FilePrintStreamFactory;
+import org.jbehave.core.reporters.Format;
+import org.jbehave.core.reporters.FreemarkerProcessor;
+import org.jbehave.core.reporters.FreemarkerViewGenerator;
+import org.jbehave.core.reporters.HtmlTemplateOutput;
+import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.junit.runner.RunWith;
 
 @RunWith(JUnit4StoryRunner.class)
 public class CoreStoriesWithCustomReports extends CoreStories {

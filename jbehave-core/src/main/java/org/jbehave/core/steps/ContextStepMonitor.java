@@ -2,8 +2,8 @@ package org.jbehave.core.steps;
 
 import java.lang.reflect.Method;
 
-import org.jbehave.core.context.ContextView;
 import org.jbehave.core.context.Context;
+import org.jbehave.core.context.ContextView;
 
 /**
  * Decorator of {@link StepMonitor} which shows the current context via the

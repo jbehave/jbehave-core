@@ -1,12 +1,13 @@
 package org.jbehave.core.configuration.groovy;
 
 import static java.text.MessageFormat.format;
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyCodeSource;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyCodeSource;
 
 public class GroovyContext {
 

@@ -1,5 +1,11 @@
 package org.jbehave.core.model;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -7,14 +13,6 @@ import java.util.Map;
 
 import org.jbehave.core.io.UnderscoredToCapitalized;
 import org.junit.jupiter.api.Test;
-
-import static java.util.Arrays.asList;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 class StoryMapsBehaviour {
     @Test

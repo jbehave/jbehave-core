@@ -1,10 +1,10 @@
 package org.jbehave.core.io;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import static java.util.Arrays.asList;
 
 /**
  * {@link PathCalculator} that finds given stories relative to the current story.

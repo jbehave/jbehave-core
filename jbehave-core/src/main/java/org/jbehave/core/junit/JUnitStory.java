@@ -1,10 +1,10 @@
 package org.jbehave.core.junit;
 
-import org.jbehave.core.io.StoryPathResolver;
+import static java.util.Arrays.asList;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
+import org.jbehave.core.io.StoryPathResolver;
 
 /**
  * <p>

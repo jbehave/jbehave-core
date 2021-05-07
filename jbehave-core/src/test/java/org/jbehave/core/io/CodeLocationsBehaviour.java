@@ -1,16 +1,21 @@
 package org.jbehave.core.io;
 
-import org.jbehave.core.io.CodeLocations.InvalidCodeLocation;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.JUnitCore;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.jbehave.core.io.CodeLocations.InvalidCodeLocation;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.JUnitCore;
 
 class CodeLocationsBehaviour {
 

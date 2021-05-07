@@ -1,5 +1,11 @@
 package org.jbehave.core.io.odf;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.InvalidStoryResource;
 import org.jbehave.core.io.LoadFromClasspath;
@@ -7,10 +13,6 @@ import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.odf.OdfUtils.OdfDocumentLoadingFailed;
 import org.jbehave.core.io.odf.OdfUtils.OdfDocumentParsingFailed;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OdtLoaderBehaviour {
 

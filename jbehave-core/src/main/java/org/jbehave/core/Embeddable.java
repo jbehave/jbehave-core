@@ -2,7 +2,6 @@ package org.jbehave.core;
 
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.JUnitStories;
-import org.jbehave.core.junit.JUnitStory;
 
 /**
  * <p>

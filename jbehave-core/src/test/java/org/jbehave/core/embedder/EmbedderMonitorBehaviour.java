@@ -1,5 +1,13 @@
 package org.jbehave.core.embedder;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -16,17 +24,6 @@ import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.PrintStreamOutput.Format;
 import org.jbehave.core.reporters.ReportsCount;
 import org.junit.jupiter.api.Test;
-
-import static java.util.Arrays.asList;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 class EmbedderMonitorBehaviour {
 

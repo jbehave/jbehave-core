@@ -8,7 +8,6 @@ import static org.jbehave.core.reporters.Format.XML;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Properties;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 

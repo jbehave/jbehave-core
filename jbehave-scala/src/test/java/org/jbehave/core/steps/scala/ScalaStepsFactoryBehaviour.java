@@ -1,15 +1,15 @@
 package org.jbehave.core.steps.scala;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
+
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.configuration.scala.ScalaContext;
 import org.jbehave.core.configuration.scala.ScalaContext.ScalaInstanceNotFound;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ScalaStepsFactoryBehaviour {
 

@@ -1,12 +1,12 @@
 package org.jbehave.examples.core.urls;
 
-import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.io.StoryFinder;
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.io.StoryFinder;
 
 /**
  * Example of how to use one or more Embedders to embed the story running into

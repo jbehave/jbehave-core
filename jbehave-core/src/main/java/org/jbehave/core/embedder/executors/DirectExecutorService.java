@@ -1,9 +1,10 @@
 package org.jbehave.core.embedder.executors;
 
-import com.google.common.util.concurrent.MoreExecutors;
-import org.jbehave.core.embedder.EmbedderControls;
-
 import java.util.concurrent.ExecutorService;
+
+import com.google.common.util.concurrent.MoreExecutors;
+
+import org.jbehave.core.embedder.EmbedderControls;
 
 /**
  *  Creates instances of {@link MoreExecutors#newDirectExecutorService()}.

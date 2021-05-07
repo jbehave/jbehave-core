@@ -2,12 +2,12 @@ package org.jbehave.core.io.rest.xwiki;
 
 import static java.text.MessageFormat.format;
 
-import com.thoughtworks.xstream.security.AnyTypePermission;
-import org.jbehave.core.io.rest.LoadFromREST;
-import org.jbehave.core.io.rest.RESTClient.Type;
-
 import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
+
+import org.jbehave.core.io.rest.LoadFromREST;
+import org.jbehave.core.io.rest.RESTClient.Type;
 
 /**
  * Loads resource from XWiki pages using the REST API

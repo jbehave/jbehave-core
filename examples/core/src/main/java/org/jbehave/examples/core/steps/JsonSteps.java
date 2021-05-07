@@ -1,5 +1,8 @@
 package org.jbehave.examples.core.steps;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -8,9 +11,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AsJson;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 public class JsonSteps {
 

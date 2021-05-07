@@ -1,5 +1,7 @@
 package org.jbehave.core.configuration;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.steps.StepType;
-
-import static java.util.Arrays.asList;
 
 /**
  * Provides the keywords which allow parsers to find steps in stories and match

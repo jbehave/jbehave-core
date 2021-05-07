@@ -4,13 +4,13 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.steps.AbstractStepsFactory;
-import org.jbehave.core.steps.InjectableStepsFactory;
-
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.steps.AbstractStepsFactory;
+import org.jbehave.core.steps.InjectableStepsFactory;
 
 /**
  * An {@link InjectableStepsFactory} that uses a Guice {@link Injector} for the

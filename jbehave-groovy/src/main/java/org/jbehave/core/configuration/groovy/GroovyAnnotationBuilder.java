@@ -1,7 +1,5 @@
 package org.jbehave.core.configuration.groovy;
 
-import groovy.lang.GroovyClassLoader;
-
 import org.jbehave.core.annotations.groovy.UsingGroovy;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.AnnotationMonitor;
@@ -10,6 +8,8 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.CompositeStepsFactory;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.groovy.GroovyStepsFactory;
+
+import groovy.lang.GroovyClassLoader;
 
 /**
  * Extends {@link AnnotationBuilder} using Groovy-based resources if

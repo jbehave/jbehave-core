@@ -1,9 +1,14 @@
 package org.jbehave.core.embedder;
 
-import org.jbehave.core.Embeddable;
-import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
-import org.jbehave.core.junit.JUnitStory;
-import org.junit.jupiter.api.Test;
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -11,10 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.jbehave.core.Embeddable;
+import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
+import org.jbehave.core.junit.JUnitStory;
+import org.junit.jupiter.api.Test;
 
 class EmbedderClassLoaderBehaviour {
 

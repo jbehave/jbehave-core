@@ -1,20 +1,24 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.reporters.TemplateableViewGenerator.Report;
-import org.jbehave.core.reporters.TemplateableViewGenerator.ReportCreationFailed;
-import org.jbehave.core.reporters.TemplateableViewGenerator.Reports;
-import org.jbehave.core.reporters.TemplateableViewGenerator.TimeFormatter;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.util.*;
-
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.SortedMap;
+
+import org.jbehave.core.reporters.TemplateableViewGenerator.Report;
+import org.jbehave.core.reporters.TemplateableViewGenerator.ReportCreationFailed;
+import org.jbehave.core.reporters.TemplateableViewGenerator.Reports;
+import org.jbehave.core.reporters.TemplateableViewGenerator.TimeFormatter;
+import org.junit.jupiter.api.Test;
 
 class FreemarkerViewGeneratorBehaviour {
 

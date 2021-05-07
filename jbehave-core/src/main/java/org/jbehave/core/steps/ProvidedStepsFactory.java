@@ -1,10 +1,10 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.steps.AbstractStepsFactory.StepsInstanceNotFound;
+import static java.util.Arrays.asList;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
+import org.jbehave.core.steps.AbstractStepsFactory.StepsInstanceNotFound;
 
 /**
  * An {@link InjectableStepsFactory} that is provided with the

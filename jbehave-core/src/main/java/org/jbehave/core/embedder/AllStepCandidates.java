@@ -1,15 +1,15 @@
 package org.jbehave.core.embedder;
 
-import org.jbehave.core.annotations.ScenarioType;
-import org.jbehave.core.steps.BeforeOrAfterStep;
-import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.StepCandidate;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jbehave.core.annotations.ScenarioType;
+import org.jbehave.core.steps.BeforeOrAfterStep;
+import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.StepCandidate;
 
 public class AllStepCandidates
 {

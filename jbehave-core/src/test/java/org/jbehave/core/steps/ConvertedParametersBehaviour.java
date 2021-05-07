@@ -1,18 +1,15 @@
 package org.jbehave.core.steps;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers;
-import org.jbehave.core.steps.ConvertedParameters;
-import org.jbehave.core.steps.ParameterConverters;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.is;
 
 class ConvertedParametersBehaviour {
 

@@ -1,5 +1,9 @@
 package org.jbehave.examples.performance;
 
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+
 import java.util.List;
 
 import org.jbehave.core.Embeddable;
@@ -16,10 +20,6 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.performance.steps.PerformanceSteps;
 import org.junit.runner.RunWith;
-
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
 
 @RunWith(JUnit4StoryRunner.class)
 public class PerformanceStories extends JUnitStories {

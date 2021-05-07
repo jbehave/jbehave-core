@@ -1,13 +1,14 @@
 package org.jbehave.io;
 
-import org.jbehave.io.ResourceFinder.ResourceNotFoundException;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.jbehave.io.ResourceFinder.ResourceNotFoundException;
+import org.junit.jupiter.api.Test;
 
 class ResourceFinderBehaviour {
 

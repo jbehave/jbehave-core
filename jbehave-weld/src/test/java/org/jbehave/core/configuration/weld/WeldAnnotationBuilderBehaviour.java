@@ -28,7 +28,6 @@ import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.configuration.weld.WeldBootstrap;
 import org.jbehave.core.configuration.weld.ConfigurationProducer.CustomObject;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;

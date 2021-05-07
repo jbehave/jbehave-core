@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.List;
-
 import javax.inject.Inject;
 
 import org.jbehave.core.annotations.Given;

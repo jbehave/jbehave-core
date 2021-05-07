@@ -2,6 +2,7 @@ package org.jbehave.examples.core.guice;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.guice.GuiceStepsFactory;
 import org.jbehave.examples.core.CoreStories;

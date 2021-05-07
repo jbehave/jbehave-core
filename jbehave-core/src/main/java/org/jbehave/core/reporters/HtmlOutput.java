@@ -1,12 +1,12 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.i18n.LocalizedKeywords;
+import static org.jbehave.core.reporters.PrintStreamOutput.Format.HTML;
 
 import java.io.PrintStream;
 import java.util.Properties;
 
-import static org.jbehave.core.reporters.PrintStreamOutput.Format.HTML;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.i18n.LocalizedKeywords;
 
 /**
  * <p>

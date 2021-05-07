@@ -1,5 +1,7 @@
 package org.jbehave.core.reporters;
 
+import static java.util.Arrays.asList;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,8 +18,6 @@ import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
-
-import static java.util.Arrays.asList;
 
 /**
  * <p>

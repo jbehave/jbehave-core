@@ -1,7 +1,7 @@
 package org.jbehave.core.io;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.jbehave.core.io.UnderscoredCamelCaseResolver.NUMBERS_AS_UPPER_CASE_LETTERS_PATTERN;
 
 import org.jbehave.core.Embeddable;

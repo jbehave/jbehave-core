@@ -1,15 +1,7 @@
 package org.jbehave.core.parsers.gherkin;
 
-import gherkin.formatter.Formatter;
-import gherkin.formatter.model.Background;
-import gherkin.formatter.model.Examples;
-import gherkin.formatter.model.Feature;
-import gherkin.formatter.model.Row;
-import gherkin.formatter.model.Scenario;
-import gherkin.formatter.model.ScenarioOutline;
-import gherkin.formatter.model.Step;
-import gherkin.formatter.model.Tag;
-import gherkin.parser.Parser;
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.compile;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,8 +12,16 @@ import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.parsers.StoryTransformer;
 import org.jbehave.core.parsers.TransformingStoryParser;
 
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.regex.Pattern.compile;
+import gherkin.formatter.Formatter;
+import gherkin.formatter.model.Background;
+import gherkin.formatter.model.Examples;
+import gherkin.formatter.model.Feature;
+import gherkin.formatter.model.Row;
+import gherkin.formatter.model.Scenario;
+import gherkin.formatter.model.ScenarioOutline;
+import gherkin.formatter.model.Step;
+import gherkin.formatter.model.Tag;
+import gherkin.parser.Parser;
 
 public class GherkinStoryParser extends TransformingStoryParser {
 

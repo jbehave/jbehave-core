@@ -1,11 +1,11 @@
 package org.jbehave.core.io;
 
+import static java.util.regex.Pattern.compile;
+
 import java.util.Locale;
 import java.util.regex.Matcher;
 
 import org.jbehave.core.Embeddable;
-
-import static java.util.regex.Pattern.compile;
 
 /**
  * <p>

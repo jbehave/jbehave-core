@@ -1,6 +1,9 @@
 package org.jbehave.core.configuration;
 
+import java.util.Comparator;
+
 import com.thoughtworks.paranamer.Paranamer;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.embedder.StoryControls;
@@ -20,8 +23,6 @@ import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
-
-import java.util.Comparator;
 
 /**
  * Decorator of Configuration that disables modification of configuration

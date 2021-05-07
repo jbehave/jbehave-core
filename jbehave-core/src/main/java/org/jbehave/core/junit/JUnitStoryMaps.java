@@ -1,8 +1,8 @@
 package org.jbehave.core.junit;
 
-import org.junit.Test;
-
 import java.util.List;
+
+import org.junit.Test;
 
 /**
  * <p>

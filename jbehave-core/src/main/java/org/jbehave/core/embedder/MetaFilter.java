@@ -1,7 +1,5 @@
 package org.jbehave.core.embedder;
 
-import groovy.lang.GroovyClassLoader;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,6 +16,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Meta.Property;
+
+import groovy.lang.GroovyClassLoader;
 
 /**
  * <p>

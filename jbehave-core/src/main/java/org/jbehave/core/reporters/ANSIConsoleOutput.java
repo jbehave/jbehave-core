@@ -1,12 +1,14 @@
 package org.jbehave.core.reporters;
 
-import java.util.Properties;
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.reporters.SGRCodes.SGRCode;
-
-import static org.jbehave.core.reporters.SGRCodes.SGRCode.*;
+import static org.jbehave.core.reporters.SGRCodes.SGRCode.RESET;
+import static org.jbehave.core.reporters.SGRCodes.SGRCode.UNDERLINE;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+
+import java.util.Properties;
+
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.reporters.SGRCodes.SGRCode;
 
 /**
  * <p>

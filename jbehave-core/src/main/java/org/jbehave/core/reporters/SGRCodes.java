@@ -1,9 +1,15 @@
 package org.jbehave.core.reporters;
 
+import static org.jbehave.core.reporters.SGRCodes.SGRCode.BLUE;
+import static org.jbehave.core.reporters.SGRCodes.SGRCode.BRIGHT_MAGENTA;
+import static org.jbehave.core.reporters.SGRCodes.SGRCode.GREEN;
+import static org.jbehave.core.reporters.SGRCodes.SGRCode.MAGENTA;
+import static org.jbehave.core.reporters.SGRCodes.SGRCode.RED;
+import static org.jbehave.core.reporters.SGRCodes.SGRCode.UNDERLINE;
+import static org.jbehave.core.reporters.SGRCodes.SGRCode.YELLOW;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.jbehave.core.reporters.SGRCodes.SGRCode.*;
 
 /**
  * <p>

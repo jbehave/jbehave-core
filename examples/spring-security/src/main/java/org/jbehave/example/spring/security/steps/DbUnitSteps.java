@@ -1,7 +1,6 @@
 package org.jbehave.example.spring.security.steps;
 
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.dbunit.DatabaseUnitException;

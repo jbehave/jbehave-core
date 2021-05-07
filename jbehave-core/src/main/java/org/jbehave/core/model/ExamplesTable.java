@@ -1,5 +1,11 @@
 package org.jbehave.core.model;
 
+import static java.lang.Boolean.parseBoolean;
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.Validate.isTrue;
+import static org.apache.commons.lang3.Validate.notBlank;
+
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -33,12 +39,6 @@ import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.Parameters;
 import org.jbehave.core.steps.Row;
-
-import static java.lang.Boolean.parseBoolean;
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.Validate.isTrue;
-import static org.apache.commons.lang3.Validate.notBlank;
 
 /**
  * <p>

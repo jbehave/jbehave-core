@@ -1,12 +1,12 @@
 package org.jbehave.core.reporters;
 
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jbehave.core.reporters.SGRCodes.SGRCode.MAGENTA;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 class ANSIConsoleOutputBehaviour {
     private ANSIConsoleOutput output = new ANSIConsoleOutput();

@@ -1,15 +1,21 @@
 package org.jbehave.core.junit;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.embedder.AllStepCandidates;
 import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableStory;
-import org.jbehave.core.embedder.AllStepCandidates;
 import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -17,12 +23,6 @@ import org.jbehave.core.steps.BeforeOrAfterStep;
 import org.jbehave.core.steps.StepCandidate;
 import org.jbehave.core.steps.StepType;
 import org.junit.runner.Description;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
 
 public class JUnit4DescriptionGenerator {
 

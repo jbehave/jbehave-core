@@ -1,8 +1,13 @@
 package org.jbehave.core.configuration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Comparator;
+
+import com.thoughtworks.paranamer.Paranamer;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.embedder.StoryControls;
@@ -21,12 +26,6 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
 import org.junit.jupiter.api.Test;
-
-import com.thoughtworks.paranamer.Paranamer;
-
-import static org.hamcrest.Matchers.is;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 class UnmodifiableConfigurationBehaviour {
 

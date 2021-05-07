@@ -1,18 +1,19 @@
 package org.jbehave.core.reporters;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.jbehave.core.io.IOUtils;
-import org.xml.sax.SAXException;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
+import org.custommonkey.xmlunit.XMLUnit;
+import org.jbehave.core.io.IOUtils;
+import org.xml.sax.SAXException;
 
 public abstract class AbstractOutputBehaviour {
 

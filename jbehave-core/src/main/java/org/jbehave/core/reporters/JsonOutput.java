@@ -1,11 +1,8 @@
 package org.jbehave.core.reporters;
 
 import static org.jbehave.core.reporters.PrintStreamOutput.Format.JSON;
-import static org.jbehave.core.steps.StepCreator.*;
 
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang3.ArrayUtils;

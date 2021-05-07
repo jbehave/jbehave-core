@@ -5,10 +5,10 @@ import java.lang.reflect.Method;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.AfterStory;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.BeforeStory;
-import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.model.Meta;
 
 /**

@@ -1,15 +1,15 @@
 package org.jbehave.core.io.rest.xwiki;
 
-import org.apache.commons.io.IOUtils;
-import org.jbehave.core.io.rest.Resource;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import org.apache.commons.io.IOUtils;
+import org.jbehave.core.io.rest.Resource;
+import org.junit.jupiter.api.Test;
 
 class IndexFromXWikiBehaviour {
 

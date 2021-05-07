@@ -1,7 +1,6 @@
 package org.jbehave.example.spring.security.dao;
 
 import java.util.List;
-
 import javax.transaction.Transactional;
 
 import org.hibernate.SessionFactory;

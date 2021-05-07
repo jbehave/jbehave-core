@@ -1,12 +1,12 @@
 package org.jbehave.core.io.rest.xwiki;
 
+import com.google.gson.Gson;
+import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.security.AnyTypePermission;
+
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.UploadToREST;
-
-import com.google.gson.Gson;
-import com.thoughtworks.xstream.XStream;
 
 /**
  * Uploads resource to XWiki pages using the REST API

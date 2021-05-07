@@ -1,5 +1,9 @@
 package org.jbehave.core.io.rest.redmine;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.startsWith;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -7,10 +11,6 @@ import org.apache.commons.io.IOUtils;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.Resource;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.startsWith;
 
 class UploadToRedmineBehaviour {
 

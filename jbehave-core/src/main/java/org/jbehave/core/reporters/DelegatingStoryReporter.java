@@ -1,17 +1,25 @@
 package org.jbehave.core.reporters;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jbehave.core.model.*;
-import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.Timing;
+import static java.util.Arrays.asList;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static java.util.Arrays.asList;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Step;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.Timing;
 
 /**
  * Reporter which collects other {@link StoryReporter}s and delegates all

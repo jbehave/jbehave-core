@@ -1,5 +1,8 @@
 package org.jbehave.examples.core.maps;
 
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
+
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
@@ -12,9 +15,6 @@ import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
  * <p>

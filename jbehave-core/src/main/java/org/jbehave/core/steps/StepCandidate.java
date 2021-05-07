@@ -1,10 +1,14 @@
 package org.jbehave.core.steps;
 
+import static java.text.MessageFormat.format;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.thoughtworks.paranamer.Paranamer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
@@ -17,10 +21,6 @@ import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.steps.context.StepsContext;
-
-import com.thoughtworks.paranamer.Paranamer;
-
-import static java.text.MessageFormat.format;
 
 /**
  * A StepCandidate is associated to a Java method annotated with {@link Given},

@@ -1,13 +1,13 @@
 package org.jbehave.core.failures;
 
+import static java.text.MessageFormat.format;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-
-import static java.text.MessageFormat.format;
 
 /**
  * Thrown when methods, annotated with before or after annotations (story or scenario),

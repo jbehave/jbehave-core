@@ -1,12 +1,12 @@
 package org.jbehave.examples.core.testng;
 
-import org.jbehave.core.Embeddable;
-import org.jbehave.core.io.StoryFinder;
-import org.jbehave.examples.core.CoreStories;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 import java.util.List;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
+import org.jbehave.core.Embeddable;
+import org.jbehave.core.io.StoryFinder;
+import org.jbehave.examples.core.CoreStories;
 
 /**
  * <p>

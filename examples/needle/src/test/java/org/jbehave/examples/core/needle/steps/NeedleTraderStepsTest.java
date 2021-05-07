@@ -1,16 +1,16 @@
 package org.jbehave.examples.core.needle.steps;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
+import javax.inject.Inject;
+
 import org.hamcrest.Matchers;
 import org.jbehave.examples.core.service.TradingService;
 import org.junit.Rule;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleRule;
-
-import javax.inject.Inject;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Test Constructor injection for steps.

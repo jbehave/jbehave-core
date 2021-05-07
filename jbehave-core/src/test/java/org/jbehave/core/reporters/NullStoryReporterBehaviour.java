@@ -1,12 +1,13 @@
 package org.jbehave.core.reporters;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+
 import org.hamcrest.Matchers;
 import org.jbehave.core.model.Story;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 class NullStoryReporterBehaviour {
 

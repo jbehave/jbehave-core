@@ -1,11 +1,11 @@
 package org.jbehave.core.steps;
 
+import static org.mockito.Mockito.mock;
+
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.junit.jupiter.api.Test;
-
-import static org.mockito.Mockito.mock;
 
 class ConcurrencyBehaviour {
 

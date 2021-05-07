@@ -1,10 +1,10 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.model.StepPattern;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Queue;
+
+import org.jbehave.core.model.StepPattern;
 
 /**
  * <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">Null Object Pattern</a> implementation of {@link StepMonitor}.

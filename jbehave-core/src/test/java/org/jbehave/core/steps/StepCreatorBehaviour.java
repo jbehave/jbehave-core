@@ -1,37 +1,5 @@
 package org.jbehave.core.steps;
 
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import com.thoughtworks.paranamer.CachingParanamer;
-import org.jbehave.core.annotations.AfterScenario;
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.failures.BeforeOrAfterFailed;
-import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.TableTransformers;
-import org.jbehave.core.parsers.RegexStepMatcher;
-import org.jbehave.core.parsers.StepMatcher;
-import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.AbstractStepResult.*;
-import org.jbehave.core.steps.StepCreator.ParameterNotFound;
-import org.jbehave.core.steps.StepCreator.StepExecutionType;
-import org.jbehave.core.steps.context.StepsContext;
-import org.jbehave.core.steps.context.StepsContext.ObjectAlreadyStoredException;
-import org.jbehave.core.steps.context.StepsContext.ObjectNotStoredException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.beans.IntrospectionException;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -47,6 +15,45 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+
+import java.beans.IntrospectionException;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+
+import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.failures.BeforeOrAfterFailed;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.TableTransformers;
+import org.jbehave.core.parsers.RegexStepMatcher;
+import org.jbehave.core.parsers.StepMatcher;
+import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.steps.AbstractStepResult.Comment;
+import org.jbehave.core.steps.AbstractStepResult.Failed;
+import org.jbehave.core.steps.AbstractStepResult.Ignorable;
+import org.jbehave.core.steps.AbstractStepResult.Pending;
+import org.jbehave.core.steps.AbstractStepResult.Silent;
+import org.jbehave.core.steps.AbstractStepResult.Skipped;
+import org.jbehave.core.steps.AbstractStepResult.Successful;
+import org.jbehave.core.steps.StepCreator.ParameterNotFound;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
+import org.jbehave.core.steps.context.StepsContext;
+import org.jbehave.core.steps.context.StepsContext.ObjectAlreadyStoredException;
+import org.jbehave.core.steps.context.StepsContext.ObjectNotStoredException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class StepCreatorBehaviour {
 

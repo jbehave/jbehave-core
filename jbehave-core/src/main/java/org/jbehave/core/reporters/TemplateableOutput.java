@@ -1,5 +1,12 @@
 package org.jbehave.core.reporters;
 
+import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VERBATIM_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VERBATIM_START;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
@@ -17,15 +24,22 @@ import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MetaFilter;
-import org.jbehave.core.model.*;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.model.Verbatim;
+import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.Timing;
 
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModelException;
-import org.jbehave.core.steps.StepCollector;
-import org.jbehave.core.steps.Timing;
-
-import static org.jbehave.core.steps.StepCreator.*;
 
 /**
  * <p>

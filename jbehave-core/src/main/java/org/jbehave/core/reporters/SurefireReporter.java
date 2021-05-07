@@ -1,25 +1,32 @@
 package org.jbehave.core.reporters;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jbehave.core.embedder.PerformableTree.*;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.xml.sax.SAXException;
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
 
-import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
+import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
+import org.jbehave.core.embedder.PerformableTree.PerformableStory;
+import org.jbehave.core.embedder.PerformableTree.Status;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.xml.sax.SAXException;
 
 public class SurefireReporter {
 

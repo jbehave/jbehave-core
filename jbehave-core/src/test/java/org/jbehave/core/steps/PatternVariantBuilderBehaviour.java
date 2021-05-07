@@ -1,12 +1,12 @@
 package org.jbehave.core.steps;
 
-import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 class PatternVariantBuilderBehaviour {
     

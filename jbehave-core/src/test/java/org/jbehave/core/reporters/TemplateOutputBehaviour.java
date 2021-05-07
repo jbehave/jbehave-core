@@ -1,16 +1,16 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
-import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.jbehave.core.i18n.LocalizedKeywords;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 class TemplateOutputBehaviour extends AbstractOutputBehaviour {
 

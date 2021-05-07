@@ -1,12 +1,49 @@
 package org.jbehave.core.i18n;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.i18n.LocalizedKeywords.ResourceBundleNotFound;
-import org.jbehave.core.steps.StepType;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.not;
+import static org.jbehave.core.configuration.Keywords.AFTER;
+import static org.jbehave.core.configuration.Keywords.AND;
+import static org.jbehave.core.configuration.Keywords.AS_A;
+import static org.jbehave.core.configuration.Keywords.BEFORE;
+import static org.jbehave.core.configuration.Keywords.DRY_RUN;
+import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE;
+import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_HEADER_SEPARATOR;
+import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_IGNORABLE_SEPARATOR;
+import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_ROW;
+import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_VALUE_SEPARATOR;
+import static org.jbehave.core.configuration.Keywords.FAILED;
+import static org.jbehave.core.configuration.Keywords.GIVEN;
+import static org.jbehave.core.configuration.Keywords.GIVEN_STORIES;
+import static org.jbehave.core.configuration.Keywords.IGNORABLE;
+import static org.jbehave.core.configuration.Keywords.IN_ORDER_TO;
+import static org.jbehave.core.configuration.Keywords.I_WANT_TO;
+import static org.jbehave.core.configuration.Keywords.LIFECYCLE;
+import static org.jbehave.core.configuration.Keywords.META;
+import static org.jbehave.core.configuration.Keywords.META_FILTER;
+import static org.jbehave.core.configuration.Keywords.META_PROPERTY;
+import static org.jbehave.core.configuration.Keywords.NARRATIVE;
+import static org.jbehave.core.configuration.Keywords.NOT_PERFORMED;
+import static org.jbehave.core.configuration.Keywords.OUTCOME;
+import static org.jbehave.core.configuration.Keywords.OUTCOME_ANY;
+import static org.jbehave.core.configuration.Keywords.OUTCOME_DESCRIPTION;
+import static org.jbehave.core.configuration.Keywords.OUTCOME_FAILURE;
+import static org.jbehave.core.configuration.Keywords.OUTCOME_MATCHER;
+import static org.jbehave.core.configuration.Keywords.OUTCOME_SUCCESS;
+import static org.jbehave.core.configuration.Keywords.OUTCOME_VALUE;
+import static org.jbehave.core.configuration.Keywords.OUTCOME_VERIFIED;
+import static org.jbehave.core.configuration.Keywords.PENDING;
+import static org.jbehave.core.configuration.Keywords.SCENARIO;
+import static org.jbehave.core.configuration.Keywords.SCOPE;
+import static org.jbehave.core.configuration.Keywords.SCOPE_SCENARIO;
+import static org.jbehave.core.configuration.Keywords.SCOPE_STORY;
+import static org.jbehave.core.configuration.Keywords.SO_THAT;
+import static org.jbehave.core.configuration.Keywords.STORY_CANCELLED;
+import static org.jbehave.core.configuration.Keywords.THEN;
+import static org.jbehave.core.configuration.Keywords.WHEN;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,10 +51,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.jbehave.core.configuration.Keywords.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.apache.commons.lang3.StringUtils;
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.i18n.LocalizedKeywords.ResourceBundleNotFound;
+import org.jbehave.core.steps.StepType;
+import org.junit.jupiter.api.Test;
 
 class LocalizedKeywordsBehaviour {
 

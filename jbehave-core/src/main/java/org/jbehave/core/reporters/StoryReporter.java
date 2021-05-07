@@ -1,11 +1,19 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.model.*;
-import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.Timing;
-
 import java.util.List;
 import java.util.Map;
+
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Step;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.Timing;
 
 /**
  * Allows the runner to report the state of running stories

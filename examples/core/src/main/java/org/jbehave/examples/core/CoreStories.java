@@ -1,5 +1,16 @@
 package org.jbehave.examples.core;
 
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.ANSI_CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.jbehave.core.reporters.Format.XML_TEMPLATE;
+
+import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -25,16 +36,33 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.examples.core.service.TradingService;
-import org.jbehave.examples.core.steps.*;
+import org.jbehave.examples.core.steps.AndSteps;
+import org.jbehave.examples.core.steps.BankAccountSteps;
+import org.jbehave.examples.core.steps.BeforeAfterSteps;
+import org.jbehave.examples.core.steps.CalendarSteps;
+import org.jbehave.examples.core.steps.CompositeNestedSteps;
+import org.jbehave.examples.core.steps.CompositeSteps;
+import org.jbehave.examples.core.steps.ContextSteps;
+import org.jbehave.examples.core.steps.IgnoringSteps;
+import org.jbehave.examples.core.steps.JsonSteps;
+import org.jbehave.examples.core.steps.MetaParametrisationSteps;
+import org.jbehave.examples.core.steps.MyContext;
+import org.jbehave.examples.core.steps.NamedAnnotationsSteps;
+import org.jbehave.examples.core.steps.NamedParametersSteps;
+import org.jbehave.examples.core.steps.ParameterDelimitersSteps;
+import org.jbehave.examples.core.steps.ParametrisationByDelimitedNameSteps;
+import org.jbehave.examples.core.steps.ParametrisedSteps;
+import org.jbehave.examples.core.steps.PendingSteps;
+import org.jbehave.examples.core.steps.PriorityMatchingSteps;
+import org.jbehave.examples.core.steps.RestartingSteps;
+import org.jbehave.examples.core.steps.SandpitSteps;
+import org.jbehave.examples.core.steps.SearchSteps;
+import org.jbehave.examples.core.steps.StepsContextSteps;
+import org.jbehave.examples.core.steps.TableMappingSteps;
+import org.jbehave.examples.core.steps.TableSteps;
+import org.jbehave.examples.core.steps.TraderSteps;
+import org.jbehave.examples.core.steps.VerbatimSteps;
 import org.junit.runner.RunWith;
-
-import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.*;
 
 /**
  * <p>

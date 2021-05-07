@@ -1,12 +1,12 @@
 package org.jbehave.core.configuration.spring;
 
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
-import org.jbehave.core.reporters.StoryReporterBuilder;
-
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
+
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 
 /**
  * Extends {@link StoryReporterBuilder} to provide getter/setter methods for all

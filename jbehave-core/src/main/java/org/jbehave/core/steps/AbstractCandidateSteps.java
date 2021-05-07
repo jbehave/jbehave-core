@@ -1,13 +1,13 @@
 package org.jbehave.core.steps;
 
+import static java.text.MessageFormat.format;
+
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Configuration;
-
-import static java.text.MessageFormat.format;
 
 /**
  * @author Valery Yatsynovich

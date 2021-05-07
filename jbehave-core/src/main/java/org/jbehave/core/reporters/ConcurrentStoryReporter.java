@@ -1,9 +1,5 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.model.*;
-import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.Timing;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -11,6 +7,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Step;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.Timing;
 
 /**
  * When running a multithreading mode, reports cannot be written concurrently but should 

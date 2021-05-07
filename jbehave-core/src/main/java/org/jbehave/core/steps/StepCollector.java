@@ -1,12 +1,12 @@
 package org.jbehave.core.steps;
 
+import java.util.List;
+import java.util.Map;
+
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Represents the strategy for the collection of executable {@link Step}s from a story or scenario matching a list of

@@ -1,12 +1,11 @@
 package org.jbehave.core.steps;
 
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import org.jbehave.core.annotations.*;
-import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.reporters.StoryReporter;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.jbehave.core.steps.StepCandidateBehaviour.candidateMatchingStep;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,12 +13,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.jbehave.core.steps.StepCandidateBehaviour.candidateMatchingStep;
-import static org.mockito.Mockito.mock;
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+
+import org.jbehave.core.annotations.Composite;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.reporters.StoryReporter;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 class CompositeCandidateStepsBehaviour {
 

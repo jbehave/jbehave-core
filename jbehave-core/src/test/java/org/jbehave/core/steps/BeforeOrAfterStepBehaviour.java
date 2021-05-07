@@ -1,14 +1,14 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.annotations.AfterScenario;
-import org.jbehave.core.model.Meta;
-import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Method;
-
 import static org.jbehave.core.steps.SomeSteps.methodFor;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.lang.reflect.Method;
+
+import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.model.Meta;
+import org.junit.jupiter.api.Test;
 
 class BeforeOrAfterStepBehaviour {
     @Test

@@ -1,8 +1,8 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.model.ExamplesTable;
-
 import java.util.Map;
+
+import org.jbehave.core.model.ExamplesTable;
 
 /**
  * Represents a row in an {@link ExamplesTable}.

@@ -1,12 +1,12 @@
 package org.jbehave.examples.core.steps;
 
-import org.jbehave.core.annotations.FromContext;
-import org.jbehave.core.annotations.When;
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.annotations.ToContext;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+
+import org.jbehave.core.annotations.FromContext;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.ToContext;
+import org.jbehave.core.annotations.When;
 
 
 public class StepsContextSteps {

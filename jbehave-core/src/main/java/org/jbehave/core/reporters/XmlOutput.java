@@ -1,12 +1,12 @@
 package org.jbehave.core.reporters;
 
+import static org.jbehave.core.reporters.PrintStreamOutput.Format.XML;
+
 import java.io.PrintStream;
 import java.util.Properties;
 
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
-
-import static org.jbehave.core.reporters.PrintStreamOutput.Format.XML;
 
 /**
  * <p>

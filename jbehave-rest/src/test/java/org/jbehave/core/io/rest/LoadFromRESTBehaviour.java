@@ -1,15 +1,13 @@
 package org.jbehave.core.io.rest;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.containsString;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 class LoadFromRESTBehaviour {

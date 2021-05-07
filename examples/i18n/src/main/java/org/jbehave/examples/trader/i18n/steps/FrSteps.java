@@ -1,5 +1,8 @@
 package org.jbehave.examples.trader.i18n.steps;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import java.util.Locale;
 import java.util.Map;
 
@@ -13,10 +16,6 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.steps.Parameters;
 import org.jbehave.examples.core.model.Stock;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
 
 public class FrSteps {
 

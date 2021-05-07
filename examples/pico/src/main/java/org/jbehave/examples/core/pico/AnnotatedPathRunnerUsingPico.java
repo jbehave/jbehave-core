@@ -1,5 +1,10 @@
 package org.jbehave.examples.core.pico;
 
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.jbehave.core.reporters.Format.XML;
+
 import java.text.SimpleDateFormat;
 
 import org.jbehave.core.annotations.Configure;
@@ -29,8 +34,6 @@ import org.jbehave.examples.core.steps.SearchSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
 import org.junit.runner.RunWith;
 import org.picocontainer.MutablePicoContainer;
-
-import static org.jbehave.core.reporters.Format.*;
 
 /**
  * Run stories via annotated embedder configuration and steps using Pico. The

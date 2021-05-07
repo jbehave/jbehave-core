@@ -1,5 +1,8 @@
 package org.jbehave.examples.scala;
 
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.ANSI_CONSOLE;
+
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
@@ -12,9 +15,6 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.scala.ScalaStepsFactory;
 import org.junit.runner.RunWith;
-
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.ANSI_CONSOLE;
 
 @RunWith(JUnit4StoryRunner.class)
 public class ScalaStories extends JUnitStories {

@@ -1,5 +1,7 @@
 package org.jbehave.core.reporters;
 
+import static java.util.Arrays.asList;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -16,8 +18,6 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.Timing;
-
-import static java.util.Arrays.asList;
 
 /**
  * <p>

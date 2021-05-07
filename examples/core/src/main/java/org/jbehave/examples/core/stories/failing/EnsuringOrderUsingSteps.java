@@ -1,7 +1,20 @@
 package org.jbehave.examples.core.stories.failing;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.jbehave.core.Embeddable;
-import org.jbehave.core.annotations.*;
+import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.UsingEmbedder;
+import org.jbehave.core.annotations.UsingSteps;
+import org.jbehave.core.annotations.When;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.reporters.Format;
@@ -11,13 +24,6 @@ import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.B;
 import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.C;
 import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.MyStoryReporterBuilder;
 import org.junit.runner.RunWith;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 @RunWith(AnnotatedEmbedderRunner.class)
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = false, ignoreFailureInView = true)

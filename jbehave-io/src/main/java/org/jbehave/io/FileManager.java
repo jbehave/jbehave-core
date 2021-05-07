@@ -1,9 +1,9 @@
 package org.jbehave.io;
 
-import org.apache.commons.fileupload.FileItem;
-
 import java.io.File;
 import java.util.List;
+
+import org.apache.commons.fileupload.FileItem;
 
 /**
  * Manages data files, allowing the upload, list and delete. If a file is any

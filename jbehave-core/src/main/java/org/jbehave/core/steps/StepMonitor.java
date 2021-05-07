@@ -1,10 +1,10 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.model.StepPattern;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Queue;
+
+import org.jbehave.core.model.StepPattern;
 
 /**
  * Interface to monitor step events

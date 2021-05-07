@@ -1,5 +1,11 @@
 package org.jbehave.examples.groovy;
 
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.ANSI_CONSOLE;
+
+import java.util.List;
+
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.ParanamerConfiguration;
 import org.jbehave.core.configuration.groovy.GroovyContext;
@@ -8,12 +14,6 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.groovy.GroovyStepsFactory;
 import org.jbehave.examples.core.CoreStories;
-
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.ANSI_CONSOLE;
 
 public class GroovyStories extends CoreStories {
 

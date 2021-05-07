@@ -1,5 +1,8 @@
 package org.jbehave.core.model;
 
+import static java.util.Collections.unmodifiableList;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -7,9 +10,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import static java.util.Collections.unmodifiableList;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class Story {
 

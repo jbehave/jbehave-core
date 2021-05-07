@@ -1,10 +1,10 @@
 package org.jbehave.core.junit;
 
+import java.util.List;
+
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 /**
  * <p>
