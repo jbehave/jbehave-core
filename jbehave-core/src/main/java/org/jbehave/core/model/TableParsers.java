@@ -6,9 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
@@ -77,13 +76,22 @@ public class TableParsers {
 
     public List<String> parseRow(String rowAsString, boolean header, TableProperties properties) {
         String separator = header ? properties.getHeaderSeparator() : properties.getValueSeparator();
-        return parseRow(rowAsString.trim(), separator, properties.getCommentSeparator(), properties.isTrim());
+        Function<String, String> trimmer = properties.isTrim() ? String::trim : Function.identity();
+        return parseRow(rowAsString.trim(), separator, properties.getCommentSeparator(), trimmer);
     }
 
-    private List<String> parseRow(String rowAsString, String separator, String commentSeparator, boolean trimValues) {
-        return Stream.of(StringUtils.split(rowAsString, separator))
-                     .map(cell -> StringUtils.substringBefore(cell, commentSeparator))
-                     .map(cell -> trimValues ? cell.trim() : cell)
-                     .collect(Collectors.toList());
+    private List<String> parseRow(String rowAsString, String separator, String commentSeparator,
+            Function<String, String> trimmer) {
+        String[] cells = StringUtils.splitByWholeSeparatorPreserveAllTokens(rowAsString, separator);
+        List<String> row = new ArrayList<>(cells.length);
+        for (int i = 0; i < cells.length; i++) {
+            String cell = cells[i];
+            cell = StringUtils.substringBefore(cell, commentSeparator);
+            if ((i == 0 || i == cells.length - 1) && cell.isEmpty()) {
+                continue;
+            }
+            row.add(trimmer.apply(cell));
+        }
+        return row;
     }
 }
