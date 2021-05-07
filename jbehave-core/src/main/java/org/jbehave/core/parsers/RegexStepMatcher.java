@@ -11,7 +11,6 @@ public class RegexStepMatcher implements StepMatcher {
     private final Pattern regexPattern;
     private final String[] parameterNames;
     private final StepPattern stepPattern;
-    private Matcher matcher;
 
     public RegexStepMatcher(StepType stepType, String annotatedPattern, Pattern regexPattern, String[] parameterNames) {
         this.regexPattern = regexPattern;
@@ -20,24 +19,8 @@ public class RegexStepMatcher implements StepMatcher {
     }
 
     @Override
-    public boolean matches(String stepWithoutStartingWord) {
-        matcher(stepWithoutStartingWord);
-        return matcher.matches();
-    }
-
-    @Override
-    public boolean find(String stepWithoutStartingWord) {
-        matcher(stepWithoutStartingWord);
-        return matcher.find();
-    }
-
-    @Override
-    public String parameter(int matchedPosition) {
-        return matcher.group(matchedPosition);
-    }
-
-    private void matcher(String patternToMatch) {
-        matcher = regexPattern.matcher(patternToMatch);
+    public Matcher matcher(String stepWithoutStartingWord) {
+        return regexPattern.matcher(stepWithoutStartingWord);
     }
 
     @Override

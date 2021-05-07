@@ -5,12 +5,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
+import java.util.regex.Matcher;
+
 import org.jbehave.core.steps.StepType;
 import org.junit.jupiter.api.Test;
 
 class RegexPrefixCapturingPatternParserBehaviour {
 
-    private StepPatternParser parser = new RegexPrefixCapturingPatternParser();
+    private final StepPatternParser parser = new RegexPrefixCapturingPatternParser();
 
     @Test
     void shouldMatchStepWithPatterns() {
@@ -74,9 +76,10 @@ class RegexPrefixCapturingPatternParserBehaviour {
     void shouldEscapeRegexPunctuationUsedInPatterns() {
         StepMatcher matcherWithAllTheRegexPunctuation = parser
                 .parseStep(StepType.GIVEN, "$regexp should not be confused by []{}?^.*()+\\");
-        assertThat(matcherWithAllTheRegexPunctuation.matches("[]{}?^.*()+\\ should not be confused by []{}?^.*()+\\"),
-                is(true));
-        assertThat(matcherWithAllTheRegexPunctuation.parameter(1), equalTo("[]{}?^.*()+\\"));
+        Matcher matcher = matcherWithAllTheRegexPunctuation.matcher(
+                "[]{}?^.*()+\\ should not be confused by []{}?^.*()+\\");
+        assertThat(matcher.matches(), is(true));
+        assertThat(matcher.group(1), equalTo("[]{}?^.*()+\\"));
     }
     
     @Test
@@ -90,7 +93,7 @@ class RegexPrefixCapturingPatternParserBehaviour {
     private void assertThatPatternMatchesStep(StepPatternParser parser, String pattern, String step,
             boolean matching, String... parameterNames) {
         StepMatcher stepMatcher = parser.parseStep(StepType.GIVEN, pattern);
-        assertThat(stepMatcher.matches(step), is(matching));
+        assertThat(stepMatcher.matcher(step).matches(), is(matching));
         assertThat(stepMatcher.parameterNames(), equalTo(parameterNames));
     }
 
@@ -99,16 +102,19 @@ class RegexPrefixCapturingPatternParserBehaviour {
         StepMatcher stepMatcher = parser.parseStep(StepType.GIVEN, "The grid looks like $grid");
 
         // Given an argument on a new line
-        assertThat(stepMatcher.matches("The grid looks like\n" + "..\n" + "..\n"), is(true));
-        assertThat(stepMatcher.parameter(1), equalTo("..\n" + "..\n"));
+        Matcher matcher1 = stepMatcher.matcher("The grid looks like\n" + "..\n" + "..\n");
+        assertThat(matcher1.matches(), is(true));
+        assertThat(matcher1.group(1), equalTo("..\n" + "..\n"));
 
         // Given an argument on a new line with extra spaces
-        assertThat(stepMatcher.matches("The grid looks like \n" + "..\n" + "..\n"), is(true));
-        assertThat(stepMatcher.parameter(1), equalTo("..\n" + "..\n"));
+        Matcher matcher2 = stepMatcher.matcher("The grid looks like \n" + "..\n" + "..\n");
+        assertThat(matcher2.matches(), is(true));
+        assertThat(matcher2.group(1), equalTo("..\n" + "..\n"));
 
         // Given an argument with extra spaces
-        assertThat(stepMatcher.matches("The grid looks like  ."), is(true));
-        assertThat(stepMatcher.parameter(1), equalTo("."));
+        Matcher matcher3 = stepMatcher.matcher("The grid looks like  .");
+        assertThat(matcher3.matches(), is(true));
+        assertThat(matcher3.group(1), equalTo("."));
     }
 
     @Test

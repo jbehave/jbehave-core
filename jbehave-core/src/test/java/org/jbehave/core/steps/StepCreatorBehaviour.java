@@ -24,23 +24,35 @@ import org.junit.jupiter.api.Test;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 class StepCreatorBehaviour {
 
     private ParameterConverters parameterConverters = mock(ParameterConverters.class);
 
-    private StepsContext stepsContext = new StepsContext();
+    private final StepsContext stepsContext = new StepsContext();
 
     @BeforeEach
     public void setUp() {
@@ -69,8 +81,7 @@ class StepCreatorBehaviour {
         assertThat(cause, instanceOf(BeforeOrAfterFailed.class));
         assertThat(
                 cause.getMessage(),
-                org.hamcrest.Matchers
-                        .equalTo("Method aFailingBeforeScenarioMethod (annotated with @BeforeScenario in class org.jbehave.core.steps.SomeSteps) failed: java.lang.RuntimeException"));
+                equalTo("Method aFailingBeforeScenarioMethod (annotated with @BeforeScenario in class org.jbehave.core.steps.SomeSteps) failed: java.lang.RuntimeException"));
     }
 
     @Test
@@ -125,7 +136,8 @@ class StepCreatorBehaviour {
 
         // When
         when(stepMatcher.parameterNames()).thenReturn(new String[] {});
-        assertThrows(ParameterNotFound.class, () -> stepCreator.matchedParameter("unknown"));
+        Matcher matcher = Pattern.compile("foo").matcher("bar");
+        assertThrows(ParameterNotFound.class, () -> stepCreator.matchedParameter(matcher, "unknown"));
         // Then .. fail as expected
     }
 
@@ -232,11 +244,13 @@ class StepCreatorBehaviour {
 
         // When
         when(stepMatcher.parameterNames()).thenReturn(parameters.keySet().toArray(new String[parameters.size()]));
-        when(stepMatcher.parameter(1)).thenReturn(parameters.get(firstParameterValue));
-        when(stepMatcher.parameter(2)).thenReturn(parameters.get(secondParameterValue));
+        String stepWithoutStartingWord = "I use parameters " + firstParameterValue + " and " + secondParameterValue;
+        Matcher matcher = Pattern.compile("I use parameters (.*) and (.*)").matcher(
+                stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
         String stepAsString = "When I use parameters <theme> and <variant>";
         StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"),
-                stepAsString, "I use parameters <theme> and <variant>", parameters, Collections.emptyList()).perform(
+                stepAsString, stepWithoutStartingWord, parameters, Collections.emptyList()).perform(
                 storyReporter, null);
 
         // Then
@@ -473,13 +487,15 @@ class StepCreatorBehaviour {
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
         Map<String, String> params = Collections.singletonMap("param", "value");
         when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));
-        when(stepMatcher.parameter(1)).thenReturn("<param>");
+        String stepWithoutStartingWord = "a parameter <param> is set";
+        Matcher matcher = Pattern.compile("a parameter (.*) is set").matcher(stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
         String stepAsString = "When a parameter <param> is set";
         Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"),
-                stepAsString, "a parameter <param> is set", params, Collections.emptyList());
+                stepAsString, stepWithoutStartingWord, params, Collections.emptyList());
         step.perform(storyReporter, null);
 
         // Then
@@ -493,15 +509,16 @@ class StepCreatorBehaviour {
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
         when(stepMatcher.parameterNames()).thenReturn(new String[] {"name", "num"});
-        when(stepMatcher.parameter(1)).thenReturn("value");
-        when(stepMatcher.parameter(2)).thenReturn("1");
+        String stepWithoutStartingWord = "a composite step with parameter value and number 1";
+        Matcher matcher = Pattern.compile("a composite step with parameter (.*) and number (.*)").matcher(
+                stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
         ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
         String stepAsString = "Given a composite step with parameter $name and number $num";
-        String stepWithoutStartingWord = "a composite step with parameter $name and number $num";
         Step compositeStep = stepCreator.createParametrisedStep(null, stepAsString, stepWithoutStartingWord,
                 Collections.emptyMap(), Collections.emptyList());
         StepResult result = compositeStep.perform(storyReporter, null);
@@ -522,13 +539,15 @@ class StepCreatorBehaviour {
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
         Map<String, String> params = Collections.singletonMap("pa-ram", "value");
         when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));
-        when(stepMatcher.parameter(1)).thenReturn("<pa-ram>");
+        String stepWithoutStartingWord = "a parameter <pa-ram> is set";
+        Matcher matcher = Pattern.compile("a parameter (.*) is set").matcher(stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
         String stepAsString = "When a parameter <pa-ram> is set";
         Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"),
-                stepAsString, "a parameter <pa-ram> is set", params, Collections.emptyList());
+                stepAsString, stepWithoutStartingWord, params, Collections.emptyList());
         step.perform(storyReporter, null);
 
         // Then
@@ -550,14 +569,15 @@ class StepCreatorBehaviour {
         params.put("t", "distinct theme");
         params.put("v", "distinct variant <with non variable inside>");
         when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));
-        when(stepMatcher.parameter(1)).thenReturn("<t>");
-        when(stepMatcher.parameter(2)).thenReturn("<v>");
+        String stepWithoutStartingWord = "I use parameters <t> and <v>";
+        Matcher matcher = Pattern.compile("I use parameters (.*) and (.*)").matcher(stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
         String stepAsString = "When I use parameters <t> and <v>";
         Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"), stepAsString,
-                "I use parameters <t> and <v>", params, Collections.emptyList());
+                stepWithoutStartingWord, params, Collections.emptyList());
         step.perform(storyReporter, null);
 
         // Then
@@ -577,19 +597,20 @@ class StepCreatorBehaviour {
         StepMatcher stepMatcher = mock(StepMatcher.class);
         ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put("t", "distinct theme");
         params.put("v", "distinct variant <with_story_variable_inside>");
         params.put("with_story_variable_inside", "with story variable value");
         when(stepMatcher.parameterNames()).thenReturn(new String[]{"theme", "variant"});
-        when(stepMatcher.parameter(1)).thenReturn("<t>");
-        when(stepMatcher.parameter(2)).thenReturn("<v>");
+        String stepWithoutStartingWord = "I use parameters <t> and <v>";
+        Matcher matcher = Pattern.compile("I use parameters (.*) and (.*)").matcher(stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
         String stepAsString = "When I use parameters <t> and <v>";
         Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"), stepAsString,
-                "I use parameters <t> and <v>", params, Collections.<Step> emptyList());
+                stepWithoutStartingWord, params, Collections.emptyList());
         step.perform(storyReporter, null);
 
         // Then
@@ -613,14 +634,15 @@ class StepCreatorBehaviour {
         params.put("theme", "a theme");
         params.put("variant", "a variant");
         when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));
-        when(stepMatcher.parameter(1)).thenReturn("<t>");
-        when(stepMatcher.parameter(2)).thenReturn("<v>");
+        String stepWithoutStartingWord = "I use parameters <t> and <v>";
+        Matcher matcher = Pattern.compile("I use parameters (.*) and (.*)").matcher(stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
         String stepAsString = "When I use parameters <t> and <v>";
         Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"), stepAsString,
-                "I use parameters <t> and <v>", params, Collections.emptyList());
+                stepWithoutStartingWord, params, Collections.emptyList());
         step.perform(storyReporter, null);
 
         // Then
@@ -721,18 +743,22 @@ class StepCreatorBehaviour {
         setupContext();
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepMatcher stepMatcher = mock(StepMatcher.class);
         StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext, null,
-                new ParameterControls(), mock(StepMatcher.class), new SilentStepMonitor());
+                new ParameterControls(), stepMatcher, new SilentStepMonitor());
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
         Method method = SomeSteps.methodFor("aMethodStoringAString");
         String stepAsString = "When I store in context";
-        StepResult stepResult = stepCreator.createParametrisedStep(method, stepAsString, "I store in context",
+        String stepWithoutStartingWord = "I store in context";
+        Matcher matcher = Pattern.compile(stepWithoutStartingWord).matcher(stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
+        StepResult stepResult = stepCreator.createParametrisedStep(method, stepAsString, stepWithoutStartingWord,
                 new HashMap<>(), Collections.emptyList()).perform(storyReporter, null);
         String stepAsString2 = "And I store in context";
         StepResult stepResultSecondWrite = stepCreator.createParametrisedStep(duplicateStoreMethod, stepAsString2,
-                "I store in context", new HashMap<>(), Collections.emptyList())
+                stepWithoutStartingWord, new HashMap<>(), Collections.emptyList())
                 .perform(storyReporter, null);
 
         // Then

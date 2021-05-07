@@ -27,13 +27,24 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
-import static org.jbehave.core.steps.AbstractStepResult.*;
+import static org.jbehave.core.steps.AbstractStepResult.comment;
+import static org.jbehave.core.steps.AbstractStepResult.failed;
+import static org.jbehave.core.steps.AbstractStepResult.ignorable;
+import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
+import static org.jbehave.core.steps.AbstractStepResult.pending;
+import static org.jbehave.core.steps.AbstractStepResult.silent;
+import static org.jbehave.core.steps.AbstractStepResult.skipped;
+import static org.jbehave.core.steps.AbstractStepResult.successful;
 
 public class StepCreator {
 
@@ -101,12 +112,13 @@ public class StepCreator {
     public Map<String, String> matchedParameters(final Method method, final String stepWithoutStartingWord,
             final Map<String, String> namedParameters) {
         Map<String, String> matchedParameters = new HashMap<>();
-        if (stepMatcher.find(stepWithoutStartingWord)) {
+        Matcher matcher = stepMatcher.matcher(stepWithoutStartingWord);
+        if (matcher.find()) {
             // we've found a match, populate map
             ParameterName[] parameterNames = parameterNames(method);
             Type[] types = parameterTypes(method, parameterNames);
 
-            String[] values = parameterValuesForStep(namedParameters, types, parameterNames, false);
+            String[] values = parameterValuesForStep(matcher, namedParameters, types, parameterNames, false);
             for (int i = 0; i < parameterNames.length; i++) {
                 String name = parameterNames[i].name;
                 if (name == null) {
@@ -409,11 +421,12 @@ public class StepCreator {
         return result;
     }
 
-    private String[] parameterValuesForStep(Map<String, String> namedParameters, Type[] types, ParameterName[] names,
-            boolean overrideWithTableParameters) {
+    private String[] parameterValuesForStep(Matcher matcher, Map<String, String> namedParameters, Type[] types,
+            ParameterName[] names, boolean overrideWithTableParameters) {
         final String[] parameters = new String[types.length];
         for (int position = 0; position < types.length; position++) {
-            parameters[position] = parameterForPosition(position, names, namedParameters, overrideWithTableParameters);
+            parameters[position] = parameterForPosition(matcher, position, names, namedParameters,
+                    overrideWithTableParameters);
         }
         return parameters;
     }
@@ -430,8 +443,8 @@ public class StepCreator {
         return parameters;
     }
 
-    private String parameterForPosition(int position, ParameterName[] names, Map<String, String> namedParameters,
-            boolean overrideWithTableParameters) {
+    private String parameterForPosition(Matcher matcher, int position, ParameterName[] names,
+            Map<String, String> namedParameters, boolean overrideWithTableParameters) {
         int namePosition = parameterPosition(names, position);
         String parameter = null;
 
@@ -443,7 +456,7 @@ public class StepCreator {
             List<String> delimitedNames = Collections.emptyList();
 
             if (isGroupName(name)) {
-                parameter = matchedParameter(name);
+                parameter = matchedParameter(matcher, name);
                 delimitedNames = delimitedNameFor(parameter);
 
                 if (delimitedNames.isEmpty()) {
@@ -476,7 +489,7 @@ public class StepCreator {
             // This allow parameters to be in different order.
             position = position - numberOfPreviousFromContext(names, position);
             stepMonitor.usingNaturalOrderForParameter(position);
-            parameter = matchedParameter(position);
+            parameter = matchedParameter(matcher, position);
             List<String> delimitedNames = delimitedNameFor(parameter);
 
             for (String delimitedName : delimitedNames) {
@@ -542,22 +555,22 @@ public class StepCreator {
         return delimitedNames;
     }
 
-    String matchedParameter(String name) {
+    String matchedParameter(Matcher matcher, String name) {
         String[] parameterNames = stepMatcher.parameterNames();
         for (int i = 0; i < parameterNames.length; i++) {
             String parameterName = parameterNames[i];
             if (name.equals(parameterName)) {
-                return matchedParameter(i);
+                return matchedParameter(matcher, i);
             }
         }
         throw new ParameterNotFound(name, parameterNames);
     }
 
-    private String matchedParameter(int position) {
+    private String matchedParameter(Matcher matcher, int position) {
         String[] parameterNames = stepMatcher.parameterNames();
         int matchedPosition = position + 1;
         if (matchedPosition <= parameterNames.length) {
-            return stepMatcher.parameter(matchedPosition);
+            return matcher.group(matchedPosition);
         }
         throw new ParameterNotFound(position, parameterNames);
     }
@@ -904,10 +917,11 @@ public class StepCreator {
         }
         
         private void parametriseStep() {
-            stepMatcher.find(stepWithoutStartingWord);
+            Matcher matcher = stepMatcher.matcher(stepWithoutStartingWord);
+            matcher.find();
             ParameterName[] names = parameterNames(method);
             Type[] types = parameterTypes(method, names);
-            String[] parameterValues = parameterValuesForStep(namedParameters, types, names, true);
+            String[] parameterValues = parameterValuesForStep(matcher, namedParameters, types, names, true);
             convertedParameters = method == null ? parameterValues
                     : convertParameterValues(parameterValues, types, names);
             addNamedParametersToExamplesTables();

@@ -167,7 +167,7 @@ public class StepCandidate {
                 }
             }
             stepMonitor.stepMatchesType(step, previousNonAndStep, matchesType, stepType, method, stepsType);
-            boolean matchesPattern = stepMatcher.matches(stripStartingWord(step));
+            boolean matchesPattern = stepMatcher.matcher(stripStartingWord(step)).matches();
             stepMonitor.stepMatchesPattern(step, matchesPattern, stepMatcher.pattern(), method, stepsType);
             // must match both type and pattern
             return matchesType && matchesPattern;
