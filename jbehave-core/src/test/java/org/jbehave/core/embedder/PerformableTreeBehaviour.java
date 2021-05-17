@@ -165,7 +165,7 @@ class PerformableTreeBehaviour {
         Map<String,String> scenarioExampleSecond = new HashMap<>();
         scenarioExampleSecond.put("var1","G<var2>");
         scenarioExampleSecond.put("var3","<var2>");
-        ExamplesTable scenarioExamplesTable = new ExamplesTable("").withRows(
+        ExamplesTable scenarioExamplesTable = ExamplesTable.empty().withRows(
                 Arrays.asList(scenarioExample, scenarioExampleSecond));
 
         String scenarioTitle = "scenario title";

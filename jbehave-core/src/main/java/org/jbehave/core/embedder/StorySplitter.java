@@ -29,7 +29,7 @@ public class StorySplitter {
         List<Story> splitStories = new ArrayList<Story>();
         List<Map<String, String>> rows = story.getLifecycle().getExamplesTable().getRows();
         for (int i = 0; i < rows.size(); i++) {
-            ExamplesTable examplesTable = new ExamplesTable("").withRows(Collections.singletonList(rows.get(i)));
+            ExamplesTable examplesTable = ExamplesTable.empty().withRows(Collections.singletonList(rows.get(i)));
             Lifecycle originLifecycle = story.getLifecycle();
             Lifecycle lifecycle = new Lifecycle(examplesTable, originLifecycle.getBefore(), originLifecycle.getAfter());
             String originPath = story.getPath();

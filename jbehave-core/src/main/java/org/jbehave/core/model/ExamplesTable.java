@@ -472,6 +472,10 @@ public class ExamplesTable {
         return sb.toString();
     }
 
+    public static ExamplesTable empty() {
+        return new ExamplesTable("");
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

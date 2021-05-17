@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.beans.BeanInfo;
@@ -73,6 +74,13 @@ public class ExamplesTableBehaviour {
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
+    }
+
+    @Test
+    void shouldCreateEmptyTable() {
+        ExamplesTable table = ExamplesTable.empty();
+        assertThat(table.asString(), equalTo(""));
+        assertFalse(table == ExamplesTable.empty());
     }
 
     @Test
