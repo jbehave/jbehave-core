@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -20,6 +21,7 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -621,6 +623,13 @@ public class ExamplesTableBehaviour {
     void shouldHandleWrongNumberOfColumns() {
         assertTableAsString("|a|b|\n|a|\n", "|a|b|\n|a||\n");
         assertTableAsString("|a|b|\n|a|b|c|\n", "|a|b|\n|a|b|\n");
+    }
+
+    @Test
+    void shouldHaveEmptyTableAsImmutable() {
+        ExamplesTable table = ExamplesTable.EMPTY;
+        assertThat(table.asString(), equalTo(""));
+        assertThat(table, instanceOf(ImmutableExamplesTable.class));
     }
 
     private ExamplesTableFactory createFactory(ParameterConverter... converters) {

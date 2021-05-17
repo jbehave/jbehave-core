@@ -170,7 +170,7 @@ public class ExamplesTable {
     private static final String EMPTY_VALUE = "";
 
     public static final Pattern INLINED_PROPERTIES_PATTERN = Pattern.compile("\\{(.*?[^\\\\])\\}\\s*(.*)", DOTALL);
-    public static final ExamplesTable EMPTY = new ExamplesTable("");
+    public static final ExamplesTable EMPTY = new ImmutableExamplesTable(EMPTY_VALUE);
 
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
