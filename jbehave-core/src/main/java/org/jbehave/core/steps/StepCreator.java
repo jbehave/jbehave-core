@@ -682,23 +682,11 @@ public class StepCreator {
 
         @Override
         public final StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            return execute(storyReporter, stepExecutionType, this::perform);
+            storyReporter.beforeStep(new org.jbehave.core.model.Step(stepExecutionType, getStepAsString()));
+            return perform();
         }
 
         protected abstract StepResult perform();
-
-        @Override
-        public final StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            return execute(storyReporter, StepExecutionType.NOT_PERFORMED, this::doNotPerform);
-        }
-
-        protected abstract StepResult doNotPerform();
-
-        private StepResult execute(StoryReporter storyReporter, StepExecutionType stepExecutionType,
-                Supplier<StepResult> stepResultSupplier) {
-            storyReporter.beforeStep(new org.jbehave.core.model.Step(stepExecutionType, stepAsString));
-            return stepResultSupplier.get();
-        }
 
         @Override
         public String asString(Keywords keywords) {
@@ -900,7 +888,9 @@ public class StepCreator {
         }
 
         @Override
-        public StepResult doNotPerform() {
+        public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+            storyReporter.beforeStep(
+                    new org.jbehave.core.model.Step(StepExecutionType.NOT_PERFORMED, getStepAsString()));
             try {
                 parametriseStep();
             } catch (Throwable t) {
@@ -954,8 +944,8 @@ public class StepCreator {
         }
 
         @Override
-        public StepResult doNotPerform() {
-            return perform();
+        public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+            return perform(storyReporter, storyFailureIfItHappened);
         }
 
         public String stepAsString() {
@@ -987,8 +977,8 @@ public class StepCreator {
         }
 
         @Override
-        public StepResult doNotPerform() {
-            return perform();
+        public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+            return perform(storyReporter, storyFailureIfItHappened);
         }
     }
 
@@ -1004,8 +994,8 @@ public class StepCreator {
         }
 
         @Override
-        public StepResult doNotPerform() {
-            return perform();
+        public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+            return perform(storyReporter, storyFailureIfItHappened);
         }
     }
 

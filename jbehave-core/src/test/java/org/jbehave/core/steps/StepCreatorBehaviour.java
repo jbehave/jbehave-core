@@ -23,8 +23,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
@@ -54,6 +56,8 @@ import org.jbehave.core.steps.context.StepsContext.ObjectAlreadyStoredException;
 import org.jbehave.core.steps.context.StepsContext.ObjectNotStoredException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class StepCreatorBehaviour {
 
@@ -148,8 +152,16 @@ class StepCreatorBehaviour {
         // Then .. fail as expected
     }
 
-    @Test
-    void shouldCreatePendingAsStepResults() {
+    static Stream<BiFunction<Step, StoryReporter, StepResult>> executors() {
+        return Stream.of(
+                (step, storyReporter) -> step.perform(storyReporter, null),
+                (step, storyReporter) -> step.doNotPerform(storyReporter, null)
+        );
+    }
+
+    @MethodSource("executors")
+    @ParameterizedTest
+    void shouldCreatePendingAsStepResults(BiFunction<Step, StoryReporter, StepResult> executor) {
         // Given
         StoryReporter storyReporter = mock(StoryReporter.class);
 
@@ -159,15 +171,14 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat(pendingStep.asString(new Keywords()), equalTo(stepAsString));
-        assertThat(pendingStep.perform(storyReporter, null), instanceOf(Pending.class));
+        assertThat(executor.apply(pendingStep, storyReporter), instanceOf(Pending.class));
         verifyBeforeStep(storyReporter, StepExecutionType.PENDING, stepAsString);
-        assertThat(pendingStep.doNotPerform(storyReporter, null), instanceOf(Pending.class));
-        verifyBeforeStep(storyReporter, StepExecutionType.NOT_PERFORMED, stepAsString);
         verifyNoMoreInteractions(storyReporter);
     }
 
-    @Test
-    void shouldCreateIgnorableAsStepResults() {
+    @MethodSource("executors")
+    @ParameterizedTest
+    void shouldCreateIgnorableAsStepResults(BiFunction<Step, StoryReporter, StepResult> executor) {
         // Given
         StoryReporter storyReporter = mock(StoryReporter.class);
 
@@ -177,15 +188,14 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat(ignorableStep.asString(new Keywords()), equalTo(stepAsString));
-        assertThat(ignorableStep.perform(storyReporter, null), instanceOf(Ignorable.class));
+        assertThat(executor.apply(ignorableStep, storyReporter), instanceOf(Ignorable.class));
         verifyBeforeStep(storyReporter, StepExecutionType.IGNORABLE, stepAsString);
-        assertThat(ignorableStep.doNotPerform(storyReporter, null), instanceOf(Ignorable.class));
-        verifyBeforeStep(storyReporter, StepExecutionType.NOT_PERFORMED, stepAsString);
         verifyNoMoreInteractions(storyReporter);
     }
 
-    @Test
-    void shouldCreateCommentAsStepResults() {
+    @MethodSource("executors")
+    @ParameterizedTest
+    void shouldCreateCommentAsStepResults(BiFunction<Step, StoryReporter, StepResult> executor) {
         // Given
         StoryReporter storyReporter = mock(StoryReporter.class);
 
@@ -195,10 +205,8 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat(comment.asString(new Keywords()), equalTo(stepAsString));
-        assertThat(comment.perform(storyReporter, null), instanceOf(Comment.class));
+        assertThat(executor.apply(comment, storyReporter), instanceOf(Comment.class));
         verifyBeforeStep(storyReporter, StepExecutionType.COMMENT, stepAsString);
-        assertThat(comment.doNotPerform(storyReporter, null), instanceOf(Comment.class));
-        verifyBeforeStep(storyReporter, StepExecutionType.NOT_PERFORMED, stepAsString);
         verifyNoMoreInteractions(storyReporter);
     }
 
