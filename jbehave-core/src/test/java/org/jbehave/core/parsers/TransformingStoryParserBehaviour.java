@@ -3,9 +3,7 @@ package org.jbehave.core.parsers;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.model.TableTransformers;
 import org.junit.jupiter.api.Test;
 
 
@@ -15,7 +13,7 @@ class TransformingStoryParserBehaviour {
 
     @Test
     void shouldTransformAndParseStory() {
-        StoryParser delegate = new RegexStoryParser(new LoadFromClasspath(), new TableTransformers());
+        StoryParser delegate = new RegexStoryParser();
         StoryTransformer transformer = new StoryTransformer() {            
             @Override
             public String transform(String storyAsText) {

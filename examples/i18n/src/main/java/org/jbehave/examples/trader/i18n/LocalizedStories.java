@@ -18,13 +18,10 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
-import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
-import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -56,16 +53,14 @@ public abstract class LocalizedStories extends JUnitStories {
         properties.setProperty("reports", "ftl/jbehave-reports.ftl");
         properties.setProperty("encoding", "UTF-8");
         LoadFromClasspath resourceLoader = new LoadFromClasspath(classLoader);
-        TableParsers tableParsers = new TableParsers();
         TableTransformers tableTransformers = new TableTransformers();
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, parameterControls,
-                tableTransformers, true)
-                .addConverters(customConverters(keywords, resourceLoader, tableParsers, tableTransformers));
-        return new MostUsefulConfiguration()
+                tableTransformers, true);
+        Configuration configuration = new MostUsefulConfiguration()
                 .useKeywords(keywords)
-                .useStoryParser(new RegexStoryParser(keywords, resourceLoader, tableTransformers))
                 .useStoryLoader(resourceLoader)
+                .useTableTransformers(tableTransformers)
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                     .withCodeLocation(codeLocation)
                     .withPathResolver(new ResolveToSimpleName())
@@ -75,14 +70,14 @@ public abstract class LocalizedStories extends JUnitStories {
                     .withViewResources(properties)
                     .withKeywords(keywords))
                 .useParameterConverters(parameterConverters)
-                .useParameterControls(parameterControls)
-                .useTableTransformers(tableTransformers);
+                .useParameterControls(parameterControls);
+        parameterConverters.addConverters(customConverters(configuration.examplesTableFactory()));
+        return configuration;
     }
-    
-    private ParameterConverter[] customConverters(Keywords keywords, ResourceLoader resourceLoader,
-                                                  TableParsers tableParsers, TableTransformers tableTransformers) {
+
+    private ParameterConverter[] customConverters(ExamplesTableFactory examplesTableFactory) {
         return new ParameterConverter[] { new NumberConverter(NumberFormat.getInstance(locale())),
-                new ExamplesTableConverter(new ExamplesTableFactory(keywords, resourceLoader, tableParsers, tableTransformers)) };
+                new ExamplesTableConverter(examplesTableFactory) };
     }
 
     @Override

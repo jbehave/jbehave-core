@@ -11,20 +11,31 @@ import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.model.ExamplesTable.TablePropertiesQueue;
 import org.jbehave.core.model.ExamplesTable.TableRows;
+import org.jbehave.core.steps.ParameterConverters;
 
 public class TableParsers {
 
     private static final String ROW_SEPARATOR_PATTERN = "\r?\n";
 
-    public TableParsers() {
+    private final Keywords keywords;
+    private final ParameterConverters parameterConverters;
+
+    public TableParsers(ParameterConverters parameterConverters) {
+        this(new LocalizedKeywords(), parameterConverters);
     }
 
-    public TablePropertiesQueue parseProperties(String tableAsString, Keywords keywords) {
-        return parseProperties(tableAsString, keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator(),
-                keywords.examplesTableIgnorableSeparator());
+    public TableParsers(Keywords keywords, ParameterConverters parameterConverters) {
+        this.keywords = keywords;
+        this.parameterConverters = parameterConverters;
+    }
+
+    public TablePropertiesQueue parseProperties(String tableAsString) {
+        return parseProperties(tableAsString, keywords.examplesTableHeaderSeparator(),
+                keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator());
     }
 
     public TablePropertiesQueue parseProperties(String tableAsString, String headerSeparator, String valueSeparator,
@@ -36,13 +47,14 @@ public class TableParsers {
             String propertiesAsString = matcher.group(1);
             propertiesAsString = StringUtils.replace(propertiesAsString, "\\{", "{");
             propertiesAsString = StringUtils.replace(propertiesAsString, "\\}", "}");
-            properties.add(new TableProperties(propertiesAsString, headerSeparator,
+            properties.add(new TableProperties(parameterConverters, propertiesAsString, headerSeparator,
                     valueSeparator, ignorableSeparator));
             tableWithoutProperties = matcher.group(2).trim();
             matcher = ExamplesTable.INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
         }
         if (properties.isEmpty()) {
-            properties.add(new TableProperties("", headerSeparator, valueSeparator, ignorableSeparator));
+            properties.add(
+                    new TableProperties(parameterConverters, "", headerSeparator, valueSeparator, ignorableSeparator));
         }
         return new TablePropertiesQueue(tableWithoutProperties, properties);
     }

@@ -38,17 +38,18 @@ public class ExamplesTableFactory {
     private final TableTransformers tableTransformers;
 
     public ExamplesTableFactory(ResourceLoader resourceLoader, TableTransformers tableTransformers) {
-        this(new LocalizedKeywords(), resourceLoader, new TableParsers(), tableTransformers);
+        this(new LocalizedKeywords(), resourceLoader, tableTransformers);
     }
 
-    public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader, TableParsers tableParsers, TableTransformers tableTransformers) {
+    public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader, TableTransformers tableTransformers) {
         this(keywords, resourceLoader, new ParameterConverters(resourceLoader, tableTransformers),
-                new ParameterControls(), tableParsers, tableTransformers);
+                tableTransformers);
     }
 
-    public ExamplesTableFactory(ResourceLoader resourceLoader, ParameterConverters parameterConverters,
-                                ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers) {
-        this(new LocalizedKeywords(), resourceLoader, parameterConverters, parameterControls, tableParsers, tableTransformers);
+    private ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
+            ParameterConverters parameterConverters, TableTransformers tableTransformers) {
+        this(keywords, resourceLoader, parameterConverters, new ParameterControls(),
+                new TableParsers(keywords, parameterConverters), tableTransformers);
     }
 
     public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
@@ -72,14 +73,14 @@ public class ExamplesTableFactory {
     }
 
     public ExamplesTable createExamplesTable(String input) {
-        TablePropertiesQueue tablePropertiesQueue = getPropertiesData(input);
+        TablePropertiesQueue tablePropertiesQueue = tableParsers.parseProperties(input);
 
         String tableAsString = tablePropertiesQueue.getTable().trim();
         TableProperties properties = tablePropertiesQueue.getProperties().peekLast();
 
         if (!isTable(tableAsString, properties) && !tableAsString.isEmpty()) {
             String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());
-            tablePropertiesQueue = getPropertiesData(loadedTable);
+            tablePropertiesQueue = tableParsers.parseProperties(loadedTable);
             tablePropertiesQueue.getProperties().addFirst(properties);
         }
 
@@ -91,10 +92,6 @@ public class ExamplesTableFactory {
         String headerSeparator = properties == null ? keywords.examplesTableHeaderSeparator()
                 : properties.getHeaderSeparator();
         return table.startsWith(headerSeparator);
-    }
-
-    private TablePropertiesQueue getPropertiesData(String input) {
-        return tableParsers.parseProperties(input, keywords);
     }
 
     public void useKeywords(Keywords keywords) {

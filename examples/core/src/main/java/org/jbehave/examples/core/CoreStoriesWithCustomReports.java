@@ -12,7 +12,6 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnit4StoryRunner;
-import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.FilePrintStreamFactory;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.FreemarkerProcessor;
@@ -38,7 +37,6 @@ public class CoreStoriesWithCustomReports extends CoreStories {
                 .withFormats(CustomHtmlOutput.FORMAT);
         return configuration
                 .useKeywords(keywords)
-                .useStoryParser(new RegexStoryParser(keywords))
                 .useStoryReporterBuilder(reporterBuilder);
     }
 

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 class TableParsersBehaviour {
 
-    private final TableParsers tableParsers = new TableParsers();
+    private final TableParsers tableParsers = new TableParsers(null, null);
 
     @Test
     void shouldParseTableUsingProperties() {
@@ -35,7 +35,7 @@ class TableParsersBehaviour {
         properties.put("headerSeparator", "!");
         properties.put("valueSeparator", "|");
         properties.put("ExamplesTableIgnorableSeparator", "|--");
-        TableProperties tableProperties = new TableProperties(properties);
+        TableProperties tableProperties = new TableProperties(null, properties);
 
         // When
         TableRows tableRows = tableParsers.parseRows(table, tableProperties);

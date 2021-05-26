@@ -238,7 +238,7 @@ public abstract class Configuration {
 
     public StoryParser storyParser() {
         if (storyParser == null) {
-            storyParser = new RegexStoryParser(keywords(), examplesTableFactory());
+            storyParser = new RegexStoryParser(examplesTableFactory());
         }
         return storyParser;
     }
@@ -377,7 +377,7 @@ public abstract class Configuration {
 
     public TableParsers tableParsers() {
         if (tableParsers == null) {
-            tableParsers = new TableParsers();
+            tableParsers = new TableParsers(keywords(), parameterConverters());
         }
         return tableParsers;
     }

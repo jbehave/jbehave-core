@@ -234,8 +234,9 @@ public class ParameterConverters {
             ParameterControls parameterControls, TableTransformers tableTransformers, Locale locale,
             String collectionSeparator, boolean threadSafe) {
         this(monitor, new ArrayList<>(), threadSafe);
-        this.addConverters(defaultConverters(keywords, resourceLoader, parameterControls, new TableParsers(), tableTransformers, locale,
-                collectionSeparator));
+        this.addConverters(
+                defaultConverters(keywords, resourceLoader, parameterControls, new TableParsers(keywords, this),
+                        tableTransformers, locale, collectionSeparator));
     }
 
     /**

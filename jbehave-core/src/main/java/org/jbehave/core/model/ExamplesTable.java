@@ -10,7 +10,6 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -20,17 +19,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.Parameter;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.jbehave.core.steps.ChainedRow;
@@ -185,23 +183,30 @@ public class ExamplesTable {
     private ParameterControls parameterControls;
 
     public ExamplesTable(String tableAsString) {
-        this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR,
-                new ParameterConverters(new LoadFromClasspath(), new TableTransformers()), new ParameterControls(),
-                new TableParsers(), new TableTransformers());
+        this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR, IGNORABLE_SEPARATOR);
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-                         ParameterConverters parameterConverters, ParameterControls parameterControls,
-                         TableParsers tableParsers, TableTransformers tableTransformers) {
-        this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR, parameterConverters,
-                parameterControls, tableParsers, tableTransformers);
+            String ignorableSeparator) {
+        this(tableAsString, headerSeparator, valueSeparator, ignorableSeparator, new TableTransformers());
     }
 
-    public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-                         String ignorableSeparator, ParameterConverters parameterConverters, ParameterControls parameterControls,
-                         TableParsers tableParsers, TableTransformers tableTransformers) {
+    private ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
+            String ignorableSeparator, TableTransformers tableTransformers) {
+        this(tableAsString, headerSeparator, valueSeparator, ignorableSeparator,
+                new ParameterConverters(new LoadFromClasspath(), tableTransformers), tableTransformers);
+    }
+
+    private ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator, String ignorableSeparator,
+            ParameterConverters parameterConverters, TableTransformers tableTransformers) {
+        this(tableAsString, headerSeparator, valueSeparator, ignorableSeparator, parameterConverters,
+                new TableParsers(new LocalizedKeywords(), parameterConverters), tableTransformers);
+    }
+
+    private ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator, String ignorableSeparator,
+            ParameterConverters parameterConverters, TableParsers tableParsers, TableTransformers tableTransformers) {
         this(tableParsers.parseProperties(tableAsString, headerSeparator, valueSeparator, ignorableSeparator),
-                parameterConverters, parameterControls, tableParsers, tableTransformers);
+                parameterConverters, new ParameterControls(), tableParsers, tableTransformers);
     }
 
     ExamplesTable(TablePropertiesQueue tablePropertiesQueue, ParameterConverters parameterConverters,
@@ -533,9 +538,11 @@ public class ExamplesTable {
         private static final String ROW_SEPARATOR = "\n";
 
         private final Properties properties = new Properties();
+        private final ParameterConverters parameterConverters;
         private final String propertiesAsString;
 
-        public TableProperties(Properties properties) {
+        public TableProperties(ParameterConverters parameterConverters, Properties properties) {
+            this.parameterConverters = parameterConverters;
             this.properties.putAll(properties);
             if (!this.properties.containsKey(HEADER_SEPARATOR_KEY)) {
                 this.properties.setProperty(HEADER_SEPARATOR_KEY, HEADER_SEPARATOR);
@@ -556,12 +563,13 @@ public class ExamplesTable {
             propertiesAsString = sb.substring(0, sb.length() - 1);
         }
 
-        public TableProperties(String propertiesAsString) {
-            this(propertiesAsString, HEADER_SEPARATOR, VALUE_SEPARATOR, IGNORABLE_SEPARATOR);
+        public TableProperties(ParameterConverters parameterConverters, String propertiesAsString) {
+            this(parameterConverters, propertiesAsString, HEADER_SEPARATOR, VALUE_SEPARATOR, IGNORABLE_SEPARATOR);
         }
 
-        public TableProperties(String propertiesAsString, String defaultHeaderSeparator, String defaultValueSeparator,
-                               String defaultIgnorableSeparator) {
+        public TableProperties(ParameterConverters parameterConverters, String propertiesAsString,
+                String defaultHeaderSeparator, String defaultValueSeparator, String defaultIgnorableSeparator) {
+            this.parameterConverters = parameterConverters;
             properties.setProperty(HEADER_SEPARATOR_KEY, defaultHeaderSeparator);
             properties.setProperty(VALUE_SEPARATOR_KEY, defaultValueSeparator);
             properties.setProperty(IGNORABLE_SEPARATOR_KEY, defaultIgnorableSeparator);
@@ -607,39 +615,12 @@ public class ExamplesTable {
             }
         }
 
-        private <T> T getMandatoryNonBlankProperty(String propertyName, Function<String, T> converter) {
+        @SuppressWarnings("unchecked")
+        public <T> T getMandatoryNonBlankProperty(String propertyName, Type type) {
             String propertyValue = properties.getProperty(propertyName);
             isTrue(propertyValue != null, "'%s' is not set in ExamplesTable properties", propertyName);
             notBlank(propertyValue, "ExamplesTable property '%s' is blank", propertyName);
-            return converter.apply(propertyValue);
-        }
-
-        public String getMandatoryNonBlankProperty(String propertyName) {
-            return getMandatoryNonBlankProperty(propertyName, Function.identity());
-        }
-
-        public int getMandatoryIntProperty(String propertyName) {
-            return getMandatoryNonBlankProperty(propertyName, Integer::parseInt);
-        }
-
-        public long getMandatoryLongProperty(String propertyName) {
-            return getMandatoryNonBlankProperty(propertyName, Long::parseLong);
-        }
-
-        public double getMandatoryDoubleProperty(String propertyName) {
-            return getMandatoryNonBlankProperty(propertyName, Double::parseDouble);
-        }
-
-        public boolean getMandatoryBooleanProperty(String propertyName) {
-            return getMandatoryNonBlankProperty(propertyName, Boolean::valueOf);
-        }
-
-        public <E extends Enum<E>> E getMandatoryEnumProperty(String propertyName, Class<E> enumClass) {
-            String propertyValueStr = properties.getProperty(propertyName);
-            E propertyValue = EnumUtils.getEnumIgnoreCase(enumClass, propertyValueStr);
-            isTrue(propertyValue != null, "Value of ExamplesTable property '%s' must be from range %s, but got '%s'",
-                    propertyName, Arrays.toString(enumClass.getEnumConstants()), propertyValueStr);
-            return propertyValue;
+            return (T) parameterConverters.convert(propertyValue, type);
         }
 
         public String getRowSeparator() {

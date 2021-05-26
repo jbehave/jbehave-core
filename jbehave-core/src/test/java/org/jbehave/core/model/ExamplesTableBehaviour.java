@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,6 +35,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.Parameter;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.ExamplesTable.ColumnNotFound;
 import org.jbehave.core.model.ExamplesTable.RowNotFound;
@@ -101,15 +101,13 @@ public class ExamplesTableBehaviour {
     void shouldParseTableWithDifferentSeparators() {
         String headerSeparator = "||";
         String valueSeparator = "|";
+        String ignorableSeparator = "!--";
         String tableWithCustomSeparator = wikiTableAsString;
-        TableTransformers tableTransformers = new TableTransformers();
-        ParameterControls parameterControls = new ParameterControls();
-        ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath(), parameterControls,
-                tableTransformers, true);
         ExamplesTable table = new ExamplesTable(tableWithCustomSeparator, headerSeparator, valueSeparator,
-                parameterConverters, parameterControls, new TableParsers(), tableTransformers);
+                ignorableSeparator);
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
+
         ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableWithCustomSeparator));
     }
@@ -118,13 +116,10 @@ public class ExamplesTableBehaviour {
     void shouldParseTableWithDifferentCustomSeparators() {
         String headerSeparator = "!!";
         String valueSeparator = "!";
+        String ignorableSeparator = "!--";
         String tableWithCustomSeparator = wikiTableAsString.replace("|", "!");
-        TableTransformers tableTransformers = new TableTransformers();
-        ParameterControls parameterControls = new ParameterControls();
-        ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath(), parameterControls,
-                tableTransformers, true);
         ExamplesTable table = new ExamplesTable(tableWithCustomSeparator, headerSeparator, valueSeparator,
-                parameterConverters, parameterControls, new TableParsers(), tableTransformers);
+                ignorableSeparator);
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
         ensureColumnOrderIsPreserved(table);
@@ -262,8 +257,8 @@ public class ExamplesTableBehaviour {
             }
 
         });
-        ExamplesTable table = new ExamplesTableFactory(new LoadFromClasspath(), tableTransformers)
-                .createExamplesTable(tableWithProperties);
+        ExamplesTable table = new ExamplesTableFactory(new LoadFromClasspath(), tableTransformers).createExamplesTable(
+                tableWithProperties);
         Properties properties = table.getProperties();
         assertThat(properties.getProperty("transformer"), equalTo("myTransformer"));
         ensureWhitespaceIsPreserved(table);
@@ -282,8 +277,8 @@ public class ExamplesTableBehaviour {
             }
 
         });
-        ExamplesTable table = new ExamplesTableFactory(new LoadFromClasspath(), tableTransformers)
-                .createExamplesTable(tableWithProperties);
+        ExamplesTable table = new ExamplesTableFactory(new LoadFromClasspath(), tableTransformers).createExamplesTable(
+                tableWithProperties);
         Properties properties = table.getProperties();
         assertThat(properties.getProperty("transformer"), equalTo("myTransformer"));
         assertThat(properties.getProperty("table"), equalTo("{transformer=NESTED_TRANSFORMER, parameter=value}"));
@@ -647,12 +642,13 @@ public class ExamplesTableBehaviour {
 
     private ExamplesTableFactory createFactory(TableTransformers tableTransformers, ParameterConverter... converters) {
         LoadFromClasspath resourceLoader = new LoadFromClasspath();
-        TableParsers tableParsers = new TableParsers();
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, parameterControls,
                 tableTransformers, true);
+        LocalizedKeywords keywords = new LocalizedKeywords();
+        TableParsers tableParsers = new TableParsers(keywords, parameterConverters);
         parameterConverters.addConverters(converters);
-        return new ExamplesTableFactory(resourceLoader, parameterConverters, parameterControls, tableParsers,
+        return new ExamplesTableFactory(keywords, resourceLoader, parameterConverters, parameterControls, tableParsers,
                 tableTransformers);
     }
 

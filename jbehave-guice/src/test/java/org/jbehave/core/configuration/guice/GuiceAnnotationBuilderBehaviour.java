@@ -47,13 +47,11 @@ import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
-import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.FunctionalParameterConverter;
@@ -291,8 +289,7 @@ class GuiceAnnotationBuilderBehaviour {
     public static class MyExampleTableConverter extends ParameterConverters.ExamplesTableConverter {
 
         public MyExampleTableConverter() {
-            super(new ExamplesTableFactory(new LoadFromClasspath(), new ParameterConverters(), new ParameterControls(),
-                    new TableParsers(), new TableTransformers()));
+            super(new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
         }
 
     }

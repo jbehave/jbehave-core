@@ -4,14 +4,17 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
+import org.jbehave.core.steps.ParameterConverters;
 
 public class TableSteps {
 
-    private TableParsers tableParsers = new TableParsers();
+    private final ParameterConverters parameterConverters = new ParameterConverters();
+    private final TableParsers tableParsers = new TableParsers(new LocalizedKeywords(), parameterConverters);
     private TableTransformers transformers = new TableTransformers();
     private String table;
     private String type;
@@ -35,7 +38,8 @@ public class TableSteps {
 
     @Then("the table transformed by $transformer is: $table")
     public void thenTheTransformedTableIs(String transformer, String table) {
-        TableProperties properties = new TableProperties(new ExamplesTable(this.table).getProperties());
+        TableProperties properties = new TableProperties(parameterConverters,
+                new ExamplesTable(this.table).getProperties());
         String transformed = this.transformers.transform(transformer, this.table, tableParsers, properties);
         MatcherAssert.assertThat(transformed.trim(), Matchers.equalTo(table));
     }

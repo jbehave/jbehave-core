@@ -15,9 +15,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Scope;
-import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.Description;
@@ -30,7 +27,6 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 
 /**
@@ -44,40 +40,14 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
     private final ExamplesTableFactory tableFactory;
 
     public RegexStoryParser() {
-        this(new LocalizedKeywords());
-    }
-
-    public RegexStoryParser(Keywords keywords) {
-        this(keywords, DEFAULT_RESOURCE_LOADER, DEFAULT_TABLE_TRANSFORMERS);
-    }
-
-    public RegexStoryParser(ResourceLoader resourceLoader, TableTransformers tableTransformers) {
-        this(new LocalizedKeywords(), resourceLoader, tableTransformers);
-    }
-
-    public RegexStoryParser(Keywords keywords, ResourceLoader resourceLoader, TableTransformers tableTransformers) {
-        this(keywords, new ExamplesTableFactory(keywords, resourceLoader, new TableParsers(), tableTransformers));
-    }
-
-    public RegexStoryParser(Keywords keywords, ResourceLoader resourceLoader, TableParsers tableParsers, TableTransformers tableTransformers) {
-        this(keywords, new ExamplesTableFactory(keywords, resourceLoader, tableParsers, tableTransformers));
+        this(new ExamplesTableFactory(DEFAULT_RESOURCE_LOADER, DEFAULT_TABLE_TRANSFORMERS));
     }
 
     public RegexStoryParser(ExamplesTableFactory tableFactory) {
-        this(tableFactory.keywords(), tableFactory);
-    }
-
-    public RegexStoryParser(Keywords keywords, ExamplesTableFactory tableFactory) {
-        super(keywords);
+        super(tableFactory.keywords());
         this.tableFactory = tableFactory;
-        // must ensure that both are using same keywords
-        this.tableFactory.useKeywords(keywords);
     }
 
-    public RegexStoryParser(Configuration configuration) {
-        this(configuration.keywords(), configuration.examplesTableFactory());
-    }
-    
     @Override
     public Story parseStory(String storyAsText) {
         return parseStory(storyAsText, null);

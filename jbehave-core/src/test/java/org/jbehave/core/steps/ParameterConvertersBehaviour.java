@@ -103,11 +103,11 @@ class ParameterConvertersBehaviour {
     void shouldDefineDefaultConverters() {
         Keywords keywords = new LocalizedKeywords();
         LoadFromClasspath resourceLoader = new LoadFromClasspath();
-        TableParsers tableParsers = new TableParsers();
         TableTransformers tableTransformers = new TableTransformers();
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters converters = new ParameterConverters(resourceLoader, parameterControls, tableTransformers,
                 true);
+        TableParsers tableParsers = new TableParsers(keywords, converters);
         ChainableParameterConverter<?, ?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader, parameterControls,
                 tableParsers, tableTransformers, Locale.ENGLISH, ",");
         assertThatDefaultConvertersInclude(defaultConverters, BooleanConverter.class, NumberConverter.class,

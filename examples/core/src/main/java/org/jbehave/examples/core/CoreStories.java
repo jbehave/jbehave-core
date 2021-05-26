@@ -24,7 +24,6 @@ import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
-import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.ContextOutput;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -96,15 +95,16 @@ public class CoreStories extends JUnitStories {
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
         viewResources.put("reports", "ftl/jbehave-reports.ftl");
+        LocalizedKeywords keywords = new LocalizedKeywords();
         LoadFromClasspath resourceLoader = new LoadFromClasspath(embeddableClass);
-        TableParsers tableParsers = new TableParsers();
         TableTransformers tableTransformers = new TableTransformers();
         ParameterControls parameterControls = new ParameterControls();
         // Start from default ParameterConverters instance
         ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, tableTransformers);
+        TableParsers tableParsers = new TableParsers(keywords, parameterConverters);
         // factory to allow parameter conversion and loading from external
         // resources (used by StoryParser too)
-        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), resourceLoader,
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(keywords, resourceLoader,
                 parameterConverters, parameterControls, tableParsers, tableTransformers);
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
@@ -112,9 +112,11 @@ public class CoreStories extends JUnitStories {
         SurefireReporter.Options options = new SurefireReporter.Options().useReportName("surefire")
                 .withNamingStrategy(new SurefireReporter.BreadcrumbNamingStrategy()).doReportByStory(true);
         SurefireReporter surefireReporter = new SurefireReporter(embeddableClass, options);
-        return new MostUsefulConfiguration()                
+        return new MostUsefulConfiguration()
+                .useKeywords(keywords)
                 .useStoryLoader(resourceLoader)
-                .useStoryParser(new RegexStoryParser(examplesTableFactory))
+                .useParameterControls(parameterControls)
+                .useExamplesTableFactory(examplesTableFactory)
                 .useStoryReporterBuilder(
                         new StoryReporterBuilder()
                                 .withCodeLocation(codeLocationFromClass(embeddableClass))

@@ -55,7 +55,6 @@ public class MostUsefulConfiguration extends Configuration {
         useStoryControls(new StoryControls());
         useStoryLoader(new LoadFromClasspath());
         useParameterControls(new ParameterControls());
-        useStoryParser(new RegexStoryParser(keywords(), examplesTableFactory()));
         useFailureStrategy(new RethrowingFailure());
         usePendingStepStrategy(new PassingUponPendingStep());
         useStepFinder(new StepFinder());

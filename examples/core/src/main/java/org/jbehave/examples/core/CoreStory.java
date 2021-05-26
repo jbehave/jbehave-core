@@ -83,14 +83,15 @@ public abstract class CoreStory extends JUnitStory {
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
         LoadFromClasspath resourceLoader = new LoadFromClasspath(embeddableClass);
-        TableParsers tableParsers = new TableParsers();
         TableTransformers tableTransformers = new TableTransformers();
         ParameterControls parameterControls = new ParameterControls();
         // Start from default ParameterConverters instance
         ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, tableTransformers);
         // factory to allow parameter conversion and loading from external
         // resources (used by StoryParser too)
-        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), resourceLoader,
+        LocalizedKeywords keywords = new LocalizedKeywords();
+        TableParsers tableParsers = new TableParsers(keywords, parameterConverters);
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(keywords, resourceLoader,
                 parameterConverters, parameterControls, tableParsers, tableTransformers);
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),

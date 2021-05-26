@@ -11,7 +11,7 @@ class TableTransformersBehaviour {
 
     private static final TableProperties PROPERTIES = createExamplesTableProperties();
 
-    private TableParsers tableParsers = new TableParsers();
+    private TableParsers tableParsers = new TableParsers(null, null);
 
     private String tableAsString = "|one|two|\n" + "|11|12|\n" + "|21|22|\n";
 
@@ -24,7 +24,7 @@ class TableTransformersBehaviour {
     private String myTransformedTableAsString = "|one |two | |\n" + "|11 |12 | |\n" + "| 21| 22| |\n";
 
     private static TableProperties createExamplesTableProperties() {
-        return new TableProperties("", "|", "|", "!--");
+        return new TableProperties(null, "", "|", "|", "!--");
     }
 
     @Test
