@@ -323,8 +323,8 @@ public class ParameterConverters {
         return this;
     }
 
-    public <T> ParameterConverters addConverterFromFunction(Class<T> acceptedType, Function<String, T> converter) {
-        return addConverters(new FunctionalParameterConverter<>(acceptedType, converter));
+    public <T> ParameterConverters addConverterFromFunction(Class<T> targetType, Function<String, T> converter) {
+        return addConverters(new FunctionalParameterConverter<>(targetType, converter));
     }
 
     private static boolean isChainComplete(Queue<ChainableParameterConverter> convertersChain) {
@@ -382,7 +382,7 @@ public class ParameterConverters {
 
     private ChainableParameterConverter findConverter(Type type) {
         for (ChainableParameterConverter converter : converters) {
-            if (converter.accept(type)) {
+            if (converter.canConvertTo(type)) {
                 return converter;
             }
         }
@@ -397,7 +397,7 @@ public class ParameterConverters {
 
     private void putConverters(Type type, LinkedList<ChainableParameterConverter> container) {
         for (ChainableParameterConverter converter : converters) {
-            if (converter.accept(type)) {
+            if (converter.canConvertTo(type)) {
                 container.addFirst(converter);
                 Type[] types = getTypeArguments(converter.getClass());
                 if (types.length > 1) {
@@ -531,8 +531,19 @@ public class ParameterConverters {
      */
     public interface ChainableParameterConverter<S, T> {
 
-        boolean accept(Type type);
+        /**
+         * Return {@code true} if the type converter can convert to the desired target type.
+         * @param type the type descriptor that describes the requested result type
+         * @return {@code true} if that conversion can be performed
+         */
+        boolean canConvertTo(Type type);
 
+        /**
+         * Convert the value from one type to another, for example from a {@code boolean} to a {@code String}.
+         * @param value the value to be converted
+         * @param type the type descriptor that supplies extra information about the requested result type
+         * @return the converted value
+         */
         T convertValue(S value, Type type);
     }
 
@@ -560,29 +571,29 @@ public class ParameterConverters {
         public AbstractParameterConverter() {
         }
 
-        public AbstractParameterConverter(Type acceptedType) {
-            super(acceptedType);
+        public AbstractParameterConverter(Type targetType) {
+            super(targetType);
         }
     }
 
-    public abstract static class AbstractChainableParameterConverter<T, S> implements ChainableParameterConverter<T, S> {
+    public abstract static class AbstractChainableParameterConverter<S, T> implements ChainableParameterConverter<S, T> {
 
-        private final Type acceptedType;
+        private final Type targetType;
 
         public AbstractChainableParameterConverter() {
-            this.acceptedType = getTargetType(getClass());
+            this.targetType = getTargetType(getClass());
         }
 
-        public AbstractChainableParameterConverter(Type acceptedType) {
-            this.acceptedType = acceptedType;
+        public AbstractChainableParameterConverter(Type targetType) {
+            this.targetType = targetType;
         }
 
         @Override
-        public boolean accept(Type type) {
-            if (acceptedType instanceof Class<?>) {
-                return isAssignableFrom((Class<?>) acceptedType, type);
+        public boolean canConvertTo(Type type) {
+            if (targetType instanceof Class<?>) {
+                return isAssignableFrom((Class<?>) targetType, type);
             }
-            return acceptedType.equals(type);
+            return targetType.equals(type);
         }
     }
 
@@ -590,8 +601,8 @@ public class ParameterConverters {
 
         private Function<String, T> converterFunction;
 
-        public FunctionalParameterConverter(Class<T> acceptedType, Function<String, T> converterFunction) {
-            super(acceptedType);
+        public FunctionalParameterConverter(Class<T> targetType, Function<String, T> converterFunction) {
+            super(targetType);
             this.converterFunction = converterFunction;
         }
 
@@ -616,8 +627,8 @@ public class ParameterConverters {
         }
 
         @Override
-        public boolean accept(Type type) {
-            return isAssignableFromRawType(List.class, type) && elementConverter.accept(argumentType(type));
+        public boolean canConvertTo(Type type) {
+            return isAssignableFromRawType(List.class, type) && elementConverter.canConvertTo(argumentType(type));
         }
 
         @Override
@@ -671,8 +682,8 @@ public class ParameterConverters {
         }
 
         @Override
-        public boolean accept(Type type) {
-            return super.accept(type) || primitiveTypes.contains(type);
+        public boolean canConvertTo(Type type) {
+            return super.canConvertTo(type) || primitiveTypes.contains(type);
         }
 
         @Override
@@ -896,8 +907,8 @@ public class ParameterConverters {
         }
 
         @Override
-        public boolean accept(Type type) {
-            return super.accept(type) || isAssignableFrom(Boolean.TYPE, type);
+        public boolean canConvertTo(Type type) {
+            return super.canConvertTo(type) || isAssignableFrom(Boolean.TYPE, type);
         }
 
         @Override
@@ -931,7 +942,7 @@ public class ParameterConverters {
     public static class EnumConverter implements ParameterConverter<Enum<?>> {
 
         @Override
-        public boolean accept(Type type) {
+        public boolean canConvertTo(Type type) {
             return type instanceof Class<?> && ((Class<?>) type).isEnum();
         }
 
@@ -1019,7 +1030,7 @@ public class ParameterConverters {
         }
 
         @Override
-        public boolean accept(Type type) {
+        public boolean canConvertTo(Type type) {
             if (type instanceof ParameterizedType) {
                 return rawClass(type).isAnnotationPresent(AsParameters.class) || argumentClass(type)
                         .isAnnotationPresent(AsParameters.class);
@@ -1051,7 +1062,7 @@ public class ParameterConverters {
         }
 
         @Override
-        public boolean accept(final Type type) {
+        public boolean canConvertTo(final Type type) {
             if (type instanceof ParameterizedType) {
                 return rawClass(type).isAnnotationPresent(AsJson.class) || argumentClass(type).isAnnotationPresent(
                         AsJson.class);
@@ -1134,7 +1145,7 @@ public class ParameterConverters {
         }
 
         @Override
-        public boolean accept(Type type) {
+        public boolean canConvertTo(Type type) {
             return isAssignableFrom(method.getReturnType(), type);
         }
 

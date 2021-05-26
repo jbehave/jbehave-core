@@ -303,8 +303,8 @@ class ParameterConvertersBehaviour {
         ParameterConverter<List<Number>> converter = new NumberListConverter();
         Type listOfNumbers = new TypeLiteral<List<Number>>() {}.getType();
         Type setOfNumbers = new TypeLiteral<Set<Number>>() {}.getType();
-        assertThat(converter.accept(listOfNumbers), is(true));
-        assertThat(converter.accept(setOfNumbers), is(false));
+        assertThat(converter.canConvertTo(listOfNumbers), is(true));
+        assertThat(converter.canConvertTo(setOfNumbers), is(false));
         List<Number> list = converter.convertValue("3, 0.5, 6.1f, 8.00", listOfNumbers);
         assertThatCollectionIs(list, 3L, 0.5, 6.1, 8L);
     }
@@ -384,9 +384,9 @@ class ParameterConvertersBehaviour {
         Type listOfStrings = new TypeLiteral<List<String>>() {}.getType();
         Type listOfNumbers = new TypeLiteral<List<Number>>() {}.getType();
         Type setOfNumbers = new TypeLiteral<Set<Number>>() {}.getType();
-        assertThat(converter.accept(listOfStrings), is(true));
-        assertThat(converter.accept(listOfNumbers), is(false));
-        assertThat(converter.accept(setOfNumbers), is(false));
+        assertThat(converter.canConvertTo(listOfStrings), is(true));
+        assertThat(converter.canConvertTo(listOfNumbers), is(false));
+        assertThat(converter.canConvertTo(setOfNumbers), is(false));
         assertThatCollectionIs(converter.convertValue("a, string ", listOfStrings), "a", "string");
         assertThatCollectionIs(converter.convertValue(" ", listOfStrings));
     }
@@ -529,7 +529,7 @@ class ParameterConvertersBehaviour {
     void shouldConvertEnumFluently() {
         ParameterConverter<Enum<?>> converter = new FluentEnumConverter();
         Type type = SomeEnum.class;
-        assertThat(converter.accept(type), is(true));
+        assertThat(converter.canConvertTo(type), is(true));
         assertThat(converter.convertValue("multiple words and 1 number", type), is((Enum)SomeEnum.MULTIPLE_WORDS_AND_1_NUMBER));
     }
 
@@ -544,7 +544,7 @@ class ParameterConvertersBehaviour {
         ParameterConverter converter = new EnumListConverter();
         Type type = new TypeLiteral<List<SomeEnum>>() {}.getType();
 
-        assertThat(converter.accept(type), is(true));
+        assertThat(converter.canConvertTo(type), is(true));
         List<Enum> list = (List<Enum>)converter.convertValue("ONE,TWO,THREE", type);
         assertThatCollectionIs(list, SomeEnum.ONE, SomeEnum.TWO, SomeEnum.THREE);
     }
@@ -573,7 +573,7 @@ class ParameterConvertersBehaviour {
     void shouldConvertBooleanList() {
         ParameterConverter<List<Boolean>> converter = new BooleanListConverter();
         Type type = new TypeLiteral<List<Boolean>>() {}.getType();
-        assertThat(converter.accept(type), is(true));
+        assertThat(converter.canConvertTo(type), is(true));
         List<Boolean> list = converter.convertValue("true,false,true", type);
         assertThatCollectionIs(list, true, false, true);
     }
@@ -803,10 +803,10 @@ class ParameterConvertersBehaviour {
                 throw new IllegalStateException("Not implemented");
             }
         };
-        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set<Bar>>() {}.getType()), is(true));
-        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set<Number>>() {}.getType()), is(false));
-        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set>() {}.getType()), is(false));
-        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<List<Bar>>() {}.getType()), is(false));
+        assertThat(parameterizedTypeConverter.canConvertTo(new TypeLiteral<Set<Bar>>() {}.getType()), is(true));
+        assertThat(parameterizedTypeConverter.canConvertTo(new TypeLiteral<Set<Number>>() {}.getType()), is(false));
+        assertThat(parameterizedTypeConverter.canConvertTo(new TypeLiteral<Set>() {}.getType()), is(false));
+        assertThat(parameterizedTypeConverter.canConvertTo(new TypeLiteral<List<Bar>>() {}.getType()), is(false));
     }
 
     @Test
@@ -956,11 +956,11 @@ class ParameterConvertersBehaviour {
 
     private static void assertThatTypesAreAccepted(ParameterConverter<?> converter, Type... types) {
         for (Type type : types) {
-            assertThat(converter.accept(type), is(true));
+            assertThat(converter.canConvertTo(type), is(true));
         }
-        assertThat(converter.accept(WrongType.class), is(false));
-        assertThat(converter.accept(mock(Type.class)), is(false));
-        assertThat(converter.accept(new TypeLiteral<List<Map<Object, Object>>>() {}.getType()), is(false));
+        assertThat(converter.canConvertTo(WrongType.class), is(false));
+        assertThat(converter.canConvertTo(mock(Type.class)), is(false));
+        assertThat(converter.canConvertTo(new TypeLiteral<List<Map<Object, Object>>>() {}.getType()), is(false));
     }
 
     static class WrongType {

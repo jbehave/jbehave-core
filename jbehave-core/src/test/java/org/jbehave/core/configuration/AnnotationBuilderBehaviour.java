@@ -191,7 +191,7 @@ class AnnotationBuilderBehaviour {
     static class MyParameterConverter implements ParameterConverter<String> {
 
         @Override
-        public boolean accept(Type type) {
+        public boolean canConvertTo(Type type) {
             return true;
         }
 

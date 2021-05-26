@@ -771,7 +771,7 @@ public class StepCreator {
             }
 
             @Override
-            public boolean accept(Type type) {
+            public boolean canConvertTo(Type type) {
                 return UUIDExceptionWrapper.class == type;
             }
 
