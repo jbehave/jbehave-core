@@ -8,6 +8,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -40,6 +41,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.Queue;
@@ -107,7 +109,7 @@ public class ParameterConverters {
     private static final String DEFAULT_FALSE_VALUE = "false";
 
     private final StepMonitor monitor;
-    private final List<ChainableParameterConverter> converters;
+    private final List<ParameterConverter> converters;
     private final boolean threadSafe;
     private String escapedCollectionSeparator;
 
@@ -264,14 +266,14 @@ public class ParameterConverters {
                 collectionSeparator));
     }
 
-    private ParameterConverters(StepMonitor monitor, List<ChainableParameterConverter> converters, boolean threadSafe) {
+    private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters, boolean threadSafe) {
         this.monitor = monitor;
         this.threadSafe = threadSafe;
         this.converters = threadSafe ? new CopyOnWriteArrayList<>(converters)
                 : new ArrayList<>(converters);
     }
 
-    protected ChainableParameterConverter[] defaultConverters(Keywords keywords, ResourceLoader resourceLoader,
+    protected ParameterConverter[] defaultConverters(Keywords keywords, ResourceLoader resourceLoader,
                                                               ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers, Locale locale,
                                                               String collectionSeparator) {
         this.escapedCollectionSeparator = escapeRegexPunctuation(collectionSeparator);
@@ -315,11 +317,11 @@ public class ParameterConverters {
         return matchThis.replaceAll("([\\[\\]\\{\\}\\?\\^\\.\\*\\(\\)\\+\\\\])", "\\\\$1");
     }
 
-    public ParameterConverters addConverters(ChainableParameterConverter... converters) {
+    public ParameterConverters addConverters(ParameterConverter... converters) {
         return addConverters(asList(converters));
     }
 
-    public ParameterConverters addConverters(List<? extends ChainableParameterConverter> converters) {
+    public ParameterConverters addConverters(List<? extends ParameterConverter> converters) {
         this.converters.addAll(0, converters);
         return this;
     }
@@ -328,7 +330,7 @@ public class ParameterConverters {
         return addConverters(new FunctionalParameterConverter<>(targetType, converter));
     }
 
-    private static boolean isChainComplete(Queue<ChainableParameterConverter> convertersChain) {
+    private static boolean isChainComplete(Queue<ParameterConverter> convertersChain) {
         if (convertersChain.isEmpty()) {
             return false;
         }
@@ -336,7 +338,7 @@ public class ParameterConverters {
         return typeArguments.length <= 1 || typeArguments[0].equals(String.class);
     }
 
-    private static Object applyConverters(Object value, Type basicType, Queue<ChainableParameterConverter> convertersChain) {
+    private static Object applyConverters(Object value, Type basicType, Queue<ParameterConverter> convertersChain) {
         Object identity = convertersChain.peek().convertValue(value, basicType);
         return convertersChain.stream().skip(1).reduce(identity,
                 (v, c) -> c.convertValue(v, getTargetType(c.getClass())), (l, r) -> l);
@@ -344,10 +346,10 @@ public class ParameterConverters {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Object convert(String value, Type type) {
-        Queue<ChainableParameterConverter> converters = findConverters(type);
+        Queue<ParameterConverter> converters = findConverters(type);
         if (isChainComplete(converters)) {
             Object converted = applyConverters(value, type, converters);
-            Queue<Class<?>> classes = converters.stream().map(ChainableParameterConverter::getClass)
+            Queue<Class<?>> classes = converters.stream().map(ParameterConverter::getClass)
                     .collect(Collectors.toCollection(LinkedList::new));
             monitor.convertedValueOfType(value, type, converted, classes);
             return converted;
@@ -355,7 +357,7 @@ public class ParameterConverters {
 
         if (isAssignableFromRawType(Collection.class, type)) {
             Type elementType = argumentType(type);
-            ChainableParameterConverter elementConverter = findConverter(elementType);
+            ParameterConverter elementConverter = findConverter(elementType);
             Collection collection = createCollection(rawClass(type));
             if (elementConverter != null && collection != null) {
                 fillCollection(value, escapedCollectionSeparator, elementConverter, elementType, collection);
@@ -368,7 +370,7 @@ public class ParameterConverters {
             if (clazz.isArray()) {
                 String[] elements = parseElements(value, escapedCollectionSeparator);
                 Class elementType = clazz.getComponentType();
-                ChainableParameterConverter elementConverter = findConverter(elementType);
+                ParameterConverter elementConverter = findConverter(elementType);
                 Object array = createArray(elementType, elements.length);
 
                 if (elementConverter != null && array != null) {
@@ -381,8 +383,8 @@ public class ParameterConverters {
         throw new ParameterConversionFailed("No parameter converter for " + type);
     }
 
-    private ChainableParameterConverter findConverter(Type type) {
-        for (ChainableParameterConverter converter : converters) {
+    private ParameterConverter findConverter(Type type) {
+        for (ParameterConverter converter : converters) {
             if (converter.canConvertTo(type)) {
                 return converter;
             }
@@ -390,14 +392,14 @@ public class ParameterConverters {
         return null;
     }
 
-    private Queue<ChainableParameterConverter> findConverters(Type type) {
-        LinkedList<ChainableParameterConverter> convertersChain = new LinkedList<>();
+    private Queue<ParameterConverter> findConverters(Type type) {
+        LinkedList<ParameterConverter> convertersChain = new LinkedList<>();
         putConverters(type, convertersChain);
         return convertersChain;
     }
 
-    private void putConverters(Type type, LinkedList<ChainableParameterConverter> container) {
-        for (ChainableParameterConverter converter : converters) {
+    private void putConverters(Type type, LinkedList<ParameterConverter> container) {
+        for (ParameterConverter converter : converters) {
             if (converter.canConvertTo(type)) {
                 container.addFirst(converter);
                 Type[] types = getTypeArguments(converter.getClass());
@@ -415,7 +417,7 @@ public class ParameterConverters {
                 .orElse(new Type [] {});
     }
 
-    private static Type getTargetType(Class<? extends ChainableParameterConverter> clazz) {
+    private static Type getTargetType(Class<? extends ParameterConverter> clazz) {
         Type[] types = getTypeArguments(clazz);
         if (types.length > 0) {
             return types.length == 1 ? types[0] : types[1];
@@ -425,7 +427,7 @@ public class ParameterConverters {
 
     private static Optional<ParameterizedType> getParameterizedType(Class<?> clazz) {
         Optional<ParameterizedType> parametrizedType = Arrays.stream(clazz.getGenericInterfaces())
-                .filter(t -> TypeUtils.isAssignable(t, ChainableParameterConverter.class))
+                .filter(t -> TypeUtils.isAssignable(t, ParameterConverter.class))
                 .filter(t -> t instanceof ParameterizedType)
                 .map(ParameterizedType.class::cast)
                 .findFirst();
@@ -471,7 +473,7 @@ public class ParameterConverters {
         return elements;
     }
 
-    private static <T> void fillCollection(String value, String elementSeparator, ChainableParameterConverter<String, T> elementConverter,
+    private static <T> void fillCollection(String value, String elementSeparator, ParameterConverter<String, T> elementConverter,
             Type elementType, Collection<T> convertedValues) {
         for (String element : parseElements(value, elementSeparator)) {
             T convertedValue = elementConverter.convertValue(element, elementType);
@@ -479,7 +481,7 @@ public class ParameterConverters {
         }
     }
 
-    private static <T> void fillArray(String[] elements, ChainableParameterConverter<String, T> elementConverter,
+    private static <T> void fillArray(String[] elements, ParameterConverter<String, T> elementConverter,
             Type elementType, Object convertedValues) {
         for (int i = 0; i < elements.length; i++) {
             T convertedValue = elementConverter.convertValue(elements[i], elementType);
@@ -516,8 +518,8 @@ public class ParameterConverters {
         return null;
     }
 
-    public ParameterConverters newInstanceAdding(ChainableParameterConverter converter) {
-        List<ChainableParameterConverter> convertersForNewInstance = new ArrayList<>(converters);
+    public ParameterConverters newInstanceAdding(ParameterConverter converter) {
+        List<ParameterConverter> convertersForNewInstance = new ArrayList<>(converters);
         convertersForNewInstance.add(converter);
         return new ParameterConverters(monitor, convertersForNewInstance, threadSafe);
     }
@@ -530,14 +532,21 @@ public class ParameterConverters {
      * @param <T> the target converted output
      * @param <S> the source input value
      */
-    public interface ChainableParameterConverter<S, T> {
+    public interface ParameterConverter<S, T> {
 
         /**
-         * Return {@code true} if the type converter can convert to the desired target type.
+         * Return {@code true} if the converter can convert to the desired target type.
          * @param type the type descriptor that describes the requested result type
          * @return {@code true} if that conversion can be performed
          */
         boolean canConvertTo(Type type);
+
+        /**
+         * Return {@code true} if the converter can convert from the desired target type.
+         * @param type the type descriptor that describes the source type
+         * @return {@code true} if that conversion can be performed
+         */
+        boolean canConvertFrom(Type type);
 
         /**
          * Convert the value from one type to another, for example from a {@code boolean} to a {@code String}.
@@ -546,14 +555,6 @@ public class ParameterConverters {
          * @return the converted value
          */
         T convertValue(S value, Type type);
-    }
-
-    /**
-     * A parameter converter for String input values
-     *
-     * @param <T> the target converted output
-     */
-    public interface ParameterConverter<T> extends ChainableParameterConverter<String, T> {
     }
 
     @SuppressWarnings("serial")
@@ -568,37 +569,51 @@ public class ParameterConverters {
         }
     }
 
-    public abstract static class AbstractParameterConverter<T> extends AbstractChainableParameterConverter<String, T> implements ParameterConverter<T> {
-        public AbstractParameterConverter() {
+    public abstract static class FromStringParameterConverter<T> extends AbstractParameterConverter<String, T> {
+        public FromStringParameterConverter() {
         }
 
-        public AbstractParameterConverter(Type targetType) {
-            super(targetType);
+        public FromStringParameterConverter(Type targetType) {
+            super(String.class, targetType);
         }
     }
 
-    public abstract static class AbstractChainableParameterConverter<S, T> implements ChainableParameterConverter<S, T> {
+    public abstract static class AbstractParameterConverter<S, T> implements ParameterConverter<S, T> {
 
+        private final Type sourceType;
         private final Type targetType;
 
-        public AbstractChainableParameterConverter() {
-            this.targetType = getTargetType(getClass());
+        public AbstractParameterConverter() {
+            Map<TypeVariable<?>, Type> types = TypeUtils.getTypeArguments(getClass(), ParameterConverter.class);
+            TypeVariable<?>[] typeVariables = ParameterConverter.class.getTypeParameters();
+            this.sourceType = types.get(typeVariables[0]);
+            this.targetType = types.get(typeVariables[1]);
         }
 
-        public AbstractChainableParameterConverter(Type targetType) {
+        public AbstractParameterConverter(Type sourceType, Type targetType) {
+            this.sourceType = sourceType;
             this.targetType = targetType;
         }
 
         @Override
         public boolean canConvertTo(Type type) {
-            if (targetType instanceof Class<?>) {
-                return isAssignableFrom((Class<?>) targetType, type);
+            return isAssignable(targetType, type);
+        }
+
+        @Override
+        public boolean canConvertFrom(Type type) {
+            return isAssignable(sourceType, type);
+        }
+
+        private static boolean isAssignable(Type from, Type to) {
+            if (from instanceof Class<?>) {
+                return isAssignableFrom((Class<?>) from, to);
             }
-            return targetType.equals(type);
+            return from.equals(to);
         }
     }
 
-    public static class FunctionalParameterConverter<T> extends AbstractParameterConverter<T> {
+    public static class FunctionalParameterConverter<T> extends FromStringParameterConverter<T> {
 
         private Function<String, T> converterFunction;
 
@@ -617,12 +632,12 @@ public class ParameterConverters {
         }
     }
 
-    public abstract static class AbstractListParameterConverter<T> implements ParameterConverter<List<T>> {
+    public abstract static class AbstractListParameterConverter<T> extends FromStringParameterConverter<List<T>> {
 
         private final String valueSeparator;
-        private final ParameterConverter<T> elementConverter;
+        private final FromStringParameterConverter<T> elementConverter;
 
-        public AbstractListParameterConverter(String valueSeparator, ParameterConverter<T> elementConverter) {
+        public AbstractListParameterConverter(String valueSeparator, FromStringParameterConverter<T> elementConverter) {
             this.valueSeparator = valueSeparator;
             this.elementConverter = elementConverter;
         }
@@ -664,7 +679,7 @@ public class ParameterConverters {
      * used to convert numbers in specific locales.
      * </p>
      */
-    public static class NumberConverter extends AbstractParameterConverter<Number> {
+    public static class NumberConverter extends FromStringParameterConverter<Number> {
         private static List<Class<?>> primitiveTypes = asList(new Class<?>[] { byte.class, short.class, int.class,
                 float.class, long.class, double.class });
 
@@ -806,7 +821,7 @@ public class ParameterConverters {
         }
     }
 
-    public static class StringConverter extends AbstractParameterConverter<String> {
+    public static class StringConverter extends FromStringParameterConverter<String> {
         private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
         private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
 
@@ -847,7 +862,7 @@ public class ParameterConverters {
      * Parses value to a {@link Date} using an injectable {@link DateFormat}
      * (defaults to <b>new SimpleDateFormat("dd/MM/yyyy")</b>)
      */
-    public static class DateConverter extends AbstractParameterConverter<Date> {
+    public static class DateConverter extends FromStringParameterConverter<Date> {
 
         public static final DateFormat DEFAULT_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -894,7 +909,7 @@ public class ParameterConverters {
         }
     }
 
-    public static class BooleanConverter extends AbstractParameterConverter<Boolean> {
+    public static class BooleanConverter extends FromStringParameterConverter<Boolean> {
         private final String trueValue;
         private final String falseValue;
 
@@ -940,7 +955,7 @@ public class ParameterConverters {
     /**
      * Parses value to any {@link Enum}
      */
-    public static class EnumConverter implements ParameterConverter<Enum<?>> {
+    public static class EnumConverter extends FromStringParameterConverter<Enum<?>> {
 
         @Override
         public boolean canConvertTo(Type type) {
@@ -1022,7 +1037,7 @@ public class ParameterConverters {
      * Converts ExamplesTable to list of parameters, mapped to annotated custom
      * types.
      */
-    public static class ExamplesTableParametersConverter implements ParameterConverter<Object> {
+    public static class ExamplesTableParametersConverter extends FromStringParameterConverter<Object> {
 
         private final ExamplesTableFactory factory;
 
@@ -1050,7 +1065,7 @@ public class ParameterConverters {
 
     }
 
-    public static class JsonConverter implements ParameterConverter<Object> {
+    public static class JsonConverter extends FromStringParameterConverter<Object> {
 
         private final JsonFactory factory;
 
@@ -1130,7 +1145,7 @@ public class ParameterConverters {
     /**
      * Invokes method on instance to return value.
      */
-    public static class MethodReturningConverter implements ParameterConverter<Object> {
+    public static class MethodReturningConverter extends FromStringParameterConverter<Object> {
         private Method method;
         private Class<?> stepsType;
         private InjectableStepsFactory stepsFactory;

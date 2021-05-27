@@ -45,7 +45,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Verbatim;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.FromStringParameterConverter;
 import org.jbehave.core.steps.context.StepsContext;
 
 public class StepCreator {
@@ -763,7 +763,7 @@ public class StepCreator {
             return perform(storyReporter, storyFailureIfItHappened);
         }
 
-        private class UUIDExceptionWrapperInjector implements ParameterConverter<UUIDExceptionWrapper> {
+        private class UUIDExceptionWrapperInjector extends FromStringParameterConverter<UUIDExceptionWrapper> {
             private final UUIDExceptionWrapper storyFailureIfItHappened;
 
             public UUIDExceptionWrapperInjector(UUIDExceptionWrapper storyFailureIfItHappened) {

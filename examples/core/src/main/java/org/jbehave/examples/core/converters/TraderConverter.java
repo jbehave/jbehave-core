@@ -2,12 +2,12 @@ package org.jbehave.examples.core.converters;
 
 import java.lang.reflect.Type;
 
-import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.FromStringParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConversionFailed;
 import org.jbehave.examples.core.model.Trader;
 import org.jbehave.examples.core.persistence.TraderPersister;
 
-public class TraderConverter extends AbstractParameterConverter<Trader> {
+public class TraderConverter extends FromStringParameterConverter<Trader> {
     private TraderPersister persister;
 
     public TraderConverter(TraderPersister persister) {

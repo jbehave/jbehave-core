@@ -9,8 +9,8 @@ import java.util.Set;
 
 import org.jbehave.core.annotations.AsParameterConverter;
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 
 /**
  * <p>

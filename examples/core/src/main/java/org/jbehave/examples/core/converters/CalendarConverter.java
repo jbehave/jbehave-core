@@ -6,9 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.FromStringParameterConverter;
 
-public class CalendarConverter extends AbstractParameterConverter<Calendar> {
+public class CalendarConverter extends FromStringParameterConverter<Calendar> {
     
     private final SimpleDateFormat dateFormat;
  

@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -40,6 +42,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -66,11 +69,11 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
-import org.jbehave.core.steps.ParameterConverters.AbstractChainableParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.FromStringParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanListConverter;
-import org.jbehave.core.steps.ParameterConverters.ChainableParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.CurrencyConverter;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.EnumConverter;
@@ -83,7 +86,6 @@ import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConversionFailed;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.PatternConverter;
 import org.jbehave.core.steps.ParameterConverters.StringListConverter;
 import org.jbehave.core.steps.SomeSteps.MyParameters;
@@ -108,7 +110,7 @@ class ParameterConvertersBehaviour {
         ParameterConverters converters = new ParameterConverters(resourceLoader, parameterControls, tableTransformers,
                 true);
         TableParsers tableParsers = new TableParsers(keywords, converters);
-        ChainableParameterConverter<?, ?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader, parameterControls,
+        ParameterConverter<?, ?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader, parameterControls,
                 tableParsers, tableTransformers, Locale.ENGLISH, ",");
         assertThatDefaultConvertersInclude(defaultConverters, BooleanConverter.class, NumberConverter.class,
                 StringListConverter.class,
@@ -121,11 +123,11 @@ class ParameterConvertersBehaviour {
                 ExamplesTableParametersConverter.class);
     }
 
-    private void assertThatDefaultConvertersInclude(ChainableParameterConverter<?, ?>[] defaultConverters,
-                                                    Class<? extends ParameterConverter<?>>... converterTypes) {
-        for (Class<? extends ParameterConverter<?>> type : converterTypes) {
+    private void assertThatDefaultConvertersInclude(ParameterConverter<?, ?>[] defaultConverters,
+                                                    Class<? extends FromStringParameterConverter<?>>... converterTypes) {
+        for (Class<? extends FromStringParameterConverter<?>> type : converterTypes) {
             boolean found = false;
-            for (ChainableParameterConverter<?, ?> converter : defaultConverters) {
+            for (ParameterConverter<?, ?> converter : defaultConverters) {
                 if (converter.getClass().isAssignableFrom(type)) {
                     found = true;
                 }
@@ -146,11 +148,11 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertValuesToNumbersWithEnglishNumberFormat() {
         Locale locale = Locale.ENGLISH;
-        ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
+        FromStringParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         assertConverterForLocale(converter, locale);
     }
 
-    private void assertConverterForLocale(ParameterConverter<Number> converter, Locale locale) {
+    private void assertConverterForLocale(FromStringParameterConverter<Number> converter, Locale locale) {
         assertThatAllNumberTypesAreAccepted(converter);
         assertThatAllNumbersAreConverted(converter, locale);
         assertThat(converter.convertValue("100,000", Integer.class), is((Number) 100000));
@@ -165,7 +167,7 @@ class ParameterConvertersBehaviour {
     void shouldConvertValuesToNumbersWithEnglishNumberFormatInMultipleThreads() {
         final Locale locale = Locale.ENGLISH;
         final int threads = 3;
-        final ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
+        final FromStringParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         final BlockingQueue<String> queue = new ArrayBlockingQueue<>(threads);
         Thread t1 = new Thread() {
             @Override
@@ -205,7 +207,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertValuesToNumbersWithFrenchNumberFormat() {
         Locale locale = Locale.FRENCH;
-        ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
+        FromStringParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         assertThatAllNumberTypesAreAccepted(converter);
         assertThatAllNumbersAreConverted(converter, locale);
         assertThat(converter.convertValue("100000,01", Float.class), is((Number) 100000.01f));
@@ -215,13 +217,13 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertValuesToNumbersWithGermanNumberFormat() {
         Locale locale = Locale.GERMAN;
-        ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
+        FromStringParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         assertThatAllNumberTypesAreAccepted(converter);
         assertThatAllNumbersAreConverted(converter, locale);
         assertThat(converter.convertValue("1.000.000,01", BigDecimal.class), is((Number) new BigDecimal("1000000.01")));
     }
 
-    private void assertThatAllNumberTypesAreAccepted(ParameterConverter<Number> converter) {
+    private void assertThatAllNumberTypesAreAccepted(FromStringParameterConverter<Number> converter) {
         Type[] numberTypes = {
                 Byte.class,
                 byte.class,
@@ -244,7 +246,7 @@ class ParameterConvertersBehaviour {
         assertThatTypesAreAccepted(converter, numberTypes);
     }
 
-    private void assertThatAllNumbersAreConverted(ParameterConverter<Number> converter, Locale locale) {
+    private void assertThatAllNumbersAreConverted(FromStringParameterConverter<Number> converter, Locale locale) {
         DecimalFormatSymbols format = new DecimalFormatSymbols(locale);
         char dot = format.getDecimalSeparator();
         char minus = format.getMinusSign();
@@ -289,7 +291,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertNaNAndInfinityValuesToNumbers() {
-        ParameterConverter<Number> converter = new NumberConverter();
+        FromStringParameterConverter<Number> converter = new NumberConverter();
         assertThat(converter.convertValue(NAN, Float.class), is((Number) Float.NaN));
         assertThat(converter.convertValue(POSITIVE_INFINITY, Float.class), is((Number) Float.POSITIVE_INFINITY));
         assertThat(converter.convertValue(NEGATIVE_INFINITY, Float.class), is((Number) Float.NEGATIVE_INFINITY));
@@ -300,7 +302,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertCommaSeparatedValuesToListOfNumbersWithDefaultFormat() {
-        ParameterConverter<List<Number>> converter = new NumberListConverter();
+        FromStringParameterConverter<List<Number>> converter = new NumberListConverter();
         Type listOfNumbers = new TypeLiteral<List<Number>>() {}.getType();
         Type setOfNumbers = new TypeLiteral<Set<Number>>() {}.getType();
         assertThat(converter.canConvertTo(listOfNumbers), is(true));
@@ -320,7 +322,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertCommaSeparatedValuesToListOfNumbersWithCustomFormat() {
         DecimalFormat numberFormat = new DecimalFormat("#,####", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        ParameterConverter<List<Number>> converter = new NumberListConverter(numberFormat, " ");
+        FromStringParameterConverter<List<Number>> converter = new NumberListConverter(numberFormat, " ");
         Type type = new TypeLiteral<List<Number>>() {}.getType();
         List<Number> list = converter.convertValue("3,000 0.5 6.1f 8.00", type);
         assertThatCollectionIs(list, 3000L, 0.5, 6.1, 8L);
@@ -329,7 +331,7 @@ class ParameterConvertersBehaviour {
     @SuppressWarnings("unchecked")
     @Test
     void shouldConvertCommaSeparatedValuesOfSpecificNumberTypes() {
-        ParameterConverter converter = new NumberListConverter();
+        FromStringParameterConverter converter = new NumberListConverter();
 
         Type doubleType = new TypeLiteral<List<Double>>() {}.getType();
         List<Double> doubles = (List<Double>) converter.convertValue(
@@ -380,7 +382,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertCommaSeparatedValuesToListOfStrings() {
-        ParameterConverter<List<String>> converter = new StringListConverter();
+        FromStringParameterConverter<List<String>> converter = new StringListConverter();
         Type listOfStrings = new TypeLiteral<List<String>>() {}.getType();
         Type listOfNumbers = new TypeLiteral<List<Number>>() {}.getType();
         Type setOfNumbers = new TypeLiteral<Set<Number>>() {}.getType();
@@ -393,7 +395,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertDateWithDefaultFormat() throws ParseException {
-        ParameterConverter<Date> converter = new DateConverter();
+        FromStringParameterConverter<Date> converter = new DateConverter();
         Type type = Date.class;
         assertThatTypesAreAccepted(converter, type);
         String date = "01/01/2010";
@@ -403,7 +405,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertDateWithCustomFormat() throws ParseException {
         DateFormat customFormat = new SimpleDateFormat("yyyy-MM-dd");
-        ParameterConverter<Date> converter = new DateConverter(customFormat);
+        FromStringParameterConverter<Date> converter = new DateConverter(customFormat);
         Type type = Date.class;
         assertThatTypesAreAccepted(converter, type);
         String date = "2010-01-01";
@@ -442,7 +444,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertMultilineTable() {
-        ParameterConverter<ExamplesTable> converter = new ExamplesTableConverter(
+        FromStringParameterConverter<ExamplesTable> converter = new ExamplesTableConverter(
                 new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
         Type type = ExamplesTable.class;
         assertThatTypesAreAccepted(converter, type);
@@ -459,7 +461,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertMultilineTableToParameters() {
-        ParameterConverter converter = new ExamplesTableParametersConverter(
+        FromStringParameterConverter converter = new ExamplesTableParametersConverter(
                 new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
         Type type = new TypeLiteral<List<MyParameters>>() {}.getType();
         assertThatTypesAreAccepted(converter, type);
@@ -477,7 +479,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertSinglelineTableToParameters() {
-        ParameterConverter converter = new ExamplesTableParametersConverter(
+        FromStringParameterConverter converter = new ExamplesTableParametersConverter(
                 new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
         Type type = MyParameters.class;
         assertThatTypesAreAccepted(converter, type);
@@ -490,7 +492,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertParameterFromMethodReturningValue() throws IntrospectionException {
         Method method = SomeSteps.methodFor("aMethodReturningExamplesTable");
-        ParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
+        FromStringParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
         assertThatTypesAreAccepted(converter, method.getReturnType());
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
         ExamplesTable table = (ExamplesTable) converter.convertValue(value, ExamplesTable.class);
@@ -506,7 +508,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldFailToConvertParameterFromFailingMethodReturningValue() throws IntrospectionException {
         Method method = SomeSteps.methodFor("aFailingMethodReturningExamplesTable");
-        ParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
+        FromStringParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
         assertThrows(ParameterConversionFailed.class, () -> converter.convertValue(value, ExamplesTable.class));
     }
@@ -519,7 +521,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertEnum() {
-        ParameterConverter<Enum<?>> converter = new EnumConverter();
+        FromStringParameterConverter<Enum<?>> converter = new EnumConverter();
         Type type = SomeEnum.class;
         assertThatTypesAreAccepted(converter, type);
         assertThat(converter.convertValue("ONE", type), is((Enum)SomeEnum.ONE));
@@ -527,7 +529,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertEnumFluently() {
-        ParameterConverter<Enum<?>> converter = new FluentEnumConverter();
+        FromStringParameterConverter<Enum<?>> converter = new FluentEnumConverter();
         Type type = SomeEnum.class;
         assertThat(converter.canConvertTo(type), is(true));
         assertThat(converter.convertValue("multiple words and 1 number", type), is((Enum)SomeEnum.MULTIPLE_WORDS_AND_1_NUMBER));
@@ -541,7 +543,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertEnumList() {
-        ParameterConverter converter = new EnumListConverter();
+        FromStringParameterConverter converter = new EnumListConverter();
         Type type = new TypeLiteral<List<SomeEnum>>() {}.getType();
 
         assertThat(converter.canConvertTo(type), is(true));
@@ -551,7 +553,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertBoolean() {
-        ParameterConverter<Boolean> converter = new BooleanConverter();
+        FromStringParameterConverter<Boolean> converter = new BooleanConverter();
         Type type = Boolean.TYPE;
         assertThatTypesAreAccepted(converter, type, Boolean.class);
         assertThat(converter.convertValue("true", type), is(true));
@@ -561,7 +563,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertBooleanWithCustomValues() {
-        ParameterConverter<Boolean> converter = new BooleanConverter("ON", "OFF");
+        FromStringParameterConverter<Boolean> converter = new BooleanConverter("ON", "OFF");
         Type type = Boolean.TYPE;
         assertThatTypesAreAccepted(converter, type, Boolean.class);
         assertThat(converter.convertValue("ON", type), is(true));
@@ -571,7 +573,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertBooleanList() {
-        ParameterConverter<List<Boolean>> converter = new BooleanListConverter();
+        FromStringParameterConverter<List<Boolean>> converter = new BooleanListConverter();
         Type type = new TypeLiteral<List<Boolean>>() {}.getType();
         assertThat(converter.canConvertTo(type), is(true));
         List<Boolean> list = converter.convertValue("true,false,true", type);
@@ -797,7 +799,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldAceeptParameterizedTypesAutomatically () {
-        ParameterConverter<Set<Bar>> parameterizedTypeConverter = new AbstractParameterConverter<Set<Bar>>() {
+        FromStringParameterConverter<Set<Bar>> parameterizedTypeConverter = new FromStringParameterConverter<Set<Bar>>() {
             @Override
             public Set<Bar> convertValue(String value, Type type) {
                 throw new IllegalStateException("Not implemented");
@@ -914,6 +916,21 @@ class ParameterConvertersBehaviour {
         assertThat(output.getOutput(), is(inputValue));
     }
 
+    @Test
+    void shouldCheckIfWeCanConvertFromType() {
+        StringContainerConverter simpleChainableConverter = new StringContainerConverter();
+        assertTrue(simpleChainableConverter.canConvertFrom(String.class));
+        assertFalse(simpleChainableConverter.canConvertFrom(Number.class));
+
+        ListToSetConverter collectionChainableConverter = new ListToSetConverter();
+        assertTrue(collectionChainableConverter.canConvertFrom(new TypeLiteral<List<String>>() {}.getType()));
+        assertFalse(collectionChainableConverter.canConvertFrom(new TypeLiteral<Set<String>>() {}.getType()));
+
+        BooleanConverter simpleConverter = new BooleanConverter();
+        assertTrue(simpleConverter.canConvertFrom(String.class));
+        assertFalse(simpleConverter.canConvertFrom(Boolean.class));
+    }
+
     @AsJson
     public static class MyJsonDto {
 
@@ -954,7 +971,7 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private static void assertThatTypesAreAccepted(ParameterConverter<?> converter, Type... types) {
+    private static void assertThatTypesAreAccepted(FromStringParameterConverter<?> converter, Type... types) {
         for (Type type : types) {
             assertThat(converter.canConvertTo(type), is(true));
         }
@@ -981,14 +998,14 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private class FooToBarParameterConverter extends AbstractParameterConverter<Bar> {
+    private class FooToBarParameterConverter extends FromStringParameterConverter<Bar> {
         @Override
         public Bar convertValue(String value, Type type) {
             return new Bar();
         }
     }
 
-    private class FirstParameterConverter extends AbstractChainableParameterConverter<ExamplesTable, FirstConverterOutput> {
+    private class FirstParameterConverter extends AbstractParameterConverter<ExamplesTable, FirstConverterOutput> {
         @Override
         public FirstConverterOutput convertValue(ExamplesTable value, Type type) {
             return new FirstConverterOutput(value.asString() + "first");
@@ -1001,7 +1018,7 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private class SecondParameterConverter extends AbstractChainableParameterConverter<FirstConverterOutput, SecondConverterOutput> {
+    private class SecondParameterConverter extends AbstractParameterConverter<FirstConverterOutput, SecondConverterOutput> {
         @Override
         public SecondConverterOutput convertValue(FirstConverterOutput value, Type type) {
             return new SecondConverterOutput(value.getOutput() + "second");
@@ -1014,7 +1031,7 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private class ThirdParameterConverter extends AbstractChainableParameterConverter<SecondConverterOutput, ThirdConverterOutput> {
+    private class ThirdParameterConverter extends AbstractParameterConverter<SecondConverterOutput, ThirdConverterOutput> {
         @Override
         public ThirdConverterOutput convertValue(SecondConverterOutput value, Type type) {
             return new ThirdConverterOutput(value.getOutput() + "third");
@@ -1039,10 +1056,19 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private class StringContainerConverter extends AbstractChainableParameterConverter<String, StringContainer> {
+    private class StringContainerConverter extends AbstractParameterConverter<String, StringContainer> {
         @Override
         public StringContainer convertValue(String value, Type type) {
             return new StringContainer(value);
         }
+    }
+
+    private class ListToSetConverter extends AbstractParameterConverter<List<String>, Set<String>> {
+
+        @Override
+        public Set<String> convertValue(List<String> value, Type type) {
+            return new HashSet<>(value);
+        }
+
     }
 }

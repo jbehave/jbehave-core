@@ -26,7 +26,7 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.FromStringParameterConverter;
 import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.scan.GivenOnly;
 import org.jbehave.core.steps.scan.GivenWhen;
@@ -188,7 +188,7 @@ class AnnotationBuilderBehaviour {
 
     }
 
-    static class MyParameterConverter implements ParameterConverter<String> {
+    static class MyParameterConverter extends FromStringParameterConverter<String> {
 
         @Override
         public boolean canConvertTo(Type type) {
