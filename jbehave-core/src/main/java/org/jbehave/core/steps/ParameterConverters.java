@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableSet;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
@@ -331,17 +330,13 @@ public class ParameterConverters {
     }
 
     private static boolean isChainComplete(Queue<ParameterConverter> convertersChain) {
-        if (convertersChain.isEmpty()) {
-            return false;
-        }
-        Type[] typeArguments = getTypeArguments(convertersChain.peek().getClass());
-        return typeArguments.length <= 1 || typeArguments[0].equals(String.class);
+        return !convertersChain.isEmpty() && isBaseType(convertersChain.peek().getSourceType());
     }
 
     private static Object applyConverters(Object value, Type basicType, Queue<ParameterConverter> convertersChain) {
         Object identity = convertersChain.peek().convertValue(value, basicType);
         return convertersChain.stream().skip(1).reduce(identity,
-                (v, c) -> c.convertValue(v, getTargetType(c.getClass())), (l, r) -> l);
+                (v, c) -> c.convertValue(v, c.getTargetType()), (l, r) -> l);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -402,44 +397,17 @@ public class ParameterConverters {
         for (ParameterConverter converter : converters) {
             if (converter.canConvertTo(type)) {
                 container.addFirst(converter);
-                Type[] types = getTypeArguments(converter.getClass());
-                if (types.length > 1) {
-                    putConverters(types[0], container);
+                Type sourceType = converter.getSourceType();
+                if (isBaseType(sourceType)) {
+                    break;
                 }
-                break;
+                putConverters(sourceType, container);
             }
         }
     }
 
-    private static Type[] getTypeArguments(Class<?> clazz) {
-        return getParameterizedType(clazz)
-                .map(ParameterizedType::getActualTypeArguments)
-                .orElse(new Type [] {});
-    }
-
-    private static Type getTargetType(Class<? extends ParameterConverter> clazz) {
-        Type[] types = getTypeArguments(clazz);
-        if (types.length > 0) {
-            return types.length == 1 ? types[0] : types[1];
-        }
-        return null;
-    }
-
-    private static Optional<ParameterizedType> getParameterizedType(Class<?> clazz) {
-        Optional<ParameterizedType> parametrizedType = Arrays.stream(clazz.getGenericInterfaces())
-                .filter(t -> TypeUtils.isAssignable(t, ParameterConverter.class))
-                .filter(t -> t instanceof ParameterizedType)
-                .map(ParameterizedType.class::cast)
-                .findFirst();
-        if (parametrizedType.isPresent()) {
-            return parametrizedType;
-        }
-        Type genericSuperclass = clazz.getGenericSuperclass();
-        if (genericSuperclass.equals(Object.class)) {
-            return Optional.empty();
-        }
-        return genericSuperclass instanceof ParameterizedType ? Optional.of((ParameterizedType) genericSuperclass)
-                : getParameterizedType(clazz.getSuperclass());
+    private static boolean isBaseType(Type type) {
+        return String.class.isAssignableFrom((Class<?>) type);
     }
 
     private static boolean isAssignableFrom(Class<?> clazz, Type type) {
@@ -555,6 +523,16 @@ public class ParameterConverters {
          * @return the converted value
          */
         T convertValue(S value, Type type);
+
+        /**
+         * @return the source type
+         */
+        Type getSourceType();
+
+        /**
+         * @return the target type
+         */
+        Type getTargetType();
     }
 
     @SuppressWarnings("serial")
@@ -603,6 +581,14 @@ public class ParameterConverters {
         @Override
         public boolean canConvertFrom(Type type) {
             return isAssignable(sourceType, type);
+        }
+
+        public Type getSourceType() {
+            return sourceType;
+        }
+
+        public Type getTargetType() {
+            return targetType;
         }
 
         private static boolean isAssignable(Type from, Type to) {
