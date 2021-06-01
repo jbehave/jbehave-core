@@ -352,11 +352,24 @@ public class ParameterConverters {
 
         if (isAssignableFromRawType(Collection.class, type)) {
             Type elementType = argumentType(type);
-            ParameterConverter elementConverter = findConverter(elementType);
             Collection collection = createCollection(rawClass(type));
-            if (elementConverter != null && collection != null) {
-                fillCollection(value, escapedCollectionSeparator, elementConverter, elementType, collection);
-                return collection;
+
+            if (collection != null) {
+                Queue<ParameterConverter> typeConverters = findConverters(elementType);
+
+                if (!typeConverters.isEmpty()) {
+                    Type sourceType = typeConverters.peek().getSourceType();
+
+                    if (isBaseType(sourceType)) {
+                        fillCollection(value, escapedCollectionSeparator, typeConverters, elementType, collection);
+                    } else if (isAssignableFrom(Parameters.class, sourceType)) {
+                        ExamplesTable table = (ExamplesTable) findBaseConverter(ExamplesTable.class).convertValue(value,
+                                String.class);
+                        fillCollection(table.getRowsAsParameters(), typeConverters, elementType, collection);
+                    }
+
+                    return collection;
+                }
             }
         }
 
@@ -365,7 +378,7 @@ public class ParameterConverters {
             if (clazz.isArray()) {
                 String[] elements = parseElements(value, escapedCollectionSeparator);
                 Class elementType = clazz.getComponentType();
-                ParameterConverter elementConverter = findConverter(elementType);
+                ParameterConverter elementConverter = findBaseConverter(elementType);
                 Object array = createArray(elementType, elements.length);
 
                 if (elementConverter != null && array != null) {
@@ -378,9 +391,9 @@ public class ParameterConverters {
         throw new ParameterConversionFailed("No parameter converter for " + type);
     }
 
-    private ParameterConverter findConverter(Type type) {
+    private ParameterConverter findBaseConverter(Type type) {
         for (ParameterConverter converter : converters) {
-            if (converter.canConvertTo(type)) {
+            if (converter.canConvertFrom(String.class) && converter.canConvertTo(type)) {
                 return converter;
             }
         }
@@ -441,10 +454,15 @@ public class ParameterConverters {
         return elements;
     }
 
-    private static <T> void fillCollection(String value, String elementSeparator, ParameterConverter<String, T> elementConverter,
-            Type elementType, Collection<T> convertedValues) {
-        for (String element : parseElements(value, elementSeparator)) {
-            T convertedValue = elementConverter.convertValue(element, elementType);
+    private static void fillCollection(String value, String elementSeparator, Queue<ParameterConverter> convertersChain,
+            Type elementType, Collection convertedValues) {
+        fillCollection(asList(parseElements(value, elementSeparator)), convertersChain, elementType, convertedValues);
+    }
+
+    private static void fillCollection(Collection elements, Queue<ParameterConverter> convertersChain,
+            Type elementType, Collection convertedValues) {
+        for (Object element : elements) {
+            Object convertedValue = applyConverters(element, elementType, convertersChain);
             convertedValues.add(convertedValue);
         }
     }
@@ -621,23 +639,24 @@ public class ParameterConverters {
     public abstract static class AbstractListParameterConverter<T> extends FromStringParameterConverter<List<T>> {
 
         private final String valueSeparator;
-        private final FromStringParameterConverter<T> elementConverter;
+        private final Queue<ParameterConverter> elementConverters;
 
         public AbstractListParameterConverter(String valueSeparator, FromStringParameterConverter<T> elementConverter) {
             this.valueSeparator = valueSeparator;
-            this.elementConverter = elementConverter;
+            this.elementConverters = new LinkedList<>();
+            this.elementConverters.add(elementConverter);
         }
 
         @Override
         public boolean canConvertTo(Type type) {
-            return isAssignableFromRawType(List.class, type) && elementConverter.canConvertTo(argumentType(type));
+            return isAssignableFromRawType(List.class, type) && elementConverters.peek().canConvertTo(argumentType(type));
         }
 
         @Override
         public List<T> convertValue(String value, Type type) {
             Type elementType = argumentType(type);
             List<T> convertedValues = new ArrayList<>();
-            fillCollection(value, valueSeparator, elementConverter, elementType, convertedValues);
+            fillCollection(value, valueSeparator, elementConverters, elementType, convertedValues);
             return convertedValues;
         }
     }

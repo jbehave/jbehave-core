@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -931,6 +933,21 @@ class ParameterConvertersBehaviour {
         assertFalse(simpleConverter.canConvertFrom(Boolean.class));
     }
 
+    @Test
+    void shouldUseSingleValueConverterForCollectionOfElements() {
+        Type type = new TypeLiteral<List<byte[]>>() {}.getType();
+        ParameterConverters converters = new ParameterConverters();
+        converters.addConverters(new ParametersToStringContainerConverter());
+        converters.addConverters(new StringContainerToByteArrayConverter());
+        String inputValue = "|column|\n|val1|\n|val2|";
+        Object convertedValue = converters.convert(inputValue, type);
+        assertThat(convertedValue, instanceOf(List.class));
+        List<byte[]> elements = (List<byte[]>) convertedValue;
+        assertThat(elements, not(empty()));
+        assertThat(new String(elements.get(0), StandardCharsets.UTF_8), equalTo("val1"));
+        assertThat(new String(elements.get(1), StandardCharsets.UTF_8), equalTo("val2"));
+    }
+
     @AsJson
     public static class MyJsonDto {
 
@@ -1068,6 +1085,25 @@ class ParameterConvertersBehaviour {
         @Override
         public Set<String> convertValue(List<String> value, Type type) {
             return new HashSet<>(value);
+        }
+
+    }
+
+    private class ParametersToStringContainerConverter extends AbstractParameterConverter<Parameters, StringContainer> {
+
+        @Override
+        public StringContainer convertValue(Parameters parameters, Type type) {
+            String value = parameters.valueAs("column", String.class);
+            return new StringContainer(value);
+        }
+
+    }
+
+    private class StringContainerToByteArrayConverter extends AbstractParameterConverter<StringContainer, byte[]> {
+
+        @Override
+        public byte[] convertValue(StringContainer value, Type type) {
+            return value.getOutput().getBytes(StandardCharsets.UTF_8);
         }
 
     }
