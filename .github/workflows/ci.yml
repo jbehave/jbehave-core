@@ -36,8 +36,8 @@ jobs:
 
       - name: Install
         shell: bash
-        run: mvn install -s settings.xml -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode -e --quiet
+        run: ./mvnw install -s settings.xml -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode -e --quiet
 
       - name: Build
         shell: bash
-        run: mvn install -s settings.xml -P examples --batch-mode -e
+        run: ./mvnw install -s settings.xml -P examples --batch-mode -e
