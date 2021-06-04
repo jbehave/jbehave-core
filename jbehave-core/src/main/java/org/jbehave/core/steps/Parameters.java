@@ -1,6 +1,7 @@
 package org.jbehave.core.steps;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * Provides parameter values as given types
@@ -27,4 +28,20 @@ public interface Parameters extends Row {
      */
     <T> T valueAs(String name, Type type, T defaultValue);
 
+    /**
+     * Maps parameters to the specified type
+     *
+     * @param type The target type
+     * @return The object of type <T>
+     */
+    <T> T mapTo(Class<T> type);
+
+    /**
+     * Maps parameters to the specified type
+     *
+     * @param type The target type
+     * @param fieldNameMapping The field mapping between parameters and target type fields
+     * @return The object of type <T>
+     */
+    <T> T mapTo(Class<T> type, Map<String, String> fieldNameMapping);
 }

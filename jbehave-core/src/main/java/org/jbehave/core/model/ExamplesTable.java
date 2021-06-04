@@ -7,7 +7,6 @@ import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notBlank;
 
 import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +26,6 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jbehave.core.annotations.Parameter;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
@@ -356,13 +354,9 @@ public class ExamplesTable {
     }
 
     public <T> List<T> getRowsAs(Class<T> type, Map<String, String> fieldNameMapping) {
-        List<T> rows = new ArrayList<>();
-
-        for (Parameters parameters : getRowsAsParameters()) {
-            rows.add(mapToType(parameters, type, fieldNameMapping));
-        }
-
-        return rows;
+        return getRowsAsParameters().stream()
+                                    .map(p -> p.mapTo(type, fieldNameMapping))
+                                    .collect(Collectors.toList());
     }
 
     public List<String> getColumn(String columnName) {
@@ -377,55 +371,6 @@ public class ExamplesTable {
                 .map(row -> row.get(columnName))
                 .collect(toList());
         return replaceNamedParameters ? column.stream().map(this::replaceNamedParameters).collect(toList()) : column;
-    }
-
-    private <T> T mapToType(Parameters parameters, Class<T> type, Map<String, String> fieldNameMapping) {
-        try {
-            T instance = type.newInstance();
-            Map<String, String> values = parameters.values();
-            for (String name : values.keySet()) {
-                Field field = findField(type, name, fieldNameMapping);
-                Type fieldType = field.getGenericType();
-                Object value = parameters.valueAs(name, fieldType);
-                field.setAccessible(true);
-                field.set(instance, value);
-            }
-            return instance;
-        } catch (Exception e) {
-            throw new ParametersNotMappableToType(parameters, type, e);
-        }
-    }
-
-    private <T> Field findField(Class<T> type, String name, Map<String, String> fieldNameMapping)
-            throws NoSuchFieldException {
-        // Get field name from mapping, if specified
-        String fieldName = fieldNameMapping.get(name);
-        if (fieldName == null) {
-            fieldName = name;
-        }
-        // First look for fields annotated by @Parameter specifying the name
-        for (Field field : type.getDeclaredFields()) {
-            if (field.isAnnotationPresent(Parameter.class)) {
-                Parameter parameter = field.getAnnotation(Parameter.class);
-                if (fieldName.equals(parameter.name())) {
-                    return field;
-                }
-            }
-        }
-        // Default to field matching given name
-        return findField(type, fieldName);
-    }
-
-    private Field findField(Class<?> type, String fieldName) throws NoSuchFieldException {
-        for (Field field : type.getDeclaredFields()) {
-            if (field.getName().equals(fieldName)) {
-                return field;
-            }
-        }
-        if (type.getSuperclass() != null) {
-            return findField(type.getSuperclass(), fieldName);
-        }
-        throw new NoSuchFieldException(fieldName);
     }
 
     private Parameters createParameters(Map<String, String> values) {
@@ -497,13 +442,6 @@ public class ExamplesTable {
     public static class ColumnNotFound extends RuntimeException {
         public ColumnNotFound(String columnName) {
             super(String.format("The '%s' column does not exist", columnName));
-        }
-    }
-
-    @SuppressWarnings("serial")
-    public static class ParametersNotMappableToType extends RuntimeException {
-        public ParametersNotMappableToType(Parameters parameters, Class<?> type, Exception e) {
-            super(parameters.values() + " not mappable to type " + type, e);
         }
     }
 
