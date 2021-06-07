@@ -84,6 +84,7 @@ import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableParametersConverter;
 import org.jbehave.core.steps.ParameterConverters.FileConverter;
 import org.jbehave.core.steps.ParameterConverters.FluentEnumConverter;
+import org.jbehave.core.steps.ParameterConverters.FunctionalParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
@@ -126,8 +127,8 @@ class ParameterConvertersBehaviour {
     }
 
     private void assertThatDefaultConvertersInclude(ParameterConverter<?, ?>[] defaultConverters,
-                                                    Class<? extends FromStringParameterConverter<?>>... converterTypes) {
-        for (Class<? extends FromStringParameterConverter<?>> type : converterTypes) {
+                                                    Class<? extends ParameterConverter<?, ?>>... converterTypes) {
+        for (Class<? extends ParameterConverter<?, ?>> type : converterTypes) {
             boolean found = false;
             for (ParameterConverter<?, ?> converter : defaultConverters) {
                 if (converter.getClass().isAssignableFrom(type)) {
@@ -446,7 +447,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertMultilineTable() {
-        FromStringParameterConverter<ExamplesTable> converter = new ExamplesTableConverter(
+        FunctionalParameterConverter<String, ExamplesTable> converter = new ExamplesTableConverter(
                 new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
         Type type = ExamplesTable.class;
         assertThatTypesAreAccepted(converter, type);
@@ -988,7 +989,7 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private static void assertThatTypesAreAccepted(FromStringParameterConverter<?> converter, Type... types) {
+    private static void assertThatTypesAreAccepted(ParameterConverter<?, ?> converter, Type... types) {
         for (Type type : types) {
             assertThat(converter.canConvertTo(type), is(true));
         }

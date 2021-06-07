@@ -22,6 +22,7 @@ import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.FunctionalParameterConverter;
 
 @ApplicationScoped
 public class ConfigurationProducer
@@ -51,8 +52,8 @@ public class ConfigurationProducer
                             .withRelativeDirectory("my-output-directory")
                             .withViewResources(viewResources).withFailureTrace(true))
                     .useParameterConverters(new ParameterConverters(resourceLoader, tableTransformers)
-                            .addConverters(new MyDateConverter())
-                            .addConverterFromFunction(CustomObject.class, CustomObject::new))
+                            .addConverters(new MyDateConverter(),
+                                new FunctionalParameterConverter<>(String.class, CustomObject.class, CustomObject::new)))
                     .useTableTransformers(tableTransformers);
                     
     }

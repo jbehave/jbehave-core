@@ -280,7 +280,7 @@ class GuiceAnnotationBuilderBehaviour {
                             .withViewResources(viewResources).withFailureTrace(true));
             Multibinder<ParameterConverter> multiBinder = Multibinder.newSetBinder(binder(), ParameterConverter.class);
             multiBinder.addBinding().toInstance(
-                    new FunctionalParameterConverter<>(CustomObject.class, CustomObject::new));
+                    new FunctionalParameterConverter<>(String.class, CustomObject.class, CustomObject::new));
             multiBinder.addBinding().toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
         }
 

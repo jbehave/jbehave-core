@@ -294,20 +294,20 @@ public class ParameterConverters {
                 new JsonConverter(jsonFactory),
 
                 // java.time.* converters
-                new FunctionalParameterConverter<>(Duration.class, Duration::parse),
-                new FunctionalParameterConverter<>(Instant.class, Instant::parse),
-                new FunctionalParameterConverter<>(LocalDate.class, LocalDate::parse),
-                new FunctionalParameterConverter<>(LocalDateTime.class, LocalDateTime::parse),
-                new FunctionalParameterConverter<>(LocalTime.class, LocalTime::parse),
-                new FunctionalParameterConverter<>(MonthDay.class, MonthDay::parse),
-                new FunctionalParameterConverter<>(OffsetDateTime.class, OffsetDateTime::parse),
-                new FunctionalParameterConverter<>(OffsetTime.class, OffsetTime::parse),
-                new FunctionalParameterConverter<>(Period.class, Period::parse),
-                new FunctionalParameterConverter<>(Year.class, Year::parse),
-                new FunctionalParameterConverter<>(YearMonth.class, YearMonth::parse),
-                new FunctionalParameterConverter<>(ZonedDateTime.class, ZonedDateTime::parse),
-                new FunctionalParameterConverter<>(ZoneId.class, ZoneId::of),
-                new FunctionalParameterConverter<>(ZoneOffset.class, ZoneOffset::of)
+                new FunctionalParameterConverter<>(String.class, Duration.class, Duration::parse),
+                new FunctionalParameterConverter<>(String.class, Instant.class, Instant::parse),
+                new FunctionalParameterConverter<>(String.class, LocalDate.class, LocalDate::parse),
+                new FunctionalParameterConverter<>(String.class, LocalDateTime.class, LocalDateTime::parse),
+                new FunctionalParameterConverter<>(String.class, LocalTime.class, LocalTime::parse),
+                new FunctionalParameterConverter<>(String.class, MonthDay.class, MonthDay::parse),
+                new FunctionalParameterConverter<>(String.class, OffsetDateTime.class, OffsetDateTime::parse),
+                new FunctionalParameterConverter<>(String.class, OffsetTime.class, OffsetTime::parse),
+                new FunctionalParameterConverter<>(String.class, Period.class, Period::parse),
+                new FunctionalParameterConverter<>(String.class, Year.class, Year::parse),
+                new FunctionalParameterConverter<>(String.class, YearMonth.class, YearMonth::parse),
+                new FunctionalParameterConverter<>(String.class, ZonedDateTime.class, ZonedDateTime::parse),
+                new FunctionalParameterConverter<>(String.class, ZoneId.class, ZoneId::of),
+                new FunctionalParameterConverter<>(String.class, ZoneOffset.class, ZoneOffset::of)
         };
     }
 
@@ -323,10 +323,6 @@ public class ParameterConverters {
     public ParameterConverters addConverters(List<? extends ParameterConverter> converters) {
         this.converters.addAll(0, converters);
         return this;
-    }
-
-    public <T> ParameterConverters addConverterFromFunction(Class<T> targetType, Function<String, T> converter) {
-        return addConverters(new FunctionalParameterConverter<>(targetType, converter));
     }
 
     private static boolean isChainComplete(Queue<ParameterConverter> convertersChain) {
@@ -617,21 +613,22 @@ public class ParameterConverters {
         }
     }
 
-    public static class FunctionalParameterConverter<T> extends FromStringParameterConverter<T> {
+    public static class FunctionalParameterConverter<S, T> extends AbstractParameterConverter<S, T> {
 
-        private Function<String, T> converterFunction;
+        private final Function<S, T> converterFunction;
 
-        public FunctionalParameterConverter(Class<T> targetType, Function<String, T> converterFunction) {
-            super(targetType);
+        public FunctionalParameterConverter(Class<S> sourceType, Class<T> targetType,
+                Function<S, T> converterFunction) {
+            super(sourceType, targetType);
             this.converterFunction = converterFunction;
         }
 
-        protected FunctionalParameterConverter(Function<String, T> converterFunction) {
+        protected FunctionalParameterConverter(Function<S, T> converterFunction) {
             this.converterFunction = converterFunction;
         }
 
         @Override
-        public T convertValue(String value, Type type) {
+        public T convertValue(S value, Type type) {
             return converterFunction.apply(value);
         }
     }
@@ -893,21 +890,21 @@ public class ParameterConverters {
         }
     }
 
-    public static class CurrencyConverter extends FunctionalParameterConverter<Currency> {
+    public static class CurrencyConverter extends FunctionalParameterConverter<String, Currency> {
 
         public CurrencyConverter() {
             super(Currency::getInstance);
         }
     }
 
-    public static class PatternConverter extends FunctionalParameterConverter<Pattern> {
+    public static class PatternConverter extends FunctionalParameterConverter<String, Pattern> {
 
         public PatternConverter() {
             super(Pattern::compile);
         }
     }
 
-    public static class FileConverter extends FunctionalParameterConverter<File> {
+    public static class FileConverter extends FunctionalParameterConverter<String, File> {
 
         public FileConverter() {
             super(File::new);
@@ -1031,7 +1028,7 @@ public class ParameterConverters {
      * Converts value to {@link ExamplesTable} using a
      * {@link ExamplesTableFactory}.
      */
-    public static class ExamplesTableConverter extends FunctionalParameterConverter<ExamplesTable> {
+    public static class ExamplesTableConverter extends FunctionalParameterConverter<String, ExamplesTable> {
 
         public ExamplesTableConverter(ExamplesTableFactory factory) {
             super(factory::createExamplesTable);
@@ -1187,7 +1184,7 @@ public class ParameterConverters {
 
     }
 
-    public static class VerbatimConverter extends FunctionalParameterConverter<Verbatim> {
+    public static class VerbatimConverter extends FunctionalParameterConverter<String, Verbatim> {
 
         public VerbatimConverter() {
             super(Verbatim::new);

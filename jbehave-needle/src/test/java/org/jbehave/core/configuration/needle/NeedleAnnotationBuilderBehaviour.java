@@ -245,10 +245,10 @@ class NeedleAnnotationBuilderBehaviour {
 
     }
 
-    public static class CustomConverter extends FunctionalParameterConverter<CustomObject> {
+    public static class CustomConverter extends FunctionalParameterConverter<String, CustomObject> {
 
         public CustomConverter() {
-            super(CustomObject::new);
+            super(String.class, CustomObject.class, CustomObject::new);
         }
     }
 
