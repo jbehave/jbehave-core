@@ -21,6 +21,8 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -888,6 +890,11 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertZoneOffset() {
         assertThat(new ParameterConverters().convert("+03:00", ZoneOffset.class), is(ZoneOffset.ofHours(3)));
+    }
+
+    @Test
+    void shouldConvertPath() {
+        assertThat(new ParameterConverters().convert("path", Path.class), is(Paths.get("path")));
     }
 
     @Test

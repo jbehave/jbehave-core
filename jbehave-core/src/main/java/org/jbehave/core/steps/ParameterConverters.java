@@ -11,6 +11,8 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -292,6 +294,7 @@ public class ParameterConverters {
                 new ExamplesTableParametersConverter(tableFactory),
                 new VerbatimConverter(),
                 new JsonConverter(jsonFactory),
+                new FunctionalParameterConverter<>(String.class, Path.class, Paths::get),
 
                 // java.time.* converters
                 new FunctionalParameterConverter<>(String.class, Duration.class, Duration::parse),
