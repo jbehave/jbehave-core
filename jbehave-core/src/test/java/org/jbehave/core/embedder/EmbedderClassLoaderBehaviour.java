@@ -69,7 +69,7 @@ class EmbedderClassLoaderBehaviour {
                 "/target/classes"));
         List<String> expectedPaths = classLoader.asShortPaths(new File("one.jar").toURI().toURL(), new File("/target/classes").toURI().toURL());
         String expected = expectedPaths.stream()
-                .collect(Collectors.joining(",", "{", "}"));
+                .collect(Collectors.joining(", ", "[", "]"));
         assertThat(classLoader.toString(),
                 containsString("urls=" + expected));
     }
