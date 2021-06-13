@@ -20,6 +20,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.junit.After;
 import org.junit.Before;
 import org.reflections.Reflections;
+import org.reflections.ReflectionsException;
 import org.reflections.scanners.MethodAnnotationsScanner;
 
 /**
@@ -81,10 +82,17 @@ public class ScanningStepsFactory extends AbstractStepsFactory {
     private Set<Class<?>> typesAnnotatedWith(Reflections reflections,
             Class<? extends Annotation> annotation) {
         Set<Class<?>> types = new HashSet<>();
-        Set<Method> methodsAnnotatedWith = reflections
-                .getMethodsAnnotatedWith(annotation);
-        for (Method method : methodsAnnotatedWith) {
-            types.add(method.getDeclaringClass());
+        try {
+            Set<Method> methodsAnnotatedWith = reflections.getMethodsAnnotatedWith(annotation);
+            for (Method method : methodsAnnotatedWith) {
+                types.add(method.getDeclaringClass());
+            }
+        }
+        catch (ReflectionsException e) {
+            // https://github.com/ronmamo/reflections/issues/297
+            if (!"Scanner MethodAnnotationsScanner was not configured".equals(e.getMessage())) {
+                throw e;
+            }
         }
         return types;
     }
