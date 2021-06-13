@@ -29,7 +29,8 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToJson() throws IOException {
+    void shouldOutputStoryToJson() throws IOException, SAXException
+    {
         // Given
         String name = "template-story.json";
         File file = newFile("target/" + name);
@@ -40,7 +41,7 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
 
         // Then
         assertFileOutputIsSameAs(file, name);
-        //validateFileOutput(file);
+        validateFileOutput(file);
     }
 
     @Test
