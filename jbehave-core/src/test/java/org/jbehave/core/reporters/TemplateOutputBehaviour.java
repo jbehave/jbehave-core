@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
@@ -29,8 +31,7 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToJson() throws IOException, SAXException
-    {
+    void shouldOutputStoryToJson() throws IOException, SAXException, ParserConfigurationException {
         // Given
         String name = "template-story.json";
         File file = newFile("target/" + name);
@@ -45,7 +46,7 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToXml() throws IOException, SAXException {
+    void shouldOutputStoryToXml() throws IOException, SAXException, ParserConfigurationException {
         // Given
         String name = "template-story.xml";
         File file = newFile("target/" + name);

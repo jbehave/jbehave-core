@@ -29,6 +29,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -157,7 +159,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToXml() throws IOException, SAXException {
+    void shouldOutputStoryToXml() throws IOException, SAXException, ParserConfigurationException {
         // Given
         String name = "stream-story.xml";
         File file = newFile("target/" + name);

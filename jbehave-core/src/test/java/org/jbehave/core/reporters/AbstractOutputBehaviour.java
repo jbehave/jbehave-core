@@ -8,10 +8,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import org.custommonkey.xmlunit.XMLUnit;
 import org.jbehave.core.io.IOUtils;
 import org.xml.sax.SAXException;
 
@@ -36,14 +39,15 @@ public abstract class AbstractOutputBehaviour {
         return IOUtils.toString(new FileReader(file), true);
     }
 
-    protected void validateFileOutput(File file) throws IOException, SAXException {
-        String out = fileContent(file);
+    protected void validateFileOutput(File file) throws IOException, SAXException, ParserConfigurationException {
         if (file.getName().endsWith(".xml")) {
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             // will throw SAXException if the xml file is not well-formed
-            XMLUnit.buildTestDocument(out);
+            documentBuilder.parse(file);
         } else if (file.getName().endsWith(".json")) {
             // will not throw JsonSyntaxException if the json file is not valid
             Gson gson = new Gson();
+            String out = fileContent(file);
             JsonReader jsonReader = new JsonReader(new StringReader(out));
             jsonReader.setLenient(false);
             gson.fromJson(jsonReader, Object.class);
