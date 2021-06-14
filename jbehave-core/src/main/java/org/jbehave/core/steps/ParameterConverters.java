@@ -286,15 +286,15 @@ public class ParameterConverters {
                 new StringConverter(),
                 new StringListConverter(escapedCollectionSeparator),
                 new DateConverter(),
-                new CurrencyConverter(),
-                new PatternConverter(),
-                new FileConverter(),
                 new EnumConverter(),
                 new ExamplesTableConverter(tableFactory),
                 new ExamplesTableParametersConverter(tableFactory),
-                new VerbatimConverter(),
                 new JsonConverter(jsonFactory),
                 new FunctionalParameterConverter<>(String.class, Path.class, Paths::get),
+                new FunctionalParameterConverter<>(String.class, Currency.class, Currency::getInstance),
+                new FunctionalParameterConverter<>(String.class, Pattern.class, Pattern::compile),
+                new FunctionalParameterConverter<>(String.class, File.class, File::new),
+                new FunctionalParameterConverter<>(String.class, Verbatim.class, Verbatim::new),
 
                 // java.time.* converters
                 new FunctionalParameterConverter<>(String.class, Duration.class, Duration::parse),
@@ -893,27 +893,6 @@ public class ParameterConverters {
         }
     }
 
-    public static class CurrencyConverter extends FunctionalParameterConverter<String, Currency> {
-
-        public CurrencyConverter() {
-            super(Currency::getInstance);
-        }
-    }
-
-    public static class PatternConverter extends FunctionalParameterConverter<String, Pattern> {
-
-        public PatternConverter() {
-            super(Pattern::compile);
-        }
-    }
-
-    public static class FileConverter extends FunctionalParameterConverter<String, File> {
-
-        public FileConverter() {
-            super(File::new);
-        }
-    }
-
     public static class BooleanConverter extends FromStringParameterConverter<Boolean> {
         private final String trueValue;
         private final String falseValue;
@@ -1185,13 +1164,6 @@ public class ParameterConverters {
             return stepsFactory.createInstanceOfType(stepsType);
         }
 
-    }
-
-    public static class VerbatimConverter extends FunctionalParameterConverter<String, Verbatim> {
-
-        public VerbatimConverter() {
-            super(Verbatim::new);
-        }
     }
 
 }
