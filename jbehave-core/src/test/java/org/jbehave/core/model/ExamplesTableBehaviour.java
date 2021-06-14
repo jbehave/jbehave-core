@@ -102,9 +102,10 @@ public class ExamplesTableBehaviour {
         String headerSeparator = "||";
         String valueSeparator = "|";
         String ignorableSeparator = "!--";
-        String tableWithCustomSeparator = wikiTableAsString;
-        ExamplesTable table = new ExamplesTable(tableWithCustomSeparator, headerSeparator, valueSeparator,
-                ignorableSeparator);
+        String properties = String.format("{headerSeparator=%s,valueSeparator=%s,ignorableSeparator=%s}%n",
+                headerSeparator, valueSeparator, ignorableSeparator);
+        String tableWithCustomSeparator = properties + wikiTableAsString;
+        ExamplesTable table = new ExamplesTable(tableWithCustomSeparator);
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
 
@@ -117,13 +118,14 @@ public class ExamplesTableBehaviour {
         String headerSeparator = "!!";
         String valueSeparator = "!";
         String ignorableSeparator = "!--";
-        String tableWithCustomSeparator = wikiTableAsString.replace("|", "!");
-        ExamplesTable table = new ExamplesTable(tableWithCustomSeparator, headerSeparator, valueSeparator,
-                ignorableSeparator);
+        String properties = String.format("{headerSeparator=%s,valueSeparator=%s,ignorableSeparator=%s}%n",
+                headerSeparator, valueSeparator, ignorableSeparator);
+        String tableWithCustomSeparator = properties + wikiTableAsString.replace("|", "!");
+        ExamplesTable table = new ExamplesTable(tableWithCustomSeparator);
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
         ensureColumnOrderIsPreserved(table);
-        assertThat(table.asString(), equalTo("!!one!!two!!\n!11!12!\n!21!22!\n"));
+        assertThat(table.asString(), equalTo(properties + "!!one!!two!!\n!11!12!\n!21!22!\n"));
     }
 
     @Test

@@ -39,6 +39,7 @@ public class Keywords {
     public static final String EXAMPLES_TABLE_HEADER_SEPARATOR = "ExamplesTableHeaderSeparator";
     public static final String EXAMPLES_TABLE_VALUE_SEPARATOR = "ExamplesTableValueSeparator";
     public static final String EXAMPLES_TABLE_IGNORABLE_SEPARATOR = "ExamplesTableIgnorableSeparator";
+    public static final String EXAMPLES_TABLE_COMMENT_SEPARATOR = "ExamplesTableCommentSeparator";
     public static final String GIVEN = "Given";
     public static final String WHEN = "When";
     public static final String THEN = "Then";
@@ -68,12 +69,54 @@ public class Keywords {
     public static final String YES = "Yes";
     public static final String NO = "No";
 
-    public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SO_THAT,
-            SCENARIO, GIVEN_STORIES, LIFECYCLE, BEFORE, AFTER, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
-            EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE, COMPOSITE, PRIORITY,
-            PENDING, NOT_PERFORMED, FAILED, DRY_RUN, STORY_CANCELLED, DURATION, SCOPE, SCOPE_STEP, SCOPE_SCENARIO, SCOPE_STORY,
-            OUTCOME, OUTCOME_ANY, OUTCOME_SUCCESS, OUTCOME_FAILURE, OUTCOME_DESCRIPTION, OUTCOME_VALUE, OUTCOME_MATCHER,
-            OUTCOME_VERIFIED, META_FILTER, YES, NO);
+    public static final List<String> KEYWORDS = asList(
+            META,
+            META_PROPERTY,
+            NARRATIVE,
+            IN_ORDER_TO,
+            AS_A,
+            I_WANT_TO,
+            SO_THAT,
+            SCENARIO,
+            GIVEN_STORIES,
+            LIFECYCLE,
+            BEFORE,
+            AFTER,
+            EXAMPLES_TABLE,
+            EXAMPLES_TABLE_ROW,
+            EXAMPLES_TABLE_HEADER_SEPARATOR,
+            EXAMPLES_TABLE_VALUE_SEPARATOR,
+            EXAMPLES_TABLE_IGNORABLE_SEPARATOR,
+            EXAMPLES_TABLE_COMMENT_SEPARATOR,
+            GIVEN,
+            WHEN,
+            THEN,
+            AND,
+            IGNORABLE,
+            COMPOSITE,
+            PRIORITY,
+            PENDING,
+            NOT_PERFORMED,
+            FAILED,
+            DRY_RUN,
+            STORY_CANCELLED,
+            DURATION,
+            SCOPE,
+            SCOPE_STEP,
+            SCOPE_SCENARIO,
+            SCOPE_STORY,
+            OUTCOME,
+            OUTCOME_ANY,
+            OUTCOME_SUCCESS,
+            OUTCOME_FAILURE,
+            OUTCOME_DESCRIPTION,
+            OUTCOME_VALUE,
+            OUTCOME_MATCHER,
+            OUTCOME_VERIFIED,
+            META_FILTER,
+            YES,
+            NO
+    );
 
 
     private final String meta;
@@ -93,6 +136,7 @@ public class Keywords {
     private final String examplesTableHeaderSeparator;
     private final String examplesTableValueSeparator;
     private final String examplesTableIgnorableSeparator;
+    private final String examplesTableCommentSeparator;
     private final String given;
     private final String when;
     private final String then;
@@ -143,6 +187,7 @@ public class Keywords {
         keywords.put(EXAMPLES_TABLE_HEADER_SEPARATOR, "|");
         keywords.put(EXAMPLES_TABLE_VALUE_SEPARATOR, "|");
         keywords.put(EXAMPLES_TABLE_IGNORABLE_SEPARATOR, "|--");
+        keywords.put(EXAMPLES_TABLE_COMMENT_SEPARATOR, "#");
         keywords.put(GIVEN, "Given");
         keywords.put(WHEN, "When");
         keywords.put(THEN, "Then");
@@ -204,6 +249,7 @@ public class Keywords {
         this.examplesTableHeaderSeparator = keyword(EXAMPLES_TABLE_HEADER_SEPARATOR, keywords);
         this.examplesTableValueSeparator = keyword(EXAMPLES_TABLE_VALUE_SEPARATOR, keywords);
         this.examplesTableIgnorableSeparator = keyword(EXAMPLES_TABLE_IGNORABLE_SEPARATOR, keywords);
+        this.examplesTableCommentSeparator = keyword(EXAMPLES_TABLE_COMMENT_SEPARATOR, keywords);
         this.given = keyword(GIVEN, keywords);
         this.when = keyword(WHEN, keywords);
         this.then = keyword(THEN, keywords);
@@ -315,6 +361,10 @@ public class Keywords {
 
     public String examplesTableIgnorableSeparator() {
         return examplesTableIgnorableSeparator;
+    }
+
+    public String examplesTableCommentSeparator() {
+        return examplesTableCommentSeparator;
     }
 
     public String given() {

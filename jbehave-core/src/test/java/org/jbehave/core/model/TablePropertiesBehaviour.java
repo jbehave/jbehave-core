@@ -1,7 +1,5 @@
 package org.jbehave.core.model;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -10,9 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Map;
-import java.util.Properties;
-
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.steps.ParameterConverters;
 import org.junit.jupiter.api.Test;
@@ -22,8 +19,10 @@ import org.junit.jupiter.api.Test;
  */
 class TablePropertiesBehaviour {
 
+    private final Keywords keywords = new LocalizedKeywords();
+
     private TableProperties createTablePropertiesWithDefaultSeparators(String propertiesAsString) {
-        return new TableProperties(null, propertiesAsString, "|", "|", "|--");
+        return new TableProperties(propertiesAsString, new LocalizedKeywords(), null);
     }
 
     @Test
@@ -79,7 +78,7 @@ class TablePropertiesBehaviour {
 
     @Test
     void canGetDefaultProperties() {
-        TableProperties properties = new TableProperties(null, new Properties());
+        TableProperties properties = new TableProperties("", keywords, null);
         assertThat(properties.getHeaderSeparator(), equalTo("|"));
         assertThat(properties.getValueSeparator(), equalTo("|"));
         assertThat(properties.getIgnorableSeparator(), equalTo("|--"));
@@ -91,16 +90,15 @@ class TablePropertiesBehaviour {
 
     @Test
     void canGetAllProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("key", "value");
-        TableProperties tableProperties = new TableProperties(null, properties);
+        TableProperties tableProperties = new TableProperties("key=value", keywords, null);
         assertThat(tableProperties.getProperties().containsKey("key"), is(true));
     }
 
     @Test
     void canGetPropertiesWithNestedTransformersWithoutEscaping() {
-        TableProperties properties = new TableProperties(null,
-                "transformer=CUSTOM_TRANSFORMER, " + "tables={transformer=CUSTOM_TRANSFORMER\\, parameter1=value1}");
+        TableProperties properties = new TableProperties(
+                "transformer=CUSTOM_TRANSFORMER, tables={transformer=CUSTOM_TRANSFORMER\\, parameter1=value1}",
+                keywords, null);
         assertThat(properties.isTrim(), is(true));
         assertThat(properties.isMetaByRow(), is(false));
         assertThat(properties.getTransformer(), equalTo("CUSTOM_TRANSFORMER"));
@@ -110,37 +108,38 @@ class TablePropertiesBehaviour {
 
     @Test
     void canDecoratePropertyValuesToTrimOrKeepVerbatim() {
-        TableProperties properties = new TableProperties(null,
-                "{key1|trim}= surroundedWithSpaces, {key2|verbatim}= surroundedWithSpaces ");
+        TableProperties properties = new TableProperties(
+                "{key1|trim}= surroundedWithSpaces, {key2|verbatim}= surroundedWithSpaces ", keywords, null);
         assertThat(properties.getProperties().getProperty("key1"), equalTo("surroundedWithSpaces"));
         assertThat(properties.getProperties().getProperty("key2"), equalTo(" surroundedWithSpaces "));
     }
 
     @Test
     void canDecoratePropertyValuesToUpperAndLowerCase() {
-        TableProperties properties = new TableProperties(null, "{key1|uppercase}=toUpper, {key2|lowercase}=toLower");
+        TableProperties properties = new TableProperties("{key1|uppercase}=toUpper, {key2|lowercase}=toLower", keywords,
+                null);
         assertThat(properties.getProperties().getProperty("key1"), equalTo("TOUPPER"));
         assertThat(properties.getProperties().getProperty("key2"), equalTo("tolower"));
     }
 
     @Test
     void canTrimPropertyValuesByDefault() {
-        TableProperties properties = new TableProperties(null, "key1= surroundedWithSpaces , key2= ");
+        TableProperties properties = new TableProperties("key1= surroundedWithSpaces , key2= ", keywords, null);
         assertThat(properties.getProperties().getProperty("key1"), equalTo("surroundedWithSpaces"));
         assertThat(properties.getProperties().getProperty("key2"), equalTo(""));
     }
 
     @Test
     void canChainDecoratorsToDecoratePropertyValues() {
-        TableProperties properties = new TableProperties(null,
-                "{key1|uppercase|verbatim}= toUpper , {key2|lowercase|trim}= toLower ");
+        TableProperties properties = new TableProperties(
+                "{key1|uppercase|verbatim}= toUpper , {key2|lowercase|trim}= toLower ", keywords, null);
         assertThat(properties.getProperties().getProperty("key1"), equalTo(" TOUPPER "));
         assertThat(properties.getProperties().getProperty("key2"), equalTo("tolower"));
     }
 
     @Test
     void cantGetMandatoryProperty() {
-        TableProperties properties = new TableProperties(null, createProperties(emptyMap()));
+        TableProperties properties = new TableProperties("", keywords, null);
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
                 () -> properties.getMandatoryNonBlankProperty("key", int.class));
         assertEquals("'key' is not set in ExamplesTable properties", thrown.getMessage());
@@ -148,56 +147,44 @@ class TablePropertiesBehaviour {
 
     @Test
     void canGetMandatoryIntProperty() {
-        TableProperties properties = new TableProperties(new ParameterConverters(),
-                createProperties(singletonMap("key", "1")));
+        TableProperties properties = new TableProperties("key=1", keywords, new ParameterConverters());
         int actual = properties.getMandatoryNonBlankProperty("key", int.class);
         assertEquals(1, actual);
     }
 
     @Test
     void canGetMandatoryLongProperty() {
-        TableProperties properties = new TableProperties(new ParameterConverters(),
-                createProperties(singletonMap("key", "1")));
+        TableProperties properties = new TableProperties("key=1", keywords, new ParameterConverters());
         long actual = properties.getMandatoryNonBlankProperty("key", long.class);
         assertEquals(1L, actual);
     }
 
     @Test
     void canGetMandatoryDoubleProperty() {
-        TableProperties properties = new TableProperties(new ParameterConverters(),
-                createProperties(singletonMap("key", "1")));
+        TableProperties properties = new TableProperties("key=1", keywords, new ParameterConverters());
         assertEquals(1d, properties.getMandatoryNonBlankProperty("key", double.class));
     }
 
     @Test
     void canGetMandatoryBooleanProperty() {
-        TableProperties properties = new TableProperties(new ParameterConverters(),
-                createProperties(singletonMap("key", "true")));
+        TableProperties properties = new TableProperties("key=true", keywords, new ParameterConverters());
         boolean value = properties.getMandatoryNonBlankProperty("key", boolean.class);
         assertTrue(value);
     }
 
     @Test
     void canGetMandatoryNonBlankProperty() {
-        TableProperties properties = new TableProperties(new ParameterConverters(),
-                createProperties(singletonMap("key", "string")));
+        TableProperties properties = new TableProperties("key=string", keywords, new ParameterConverters());
         assertEquals("string", properties.<String>getMandatoryNonBlankProperty("key", String.class));
     }
 
     @Test
     void canGetMandatoryEnumProperty() {
-        TableProperties properties = new TableProperties(new ParameterConverters(),
-                createProperties(singletonMap("key", "BLACK")));
+        TableProperties properties = new TableProperties("key=BLACK", keywords, new ParameterConverters());
         assertEquals(TestEnum.BLACK, properties.getMandatoryNonBlankProperty("key", TestEnum.class));
     }
 
-    private Properties createProperties(Map<String, String> map) {
-        Properties properties = new Properties();
-        properties.putAll(map);
-        return properties;
-    }
-
-    private static enum TestEnum {
+    private enum TestEnum {
         BLACK, WHITE
     }
 }

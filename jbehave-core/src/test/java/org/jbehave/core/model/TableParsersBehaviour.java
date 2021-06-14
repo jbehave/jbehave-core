@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.model.ExamplesTable.TableRows;
 import org.junit.jupiter.api.Assertions;
@@ -31,11 +31,8 @@ class TableParsersBehaviour {
                      + "||val-3-2|\n"
                      + "|val-4-1||";
 
-        Properties properties = new Properties();
-        properties.put("headerSeparator", "!");
-        properties.put("valueSeparator", "|");
-        properties.put("ExamplesTableIgnorableSeparator", "|--");
-        TableProperties tableProperties = new TableProperties(null, properties);
+        TableProperties tableProperties = new TableProperties(
+                "headerSeparator=!,valueSeparator=|,ignorableSeparator=|--", new LocalizedKeywords(), null);
 
         // When
         TableRows tableRows = tableParsers.parseRows(table, tableProperties);

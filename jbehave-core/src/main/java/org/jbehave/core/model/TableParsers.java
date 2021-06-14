@@ -34,12 +34,6 @@ public class TableParsers {
     }
 
     public TablePropertiesQueue parseProperties(String tableAsString) {
-        return parseProperties(tableAsString, keywords.examplesTableHeaderSeparator(),
-                keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator());
-    }
-
-    public TablePropertiesQueue parseProperties(String tableAsString, String headerSeparator, String valueSeparator,
-                                                              String ignorableSeparator) {
         Deque<TableProperties> properties = new LinkedList<>();
         String tableWithoutProperties = tableAsString.trim();
         Matcher matcher = ExamplesTable.INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
@@ -47,14 +41,12 @@ public class TableParsers {
             String propertiesAsString = matcher.group(1);
             propertiesAsString = StringUtils.replace(propertiesAsString, "\\{", "{");
             propertiesAsString = StringUtils.replace(propertiesAsString, "\\}", "}");
-            properties.add(new TableProperties(parameterConverters, propertiesAsString, headerSeparator,
-                    valueSeparator, ignorableSeparator));
+            properties.add(new TableProperties(propertiesAsString, keywords, parameterConverters));
             tableWithoutProperties = matcher.group(2).trim();
             matcher = ExamplesTable.INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
         }
         if (properties.isEmpty()) {
-            properties.add(
-                    new TableProperties(parameterConverters, "", headerSeparator, valueSeparator, ignorableSeparator));
+            properties.add(new TableProperties("", keywords, parameterConverters));
         }
         return new TablePropertiesQueue(tableWithoutProperties, properties);
     }

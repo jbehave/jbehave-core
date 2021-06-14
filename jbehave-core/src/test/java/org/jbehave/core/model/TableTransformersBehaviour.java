@@ -3,6 +3,7 @@ package org.jbehave.core.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class TableTransformersBehaviour {
     private String myTransformedTableAsString = "|one |two | |\n" + "|11 |12 | |\n" + "| 21| 22| |\n";
 
     private static TableProperties createExamplesTableProperties() {
-        return new TableProperties(null, "", "|", "|", "!--");
+        return new TableProperties("", new LocalizedKeywords(), null);
     }
 
     @Test

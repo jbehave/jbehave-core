@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
@@ -168,10 +169,6 @@ public class ExamplesTable {
     public static final Pattern INLINED_PROPERTIES_PATTERN = Pattern.compile("\\{(.*?[^\\\\])\\}\\s*(.*)", DOTALL);
     public static final ExamplesTable EMPTY = new ImmutableExamplesTable(EMPTY_VALUE);
 
-    private static final String HEADER_SEPARATOR = "|";
-    private static final String VALUE_SEPARATOR = "|";
-    private static final String IGNORABLE_SEPARATOR = "|--";
-
     private final ParameterConverters parameterConverters;
     private final Row defaults;
     private final TableRows tableRows;
@@ -181,30 +178,24 @@ public class ExamplesTable {
     private ParameterControls parameterControls;
 
     public ExamplesTable(String tableAsString) {
-        this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR, IGNORABLE_SEPARATOR);
+        this(tableAsString, new LocalizedKeywords(), new TableTransformers());
     }
 
-    public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-            String ignorableSeparator) {
-        this(tableAsString, headerSeparator, valueSeparator, ignorableSeparator, new TableTransformers());
+    private ExamplesTable(String tableAsString, Keywords keywords, TableTransformers tableTransformers) {
+        this(tableAsString, keywords, new ParameterConverters(new LoadFromClasspath(), tableTransformers),
+                tableTransformers);
     }
 
-    private ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-            String ignorableSeparator, TableTransformers tableTransformers) {
-        this(tableAsString, headerSeparator, valueSeparator, ignorableSeparator,
-                new ParameterConverters(new LoadFromClasspath(), tableTransformers), tableTransformers);
+    private ExamplesTable(String tableAsString, Keywords keywords, ParameterConverters parameterConverters,
+            TableTransformers tableTransformers) {
+        this(tableAsString, keywords, parameterConverters, new TableParsers(keywords, parameterConverters),
+                tableTransformers);
     }
 
-    private ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator, String ignorableSeparator,
-            ParameterConverters parameterConverters, TableTransformers tableTransformers) {
-        this(tableAsString, headerSeparator, valueSeparator, ignorableSeparator, parameterConverters,
-                new TableParsers(new LocalizedKeywords(), parameterConverters), tableTransformers);
-    }
-
-    private ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator, String ignorableSeparator,
-            ParameterConverters parameterConverters, TableParsers tableParsers, TableTransformers tableTransformers) {
-        this(tableParsers.parseProperties(tableAsString, headerSeparator, valueSeparator, ignorableSeparator),
-                parameterConverters, new ParameterControls(), tableParsers, tableTransformers);
+    private ExamplesTable(String tableAsString, Keywords keywords, ParameterConverters parameterConverters,
+            TableParsers tableParsers, TableTransformers tableTransformers) {
+        this(tableParsers.parseProperties(tableAsString), parameterConverters, new ParameterControls(), tableParsers,
+                tableTransformers);
     }
 
     ExamplesTable(TablePropertiesQueue tablePropertiesQueue, ParameterConverters parameterConverters,
@@ -277,6 +268,10 @@ public class ExamplesTable {
 
     public Properties getProperties() {
         return lastTableProperties().getProperties();
+    }
+
+    public String getPropertiesAsString() {
+        return lastTableProperties().getPropertiesAsString();
     }
 
     public List<String> getHeaders() {
@@ -463,11 +458,6 @@ public class ExamplesTable {
         private static final Pattern DECORATED_PROPERTY_PATTERN = Pattern.compile(
                 "\\s*\\{([^=,\\s]+(\\|" + DECORATORS_REGEX + ")*)}\\s*", Pattern.CASE_INSENSITIVE);
 
-        private static final String HEADER_SEPARATOR = "|";
-        private static final String VALUE_SEPARATOR = "|";
-        private static final String IGNORABLE_SEPARATOR = "|--";
-        private static final String COMMENT_SEPARATOR = "#";
-
         private static final String HEADER_SEPARATOR_KEY = "headerSeparator";
         private static final String VALUE_SEPARATOR_KEY = "valueSeparator";
         private static final String IGNORABLE_SEPARATOR_KEY = "ignorableSeparator";
@@ -479,40 +469,14 @@ public class ExamplesTable {
         private final ParameterConverters parameterConverters;
         private final String propertiesAsString;
 
-        public TableProperties(ParameterConverters parameterConverters, Properties properties) {
-            this.parameterConverters = parameterConverters;
-            this.properties.putAll(properties);
-            if (!this.properties.containsKey(HEADER_SEPARATOR_KEY)) {
-                this.properties.setProperty(HEADER_SEPARATOR_KEY, HEADER_SEPARATOR);
-            }
-            if (!this.properties.containsKey(VALUE_SEPARATOR_KEY)) {
-                this.properties.setProperty(VALUE_SEPARATOR_KEY, VALUE_SEPARATOR);
-            }
-            if (!this.properties.containsKey(IGNORABLE_SEPARATOR_KEY)) {
-                this.properties.setProperty(IGNORABLE_SEPARATOR_KEY, IGNORABLE_SEPARATOR);
-            }
-            if (!this.properties.containsKey(COMMENT_SEPARATOR_KEY)) {
-                this.properties.setProperty(COMMENT_SEPARATOR_KEY, COMMENT_SEPARATOR);
-            }
-            StringBuilder sb = new StringBuilder();
-            for (Map.Entry<Object, Object> property : this.properties.entrySet()) {
-                sb.append(property.getKey()).append(EQUAL).append(property.getValue()).append(COMMA);
-            }
-            propertiesAsString = sb.substring(0, sb.length() - 1);
-        }
-
-        public TableProperties(ParameterConverters parameterConverters, String propertiesAsString) {
-            this(parameterConverters, propertiesAsString, HEADER_SEPARATOR, VALUE_SEPARATOR, IGNORABLE_SEPARATOR);
-        }
-
-        public TableProperties(ParameterConverters parameterConverters, String propertiesAsString,
-                String defaultHeaderSeparator, String defaultValueSeparator, String defaultIgnorableSeparator) {
-            this.parameterConverters = parameterConverters;
-            properties.setProperty(HEADER_SEPARATOR_KEY, defaultHeaderSeparator);
-            properties.setProperty(VALUE_SEPARATOR_KEY, defaultValueSeparator);
-            properties.setProperty(IGNORABLE_SEPARATOR_KEY, defaultIgnorableSeparator);
-            properties.putAll(parseProperties(propertiesAsString));
+        public TableProperties(String propertiesAsString, Keywords keywords, ParameterConverters parameterConverters) {
             this.propertiesAsString = propertiesAsString;
+            this.parameterConverters = parameterConverters;
+            properties.setProperty(HEADER_SEPARATOR_KEY, keywords.examplesTableHeaderSeparator());
+            properties.setProperty(VALUE_SEPARATOR_KEY, keywords.examplesTableValueSeparator());
+            properties.setProperty(IGNORABLE_SEPARATOR_KEY, keywords.examplesTableIgnorableSeparator());
+            properties.setProperty(COMMENT_SEPARATOR_KEY, keywords.examplesTableCommentSeparator());
+            properties.putAll(parseProperties(propertiesAsString));
         }
 
         private Map<String, String> parseProperties(String propertiesAsString) {
