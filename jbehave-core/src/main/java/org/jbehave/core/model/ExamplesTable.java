@@ -178,22 +178,21 @@ public class ExamplesTable {
     private ParameterControls parameterControls;
 
     public ExamplesTable(String tableAsString) {
-        this(tableAsString, new LocalizedKeywords(), new TableTransformers());
+        this(tableAsString, new TableTransformers());
     }
 
-    private ExamplesTable(String tableAsString, Keywords keywords, TableTransformers tableTransformers) {
-        this(tableAsString, keywords, new ParameterConverters(new LoadFromClasspath(), tableTransformers),
-                tableTransformers);
+    private ExamplesTable(String tableAsString, TableTransformers tableTransformers) {
+        this(tableAsString, new ParameterConverters(new LoadFromClasspath(), tableTransformers), tableTransformers);
     }
 
-    private ExamplesTable(String tableAsString, Keywords keywords, ParameterConverters parameterConverters,
+    private ExamplesTable(String tableAsString, ParameterConverters parameterConverters,
             TableTransformers tableTransformers) {
-        this(tableAsString, keywords, parameterConverters, new TableParsers(keywords, parameterConverters),
+        this(tableAsString, parameterConverters, new TableParsers(new LocalizedKeywords(), parameterConverters),
                 tableTransformers);
     }
 
-    private ExamplesTable(String tableAsString, Keywords keywords, ParameterConverters parameterConverters,
-            TableParsers tableParsers, TableTransformers tableTransformers) {
+    private ExamplesTable(String tableAsString, ParameterConverters parameterConverters, TableParsers tableParsers,
+            TableTransformers tableTransformers) {
         this(tableParsers.parseProperties(tableAsString), parameterConverters, new ParameterControls(), tableParsers,
                 tableTransformers);
     }
