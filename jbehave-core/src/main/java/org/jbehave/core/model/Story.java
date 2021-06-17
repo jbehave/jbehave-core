@@ -28,7 +28,7 @@ public class Story {
     }
 
     public Story(String path) {
-        this(path, null, null , Arrays.<Scenario>asList());
+        this(path, null, null, Arrays.<Scenario>asList());
     }
 
     public Story(String path, List<Scenario> scenarios) {
