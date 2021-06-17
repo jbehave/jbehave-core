@@ -6,7 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Optional;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,14 +24,21 @@ public class TableParsers {
 
     private final Keywords keywords;
     private final ParameterConverters parameterConverters;
+    private final Optional<String> defaultNullPlaceholder;
 
     public TableParsers(ParameterConverters parameterConverters) {
         this(new LocalizedKeywords(), parameterConverters);
     }
 
     public TableParsers(Keywords keywords, ParameterConverters parameterConverters) {
+        this(keywords, parameterConverters, Optional.empty());
+    }
+
+    public TableParsers(Keywords keywords, ParameterConverters parameterConverters,
+            Optional<String> defaultNullPlaceholder) {
         this.keywords = keywords;
         this.parameterConverters = parameterConverters;
+        this.defaultNullPlaceholder = defaultNullPlaceholder;
     }
 
     public TablePropertiesQueue parseProperties(String tableAsString) {
@@ -80,13 +88,11 @@ public class TableParsers {
 
     public List<String> parseRow(String rowAsString, boolean header, TableProperties properties) {
         String separator = header ? properties.getHeaderSeparator() : properties.getValueSeparator();
-        Function<String, String> trimmer = properties.isTrim() ? String::trim : Function.identity();
-        return parseRow(rowAsString.trim(), separator, properties.getCommentSeparator(), trimmer);
-    }
-
-    private List<String> parseRow(String rowAsString, String separator, String commentSeparator,
-            Function<String, String> trimmer) {
-        String[] cells = StringUtils.splitByWholeSeparatorPreserveAllTokens(rowAsString, separator);
+        String commentSeparator = properties.getCommentSeparator();
+        Optional<String> nullPlaceholder = properties.getNullPlaceholder().map(Optional::of).orElse(
+                defaultNullPlaceholder);
+        UnaryOperator<String> trimmer = properties.isTrim() ? String::trim : UnaryOperator.identity();
+        String[] cells = StringUtils.splitByWholeSeparatorPreserveAllTokens(rowAsString.trim(), separator);
         List<String> row = new ArrayList<>(cells.length);
         for (int i = 0; i < cells.length; i++) {
             String cell = cells[i];
@@ -94,7 +100,8 @@ public class TableParsers {
             if ((i == 0 || i == cells.length - 1) && cell.isEmpty()) {
                 continue;
             }
-            row.add(trimmer.apply(cell));
+            String trimmedCell = trimmer.apply(cell);
+            row.add(nullPlaceholder.filter(trimmedCell::equals).isPresent() ? null : trimmedCell);
         }
         return row;
     }

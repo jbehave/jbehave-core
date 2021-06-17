@@ -2,6 +2,7 @@ package org.jbehave.core.configuration;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.Set;
 
 import com.thoughtworks.paranamer.NullParanamer;
@@ -377,7 +378,7 @@ public abstract class Configuration {
 
     public TableParsers tableParsers() {
         if (tableParsers == null) {
-            tableParsers = new TableParsers(keywords(), parameterConverters());
+            tableParsers = new TableParsers(keywords(), parameterConverters(), Optional.empty());
         }
         return tableParsers;
     }

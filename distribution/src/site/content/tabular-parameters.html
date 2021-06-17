@@ -221,6 +221,21 @@ can specify an optional parsing property:</p>
 </pre>
 </p>
 
+<h2>Mapping values to <code>null</code>-s</h2>
+
+<p>
+By default all empty values in <a href="javadoc/core/org/jbehave/core/model/ExamplesTable.html">ExamplesTable</a> are
+treated as empty strings. However it might be required to map certain values to <code>null</code>-s. It can be done
+at the step implementation level or by applying the generic approach at the table level:
+<pre class="brush: plain">
+{nullPlaceholder=NULL}
+|header |
+|value 1|
+|NULL   |
+|value 3|
+</pre>
+</p>
+
 <h2>Using table transformers</h2>
 
 <p>

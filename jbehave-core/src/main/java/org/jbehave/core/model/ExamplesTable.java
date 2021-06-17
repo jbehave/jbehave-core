@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -461,6 +462,7 @@ public class ExamplesTable {
         private static final String VALUE_SEPARATOR_KEY = "valueSeparator";
         private static final String IGNORABLE_SEPARATOR_KEY = "ignorableSeparator";
         private static final String COMMENT_SEPARATOR_KEY = "commentSeparator";
+        private static final String NULL_PLACEHOLDER_KEY = "nullPlaceholder";
 
         private static final String ROW_SEPARATOR = "\n";
 
@@ -542,6 +544,10 @@ public class ExamplesTable {
 
         public String getCommentSeparator() {
             return properties.getProperty(COMMENT_SEPARATOR_KEY);
+        }
+
+        public Optional<String> getNullPlaceholder() {
+            return Optional.ofNullable(properties.getProperty(NULL_PLACEHOLDER_KEY));
         }
 
         void overrideSeparatorsFrom(TableProperties properties) {
