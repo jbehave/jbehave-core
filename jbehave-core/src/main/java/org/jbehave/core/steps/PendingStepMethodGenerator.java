@@ -38,7 +38,7 @@ public class PendingStepMethodGenerator {
 
     private String methodName(StepType stepType, String stepPattern) {
         String name = stepType.name().toLowerCase() + WordUtils.capitalize(stepPattern);
-        char filteredName[] = new char[name.length()];
+        char[] filteredName = new char[name.length()];
         int index = 0;
         for (int i = 0; i < name.length(); i++) {
             char ch = name.charAt(i);
