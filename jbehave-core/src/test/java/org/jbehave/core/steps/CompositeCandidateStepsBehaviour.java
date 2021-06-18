@@ -260,7 +260,8 @@ class CompositeCandidateStepsBehaviour {
 
         @When("I login")
         @Composite(steps = { "When I click the Login button" })
-        public void whenILogin() {}
+        public void whenILogin() {
+        }
         
         @When("I click the $button button")
         public void whenIClickTheButton(@Named("button") String button) {
@@ -296,7 +297,8 @@ class CompositeCandidateStepsBehaviour {
             "Given my user name is <name>",
             "Given I log in"
         })
-        public void logInAsUser(@Named("name")String name) {}
+        public void logInAsUser(@Named("name") String name) {
+        }
         
         @Given("my user name is $name")
         public void setUsername(@Named("name")String name) {
@@ -315,16 +317,20 @@ class CompositeCandidateStepsBehaviour {
         }
         
         @Given("Given I am on the Login page")
-        public void onLoginPage() {}
+        public void onLoginPage() {
+        }
         
         @Given("When I type my user name into the Username field")
-        public void typeUsername() {}
+        public void typeUsername() {
+        }
         
         @Given("When I type my password into the Password field")
-        public void typePassword() {}
+        public void typePassword() {
+        }
         
         @Given("When I click the Login button")
-        public void clickLogin() {}
+        public void clickLogin() {
+        }
     }
 
     @Test
@@ -349,10 +355,12 @@ class CompositeCandidateStepsBehaviour {
 
         @When("ignore my step")
         @Composite(steps = { "!-- When ignore me" })
-        public void whenIgnoreMyStep() {}
+        public void whenIgnoreMyStep() {
+        }
 
         @When("ignore me")
-        public void whenIgnoreMe() {}
+        public void whenIgnoreMe() {
+        }
     }
 
     @Test
@@ -377,6 +385,7 @@ class CompositeCandidateStepsBehaviour {
 
         @When("comment my comment")
         @Composite(steps = { "!-- comment" })
-        public void whenIgnoreMyStep() {}
+        public void whenIgnoreMyStep() {
+        }
     }
 }
