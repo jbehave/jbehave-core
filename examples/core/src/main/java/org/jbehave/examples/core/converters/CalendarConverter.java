@@ -26,7 +26,7 @@ public class CalendarConverter extends FromStringParameterConverter<Calendar> {
             calendar.setTime(dateFormat.parse(value));
             return calendar;
         } catch (ParseException e) {
-            throw new RuntimeException("Could not convert value "+value + " with format " +dateFormat.toPattern());
+            throw new RuntimeException("Could not convert value " + value + " with format " + dateFormat.toPattern());
         }
     }
 

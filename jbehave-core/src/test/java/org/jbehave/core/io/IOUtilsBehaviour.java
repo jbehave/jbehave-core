@@ -33,11 +33,11 @@ class IOUtilsBehaviour {
         assertThat(IOUtils.toString(new StringReader("äöü"), true), equalTo("äöü"));
 
         // close() can be called more than once, a more elaborate test is below 
-        Reader reader=new StringReader("hello");
+        Reader reader = new StringReader("hello");
         assertThat(IOUtils.toString(reader, false), equalTo("hello"));
         reader.close();
 
-        String longString=createLongString();
+        String longString = createLongString();
         assertThat(IOUtils.toString(new StringReader(longString), true), equalTo(longString));
 
         // read an actual file
@@ -88,7 +88,7 @@ class IOUtilsBehaviour {
         assertThat(IOUtils.toString(input, false), equalTo("asdf"));
         input.close();
 
-        String longString=createLongString();
+        String longString = createLongString();
         assertThat(IOUtils.toString(new ByteArrayInputStream(longString.getBytes(StandardCharsets.UTF_8)), true), equalTo(longString));
 
         assertThat(IOUtils.toString(new FileInputStream("src/test/resources/testfile"), true), equalTo("##########"));
@@ -135,9 +135,9 @@ class IOUtilsBehaviour {
      * create a 1mb String
      */
     private String createLongString() {
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("*");
-        for (int i=0;i<20;i++) {
+        for (int i = 0; i < 20; i++) {
             sb.append(sb);
         }
         return sb.toString();

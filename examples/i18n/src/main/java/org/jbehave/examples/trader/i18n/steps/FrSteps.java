@@ -49,7 +49,7 @@ public class FrSteps {
 
     @Then("au rang $row et en colonne $column on trouve: $value")
     public void theRowValuesAre(int row, String column, String value) {
-        Map<String,String> rowValues = table.getRow(row-1);      
+        Map<String, String> rowValues = table.getRow(row - 1);
         assertThat(rowValues.get(column), equalTo(value));
     }
 
@@ -61,8 +61,8 @@ public class FrSteps {
             Parameters original = table.getRowAsParameters(row);
             int one = original.valueAs("un", Integer.class);
             int two = original.valueAs("deux", Integer.class);
-            outcomes.addOutcome("un", one*multiplier, Matchers.equalTo(expected.valueAs("un", Integer.class)));
-            outcomes.addOutcome("deux", two*multiplier, Matchers.equalTo(expected.valueAs("deux", Integer.class)));
+            outcomes.addOutcome("un", one * multiplier, equalTo(expected.valueAs("un", Integer.class)));
+            outcomes.addOutcome("deux", two * multiplier, equalTo(expected.valueAs("deux", Integer.class)));
         }
         outcomes.verify();
     }

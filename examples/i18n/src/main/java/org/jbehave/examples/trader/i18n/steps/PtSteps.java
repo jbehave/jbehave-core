@@ -44,7 +44,7 @@ public class PtSteps {
 
     @Then("na linha $row e coluna $column temos: $value")
     public void theRowValuesAre(int row, String column, String value) {
-        Map<String,String> rowValues = table.getRow(row-1);      
+        Map<String, String> rowValues = table.getRow(row - 1);
         assertThat(rowValues.get(column), equalTo(value));
     }
 }

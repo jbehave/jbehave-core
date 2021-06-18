@@ -88,7 +88,7 @@ public class AllStepCandidates
     }
 
     public List<BeforeOrAfterStep> getAfterStorySteps(boolean givenStory) {
-        return givenStory ? afterGivenStorySteps: afterStorySteps;
+        return givenStory ? afterGivenStorySteps : afterStorySteps;
     }
 
     public List<BeforeOrAfterStep> getBeforeScenarioSteps(ScenarioType scenarioType) {

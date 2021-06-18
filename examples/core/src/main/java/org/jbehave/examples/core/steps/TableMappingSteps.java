@@ -13,22 +13,22 @@ public class TableMappingSteps {
 
     @Given("the parameters mapped via annotations to custom types: $table")
     public void givenTheMyParametersList(List<MyParameters> list) {
-        System.out.println("List annotated: " +list);
+        System.out.println("List annotated: " + list);
     }
 
     @Given("the parameters mapped via annotations to custom type: $table")
     public void givenTheMyParametersType(MyParameters single) {
-        System.out.println("Single annotated: " +single);
+        System.out.println("Single annotated: " + single);
     }
 
     @Given("the parameters mapped via names to custom types: $table")
     public void givenTheNamedParametersList(List<MyParameters> list) {
-        System.out.println("List named: " +list);
+        System.out.println("List named: " + list);
     }
 
     @Given("the parameters mapped via names to custom type: $table")
     public void givenTheNamedParametersType(MyParameters single) {
-        System.out.println("Single named: " +single);
+        System.out.println("Single named: " + single);
     }
 
     @AsParameters

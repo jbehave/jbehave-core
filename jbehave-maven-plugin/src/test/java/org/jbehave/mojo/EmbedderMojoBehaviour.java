@@ -750,7 +750,7 @@ public class EmbedderMojoBehaviour {
         when(archiveManager.getUnArchiver(siteFile)).thenReturn(siteArchiver);
 
         unpackTo(mojo, null); // default view directory
-        unpackTo(mojo, new File(System.getProperty("java.io.tmpdir")+"/jbehave/view"));
+        unpackTo(mojo, new File(System.getProperty("java.io.tmpdir") + "/jbehave/view"));
 
         // Then
         verify(coreArchiver, times(2)).extract();

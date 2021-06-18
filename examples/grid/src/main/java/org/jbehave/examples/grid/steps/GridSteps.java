@@ -16,7 +16,7 @@ public class GridSteps {
     private StringObserver renderer;
 
     @Given("a $width by $height game")
-    @Aliases(values={"a new game: $width by $height"})
+    @Aliases(values = { "a new game: $width by $height" })
     public void theGameIsRunning(int width, int height) {
         game = new Game(width, height);
         renderer = new StringObserver();
@@ -29,7 +29,7 @@ public class GridSteps {
     }
     
     @Then("the grid should look like $grid")
-    @Aliases(values={"the grid should be $grid"})
+    @Aliases(values = { "the grid should be $grid" })
     public void theGridShouldLookLike(String grid) {
         assertThat(renderer.asString(), equalTo(grid));
     }

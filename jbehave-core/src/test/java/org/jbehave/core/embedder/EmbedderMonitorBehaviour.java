@@ -53,7 +53,8 @@ class EmbedderMonitorBehaviour {
     @Test
     void shouldDelegateOutput() {
         EmbedderMonitor monitor = new ReportingFailuresEmbedderMonitor();
-        assertThat(monitor.toString(), containsString(ReportingFailuresEmbedderMonitor.class.getSimpleName()+"[output="));
+        assertThat(monitor.toString(),
+                containsString(ReportingFailuresEmbedderMonitor.class.getSimpleName() + "[output="));
    }
 
 

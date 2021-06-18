@@ -106,9 +106,9 @@ class FreemarkerViewGeneratorBehaviour {
         assertThat(timeFormatter.formatMillis(1), equalTo("00:00:00.001"));
         assertThat(timeFormatter.formatMillis(10), equalTo("00:00:00.010"));
         assertThat(timeFormatter.formatMillis(100), equalTo("00:00:00.100"));
-        assertThat(timeFormatter.formatMillis(2*s+1), equalTo("00:00:02.001"));
-        assertThat(timeFormatter.formatMillis(3*m+20*s+1), equalTo("00:03:20.001"));
-        assertThat(timeFormatter.formatMillis(44*h+33*m+22*s+1), equalTo("44:33:22.001"));
+        assertThat(timeFormatter.formatMillis(2 * s + 1), equalTo("00:00:02.001"));
+        assertThat(timeFormatter.formatMillis(3 * m + 20 * s + 1), equalTo("00:03:20.001"));
+        assertThat(timeFormatter.formatMillis(44 * h + 33 * m + 22 * s + 1), equalTo("44:33:22.001"));
     }
     
 }

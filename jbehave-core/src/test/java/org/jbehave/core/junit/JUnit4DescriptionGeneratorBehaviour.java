@@ -491,7 +491,7 @@ class JUnit4DescriptionGeneratorBehaviour {
                 steps.add(new Steps(scope, outcome, singletonList("Then after " + outcome + " " + scope)));
             }
         }
-        steps.add(new Steps(Scope.STEP, Outcome.ANY, singletonList("Then after " +Scope.STEP)));
+        steps.add(new Steps(Scope.STEP, Outcome.ANY, singletonList("Then after " + Scope.STEP)));
         return steps;
     }
 

@@ -14,8 +14,8 @@ public class PriorityMatchingSteps {
     public void has(String param) {
         this.param = param;
     }
-    
-    @Given(value="a step that has exactly one $param", priority=1)
+
+    @Given(value = "a step that has exactly one $param", priority = 1)
     public void hasExactlyOne(String param) {
         this.param = param;
     }

@@ -253,7 +253,7 @@ class CompositeCandidateStepsBehaviour {
         
 
         @When("I login")
-        @Composite(steps={"When I click the Login button"})
+        @Composite(steps = { "When I click the Login button" })
         public void whenILogin() {}
         
         @When("I click the $button button")
@@ -341,7 +341,7 @@ class CompositeCandidateStepsBehaviour {
     static class CompositeWithIgnorableStep extends Steps {
 
         @When("ignore my step")
-        @Composite(steps={"!-- When ignore me"})
+        @Composite(steps = { "!-- When ignore me" })
         public void whenIgnoreMyStep() {}
 
         @When("ignore me")
@@ -369,7 +369,7 @@ class CompositeCandidateStepsBehaviour {
     static class CompositeWithComment extends Steps {
 
         @When("comment my comment")
-        @Composite(steps={"!-- comment"})
+        @Composite(steps = { "!-- comment" })
         public void whenIgnoreMyStep() {}
     }
 }

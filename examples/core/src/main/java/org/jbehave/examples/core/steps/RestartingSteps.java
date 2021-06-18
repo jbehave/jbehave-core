@@ -16,7 +16,7 @@ public class RestartingSteps {
     public void restartScenario() {
         if (restartingScenario < 1) {
             restartingScenario++;
-            throw new RestartingScenarioFailure("Restarting scenario: " +restartingScenario);
+            throw new RestartingScenarioFailure("Restarting scenario: " + restartingScenario);
         }
     }
     
@@ -29,7 +29,7 @@ public class RestartingSteps {
     public void restartStory() {
         if (restartingStory < 1) {
             restartingStory++;
-            throw new RestartingStoryFailure("Restarting story: " +restartingStory);
+            throw new RestartingStoryFailure("Restarting story: " + restartingStory);
         }
     }
     

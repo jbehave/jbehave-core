@@ -48,7 +48,7 @@ class PendingStepMethodGeneratorBehaviour {
     void shouldNormaliseStepPatternToJavaCompatibleMethodNameAndString() {
         // When
         String pattern = "I'm searching for \".*\", and for others chars such as :;!|, and I look for <this>: $ \\ / () {} [] ";
-        PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("When " +pattern, null);
+        PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("When " + pattern, null);
 
         // Then
         String method =

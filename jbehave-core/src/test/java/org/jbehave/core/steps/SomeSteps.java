@@ -130,13 +130,13 @@ public class SomeSteps extends Steps {
     public String aMethodStoringAString() {
         return "someValue";
     }
-    
-    @ToContext(value = "someKey", retentionLevel= ToContext.RetentionLevel.SCENARIO)
+
+    @ToContext(value = "someKey", retentionLevel = ToContext.RetentionLevel.SCENARIO)
     public String aMethodStoringAStringInScenario() {
         return "someValue";
     }
-    
-    @ToContext(value = "someKey", retentionLevel= ToContext.RetentionLevel.STORY)
+
+    @ToContext(value = "someKey", retentionLevel = ToContext.RetentionLevel.STORY)
     public String aMethodStoringAStringInStory() {
         return "someValue";
     }

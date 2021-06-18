@@ -74,7 +74,8 @@ class SurefireReporterBehaviour {
     }
 
     private String output(File outputDirectory, String name) throws IOException {
-        return IOUtils.toString(new FileReader(new File(outputDirectory, "view/"+name))).replaceAll("(?:\\n|\\r)", "");
+        return IOUtils.toString(new FileReader(new File(outputDirectory, "view/" + name))).replaceAll("(?:\\n|\\r)",
+                "");
     }
 
     private PerformableRoot performableRoot() {

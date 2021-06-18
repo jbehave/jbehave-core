@@ -112,7 +112,7 @@ class MetaFilterBehaviour {
             }
         }
         long delta = System.currentTimeMillis() - start;
-        assertThat("1000 matches should take less than a second, but took "+delta + " ms.", delta, lessThan(1000L));
+        assertThat("1000 matches should take less than a second, but took " + delta + " ms.", delta, lessThan(1000L));
     }
         
     private MetaFilter filter(String filterAsString) {

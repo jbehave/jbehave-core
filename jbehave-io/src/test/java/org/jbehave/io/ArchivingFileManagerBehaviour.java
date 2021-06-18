@@ -61,10 +61,7 @@ class ArchivingFileManagerBehaviour {
 
     private List<File> listFiles() {
         List<File> list = manager.list();        
-        Collections.sort(list, new Comparator<File>() {
-        public int compare(File arg0, File arg1) {
-            return arg0.getName().compareTo(arg1.getName());
-        }});
+        Collections.sort(list, Comparator.comparing(File::getName));
         return list;
     }
 

@@ -15,7 +15,7 @@ import org.junit.runners.model.InitializationError;
 class WeldAnnotatedEmbedderRunnerBehaviour {
 
     @Test
-    void shouldCreateWithGuiceAnnotatedBuilder() throws InitializationError{
+    void shouldCreateWithGuiceAnnotatedBuilder() throws InitializationError {
         AnnotatedEmbedderRunner runner = new WeldAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
     
         assertThat(runner.annotationBuilder(), instanceOf(WeldAnnotationBuilder.class));

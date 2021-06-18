@@ -15,7 +15,7 @@ import org.junit.runners.model.InitializationError;
 class SpringAnnotatedEmbedderRunnerBehaviour {
 
     @Test
-    void shouldCreateWithSpringAnnotatedBuilder() throws InitializationError{
+    void shouldCreateWithSpringAnnotatedBuilder() throws InitializationError {
         AnnotatedEmbedderRunner runner = new SpringAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
         assertThat(runner.annotationBuilder(), instanceOf(SpringAnnotationBuilder.class));
     }

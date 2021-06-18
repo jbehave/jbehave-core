@@ -85,13 +85,13 @@ class StoryNarrator {
         reportCompositeStep(reporter);
         reportSuccessfulStep(reporter, "When I request $20");
         reportSuccessfulStep(reporter, "When I ask Liz for a loan of $100");
-        reportSuccessfulStep(reporter, "When I ask Liz for a loan of $"+StepCreator.PARAMETER_VALUE_START + "99" +StepCreator.PARAMETER_VALUE_END);
+        reportSuccessfulStep(reporter, "When I ask Liz for a loan of $" + StepCreator.PARAMETER_VALUE_START + "99" + StepCreator.PARAMETER_VALUE_END);
         reportSuccessfulStep(reporter, "When I write special chars <>&\"");
-        reportSuccessfulStep(reporter, "When I write special chars in parameter "+StepCreator.PARAMETER_VALUE_START + "<>&\"" +StepCreator.PARAMETER_VALUE_END);
+        reportSuccessfulStep(reporter, "When I write special chars in parameter " + StepCreator.PARAMETER_VALUE_START + "<>&\"" + StepCreator.PARAMETER_VALUE_END);
         reportSuccessfulStep(reporter, "When I write two parameters "
-                + StepCreator.PARAMETER_VALUE_START + ",,," +StepCreator.PARAMETER_VALUE_END
+                + StepCreator.PARAMETER_VALUE_START + ",,," + StepCreator.PARAMETER_VALUE_END
                 + " and "
-                + StepCreator.PARAMETER_VALUE_START + "&&&" +StepCreator.PARAMETER_VALUE_END);
+                + StepCreator.PARAMETER_VALUE_START + "&&&" + StepCreator.PARAMETER_VALUE_END);
         String restarted = "Then I should... - try again";
         reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, restarted));
         reporter.restarted(restarted, new RestartingScenarioFailure("hi")); // !
@@ -151,12 +151,12 @@ class StoryNarrator {
         reportSuccessfulStep(reporter, afterStoryStep);
         reporter.afterStorySteps(Stage.AFTER);
 
-        String method1="@When(\"something \\\"$param\\\"\")\n"
+        String method1 = "@When(\"something \\\"$param\\\"\")\n"
                 + "@Pending\n"
                 + "public void whenSomething() {\n"
                 + "  // PENDING\n"
                 + "}\n";
-        String method2="@Then(\"something is <param1>\")\n"
+        String method2 = "@Then(\"something is <param1>\")\n"
                 + "@Pending\n"
                 + "public void thenSomethingIsParam1() {\n"
                 + "  // PENDING\n"

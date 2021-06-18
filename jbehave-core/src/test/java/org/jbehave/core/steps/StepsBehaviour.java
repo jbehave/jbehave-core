@@ -117,7 +117,7 @@ class StepsBehaviour {
                 return candidate;
             }
         }
-        throw new RuntimeException("StepCandidate "+candidateAsString + " not found amongst " +candidates);
+        throw new RuntimeException("StepCandidate " + candidateAsString + " not found amongst " + candidates);
     }
 
     @Test
@@ -417,19 +417,19 @@ class StepsBehaviour {
         private boolean afterStories;
         
         @Given("a given")
-        @Aliases(values={"a given alias", "another given alias"})
+        @Aliases(values = { "a given alias", "another given alias" })
         public void given() {
             givens++;
         }
 
         @When("a when")
-        @Aliases(values={"a when alias", "another when alias"})
+        @Aliases(values = { "a when alias", "another when alias" })
         public void when() {
             whens++;
         }
         
         @Then("a then")
-        @Aliases(values={"a then alias", "another then alias"})
+        @Aliases(values = { "a then alias", "another then alias" })
         public void then() {
             thens++;
         }
@@ -454,12 +454,12 @@ class StepsBehaviour {
             afterStory = true;
         }
 
-        @BeforeStory(uponGivenStory=true)
+        @BeforeStory(uponGivenStory = true)
         public void beforeGivenStory() {
             beforeGivenStory = true;
         }
-        
-        @AfterStory(uponGivenStory=true)
+
+        @AfterStory(uponGivenStory = true)
         public void afterGivenStory() {
             afterGivenStory = true;
         }        
@@ -469,12 +469,12 @@ class StepsBehaviour {
             beforeNormalScenario = true;
         }
 
-        @BeforeScenario(uponType=ScenarioType.EXAMPLE)
+        @BeforeScenario(uponType = ScenarioType.EXAMPLE)
         public void beforeExampleScenarios() {
             beforeExampleScenario = true;
         }
 
-        @BeforeScenario(uponType=ScenarioType.ANY)
+        @BeforeScenario(uponType = ScenarioType.ANY)
         public void beforeAnyScenarios() {
             beforeAnyScenario = true;
         }
@@ -484,22 +484,22 @@ class StepsBehaviour {
             afterNormalScenario = true;
         }
 
-        @AfterScenario(uponType=ScenarioType.EXAMPLE)
+        @AfterScenario(uponType = ScenarioType.EXAMPLE)
         public void afterExampleScenarios() {
             afterExampleScenario = true;
         }
 
-        @AfterScenario(uponType=ScenarioType.ANY)
+        @AfterScenario(uponType = ScenarioType.ANY)
         public void afterAnyScenarios() {
             afterAnyScenario = true;
         }
 
-        @AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome=AfterScenario.Outcome.SUCCESS)
+        @AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome = AfterScenario.Outcome.SUCCESS)
         public void afterSuccessfulScenarios() {
             afterSuccessfulScenario = true;
         }
-        
-        @AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome=AfterScenario.Outcome.FAILURE)
+
+        @AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome = AfterScenario.Outcome.FAILURE)
         public void afterFailedScenarios() {
             afterFailedScenario = true;
         }

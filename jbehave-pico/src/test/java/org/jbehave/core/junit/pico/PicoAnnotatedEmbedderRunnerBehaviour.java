@@ -15,7 +15,7 @@ import org.junit.runners.model.InitializationError;
 class PicoAnnotatedEmbedderRunnerBehaviour {
 
     @Test
-    void shouldCreateWithPicoAnnotatedBuilder() throws InitializationError{
+    void shouldCreateWithPicoAnnotatedBuilder() throws InitializationError {
         AnnotatedEmbedderRunner runner = new PicoAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
         assertThat(runner.annotationBuilder(), instanceOf(PicoAnnotationBuilder.class));
     }

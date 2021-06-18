@@ -18,7 +18,7 @@ public class ThreadsSteps {
     }
 
     private long elapsedSeconds(long start) {
-        return (System.currentTimeMillis() - start)/1000L;
+        return (System.currentTimeMillis() - start) / 1000L;
     }
 
     private void sleepFor(int i, TimeUnit unit) {

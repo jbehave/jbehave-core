@@ -125,31 +125,45 @@ public class GherkinStoryParser extends TransformingStoryParser {
 
                 @Override
                 public void background(Background background) {
-                    out.append(keywords.lifecycle()+background.getName()).append("\n")
-                       .append(keywords.before()+"\n");
+                    out.append(keywords.lifecycle())
+                            .append(background.getName())
+                            .append("\n")
+                            .append(keywords.before())
+                            .append("\n");
                 }
 
                 @Override
                 public void scenario(Scenario scenario) {
-                    out.append("\n").append(keywords.scenario()+scenario.getName()).append("\n\n");
+                    out.append("\n")
+                            .append(keywords.scenario())
+                            .append(scenario.getName())
+                            .append("\n\n");
                     writeMeta(scenario.getTags());
                 }
 
                 @Override
                 public void scenarioOutline(ScenarioOutline scenarioOutline) {
-                    out.append("\n").append(keywords.scenario()+scenarioOutline.getName()).append("\n\n");
+                    out.append("\n")
+                            .append(keywords.scenario())
+                            .append(scenarioOutline.getName())
+                            .append("\n\n");
                     writeMeta(scenarioOutline.getTags());
                 }
 
                 @Override
                 public void examples(Examples examples) {
-                    out.append("\n").append(keywords.examplesTable()+examples.getName()).append("\n");
+                    out.append("\n")
+                            .append(keywords.examplesTable())
+                            .append(examples.getName())
+                            .append("\n");
                     writeRows(examples.getRows());
                 }
 
                 @Override
                 public void step(Step step) {
-                    out.append(step.getKeyword()+step.getName()).append("\n");
+                    out.append(step.getKeyword())
+                            .append(step.getName())
+                            .append("\n");
                     writeRows(step.getRows());
                 }
 

@@ -168,7 +168,7 @@ class WeldAnnotationBuilderBehaviour {
     
     @Configure
     @UsingWeld
-    @UsingSteps(instances={FooSteps.class})
+    @UsingSteps(instances = { FooSteps.class })
     public static class AnnotatedUsingWeldWithSteps {
 
     }
@@ -187,13 +187,15 @@ class WeldAnnotationBuilderBehaviour {
     public static class WeldStepBean {
         
         @Given("this is a step")
-        public void simpleStep() {}
+        public void simpleStep() {
+        }
     }
     
     public static class FooSteps {
         
         @Given("this is another step")
-        public void simpleStep2() {}
+        public void simpleStep2() {
+        }
     }
 
 }

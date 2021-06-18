@@ -399,9 +399,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         @Override
         public void scenarioExcluded(Scenario scenario, MetaFilter filter) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Scenario '"+scenario.getTitle()+"' excluded by filter: " + filter.asString() + "\n");
-            getLog().info(sb.toString());
+            getLog().info("Scenario '" + scenario.getTitle() + "' excluded by filter: " + filter.asString() + "\n");
         }
 
         @Override
@@ -512,7 +510,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         @Override
         public void usingTimeout(String path, long timeout) {
-            getLog().info("Using timeout for story " + path + " of "+timeout + " secs.");
+            getLog().info("Using timeout for story " + path + " of " + timeout + " secs.");
         }
 
         @Override

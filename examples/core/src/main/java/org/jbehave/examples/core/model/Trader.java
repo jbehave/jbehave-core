@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class Trader implements Comparable<Trader>{
+public class Trader implements Comparable<Trader> {
 
     private final String name;
     private String rank = "";

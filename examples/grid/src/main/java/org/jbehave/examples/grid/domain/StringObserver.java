@@ -11,7 +11,7 @@ public class StringObserver implements GridObserver {
             for (int column = 0; column < grid.getWidth(); column++) {
                 builder.append(grid.cellToggledAt(column, row) ? "X" : ".");
             }
-            if (row < grid.getHeight() -1) {
+            if (row < grid.getHeight() - 1) {
                 builder.append(NL);
             }
         }

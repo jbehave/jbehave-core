@@ -10,7 +10,7 @@ import org.jbehave.core.io.rest.filesystem.ImportToFilesystem;
 /**
  * Mojo to import resources from REST root path to filesystem.
  */
-@Mojo(name="import-to-filesystem", requiresProject = false)
+@Mojo(name = "import-to-filesystem", requiresProject = false)
 public class ImportToFilesystemMojo extends AbstractFilesystemMojo {
 
     @Override

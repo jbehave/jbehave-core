@@ -49,12 +49,11 @@ public class PrintStreamFileMonitor implements FileMonitor {
     }
 
     public void fileUploadFailed(FileItem item, Exception cause) {
-        print(output, "File upload of " + item +" failed: ", cause);
+        print(output, "File upload of " + item + " failed: ", cause);
     }
 
     public void filesListed(File uploadDirectory, List<File> files) {
-        print(output, "Listed files from upload directory " + uploadDirectory
-                + ": " + files);
+        print(output, "Listed files from upload directory " + uploadDirectory + ": " + files);
     }
 
 }

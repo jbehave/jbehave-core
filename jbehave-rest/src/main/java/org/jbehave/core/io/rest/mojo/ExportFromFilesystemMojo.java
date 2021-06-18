@@ -11,7 +11,7 @@ import org.jbehave.core.io.rest.filesystem.ExportFromFilesystem;
 /**
  * Mojo to export resources to REST root path from filesystem.
  */
-@Mojo(name="export-from-filesystem", requiresProject = false)
+@Mojo(name = "export-from-filesystem", requiresProject = false)
 public class ExportFromFilesystemMojo extends AbstractFilesystemMojo {
 
     /**

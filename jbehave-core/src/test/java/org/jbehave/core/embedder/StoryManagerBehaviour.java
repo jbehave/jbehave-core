@@ -26,7 +26,7 @@ class StoryManagerBehaviour {
     private InjectableStepsFactory stepsFactory = mock(InjectableStepsFactory.class);
 
     @Test
-    void shouldEnsureStoryReportOutputDirectoryExistsWhenWritingStoryDurations() throws IOException{
+    void shouldEnsureStoryReportOutputDirectoryExistsWhenWritingStoryDurations() throws IOException {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.storyReporterBuilder().withRelativeDirectory("inexistent");
         File outputDirectory = configuration.storyReporterBuilder().outputDirectory();

@@ -13,9 +13,9 @@ class LoadFromRelativeFileBehaviour {
     @Test
     void testLoadFromRelativeFile() throws MalformedURLException {
         URL baseLocation = CodeLocations.codeLocationFromClass(LoadFromRelativeFileBehaviour.class);
-        URL subdir=new URL(baseLocation.toString()+"/test+dir");
+        URL subdir = new URL(baseLocation + "/test+dir");
         LoadFromRelativeFile load = new LoadFromRelativeFile(subdir);
-        String storyText=load.loadStoryAsText("dummy.story");
+        String storyText = load.loadStoryAsText("dummy.story");
         assertThat(storyText, equalTo("dummy story file"));
     }
 

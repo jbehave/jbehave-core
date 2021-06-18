@@ -900,7 +900,7 @@ class RegexStoryParserBehaviour {
                 + NL + "When I run the scenario of name <two>"
                 + NL + "Then I should see <three> in the output"
 
-                + NL +"Examples:"
+                + NL + "Examples:"
                 + NL + "|one|two|three|"
                 + NL + "|11|12|13|"
                 + NL + "|21|22|23|"
@@ -941,7 +941,8 @@ class RegexStoryParserBehaviour {
                 + NL + NL + "Given a step");
         // given stories as CSV with spaces and newlines
         parseStoryWithGivenStories(
-                "GivenStories: path/to/one , " +NL +" path/to/two"
+                "GivenStories: path/to/one , "
+                + NL + " path/to/two"
                 + NL + NL + "Given a step");
     }
 
@@ -1086,7 +1087,7 @@ class RegexStoryParserBehaviour {
                 "Scenario: scenario with step"
                 + NL + "Given step"
                 + NL + NL + "Scenario: empty"
-                + NL + NL +"Scenario: one more empty";
+                + NL + NL + "Scenario: one more empty";
 
         Story story = parser.parseStory(wholeStory);
 
@@ -1183,7 +1184,28 @@ class RegexStoryParserBehaviour {
         StringBuilder builder = new StringBuilder();        
         builder.append("|h0|h1|h2|h3|h4|h5|h6|h7|h8|h9|" + NL);
         for (int i = 0; i < numberOfLines; i++) {
-            builder.append("|c"+i + "0|c"+i + "1|c"+i + "2|c"+i + "3|c"+i + "4|c"+i + "5|c"+i + "6|c"+i + "7|c"+i + "8|c"+i + "9|" + NL);
+            builder.append("|c")
+                    .append(i)
+                    .append("0|c")
+                    .append(i)
+                    .append("1|c")
+                    .append(i)
+                    .append("2|c")
+                    .append(i)
+                    .append("3|c")
+                    .append(i)
+                    .append("4|c")
+                    .append(i)
+                    .append("5|c")
+                    .append(i)
+                    .append("6|c")
+                    .append(i)
+                    .append("7|c")
+                    .append(i)
+                    .append("8|c")
+                    .append(i)
+                    .append("9|")
+                    .append(NL);
         }
         return builder.toString();
     }

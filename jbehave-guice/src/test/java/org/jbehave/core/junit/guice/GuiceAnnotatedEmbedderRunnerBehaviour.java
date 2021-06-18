@@ -15,7 +15,7 @@ import org.junit.runners.model.InitializationError;
 class GuiceAnnotatedEmbedderRunnerBehaviour {
 
     @Test
-    void shouldCreateWithGuiceAnnotatedBuilder() throws InitializationError{
+    void shouldCreateWithGuiceAnnotatedBuilder() throws InitializationError {
         AnnotatedEmbedderRunner runner = new GuiceAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
         assertThat(runner.annotationBuilder(), instanceOf(GuiceAnnotationBuilder.class));
     }

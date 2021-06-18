@@ -15,7 +15,7 @@ import org.junit.runners.model.InitializationError;
 class GroovyAnnotatedEmbedderRunnerBehaviour {
 
     @Test
-    void shouldCreateWithSpringAnnotatedBuilder() throws InitializationError{
+    void shouldCreateWithSpringAnnotatedBuilder() throws InitializationError {
         AnnotatedEmbedderRunner runner = new GroovyAnnotatedEmbedderRunner(RunningWithAnnotatedEmbedderRunner.class);
         assertThat(runner.annotationBuilder(), instanceOf(GroovyAnnotationBuilder.class));
     }
