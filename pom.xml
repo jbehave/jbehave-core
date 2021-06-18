@@ -215,6 +215,10 @@
           <configuration>
             <configLocation>distribution/src/checkstyle/jbehave-checks.xml</configLocation>
             <consoleOutput>true</consoleOutput>
+            <sourceDirectories>
+              <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+              <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
+            </sourceDirectories>
           </configuration>
           <executions>
             <execution>
