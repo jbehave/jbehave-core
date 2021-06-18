@@ -29,21 +29,21 @@ public class UploadToXWiki extends UploadToREST {
         page.content = resource.getContent();
         page.parent = resource.getParentName();
         switch (type) {
-        case JSON:
-            Gson gson = new Gson();
-            return gson.toJson(page);
-        case XML:
-            page.xmlns = "http://www.xwiki.org";
-            XStream xstream = new XStream();
-            XStream.setupDefaultSecurity(xstream);
-            xstream.addPermission(AnyTypePermission.ANY);
-            xstream.alias("page", Page.class);
-            xstream.useAttributeFor(Page.class, "xmlns");
-            xstream.aliasField("xmlns", Page.class, "xmlns");
-            xstream.ignoreUnknownElements();
-            return xstream.toXML(page);
-        default:
-            return resource.getContent();
+            case JSON:
+                Gson gson = new Gson();
+                return gson.toJson(page);
+            case XML:
+                page.xmlns = "http://www.xwiki.org";
+                XStream xstream = new XStream();
+                XStream.setupDefaultSecurity(xstream);
+                xstream.addPermission(AnyTypePermission.ANY);
+                xstream.alias("page", Page.class);
+                xstream.useAttributeFor(Page.class, "xmlns");
+                xstream.aliasField("xmlns", Page.class, "xmlns");
+                xstream.ignoreUnknownElements();
+                return xstream.toXML(page);
+            default:
+                return resource.getContent();
         }
     }
 

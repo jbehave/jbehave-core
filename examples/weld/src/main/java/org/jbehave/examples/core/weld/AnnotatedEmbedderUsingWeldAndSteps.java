@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
-        PriorityMatchingSteps.class, SandpitSteps.class })
+    PriorityMatchingSteps.class, SandpitSteps.class })
 @UsingWeld
 public class AnnotatedEmbedderUsingWeldAndSteps extends InjectableEmbedder {
 

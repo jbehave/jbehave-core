@@ -227,9 +227,10 @@ class SpringAnnotationBuilderBehaviour {
 
     @Configure()
     @UsingSpring(resources = {
-            "org/jbehave/core/configuration/spring/configuration.xml",
-            "org/jbehave/core/steps/spring/steps.xml",
-            "org/jbehave/core/steps/spring/steps-with-dependency.xml" })
+        "org/jbehave/core/configuration/spring/configuration.xml",
+        "org/jbehave/core/steps/spring/steps.xml",
+        "org/jbehave/core/steps/spring/steps-with-dependency.xml"
+    })
     private static class AnnotatedUsingSpring {
 
     }

@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingSpring(resources = { "org/jbehave/examples/core/spring/configuration-namespace.xml",
-        "org/jbehave/examples/core/spring/steps.xml" })
+    "org/jbehave/examples/core/spring/steps.xml" })
 public class AnnotatedEmbedderUsingSpringNamespace extends InjectableEmbedder {
 
     @Override

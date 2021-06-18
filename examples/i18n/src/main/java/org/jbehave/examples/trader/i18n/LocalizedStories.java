@@ -20,7 +20,6 @@ import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
-import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -30,7 +29,6 @@ import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.examples.core.steps.BeforeAfterSteps;
 
 /**
@@ -71,13 +69,11 @@ public abstract class LocalizedStories extends JUnitStories {
                     .withKeywords(keywords))
                 .useParameterConverters(parameterConverters)
                 .useParameterControls(parameterControls);
-        parameterConverters.addConverters(customConverters(configuration.examplesTableFactory()));
+        parameterConverters.addConverters(
+                new NumberConverter(NumberFormat.getInstance(locale())),
+                new ExamplesTableConverter(configuration.examplesTableFactory())
+        );
         return configuration;
-    }
-
-    private ParameterConverter[] customConverters(ExamplesTableFactory examplesTableFactory) {
-        return new ParameterConverter[] { new NumberConverter(NumberFormat.getInstance(locale())),
-                new ExamplesTableConverter(examplesTableFactory) };
     }
 
     @Override

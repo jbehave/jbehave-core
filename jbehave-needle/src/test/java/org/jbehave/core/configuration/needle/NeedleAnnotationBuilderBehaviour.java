@@ -213,8 +213,7 @@ class NeedleAnnotationBuilderBehaviour {
 
     }
 
-    @Configure(parameterConverters = { MyExampleTableConverter.class,
-            MyDateConverter.class, CustomConverter.class })
+    @Configure(parameterConverters = { MyExampleTableConverter.class, MyDateConverter.class, CustomConverter.class })
     @UsingSteps(instances = { FooSteps.class })
     @UsingNeedle(provider = { ValueGetterProvider.class })
     private static class AnnotatedUsingConfigureAndNeedleConverters {

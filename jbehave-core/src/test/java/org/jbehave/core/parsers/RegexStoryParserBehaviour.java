@@ -866,7 +866,7 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseLongStory() {
-         String aGivenWhenThen =
+        String aGivenWhenThen =
                 "Given a step"
                 + NL + "When I run it"
                 + NL + "Then I should seen an output" + NL;

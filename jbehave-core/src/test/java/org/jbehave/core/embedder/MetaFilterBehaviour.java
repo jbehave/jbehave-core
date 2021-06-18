@@ -38,22 +38,22 @@ class MetaFilterBehaviour {
 
     @ParameterizedTest
     @CsvSource({
-            "+theme smoke testing,           theme smoke testing, false",
-            "+theme smoke testing,           theme testing,       true",
-            "-skip,                          skip,                true",
-            "+theme smoke testing -skip,     theme smoke testing, false",
-            "+theme smoke testing -skip,     skip,                true",
-            "+theme smoke testing,           theme smoke testing, false",
-            "+theme smoke testing,           theme testing,       true",
-            "-skip,                          theme testing,       false",
-            "-skip,                          skip,                true",
-            "+theme smoke testing -theme UI, theme smoke testing, false",
-            "+theme smoke testing -theme UI, theme UI,            true",
-            "+theme smoke testing -theme UI, theme UI,            true",
-            "+theme smoke testing -theme UI, theme smoke testing, false",
-            "+map *API,                      map Service API,     false",
-            ",                               skip,                false",
-            "'',                             skip,                false"
+        "+theme smoke testing,           theme smoke testing, false",
+        "+theme smoke testing,           theme testing,       true",
+        "-skip,                          skip,                true",
+        "+theme smoke testing -skip,     theme smoke testing, false",
+        "+theme smoke testing -skip,     skip,                true",
+        "+theme smoke testing,           theme smoke testing, false",
+        "+theme smoke testing,           theme testing,       true",
+        "-skip,                          theme testing,       false",
+        "-skip,                          skip,                true",
+        "+theme smoke testing -theme UI, theme smoke testing, false",
+        "+theme smoke testing -theme UI, theme UI,            true",
+        "+theme smoke testing -theme UI, theme UI,            true",
+        "+theme smoke testing -theme UI, theme smoke testing, false",
+        "+map *API,                      map Service API,     false",
+        ",                               skip,                false",
+        "'',                             skip,                false"
     })
     void shouldApplyFilter(String filterAsString, String property, boolean excluded) {
         assertThat(filter(filterAsString).excluded(new Meta(asList(property))), equalTo(excluded));

@@ -351,10 +351,14 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
 
     private String formatOutcome(AfterScenario.Outcome outcome) {
         switch (outcome) {
-        case ANY: return keywords.outcomeAny();
-        case SUCCESS: return keywords.outcomeSuccess();
-        case FAILURE: return keywords.outcomeFailure();
-        default: return outcome.name();
+            case ANY:
+                return keywords.outcomeAny();
+            case SUCCESS:
+                return keywords.outcomeSuccess();
+            case FAILURE:
+                return keywords.outcomeFailure();
+            default:
+                return outcome.name();
         }
     }
 

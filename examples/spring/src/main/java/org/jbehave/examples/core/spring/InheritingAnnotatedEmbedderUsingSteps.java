@@ -15,7 +15,7 @@ import org.jbehave.examples.core.steps.SearchSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
 
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
-        PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
+    PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedderUsingSpring {
 
     @Override

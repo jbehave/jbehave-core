@@ -152,8 +152,10 @@ public class TraderSteps {
     }
 
     @When("the stock is traded at price $price")
-    @Aliases(values = { "the stock is sold at price $price", "the stock is exchanged at price $price",
-            "the stock is traded with <price>" })
+    @Aliases(values = {
+        "the stock is sold at price $price", "the stock is exchanged at price $price",
+        "the stock is traded with <price>"
+    })
     // multiple aliases, one used with examples table
     public void theStockIsTraded(@Named("price") double price) {
         stock.get().tradeAt(price);

@@ -196,8 +196,8 @@ public class PerformableTree {
                             parameters, exampleIndex);
                 }
             } else if (!storyExamplesTableRow.isEmpty()) {
-                    addExampleScenario(context, scenario, performableScenario, story, storyAndScenarioMeta,
-                            new HashMap<>(storyExamplesTableRow), -1);
+                addExampleScenario(context, scenario, performableScenario, story, storyAndScenarioMeta,
+                        new HashMap<>(storyExamplesTableRow), -1);
             } else { // plain old scenario
                 NormalPerformableScenario normalScenario = normalScenario(context, story, scenario,
                         storyAndScenarioMeta, storyParameters);
@@ -1382,7 +1382,7 @@ public class PerformableTree {
                 }
                 context.reporter().pendingMethods(methods);
                 if (context.configuration().pendingStepStrategy() instanceof FailingUponPendingStep) {
-                     throw new PendingStepsFound(pendingSteps);
+                    throw new PendingStepsFound(pendingSteps);
                 }
             }
         }

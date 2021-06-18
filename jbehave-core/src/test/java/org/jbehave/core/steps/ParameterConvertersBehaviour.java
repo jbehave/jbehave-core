@@ -224,23 +224,23 @@ class ParameterConvertersBehaviour {
 
     private void assertThatAllNumberTypesAreAccepted(FromStringParameterConverter<Number> converter) {
         Type[] numberTypes = {
-                Byte.class,
-                byte.class,
-                Short.class,
-                short.class,
-                Integer.class,
-                int.class,
-                Float.class,
-                float.class,
-                Long.class,
-                long.class,
-                Double.class,
-                double.class,
-                BigInteger.class,
-                BigDecimal.class,
-                AtomicInteger.class,
-                AtomicLong.class,
-                Number.class
+            Byte.class,
+            byte.class,
+            Short.class,
+            short.class,
+            Integer.class,
+            int.class,
+            Float.class,
+            float.class,
+            Long.class,
+            long.class,
+            Double.class,
+            double.class,
+            BigInteger.class,
+            BigDecimal.class,
+            AtomicInteger.class,
+            AtomicLong.class,
+            Number.class
         };
         assertThatTypesAreAccepted(converter, numberTypes);
     }

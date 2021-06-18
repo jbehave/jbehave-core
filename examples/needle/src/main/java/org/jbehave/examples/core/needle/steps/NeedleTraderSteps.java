@@ -10,9 +10,9 @@ import org.jbehave.examples.core.steps.TraderSteps;
  */
 public class NeedleTraderSteps extends TraderSteps {
 
-  @Inject
-  public NeedleTraderSteps(final TradingService service) {
-    super(service);
-  }
+    @Inject
+    public NeedleTraderSteps(final TradingService service) {
+        super(service);
+    }
 
 }

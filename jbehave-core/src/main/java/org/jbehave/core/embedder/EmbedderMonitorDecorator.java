@@ -68,7 +68,7 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
     @Override
     public void storiesExcluded(List<Story> excluded, MetaFilter filter, boolean verbose) {
         delegate.storiesExcluded(excluded, filter, verbose);
-     }
+    }
 
     @Override
     public void scenarioExcluded(Scenario scenario, MetaFilter filter) {

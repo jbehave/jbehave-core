@@ -31,8 +31,8 @@ import org.junit.runner.RunWith;
 @RunWith(GuiceAnnotatedEmbedderRunner.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
-@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, PendingSteps.class, 
-        PriorityMatchingSteps.class, SandpitSteps.class })
+@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
+    PendingSteps.class, PriorityMatchingSteps.class, SandpitSteps.class })
 @UsingGuice(modules = { ConfigurationModule.class })
 public class AnnotatedEmbedderUsingGuiceAndSteps extends InjectableEmbedder {
 

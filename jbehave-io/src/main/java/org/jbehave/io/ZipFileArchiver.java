@@ -95,7 +95,7 @@ public class ZipFileArchiver implements FileArchiver {
             throw new FileUnarchiveFailedException(archive, directory, e);
         } finally {
             close(is);
-             close(in);
+            close(in);
         }
     }
 

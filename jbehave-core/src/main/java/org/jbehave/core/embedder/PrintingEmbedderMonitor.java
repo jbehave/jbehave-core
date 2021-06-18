@@ -195,7 +195,7 @@ public abstract class PrintingEmbedderMonitor extends NullEmbedderMonitor {
         print("Using timeout for story %s of %d secs.", path, timeout);
     }
 
-     @Override
+    @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

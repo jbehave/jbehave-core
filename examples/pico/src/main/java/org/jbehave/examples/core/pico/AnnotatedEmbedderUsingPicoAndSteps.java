@@ -32,8 +32,8 @@ import org.junit.runner.RunWith;
 @RunWith(PicoAnnotatedEmbedderRunner.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
-@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, PendingSteps.class,
-        PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
+@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
+    PendingSteps.class, PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 @UsingPico(modules = { ConfigurationModule.class })
 public class AnnotatedEmbedderUsingPicoAndSteps extends InjectableEmbedder {
 

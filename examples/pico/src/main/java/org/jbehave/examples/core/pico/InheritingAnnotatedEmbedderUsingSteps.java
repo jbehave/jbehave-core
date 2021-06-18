@@ -15,8 +15,8 @@ import org.jbehave.examples.core.steps.SandpitSteps;
 import org.jbehave.examples.core.steps.SearchSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
 
-@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, PendingSteps.class,
-        PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
+@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
+    PendingSteps.class, PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedderUsingPico {
 
     @Override

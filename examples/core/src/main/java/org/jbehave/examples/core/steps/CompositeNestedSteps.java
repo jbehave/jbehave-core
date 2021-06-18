@@ -16,8 +16,8 @@ public class CompositeNestedSteps {
     @Then("all left buttons are enabled")
     @Composite(steps = {
         "Then first left button is enabled",
-        "Then second left button is enabled" }
-    )
+        "Then second left button is enabled"
+    })
     public void leftAll() {
     }
 
@@ -32,8 +32,8 @@ public class CompositeNestedSteps {
     @Then("all top buttons are enabled")
     @Composite(steps = {
         "Then first top button is enabled",
-        "Then second top button is enabled" }
-    )
+        "Then second top button is enabled"
+    })
     public void topAll() {
     }
 

@@ -281,36 +281,37 @@ public class ParameterConverters {
         ExamplesTableFactory tableFactory = new ExamplesTableFactory(keywords, resourceLoader, this, parameterControls,
                 tableParsers, tableTransformers);
         JsonFactory jsonFactory = new JsonFactory();
-        return new ParameterConverter[] { new BooleanConverter(),
-                new NumberConverter(NumberFormat.getInstance(locale)),
-                new StringConverter(),
-                new StringListConverter(escapedCollectionSeparator),
-                new DateConverter(),
-                new EnumConverter(),
-                new ExamplesTableConverter(tableFactory),
-                new ExamplesTableParametersConverter(tableFactory),
-                new JsonConverter(jsonFactory),
-                new FunctionalParameterConverter<>(String.class, Path.class, Paths::get),
-                new FunctionalParameterConverter<>(String.class, Currency.class, Currency::getInstance),
-                new FunctionalParameterConverter<>(String.class, Pattern.class, Pattern::compile),
-                new FunctionalParameterConverter<>(String.class, File.class, File::new),
-                new FunctionalParameterConverter<>(String.class, Verbatim.class, Verbatim::new),
+        return new ParameterConverter[] {
+            new BooleanConverter(),
+            new NumberConverter(NumberFormat.getInstance(locale)),
+            new StringConverter(),
+            new StringListConverter(escapedCollectionSeparator),
+            new DateConverter(),
+            new EnumConverter(),
+            new ExamplesTableConverter(tableFactory),
+            new ExamplesTableParametersConverter(tableFactory),
+            new JsonConverter(jsonFactory),
+            new FunctionalParameterConverter<>(String.class, Path.class, Paths::get),
+            new FunctionalParameterConverter<>(String.class, Currency.class, Currency::getInstance),
+            new FunctionalParameterConverter<>(String.class, Pattern.class, Pattern::compile),
+            new FunctionalParameterConverter<>(String.class, File.class, File::new),
+            new FunctionalParameterConverter<>(String.class, Verbatim.class, Verbatim::new),
 
-                // java.time.* converters
-                new FunctionalParameterConverter<>(String.class, Duration.class, Duration::parse),
-                new FunctionalParameterConverter<>(String.class, Instant.class, Instant::parse),
-                new FunctionalParameterConverter<>(String.class, LocalDate.class, LocalDate::parse),
-                new FunctionalParameterConverter<>(String.class, LocalDateTime.class, LocalDateTime::parse),
-                new FunctionalParameterConverter<>(String.class, LocalTime.class, LocalTime::parse),
-                new FunctionalParameterConverter<>(String.class, MonthDay.class, MonthDay::parse),
-                new FunctionalParameterConverter<>(String.class, OffsetDateTime.class, OffsetDateTime::parse),
-                new FunctionalParameterConverter<>(String.class, OffsetTime.class, OffsetTime::parse),
-                new FunctionalParameterConverter<>(String.class, Period.class, Period::parse),
-                new FunctionalParameterConverter<>(String.class, Year.class, Year::parse),
-                new FunctionalParameterConverter<>(String.class, YearMonth.class, YearMonth::parse),
-                new FunctionalParameterConverter<>(String.class, ZonedDateTime.class, ZonedDateTime::parse),
-                new FunctionalParameterConverter<>(String.class, ZoneId.class, ZoneId::of),
-                new FunctionalParameterConverter<>(String.class, ZoneOffset.class, ZoneOffset::of)
+            // java.time.* converters
+            new FunctionalParameterConverter<>(String.class, Duration.class, Duration::parse),
+            new FunctionalParameterConverter<>(String.class, Instant.class, Instant::parse),
+            new FunctionalParameterConverter<>(String.class, LocalDate.class, LocalDate::parse),
+            new FunctionalParameterConverter<>(String.class, LocalDateTime.class, LocalDateTime::parse),
+            new FunctionalParameterConverter<>(String.class, LocalTime.class, LocalTime::parse),
+            new FunctionalParameterConverter<>(String.class, MonthDay.class, MonthDay::parse),
+            new FunctionalParameterConverter<>(String.class, OffsetDateTime.class, OffsetDateTime::parse),
+            new FunctionalParameterConverter<>(String.class, OffsetTime.class, OffsetTime::parse),
+            new FunctionalParameterConverter<>(String.class, Period.class, Period::parse),
+            new FunctionalParameterConverter<>(String.class, Year.class, Year::parse),
+            new FunctionalParameterConverter<>(String.class, YearMonth.class, YearMonth::parse),
+            new FunctionalParameterConverter<>(String.class, ZonedDateTime.class, ZonedDateTime::parse),
+            new FunctionalParameterConverter<>(String.class, ZoneId.class, ZoneId::of),
+            new FunctionalParameterConverter<>(String.class, ZoneOffset.class, ZoneOffset::of)
         };
     }
 
@@ -685,8 +686,8 @@ public class ParameterConverters {
      * </p>
      */
     public static class NumberConverter extends FromStringParameterConverter<Number> {
-        private static List<Class<?>> primitiveTypes = asList(new Class<?>[] { byte.class, short.class, int.class,
-                float.class, long.class, double.class });
+        private static List<Class<?>> primitiveTypes = asList(byte.class, short.class, int.class, float.class,
+                long.class, double.class);
 
         private final NumberFormat numberFormat;
         private ThreadLocal<NumberFormat> threadLocalNumberFormat = new ThreadLocal<>();

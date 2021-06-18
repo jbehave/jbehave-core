@@ -36,12 +36,12 @@ public class UploadToRedmine extends UploadToREST {
         Entity entity = new Entity();
         entity.wiki_page = page;
         switch (type) {
-        case JSON:
-            Gson gson = new Gson();
-            return gson.toJson(entity);
-        case XML:
-        default:
-            return resource.getContent();
+            case JSON:
+                Gson gson = new Gson();
+                return gson.toJson(entity);
+            case XML:
+            default:
+                return resource.getContent();
         }
     }
 

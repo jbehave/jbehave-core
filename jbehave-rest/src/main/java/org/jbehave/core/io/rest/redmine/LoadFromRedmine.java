@@ -33,25 +33,23 @@ public class LoadFromRedmine extends LoadFromREST {
     @Override
     protected String text(String entity, Type type) {
         switch (type) {
-        case JSON:
-            Gson gson = new Gson();
-            return gson.fromJson(jsonMember(entity, "wiki_page"),
-                    WikiPage.class).text;
-        case XML:
-            XStream xstream = new XStream();
-            XStream.setupDefaultSecurity(xstream);
-            xstream.addPermission(AnyTypePermission.ANY);
-            xstream.alias("wiki_page", WikiPage.class);
-            xstream.ignoreUnknownElements();
-            return ((WikiPage) xstream.fromXML(entity)).text;
-        default:
-            return entity;
+            case JSON:
+                Gson gson = new Gson();
+                return gson.fromJson(jsonMember(entity, "wiki_page"), WikiPage.class).text;
+            case XML:
+                XStream xstream = new XStream();
+                XStream.setupDefaultSecurity(xstream);
+                xstream.addPermission(AnyTypePermission.ANY);
+                xstream.alias("wiki_page", WikiPage.class);
+                xstream.ignoreUnknownElements();
+                return ((WikiPage) xstream.fromXML(entity)).text;
+            default:
+                return entity;
         }
     }
 
     private String jsonMember(String entity, String memberName) {
-        return new JsonParser().parse(entity).getAsJsonObject().get(memberName)
-                .toString();
+        return new JsonParser().parse(entity).getAsJsonObject().get(memberName).toString();
     }
 
     private static class WikiPage {

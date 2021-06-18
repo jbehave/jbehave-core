@@ -23,12 +23,11 @@ public class NamedParametersSteps {
         this.ith = ithName;
         this.nth = nthName;
     }
-    
-   @Then("parameters values are $ith and $nth")
-   public void parametersValuesAre(String ith, String nth) {
+
+    @Then("parameters values are $ith and $nth")
+    public void parametersValuesAre(String ith, String nth) {
         assertThat(this.ith, equalTo(ith));
         assertThat(this.nth, equalTo(nth));
     }
-
 
 }

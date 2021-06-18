@@ -27,7 +27,7 @@ public class JsonOutput extends PrintStreamOutput {
     private static final char[] JSON_START_CHARS = { JSON_DOCUMENT_START, JSON_OBJECT_START, JSON_ARRAY_START };
 
     private static final String[] STEP_KEYS = { "successful", "ignorable", "comment", "pending", "notPerformed",
-            "failed", "restarted" };
+        "failed", "restarted" };
 
     private char lastChar = JSON_DOCUMENT_START;
 

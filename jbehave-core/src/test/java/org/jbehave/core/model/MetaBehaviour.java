@@ -47,8 +47,8 @@ class MetaBehaviour {
     
     @ParameterizedTest
     @ValueSource(strings = {
-            "-skip",
-            "-environment preview -skip"
+        "-skip",
+        "-environment preview -skip"
     })
     void shouldAllowFiltering(String filterAsString) {
         Meta meta = new Meta(asList("environment all", "skip"));

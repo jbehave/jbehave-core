@@ -17,8 +17,8 @@ import org.jbehave.examples.core.steps.TraderSteps;
 /**
  * Here we show how configuation annotations can be split across parent-child hierarchies
  */
-@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, PendingSteps.class, 
-        PriorityMatchingSteps.class, SandpitSteps.class })
+@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
+    PendingSteps.class, PriorityMatchingSteps.class, SandpitSteps.class })
 public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedderUsingGuice {
 
     @Override

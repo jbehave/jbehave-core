@@ -80,8 +80,10 @@ class CompositeCandidateStepsBehaviour {
     static class SimpleCompositeSteps extends Steps {
 
         @Given("$customer has previously bought a $product")
-        @Composite(steps = { "Given <customer> is logged in",
-                "When a <product> is added to the cart" })
+        @Composite(steps = {
+            "Given <customer> is logged in",
+            "When a <product> is added to the cart"
+        })
         public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
         }
 
@@ -113,8 +115,10 @@ class CompositeCandidateStepsBehaviour {
         private String added;
 
         @Given("<customer> has previously bough a <product>")
-        @Composite(steps = { "Given <customer> is logged in",
-                             "When a <product> is added to the cart" })
+        @Composite(steps = {
+            "Given <customer> is logged in",
+            "When a <product> is added to the cart"
+        })
         public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
         }
 
@@ -157,8 +161,10 @@ class CompositeCandidateStepsBehaviour {
         private String added;
 
         @Given("<customer> has previously bough a <product>")
-        @Composite(steps = {"Given <customer> is logged in",
-                "When a <product> is added to the cart"})
+        @Composite(steps = {
+            "Given <customer> is logged in",
+            "When a <product> is added to the cart"
+        })
         public void aCompositeStep(String customer, String product) {
         }
 
@@ -211,8 +217,8 @@ class CompositeCandidateStepsBehaviour {
         @When("all buttons are enabled")
         @Composite(steps = {
             "Then all left buttons are enabled",
-            "Then all top buttons are enabled" }
-        )
+            "Then all top buttons are enabled"
+        })
         public void all() {
             trail.append("a>");
         }
@@ -220,8 +226,8 @@ class CompositeCandidateStepsBehaviour {
         @Then("all $location buttons are enabled")
         @Composite(steps = {
             "Then first <location> button is enabled",
-            "Then second <location> button is enabled" }
-        )
+            "Then second <location> button is enabled"
+        })
         public void topAll(String location) {
             trail.append(location).append('>');
         }
@@ -287,8 +293,8 @@ class CompositeCandidateStepsBehaviour {
         
         @Given("I am logged in as $name")
         @Composite(steps = {
-                "Given my user name is <name>",
-                "Given I log in"
+            "Given my user name is <name>",
+            "Given I log in"
         })
         public void logInAsUser(@Named("name")String name) {}
         
@@ -299,10 +305,11 @@ class CompositeCandidateStepsBehaviour {
         
         @Given("I log in")
         @Composite(steps = {
-                "Given I am on the Login page", 
-                "When I type my user name into the Username field", 
-                "When I type my password into the Password field", 
-                "When I click the Login button"})
+            "Given I am on the Login page",
+            "When I type my user name into the Username field",
+            "When I type my password into the Password field",
+            "When I click the Login button"
+        })
         public void logIn() {
             this.isLoggedIn = true;
         }

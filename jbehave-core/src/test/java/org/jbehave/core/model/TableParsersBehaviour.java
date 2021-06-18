@@ -52,7 +52,7 @@ class TableParsersBehaviour {
             () -> assertRow(rows.get(3), "", "val-3-2"),
             () -> assertRow(rows.get(4), "val-4-1", ""),
             () -> assertRow(rows.get(5), null, "not-null")
-         );
+        );
     }
 
     @Test
@@ -72,8 +72,8 @@ class TableParsersBehaviour {
         assertThat(tableRows.getHeaders(), equalTo(Arrays.asList(KEY_1, KEY_2)));
         assertThat(rows, hasSize(2));
         assertAll(
-                () -> assertRow(rows.get(0), null, "null"),
-                () -> assertRow(rows.get(1), "NULLABLE", "nonNULL")
+            () -> assertRow(rows.get(0), null, "null"),
+            () -> assertRow(rows.get(1), "NULLABLE", "nonNULL")
         );
     }
 

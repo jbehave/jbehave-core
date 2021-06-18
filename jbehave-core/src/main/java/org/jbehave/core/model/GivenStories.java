@@ -45,7 +45,7 @@ public class GivenStories {
         }
         Map<String, String> parameters = null;
         if (examplesRow > -1 && examplesTable != null && examplesRow < examplesTable.getRowCount()) {
-             parameters = examplesTable.getRow(examplesRow);
+            parameters = examplesTable.getRow(examplesRow);
         }
         if (parameters == null) {
             return new HashMap<>();

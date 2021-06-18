@@ -18,7 +18,7 @@ import org.jbehave.examples.core.steps.SandpitSteps;
  * Here we show how configuration annotations can be split across parent-child hierarchies
  */
 @UsingSteps(instances = { NeedleTraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
-        PendingSteps.class, PriorityMatchingSteps.class, SandpitSteps.class })
+    PendingSteps.class, PriorityMatchingSteps.class, SandpitSteps.class })
 public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedderUsingNeedle {
 
     @Override

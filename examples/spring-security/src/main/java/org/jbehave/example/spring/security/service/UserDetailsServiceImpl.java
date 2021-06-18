@@ -10,23 +10,22 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-  @Autowired
-  private UserDao userDao;
+    @Autowired
+    private UserDao userDao;
 
-  @Autowired
-  private OrganizationManager organizationManager;
+    @Autowired
+    private OrganizationManager organizationManager;
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
-    Organization org = organizationManager.getOrganization();
-    User user = userDao.findUserByOrganizationAndUsername(org.getId(), username);
-    if (user == null) {
-      throw new UsernameNotFoundException(username);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
+        Organization org = organizationManager.getOrganization();
+        User user = userDao.findUserByOrganizationAndUsername(org.getId(), username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        return new UserDetailsImpl(user, org.getAuthenticationPolicy());
     }
-    return new UserDetailsImpl(user, org.getAuthenticationPolicy());
-  }
 }

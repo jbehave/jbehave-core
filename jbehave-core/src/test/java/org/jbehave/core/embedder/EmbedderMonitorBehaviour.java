@@ -48,15 +48,14 @@ class EmbedderMonitorBehaviour {
         monitor.batchFailed(new BatchFailures());
         monitor.storyFailed("/path", new RuntimeException());
         assertThat(out.toString(), is(not("")));
-   }
+    }
 
     @Test
     void shouldDelegateOutput() {
         EmbedderMonitor monitor = new ReportingFailuresEmbedderMonitor();
         assertThat(monitor.toString(),
                 containsString(ReportingFailuresEmbedderMonitor.class.getSimpleName() + "[output="));
-   }
-
+    }
 
     @Test
     void shouldAllowDecorationOfDelegate() {
@@ -133,6 +132,6 @@ class EmbedderMonitorBehaviour {
         verify(delegate).storyTimeout(story, storyDuration);
         verify(delegate).systemPropertySet(name, value);
         verify(delegate).usingThreads(threads);
-   }
+    }
 
 }

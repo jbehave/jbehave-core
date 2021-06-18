@@ -28,10 +28,10 @@ public class GuiceStepsFactoryBehaviour {
         // Given
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
-            protected void configure() {              
+            protected void configure() {
                 bind(FooSteps.class).in(Scopes.SINGLETON);
             }
-          });
+        });
 
         AbstractStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
         // When
@@ -40,16 +40,15 @@ public class GuiceStepsFactoryBehaviour {
         assertFooStepsFound(steps);
     }
 
-
     @Test
     void assertThatStepsWithStepsWithDependencyCanBeCreated() {
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-              bind(Integer.class).toInstance(42);
-              bind(FooStepsWithDependency.class).in(Scopes.SINGLETON);
+                bind(Integer.class).toInstance(42);
+                bind(FooStepsWithDependency.class).in(Scopes.SINGLETON);
             }
-          });
+        });
 
         // When
         AbstractStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);

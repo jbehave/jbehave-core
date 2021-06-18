@@ -22,7 +22,7 @@ public class PriorityMatchingSteps {
 
     @Then("the parameter value is \"$param\"")
     public void theParamValue(String param) {
-       assertThat(this.param, equalTo(param));
+        assertThat(this.param, equalTo(param));
     }
 
 }

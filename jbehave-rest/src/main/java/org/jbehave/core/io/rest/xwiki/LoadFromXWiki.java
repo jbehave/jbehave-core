@@ -32,18 +32,18 @@ public class LoadFromXWiki extends LoadFromREST {
     @Override
     protected String text(String entity, Type type) {
         switch (type) {
-        case JSON:
-            Gson gson = new Gson();
-            return gson.fromJson(entity, Page.class).content;
-        case XML:
-            XStream xstream = new XStream();
-            XStream.setupDefaultSecurity(xstream);
-            xstream.addPermission(AnyTypePermission.ANY);
-            xstream.alias("page", Page.class);
-            xstream.ignoreUnknownElements();
-            return ((Page) xstream.fromXML(entity)).content;
-        default:
-            return entity;
+            case JSON:
+                Gson gson = new Gson();
+                return gson.fromJson(entity, Page.class).content;
+            case XML:
+                XStream xstream = new XStream();
+                XStream.setupDefaultSecurity(xstream);
+                xstream.addPermission(AnyTypePermission.ANY);
+                xstream.alias("page", Page.class);
+                xstream.ignoreUnknownElements();
+                return ((Page) xstream.fromXML(entity)).content;
+            default:
+                return entity;
         }
     }
 

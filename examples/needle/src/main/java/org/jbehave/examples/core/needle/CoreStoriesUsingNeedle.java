@@ -25,15 +25,23 @@ import org.needle4j.injection.InjectionProviders;
  */
 public class CoreStoriesUsingNeedle extends CoreStories {
 
-  @Override
-  public InjectableStepsFactory stepsFactory() {
-    final Class<?>[] steps = new Class<?>[] { NeedleTraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, PendingSteps.class,
-        PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class };
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        final Class<?>[] steps = new Class<?>[] {
+            NeedleTraderSteps.class,
+            BeforeAfterSteps.class,
+            AndSteps.class,
+            CalendarSteps.class,
+            PendingSteps.class,
+            PriorityMatchingSteps.class,
+            SandpitSteps.class,
+            SearchSteps.class
+        };
 
-    final Set<InjectionProvider<?>> providers = new HashSet<>();
-    providers.add(InjectionProviders.providerForInstance(new TradingService()));
+        final Set<InjectionProvider<?>> providers = new HashSet<>();
+        providers.add(InjectionProviders.providerForInstance(new TradingService()));
 
-    return new NeedleStepsFactory(configuration(), providers, steps);
-  }
+        return new NeedleStepsFactory(configuration(), providers, steps);
+    }
 
 }

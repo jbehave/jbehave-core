@@ -499,7 +499,7 @@ public class ExamplesTable {
                         propertyValue = propertyValue.trim();
                     }
                     result.put(propertyName.trim(), StringUtils.replace(propertyValue, COMMA_REGEX, COMMA));
-                 }
+                }
             }
             return result;
         }
