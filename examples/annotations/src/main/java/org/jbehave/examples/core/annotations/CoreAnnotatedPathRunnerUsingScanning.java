@@ -26,8 +26,8 @@ import org.jbehave.examples.core.annotations.CoreAnnotatedPathRunner.MyStoryLoad
 import org.junit.runner.RunWith;
 
 @RunWith(AnnotatedPathRunner.class)
-@Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
-parameterConverters = { MyDateConverter.class } )
+@Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class,
+        parameterConverters = { MyDateConverter.class })
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true,
                 storyTimeouts = "100", threads = 1, metaFilters = "-skip", systemProperties = "java.awt.headless=true")
 @UsingSteps(packages = "org.jbehave.examples.core.steps", notMatchingNames = ".*Failing.*")

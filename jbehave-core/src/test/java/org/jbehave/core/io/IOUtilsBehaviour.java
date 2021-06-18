@@ -124,7 +124,7 @@ class IOUtilsBehaviour {
         when(stream.read(isA(byte[].class), anyInt(), anyInt())).thenThrow(new IOException());
         try {
             IOUtils.toString(stream, true);
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             assertThat(e, is(instanceOf(IOException.class)));
         } finally {
             verify(stream).close();

@@ -304,8 +304,8 @@ class StepCandidateBehaviour {
         assertThat(steps.nth, equalTo("ground"));
         result.describeTo(reporter);
         verifyBeforeExecutableStep(reporter, stepAsString);
-        verify(reporter).successful(
-                "When I live on the " + PARAMETER_VALUE_START + "first" + PARAMETER_VALUE_END + " floor but some call it the " + PARAMETER_VALUE_START + "ground" + PARAMETER_VALUE_END );
+        verify(reporter).successful("When I live on the " + PARAMETER_VALUE_START + "first" + PARAMETER_VALUE_END
+                + " floor but some call it the " + PARAMETER_VALUE_START + "ground" + PARAMETER_VALUE_END);
     }
 
     @Test
@@ -324,8 +324,8 @@ class StepCandidateBehaviour {
         assertThat(steps.nth, equalTo("ground"));
         result.describeTo(reporter);
         verifyBeforeExecutableStep(reporter, stepAsString);
-        verify(reporter).successful(
-                "When I live on the " + PARAMETER_VALUE_START + "first" + PARAMETER_VALUE_END + " floor but some call it the " + PARAMETER_VALUE_START + "ground" + PARAMETER_VALUE_END );
+        verify(reporter).successful("When I live on the " + PARAMETER_VALUE_START + "first" + PARAMETER_VALUE_END
+                + " floor but some call it the " + PARAMETER_VALUE_START + "ground" + PARAMETER_VALUE_END);
     }
 
 

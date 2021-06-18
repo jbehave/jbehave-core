@@ -254,7 +254,7 @@ class GuiceAnnotationBuilderBehaviour {
     }
     
     @Configure()
-    @UsingGuice(modules = {PrivateModule.class} )
+    @UsingGuice(modules = { PrivateModule.class })
     private static class AnnotatedWithPrivateModule {
 
     }

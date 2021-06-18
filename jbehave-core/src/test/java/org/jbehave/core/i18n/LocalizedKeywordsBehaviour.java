@@ -86,7 +86,7 @@ class LocalizedKeywordsBehaviour {
 
     @Test
     void shouldAllowSynonymsToOverrideABaseBundleForSameLocale() {
-        Keywords keywords = new LocalizedKeywords(new Locale("en"), "i18n/synonyms", "i18n/keywords" );
+        Keywords keywords = new LocalizedKeywords(new Locale("en"), "i18n/synonyms", "i18n/keywords");
         assertThat(keywords.given(), equalTo("Given|Giveth"));
         assertThat(keywords.and(), equalTo("And|With"));
     }
