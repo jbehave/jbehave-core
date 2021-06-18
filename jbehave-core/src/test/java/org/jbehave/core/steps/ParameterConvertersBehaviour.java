@@ -789,7 +789,7 @@ class ParameterConvertersBehaviour {
     }
 
     @Test
-    void shouldAceeptParameterizedTypesAutomatically () {
+    void shouldAceeptParameterizedTypesAutomatically() {
         FromStringParameterConverter<Set<Bar>> parameterizedTypeConverter = new FromStringParameterConverter<Set<Bar>>() {
             @Override
             public Set<Bar> convertValue(String value, Type type) {

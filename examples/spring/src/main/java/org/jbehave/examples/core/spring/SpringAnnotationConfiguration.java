@@ -25,42 +25,42 @@ public class SpringAnnotationConfiguration {
     }
 
     @Bean
-    public AndSteps andSteps () {
+    public AndSteps andSteps() {
         return new AndSteps();
     }
 
     @Bean
-    public CalendarSteps calendarSteps () {
+    public CalendarSteps calendarSteps() {
         return new CalendarSteps();
     }
 
     @Bean
-    public CompositeSteps compositeSteps () {
+    public CompositeSteps compositeSteps() {
         return new CompositeSteps();
     }
 
     @Bean
-    public PendingSteps pendingSteps () {
+    public PendingSteps pendingSteps() {
         return new PendingSteps();
     }
 
     @Bean
-    public PriorityMatchingSteps priorityMatchingSteps () {
+    public PriorityMatchingSteps priorityMatchingSteps() {
         return new PriorityMatchingSteps();
     }
 
     @Bean
-    public SandpitSteps sandpitSteps () {
+    public SandpitSteps sandpitSteps() {
         return new SandpitSteps();
     }
 
     @Bean
-    public SearchSteps searchSteps () {
+    public SearchSteps searchSteps() {
         return new SearchSteps();
     }
 
     @Bean
-    public TraderSteps traderSteps () {
+    public TraderSteps traderSteps() {
         return new TraderSteps(new TradingService());
     }
 
