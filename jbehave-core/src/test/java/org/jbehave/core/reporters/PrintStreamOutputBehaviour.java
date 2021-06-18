@@ -401,12 +401,11 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new NullPointerException()));
         reporter.afterScenario(getTiming());
 
-        assertThat(dos2unix(out.toString()), startsWith("Then I should have a balance of $30 (FAILED)\n" +
-                "(java.lang.NullPointerException)\n" +
-                "\n" +
-                "java.lang.NullPointerException\n" +
-                "\tat "));
-
+        assertThat(dos2unix(out.toString()), startsWith("Then I should have a balance of $30 (FAILED)\n"
+                + "(java.lang.NullPointerException)\n"
+                + "\n"
+                + "java.lang.NullPointerException\n"
+                + "\tat "));
     }
 
     @Test
@@ -426,9 +425,9 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new MyKnownFailure()));
         reporter.afterScenario(getTiming());
 
-        assertThat(dos2unix(out.toString()), equalTo("Then I should have a balance of $30 (FAILED)\n" +
-                "(org.jbehave.core.reporters.PrintStreamOutputBehaviour$MyKnownFailure)\n\n" +
-                ""));
+        assertThat(dos2unix(out.toString()), equalTo("Then I should have a balance of $30 (FAILED)\n"
+                + "(org.jbehave.core.reporters.PrintStreamOutputBehaviour$MyKnownFailure)\n\n"
+                + ""));
     }
 
     @Test

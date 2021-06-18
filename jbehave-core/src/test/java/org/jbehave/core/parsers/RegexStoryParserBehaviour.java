@@ -60,14 +60,14 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithMetaAndGivenStories() {
-        String wholeStory = "Meta: @skip @theme parsing" + NL + 
-                "GivenStories: path1,path2 " + NL +
-                "Scenario: A scenario" + NL +
-                "Meta: @author Mauro" + NL +
-                "Given a step " + NL +
-                "Scenario: Another scenario" + NL +
-                "Meta: @author Paul" + NL +
-                "Given another step ";
+        String wholeStory = "Meta: @skip @theme parsing"
+                + NL + "GivenStories: path1,path2 "
+                + NL + "Scenario: A scenario"
+                + NL + "Meta: @author Mauro"
+                + NL + "Given a step "
+                + NL + "Scenario: Another scenario"
+                + NL + "Meta: @author Paul"
+                + NL + "Given another step ";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
@@ -85,17 +85,17 @@ class RegexStoryParserBehaviour {
     
     @Test
     void shouldParseStoryWithMetaAndLifecycle() {
-        String wholeStory = "Meta: @skip @theme parsing" + NL + 
-                "Lifecycle:" + NL +
-                "Before:" + NL +
-                "Given a step before each scenario" + NL + 
-                "And another before step" + NL +
-                "Scenario: A scenario" + NL +
-                "Meta: @author Mauro" + NL +
-                "Given a step " + NL +
-                "Scenario: Another scenario" + NL +
-                "Meta: @author Paul" + NL +
-                "Given another step ";
+        String wholeStory = "Meta: @skip @theme parsing"
+                + NL + "Lifecycle:"
+                + NL + "Before:"
+                + NL + "Given a step before each scenario"
+                + NL + "And another before step"
+                + NL + "Scenario: A scenario"
+                + NL + "Meta: @author Mauro"
+                + NL + "Given a step "
+                + NL + "Scenario: Another scenario"
+                + NL + "Meta: @author Paul"
+                + NL + "Given another step ";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
@@ -114,17 +114,17 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithMetaAndNarrative() {
-        String wholeStory = "Meta: @skip @theme parsing" + NL + 
-                "Narrative: This bit of text is ignored" + NL +
-                "In order to renovate my house" + NL +
-                "As a customer" + NL +
-                "I want to get a loan" + NL +
-                "Scenario: A scenario" + NL +
-                "Meta: @author Mauro" + NL +
-                "Given a step " + NL +
-                "Scenario: Another scenario" + NL +
-                "Meta: @author Paul" + NL +
-                "Given another step ";
+        String wholeStory = "Meta: @skip @theme parsing"
+                + NL + "Narrative: This bit of text is ignored"
+                + NL + "In order to renovate my house"
+                + NL + "As a customer"
+                + NL + "I want to get a loan"
+                + NL + "Scenario: A scenario"
+                + NL + "Meta: @author Mauro"
+                + NL + "Given a step "
+                + NL + "Scenario: Another scenario"
+                + NL + "Meta: @author Paul"
+                + NL + "Given another step ";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
@@ -143,9 +143,9 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithGivenStoriesWithAnchorParameters() {
-        String wholeStory = "GivenStories: path1#{id1:scenario1;id2:scenario2}" + NL +
-                "Scenario: A scenario" + NL +
-                "Given a step";
+        String wholeStory = "GivenStories: path1#{id1:scenario1;id2:scenario2}"
+                + NL + "Scenario: A scenario"
+                + NL + "Given a step";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
@@ -160,12 +160,12 @@ class RegexStoryParserBehaviour {
     
     @Test
     void shouldAllowSpacesInMetaProperties() {
-        String wholeStory = "Meta: @ theme parsing @ skip" + NL +
-                "Scenario: " + NL +
-                "Meta: @authors Mauro Paul" + NL +
-                "Given a scenario " + NL +
-                "When I parse it" + NL +
-                "Then I should get steps";
+        String wholeStory = "Meta: @ theme parsing @ skip"
+                + NL + "Scenario: "
+                + NL + "Meta: @authors Mauro Paul"
+                + NL + "Given a scenario "
+                + NL + "When I parse it"
+                + NL + "Then I should get steps";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
@@ -177,12 +177,12 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldIgnoreCommentsInMetaProperties() {
-        String wholeStory = "Meta: !-- this is the theme @theme parsing !-- skip me @skip" + NL +
-                "Scenario: " + NL +
-                "Meta: !-- these are the authors @authors Mauro Paul" + NL +
-                "Given a scenario " + NL +
-                "When I parse it" + NL +
-                "Then I should get steps";
+        String wholeStory = "Meta: !-- this is the theme @theme parsing !-- skip me @skip"
+                + NL + "Scenario: "
+                + NL + "Meta: !-- these are the authors @authors Mauro Paul"
+                + NL + "Given a scenario "
+                + NL + "When I parse it"
+                + NL + "Then I should get steps";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
@@ -194,10 +194,10 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithSimpleSteps() {
-        String wholeStory = "Given a scenario" + NL +
-                "!-- ignore me" + NL +
-                "When I parse it" + NL +
-                "Then I should get steps";
+        String wholeStory = "Given a scenario"
+                + NL + "!-- ignore me"
+                + NL + "When I parse it"
+                + NL + "Then I should get steps";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
@@ -210,12 +210,12 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithStepsContainingKeywordsAtStartOfOtherWords() {
-        String wholeStory = "Meta: @some" + NL +
-                "Given a scenario Givenly" + NL +
-                "When I parse it to Whenever" + NL +
-                "And I parse it to Anderson" + NL +
-                "!-- ignore me too" + NL +
-                "Then I should get steps Thenact";
+        String wholeStory = "Meta: @some"
+                + NL + "Given a scenario Givenly"
+                + NL + "When I parse it to Whenever"
+                + NL + "And I parse it to Anderson"
+                + NL + "!-- ignore me too"
+                + NL + "Then I should get steps Thenact";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
 
@@ -233,13 +233,13 @@ class RegexStoryParserBehaviour {
         StoryParser parser = new RegexStoryParser(
                 new ExamplesTableFactory(keywords, new LoadFromClasspath(), new TableTransformers()));
 
-        String wholeStory = "Given a scenario" + NL +
-                "When I parse it" + NL +
-                "And I parse it again" + NL +
-                "With another parse as well" + NL +
-                "!-- ignore me" + NL +
-                "Giveth another scenario" + NL +
-                "With a merry go round";
+        String wholeStory = "Given a scenario"
+                + NL + "When I parse it"
+                + NL + "And I parse it again"
+                + NL + "With another parse as well"
+                + NL + "!-- ignore me"
+                + NL + "Giveth another scenario"
+                + NL + "With a merry go round";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
 
@@ -255,10 +255,10 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithGivenStoriesAtStoryAndScenarioLevel() {
-        String wholeStory = "GivenStories: GivenAPreconditionToStory" + NL +
-                "Scenario:" +NL +
-                "GivenStories: GivenAPreconditionToScenario" + NL +
-                "Given a scenario Given";
+        String wholeStory = "GivenStories: GivenAPreconditionToStory"
+                + NL + "Scenario:"
+                + NL + "GivenStories: GivenAPreconditionToScenario"
+                + NL + "Given a scenario Given";
         Story story = parser.parseStory(wholeStory, storyPath);
 
         assertThat(story.getGivenStories().getPaths(), equalTo(asList("GivenAPreconditionToStory")));
@@ -270,17 +270,17 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithScenarioTitleGivenStoriesAndStepsContainingKeywordsNotAtStartOfLine() {
-        String wholeStory = "Scenario: Show that we have Given/When/Then as part of description or step content" +NL +
-                "GivenStories: GivenAStoryContainingAKeyword" + NL +
-                "Given a scenario Given" + NL +
-                "When I parse it to When" + NL +
-                "And I parse it to And" + NL +
-                "!-- And ignore me too" + NL +
-                "Then I should get steps Then" + NL +
-                "Examples:" + NL +
-                "|Given|When|Then|And|" + NL +
-                "|Dato che|Quando|Allora|E|" + NL +
-                "|Dado que|Quando|Então|E|" + NL;
+        String wholeStory = "Scenario: Show that we have Given/When/Then as part of description or step content"
+                + NL + "GivenStories: GivenAStoryContainingAKeyword"
+                + NL + "Given a scenario Given"
+                + NL + "When I parse it to When"
+                + NL + "And I parse it to And"
+                + NL + "!-- And ignore me too"
+                + NL + "Then I should get steps Then"
+                + NL + "Examples:"
+                + NL + "|Given|When|Then|And|"
+                + NL + "|Dato che|Quando|Allora|E|"
+                + NL + "|Dado que|Quando|Então|E|" + NL;
         Story story = parser.parseStory(
                 wholeStory, storyPath);
 
@@ -293,23 +293,24 @@ class RegexStoryParserBehaviour {
         assertThat(steps.get(2), equalTo("And I parse it to And"));
         assertThat(steps.get(3), equalTo("!-- And ignore me too"));
         assertThat(steps.get(4), equalTo("Then I should get steps Then"));        
-        assertThat(story.getScenarios().get(0).getExamplesTable().asString(), 
-                    equalTo("|Given|When|Then|And|" + NL +
-                            "|Dato che|Quando|Allora|E|" + NL +
-                            "|Dado que|Quando|Então|E|" + NL));
+        assertThat(story.getScenarios().get(0).getExamplesTable().asString(),
+                    equalTo("|Given|When|Then|And|"
+                            + NL + "|Dato che|Quando|Allora|E|"
+                            + NL + "|Dado que|Quando|Então|E|"
+                            + NL));
     }
     
     @Test
     void shouldParseStoryWithLifecycle() {
-        String wholeStory = "Lifecycle: " + NL +
-                "Before:" + NL + NL +
-                "Given a step before each scenario" + NL + 
-                "And another before step" + NL +
-                "After:" + NL + NL +
-                "Given a step after each scenario" + NL + 
-                "And another after step" + NL +
-                "Scenario:" +NL +
-                "Given a scenario";
+        String wholeStory = "Lifecycle: "
+                + NL + "Before:"
+                + NL + NL + "Given a step before each scenario"
+                + NL + "And another before step"
+                + NL + "After:"
+                + NL + NL + "Given a step after each scenario"
+                + NL + "And another after step"
+                + NL + "Scenario:"
+                + NL + "Given a scenario";
         Story story = parser.parseStory(wholeStory, storyPath);
         List<String> beforeSteps = story.getLifecycle().getBeforeSteps(Scope.SCENARIO);
         assertThat(beforeSteps.get(0), equalTo("Given a step before each scenario"));
@@ -324,17 +325,17 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithLifecycleAndStoryScope() {
-        String wholeStory = "Lifecycle: " + NL +
-                "Before:" + NL + NL +
-                "Scope: STORY" + NL +
-                "Given a step before each story" + NL +
-                "And another before story" + NL +
-                "After:" + NL + NL +
-                "Scope: STORY" + NL +
-                "Given a step after each story" + NL +
-                "And another after story" + NL +
-                "Scenario:" +NL +
-                "Given a scenario";
+        String wholeStory = "Lifecycle: "
+                + NL + "Before:"
+                + NL + NL + "Scope: STORY"
+                + NL + "Given a step before each story"
+                + NL + "And another before story"
+                + NL + "After:"
+                + NL + NL + "Scope: STORY"
+                + NL + "Given a step after each story"
+                + NL + "And another after story"
+                + NL + "Scenario:"
+                + NL + "Given a scenario";
         Story story = parser.parseStory(wholeStory, storyPath);
         assertThat(story.getLifecycle().hasBeforeSteps(), is(true));
         List<String> beforeSteps = story.getLifecycle().getBeforeSteps(Scope.STORY);
@@ -353,29 +354,29 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithLifecycleAndMultipleScopes() {
-        String wholeStory = "Lifecycle: " + NL +
-                "Before:" + NL + NL +
-                "Scope: STEP" + NL +
-                "Given a step before each scenario step" + NL +
-                "And another before scenario step" + NL +
-                "Scope: SCENARIO" + NL +
-                "Given a step before each scenario" + NL +
-                "And another before scenario" + NL +
-                "Scope: STORY" + NL +
-                "Given a step before each story" + NL +
-                "And another before story" + NL +
-                "After:" + NL + NL +
-                "Scope: STORY" + NL +
-                "Given a step after each story" + NL +
-                "And another after story" + NL +
-                "Scope: SCENARIO" + NL +
-                "Given a step after each scenario" + NL +
-                "And another after scenario" + NL +
-                "Scope: STEP" + NL +
-                "Given a step after each scenario step" + NL +
-                "And another after scenario step" + NL +
-                "Scenario:" +NL +
-                "Given a scenario";
+        String wholeStory = "Lifecycle: "
+                + NL + "Before:"
+                + NL + NL + "Scope: STEP"
+                + NL + "Given a step before each scenario step"
+                + NL + "And another before scenario step"
+                + NL + "Scope: SCENARIO"
+                + NL + "Given a step before each scenario"
+                + NL + "And another before scenario"
+                + NL + "Scope: STORY"
+                + NL + "Given a step before each story"
+                + NL + "And another before story"
+                + NL + "After:"
+                + NL + NL + "Scope: STORY"
+                + NL + "Given a step after each story"
+                + NL + "And another after story"
+                + NL + "Scope: SCENARIO"
+                + NL + "Given a step after each scenario"
+                + NL + "And another after scenario"
+                + NL + "Scope: STEP"
+                + NL + "Given a step after each scenario step"
+                + NL + "And another after scenario step"
+                + NL + "Scenario:"
+                + NL + "Given a scenario";
         Story story = parser.parseStory(wholeStory, storyPath);
         Lifecycle lifecycle = story.getLifecycle();
         assertThat(lifecycle.hasBeforeSteps(), is(true));
@@ -398,12 +399,12 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithLifecycleBeforeOnly() {
-        String wholeStory = "Lifecycle: " + NL +
-                "Before:" + NL + NL +
-                "Given a step before each scenario" + NL + 
-                "And another before step" + NL +
-                "Scenario:" +NL +
-                "Given a scenario";
+        String wholeStory = "Lifecycle: "
+                + NL + "Before:"
+                + NL + NL + "Given a step before each scenario"
+                + NL + "And another before step"
+                + NL + "Scenario:"
+                + NL + "Given a scenario";
         Story story = parser.parseStory(wholeStory, storyPath);
         List<String> beforeSteps = story.getLifecycle().getBeforeSteps(Scope.SCENARIO);
         assertThat(beforeSteps.get(0), equalTo("Given a step before each scenario"));
@@ -417,12 +418,12 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithLifecycleAfterOnly() {
-        String wholeStory = "Lifecycle: " + NL +
-                "After:" + NL + NL +
-                "Given a step after each scenario" + NL + 
-                "And another after step" + NL +
-                "Scenario:" +NL +
-                "Given a scenario";
+        String wholeStory = "Lifecycle: "
+                + NL + "After:"
+                + NL + NL + "Given a step after each scenario"
+                + NL + "And another after step"
+                + NL + "Scenario:"
+                + NL + "Given a scenario";
         Story story = parser.parseStory(wholeStory, storyPath);
         List<String> beforeSteps = story.getLifecycle().getBeforeSteps(Scope.SCENARIO);
         assertThat(beforeSteps.isEmpty(), equalTo(true));
@@ -436,16 +437,16 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithLifecycleAfterUponOutcome() {
-        String wholeStory = "Lifecycle: " + NL +
-                "After:" + NL + NL +
-                "Outcome: ANY " + NL +
-                "Given a step after any scenario" + NL + 
-                "Outcome: SUCCESS " + NL +
-                "Given a step after successful scenario" + NL + 
-                "Outcome: FAILURE " + NL +
-                "Given a step after failed scenario" + NL + 
-                "Scenario:" +NL +
-                "Given a scenario";
+        String wholeStory = "Lifecycle: "
+                + NL + "After:"
+                + NL + NL + "Outcome: ANY "
+                + NL + "Given a step after any scenario"
+                + NL + "Outcome: SUCCESS "
+                + NL + "Given a step after successful scenario"
+                + NL + "Outcome: FAILURE "
+                + NL + "Given a step after failed scenario"
+                + NL + "Scenario:"
+                + NL + "Given a scenario";
         Story story = parser.parseStory(wholeStory, storyPath);
         List<String> beforeSteps = story.getLifecycle().getBeforeSteps(Scope.SCENARIO);
         assertThat(beforeSteps.isEmpty(), equalTo(true));
@@ -468,19 +469,19 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithLifecycleAfterUponOutcomeAndMetaFilter() {
-        String wholeStory = "Lifecycle: " + NL +
-                "After:" + NL + NL +
-                "Outcome: ANY " + NL +
-                "MetaFilter: +all" + NL +
-                "Given a step after any scenario" + NL + 
-                "Outcome: SUCCESS " + NL +
-                "MetaFilter: +happy" + NL +
-                "Given a step after successful scenario" + NL + 
-                "Outcome: FAILURE " + NL +
-                "MetaFilter: +sad" + NL +
-                "Given a step after failed scenario" + NL + 
-                "Scenario:" +NL +
-                "Given a scenario";
+        String wholeStory = "Lifecycle: "
+                + NL + "After:"
+                + NL + NL + "Outcome: ANY "
+                + NL + "MetaFilter: +all"
+                + NL + "Given a step after any scenario"
+                + NL + "Outcome: SUCCESS "
+                + NL + "MetaFilter: +happy"
+                + NL + "Given a step after successful scenario"
+                + NL + "Outcome: FAILURE "
+                + NL + "MetaFilter: +sad"
+                + NL + "Given a step after failed scenario"
+                + NL + "Scenario:"
+                + NL + "Given a scenario";
         Story story = parser.parseStory(wholeStory, storyPath);
         List<String> beforeSteps = story.getLifecycle().getBeforeSteps(Scope.SCENARIO);
         assertThat(beforeSteps.isEmpty(), equalTo(true));
@@ -516,19 +517,20 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithLifecycleExamplesOnly() {
-        String wholeStory = "Lifecycle: " + NL +
-                "Examples:" + NL +
-                "|one|two|three|" + NL +
-                "|11|12|13|" + NL +
-                "|21|22|23|" + NL +
-                "Scenario:" +NL +
-                "Given a scenario";
+        String wholeStory = "Lifecycle: "
+                + NL + "Examples:"
+                + NL + "|one|two|three|"
+                + NL + "|11|12|13|"
+                + NL + "|21|22|23|"
+                + NL + "Scenario:"
+                + NL + "Given a scenario";
         Story story = parser.parseStory(wholeStory, storyPath);
         ExamplesTable table = story.getLifecycle().getExamplesTable();
         assertThat(table.asString(), equalTo(
-                "|one|two|three|" + NL +
-                        "|11|12|13|" + NL +
-                        "|21|22|23|" + NL));
+                "|one|two|three|"
+                        + NL + "|11|12|13|"
+                        + NL + "|21|22|23|"
+                        + NL));
         Scenario scenario = story.getScenarios().get(0);
         List<String> steps = scenario.getSteps();
         assertThat(steps.get(0), equalTo("Given a scenario"));
@@ -536,16 +538,16 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithLifecycleAfterUponOutcomeInNonEnglishLocale() {
-        String wholeStory = "Lebenszyklus: " + NL +
-                "Nach:" + NL + NL +
-                "Ergebnis: JEDES " + NL +
-                "Gegeben im Lager sind 200 T-Shirts" + NL + 
-                "Ergebnis: ERFOLG " + NL +
-                "Gegeben im Lager sind 300 T-Shirts" + NL + 
-                "Ergebnis: FEHLER " + NL +
-                "Gegeben im Lager sind 400 T-Shirts" + NL + 
-                "Szenario:" +NL +
-                "Wenn ein Kunde 20 T-Shirts bestellt";
+        String wholeStory = "Lebenszyklus: "
+                + NL + "Nach:"
+                + NL + NL + "Ergebnis: JEDES "
+                + NL + "Gegeben im Lager sind 200 T-Shirts"
+                + NL + "Ergebnis: ERFOLG "
+                + NL + "Gegeben im Lager sind 300 T-Shirts"
+                + NL + "Ergebnis: FEHLER "
+                + NL + "Gegeben im Lager sind 400 T-Shirts"
+                + NL + "Szenario:"
+                + NL + "Wenn ein Kunde 20 T-Shirts bestellt";
         LocalizedKeywords keywords = new LocalizedKeywords(Locale.GERMAN);
         parser = new RegexStoryParser(
                 new ExamplesTableFactory(keywords, new LoadFromClasspath(), new TableTransformers()));
@@ -570,16 +572,16 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithGivenStoriesAndExamplesCommentedOut() {
-        String wholeStory = "Scenario: Show that we can comment out GivenStories and Examples portions of a scenario" +NL +
-                "!-- GivenStories: AGivenStoryToBeCommented" + NL +
-                "Given a scenario Given" + NL +
-                "When I parse it to When" + NL +
-                "And I parse it to And" + NL +
-                "!-- And ignore me too" + NL +
-                "Then I should get steps Then" + NL +
-                "!-- Examples:" + NL +
-                "|Comment|Me|Out|" + NL +
-                "|yes|we|can|" + NL;
+        String wholeStory = "Scenario: Show that we can comment out GivenStories and Examples portions of a scenario"
+                + NL + "!-- GivenStories: AGivenStoryToBeCommented"
+                + NL + "Given a scenario Given"
+                + NL + "When I parse it to When"
+                + NL + "And I parse it to And"
+                + NL + "!-- And ignore me too"
+                + NL + "Then I should get steps Then"
+                + NL + "!-- Examples:"
+                + NL + "|Comment|Me|Out|"
+                + NL + "|yes|we|can|" + NL;
         Story story = parser.parseStory(
                 wholeStory, storyPath);
 
@@ -593,41 +595,41 @@ class RegexStoryParserBehaviour {
         assertThat(steps.get(3), equalTo("And I parse it to And"));
         assertThat(steps.get(4), equalTo("!-- And ignore me too"));
         assertThat(steps.get(5), equalTo("Then I should get steps Then"));
-        assertThat(steps.get(6), 
-                equalTo("!-- Examples:" + NL +
-                        "|Comment|Me|Out|" + NL +
-                        "|yes|we|can|"));
+        assertThat(steps.get(6),
+                equalTo("!-- Examples:"
+                        + NL + "|Comment|Me|Out|"
+                        + NL + "|yes|we|can|"));
         assertThat(scenario.getExamplesTable().asString(), equalTo(EMPTY));
     }
     
     @Test
     void shouldParseStoryWithMultilineSteps() {
-        String wholeStory = "Given a scenario" + NL +
-                "with this line" + NL +
-                "When I parse it" + NL +
-                "with another line" + NL + NL +
-                "Then I should get steps" + NL +
-                "without worrying about lines" + NL +
-                "or extra white space between or after steps" + NL + NL;
+        String wholeStory = "Given a scenario"
+                + NL + "with this line"
+                + NL + "When I parse it"
+                + NL + "with another line"
+                + NL + NL + "Then I should get steps"
+                + NL + "without worrying about lines"
+                + NL + "or extra white space between or after steps" + NL + NL;
         Story story = parser.parseStory(wholeStory, storyPath);
 
         List<String> steps = story.getScenarios().get(0).getSteps();
 
-        assertThat(steps.get(0), equalTo("Given a scenario" + NL +
-                "with this line"));
-        assertThat(steps.get(1), equalTo("When I parse it" + NL +
-                "with another line"));
-        assertThat(steps.get(2), equalTo("Then I should get steps" + NL +
-                "without worrying about lines" + NL +
-                "or extra white space between or after steps"));
+        assertThat(steps.get(0), equalTo("Given a scenario"
+                + NL + "with this line"));
+        assertThat(steps.get(1), equalTo("When I parse it"
+                + NL + "with another line"));
+        assertThat(steps.get(2), equalTo("Then I should get steps"
+                + NL + "without worrying about lines"
+                + NL + "or extra white space between or after steps"));
     }
 
     @Test
     void shouldParseStoryWithMultilineScenarioTitle() {
-        String wholeStory = "Scenario: A title\n that is spread across\n multiple lines" + NL + NL +
-                "Given a step that's pending" + NL +
-                "When I run the scenario" + NL +
-                "Then I should see this in the output";
+        String wholeStory = "Scenario: A title\n that is spread across\n multiple lines"
+                + NL + NL + "Given a step that's pending"
+                + NL + "When I run the scenario"
+                + NL + "Then I should see this in the output";
 
         Story story = parser.parseStory(wholeStory, null);
 
@@ -636,10 +638,10 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseWithMultipleScenarios() {
-        String wholeStory = "Scenario: the first scenario " + NL + NL +
-                "Given my scenario" + NL + NL +
-                "Scenario: the second scenario" + NL + NL +
-                "Given my second scenario";
+        String wholeStory = "Scenario: the first scenario "
+                + NL + NL + "Given my scenario"
+                + NL + NL + "Scenario: the second scenario"
+                + NL + NL + "Given my second scenario";
         Story story = parser.parseStory(wholeStory, storyPath);
 
         assertThat(story.getScenarios().get(0).getTitle(), equalTo("the first scenario"));
@@ -650,12 +652,12 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithDescriptionAndNarrative() {
-        String wholeStory = "Story: This is free-text description" +NL +
-                "Narrative: This bit of text is ignored" + NL +
-                "In order to renovate my house" + NL +
-                "As a customer" + NL +
-                "I want to get a loan" + NL +
-                "Scenario:  A first scenario";
+        String wholeStory = "Story: This is free-text description"
+                + NL + "Narrative: This bit of text is ignored"
+                + NL + "In order to renovate my house"
+                + NL + "As a customer"
+                + NL + "I want to get a loan"
+                + NL + "Scenario:  A first scenario";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         Description description = story.getDescription();
@@ -669,12 +671,12 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithAlternativeNarrative() {
-        String wholeStory = "Story: This is free-text description" +NL +
-                "Narrative: This is an alternative narrative" + NL +
-                "As a customer" + NL +
-                "I want to get a loan" + NL +
-                "So that I can renovate my house" + NL +
-                "Scenario:  A first scenario";
+        String wholeStory = "Story: This is free-text description"
+                + NL + "Narrative: This is an alternative narrative"
+                + NL + "As a customer"
+                + NL + "I want to get a loan"
+                + NL + "So that I can renovate my house"
+                + NL + "Scenario:  A first scenario";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         Description description = story.getDescription();
@@ -688,11 +690,11 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithIncompleteNarrative() {
-        String wholeStory = "Story: This is free-text description" +NL +
-                "Narrative: This is an incomplete narrative" + NL +
-                "In order to renovate my house" + NL +
-                "As a customer" + NL +
-                "Scenario:  A first scenario";
+        String wholeStory = "Story: This is free-text description"
+                + NL + "Narrative: This is an incomplete narrative"
+                + NL + "In order to renovate my house"
+                + NL + "As a customer"
+                + NL + "Scenario:  A first scenario";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         Description description = story.getDescription();
@@ -703,37 +705,38 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithAllElements() {
-        String wholeStory = "This is just a story description" + NL + NL +
+        String wholeStory = "This is just a story description"
 
-                "Narrative: " + NL +
-                "In order to see what we're not delivering" + NL + NL +
-                "As a developer" + NL +
-                "I want to see the narrative for my story when a scenario in that story breaks" + NL +
+                + NL + NL + "Narrative: "
+                + NL + "In order to see what we're not delivering"
+                + NL + NL + "As a developer"
+                + NL + "I want to see the narrative for my story when a scenario in that story breaks"
 
-                "GivenStories: path1,path2" + NL + NL +
-                
-                "Lifecycle: " + NL +
-                "Before: " + NL + NL+
-                "Given a setup step" + NL +
-                "After: " + NL + NL+
-                "Then a teardown step" + NL +
+                + NL + "GivenStories: path1,path2"
 
-                "Scenario: A pending scenario" + NL + NL +
-                "Given a step that's pending" + NL +
-                "When I run the scenario" + NL +
-                "!-- A comment between steps" + NL +
-                "Then I should see this in the output" + NL +
+                + NL + NL + "Lifecycle: "
+                + NL + "Before: "
+                + NL + NL + "Given a setup step"
+                + NL + "After: "
+                + NL + NL + "Then a teardown step"
 
-                "Scenario: A passing scenario" + NL +
-                "Given I'm not reporting passing stories" + NL +
-                "When I run the scenario" + NL +
-                "Then this should not be in the output" + NL +
+                + NL + "Scenario: A pending scenario"
+                + NL + NL + "Given a step that's pending"
+                + NL + "When I run the scenario"
+                + NL + "!-- A comment between steps"
+                + NL + "Then I should see this in the output"
 
-                "Scenario: A failing scenario" + NL +
-                "Given a step that fails" + NL +
-                "When I run the scenario" + NL +
-                "Then I should see this in the output" + NL +
-                "And I should see this in the output" + NL;
+                + NL + "Scenario: A passing scenario"
+                + NL + "Given I'm not reporting passing stories"
+                + NL + "When I run the scenario"
+                + NL + "Then this should not be in the output"
+
+                + NL + "Scenario: A failing scenario"
+                + NL + "Given a step that fails"
+                + NL + "When I run the scenario"
+                + NL + "Then I should see this in the output"
+                + NL + "And I should see this in the output"
+                + NL;
 
         Story story = parser.parseStory(wholeStory, storyPath);
 
@@ -799,11 +802,11 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithScenarioKeywordInComments() {
-        String wholeStory = "Scenario: with Scenario keyword in comments" + NL +
-                "!-- 1 This is a comment" + NL +
-                "!-- 2 Scenario: this should not be parsed as a separate scenario" + NL +
-                "Given 1st step" + NL +
-                "!-- 3 One more comment";
+        String wholeStory = "Scenario: with Scenario keyword in comments"
+                + NL + "!-- 1 This is a comment"
+                + NL + "!-- 2 Scenario: this should not be parsed as a separate scenario"
+                + NL + "Given 1st step"
+                + NL + "!-- 3 One more comment";
 
         Story story = parser.parseStory(wholeStory, storyPath);
         List<Scenario> scenarios = story.getScenarios();
@@ -819,11 +822,11 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithoutScenarioKeywordInComments() {
-        String wholeStory = "Scenario: with no Scenario keyword in comments" + NL +
-                "Given 1st step" + NL +
-                "!-- This is a comment" + NL +
-                "Scenario: this should be parsed as a separate scenario" + NL +
-                "Given 1st step";
+        String wholeStory = "Scenario: with no Scenario keyword in comments"
+                + NL + "Given 1st step"
+                + NL + "!-- This is a comment"
+                + NL + "Scenario: this should be parsed as a separate scenario"
+                + NL + "Given 1st step";
 
         Story story = parser.parseStory(wholeStory, storyPath);
         List<Scenario> scenarios = story.getScenarios();
@@ -864,9 +867,9 @@ class RegexStoryParserBehaviour {
     @Test
     void shouldParseLongStory() {
          String aGivenWhenThen =
-                "Given a step" + NL +
-                "When I run it" + NL +
-                "Then I should seen an output" + NL;
+                "Given a step"
+                + NL + "When I run it"
+                + NL + "Then I should seen an output" + NL;
 
         StringBuilder aScenario = new StringBuilder();
 
@@ -892,15 +895,16 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithScenarioContainingExamplesTable() {
-        String wholeStory = "Scenario: A scenario with examples table" + NL + NL +
-                "Given a step with a <one>" + NL +
-                "When I run the scenario of name <two>" + NL +
-                "Then I should see <three> in the output" + NL +
+        String wholeStory = "Scenario: A scenario with examples table"
+                + NL + NL + "Given a step with a <one>"
+                + NL + "When I run the scenario of name <two>"
+                + NL + "Then I should see <three> in the output"
 
-                "Examples:" + NL +
-                "|one|two|three|" + NL +
-                "|11|12|13|" + NL +
-                "|21|22|23|" + NL;
+                + NL +"Examples:"
+                + NL + "|one|two|three|"
+                + NL + "|11|12|13|"
+                + NL + "|21|22|23|"
+                + NL;
 
         Story story = parser.parseStory(wholeStory, storyPath);
 
@@ -914,9 +918,10 @@ class RegexStoryParserBehaviour {
         )));
         ExamplesTable table = scenario.getExamplesTable();
         assertThat(table.asString(), equalTo(
-                "|one|two|three|" + NL +
-                        "|11|12|13|" + NL +
-                        "|21|22|23|" + NL));
+                "|one|two|three|"
+                        + NL + "|11|12|13|"
+                        + NL + "|21|22|23|"
+                        + NL));
         assertThat(table.getRowCount(), equalTo(2));
         assertThat(table.getRow(0), not(nullValue()));
         assertThat(table.getRow(0).get("one"), equalTo("11"));
@@ -932,23 +937,23 @@ class RegexStoryParserBehaviour {
     void shouldParseStoryWithScenarioContainingGivenStories() {
         // given stories as CSV with no spaces or newlines
         parseStoryWithGivenStories(
-                "GivenStories: path/to/one,path/to/two" + NL + NL +
-                "Given a step");
+                "GivenStories: path/to/one,path/to/two"
+                + NL + NL + "Given a step");
         // given stories as CSV with spaces and newlines
         parseStoryWithGivenStories(
-                "GivenStories: path/to/one , " +NL +" path/to/two" + NL + NL +
-                "Given a step");
+                "GivenStories: path/to/one , " +NL +" path/to/two"
+                + NL + NL + "Given a step");
     }
 
     @Test
     void shouldParseStoryWithScenarioContainingParametrisedGivenStories() {
         String wholeStory = 
-            "GivenStories: path/to/one#{0}, path/to/two#{1}, path/to/three#{2}, path/to/four#{a}, path/to/five" + NL + NL +
-            "Given a step" + NL+
-            "Examples:" + NL +
-            "|one|two|" + NL +  
-            "|11|12|" + NL +
-            "|21|22|";
+            "GivenStories: path/to/one#{0}, path/to/two#{1}, path/to/three#{2}, path/to/four#{a}, path/to/five"
+            + NL + NL + "Given a step"
+            + NL + "Examples:"
+            + NL + "|one|two|"
+            + NL + "|11|12|"
+            + NL + "|21|22|";
         Story story = parser.parseStory(wholeStory, storyPath);
 
         Scenario scenario = story.getScenarios().get(0);
@@ -993,13 +998,14 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithScenarioContainingExamplesTableAndEndingWithComments() {
-        String wholeStory = "Scenario: A scenario with examples table and comment" + NL + NL +
-                "Given a step with a <one>" + NL +
-                "Examples:" + NL +
-                "|one|two|three|" + NL +
-                "|11|12|13|" + NL +
-                "|21|22|23|" + NL + NL + NL +
-                "!-- Some remark" + NL + NL;
+        String wholeStory = "Scenario: A scenario with examples table and comment"
+                + NL + NL + "Given a step with a <one>"
+                + NL + "Examples:"
+                + NL + "|one|two|three|"
+                + NL + "|11|12|13|"
+                + NL + "|21|22|23|"
+                + NL + NL + NL + "!-- Some remark"
+                + NL + NL;
 
         Story story = parser.parseStory(wholeStory, storyPath);
 
@@ -1011,9 +1017,10 @@ class RegexStoryParserBehaviour {
         )));
         ExamplesTable table = scenario.getExamplesTable();
         assertThat(table.asString(), equalTo(
-                "|one|two|three|" + NL +
-                        "|11|12|13|" + NL +
-                        "|21|22|23|" + NL));
+                "|one|two|three|"
+                        + NL + "|11|12|13|"
+                        + NL + "|21|22|23|"
+                        + NL));
         assertThat(table.getRowCount(), equalTo(2));
         assertThat(table.getRow(0), not(nullValue()));
         assertThat(table.getRow(0).get("one"), equalTo("11"));
@@ -1039,9 +1046,9 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithoutAPath() {
-        String wholeStory = "Given a step" + NL +
-                "When I run it" + NL +
-                "Then I should an output";
+        String wholeStory = "Given a step"
+                + NL + "When I run it"
+                + NL + "Then I should an output";
 
         Story story = parser.parseStory(wholeStory);
 
@@ -1076,10 +1083,10 @@ class RegexStoryParserBehaviour {
     @Test
     void shouldParseStoryHavingEmptyScenarios() {
         String wholeStory =
-                "Scenario: scenario with step" + NL +
-                "Given step" + NL + NL +
-                "Scenario: empty" +NL + NL +
-                "Scenario: one more empty";
+                "Scenario: scenario with step"
+                + NL + "Given step"
+                + NL + NL + "Scenario: empty"
+                + NL + NL +"Scenario: one more empty";
 
         Story story = parser.parseStory(wholeStory);
 
@@ -1102,8 +1109,8 @@ class RegexStoryParserBehaviour {
     @Test
     void shouldParseStoryWithSingleEmptyScenarioHavingMeta() {
         String wholeStory =
-                "Scenario: empty" + NL + NL +
-                "Meta: @theme parsing";
+                "Scenario: empty"
+                + NL + NL + "Meta: @theme parsing";
 
         Story story = parser.parseStory(wholeStory);
 
@@ -1119,11 +1126,11 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithUntrimmedSteps() {
-        String wholeStory = 
-                "Scenario: A scenario" + NL +
-                "Given step " + NL + NL + NL +
-                "When step " + NL + NL +
-                "Then step";
+        String wholeStory =
+                "Scenario: A scenario"
+                + NL + "Given step "
+                + NL + NL + NL + "When step "
+                + NL + NL + "Then step";
         Story story = parser.parseStory(wholeStory, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
         List<Scenario> scenarios = story.getScenarios();

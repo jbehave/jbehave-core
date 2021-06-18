@@ -21,15 +21,15 @@ class TransformingStoryParserBehaviour {
             }
         };
         StoryParser parser = new TransformingStoryParser(delegate, transformer);
-        String storyAsText = "Scenario: a scenario " + NL +
-                "Given a scenario Given" + NL +
-                "When I parse it to When" + NL +
-                "And I parse it to And" + NL +
-                "!-- And ignore me too" + NL +
-                "Then I should get steps Then" + NL +
-                "Examples:" + NL +
-                ",Given,When,Then,And," + NL +
-                ",Dato che,Quando,Allora,E,";
+        String storyAsText = "Scenario: a scenario "
+                + NL + "Given a scenario Given"
+                + NL + "When I parse it to When"
+                + NL + "And I parse it to And"
+                + NL + "!-- And ignore me too"
+                + NL + "Then I should get steps Then"
+                + NL + "Examples:"
+                + NL + ",Given,When,Then,And,"
+                + NL + ",Dato che,Quando,Allora,E,";
 
         Story story = parser.parseStory(storyAsText);
         assertThat(story.getScenarios().get(0).getExamplesTable().getRowCount(), equalTo(1));

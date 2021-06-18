@@ -268,8 +268,8 @@ public class ExamplesTableBehaviour {
 
     @Test
     void shouldParseTableWithCustomNestedTransformers() {
-        String tableWithProperties = "{transformer=myTransformer, trim=false, " +
-                "table=\\{transformer=NESTED_TRANSFORMER\\, parameter=value\\}}\n" + tableWithCommentsAsString;
+        String tableWithProperties = "{transformer=myTransformer, trim=false, "
+                + "table=\\{transformer=NESTED_TRANSFORMER\\, parameter=value\\}}\n" + tableWithCommentsAsString;
         TableTransformers tableTransformers = new TableTransformers();
         tableTransformers.useTransformer("myTransformer", new TableTransformer() {
 

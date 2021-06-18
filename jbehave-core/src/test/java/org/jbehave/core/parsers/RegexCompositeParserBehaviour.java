@@ -48,7 +48,9 @@ class RegexCompositeParserBehaviour {
 
     @Test
     void shouldParseCompositeStepWithEmptyComposedStepsEndingWithSpaceAndLineBreaks() {
-        String compositesAsText = "Composite: Given an empty composite step " + NL + " " + NL;
+        String compositesAsText = "Composite: Given an empty composite step "
+                + NL + " "
+                + NL;
         List<Composite> composites = parser.parseComposites(compositesAsText);
         assertThat(composites.size(), equalTo(1));
         assertCompositeStep(composites.get(0), StepType.GIVEN, "an empty composite step", 0, Collections.emptyList());
@@ -56,9 +58,9 @@ class RegexCompositeParserBehaviour {
 
     @Test
     void shouldParseSingleCompositeStep() {
-        String compositeStepsAsText = "Composite: Given a composite step" + NL+
-                "Given a step" + NL +
-                "Then another step";
+        String compositeStepsAsText = "Composite: Given a composite step"
+                + NL + "Given a step"
+                + NL + "Then another step";
         List<Composite> composites = parser.parseComposites(compositeStepsAsText);
         assertThat(composites.size(), equalTo(1));
         assertCompositeStep(composites.get(0), StepType.GIVEN, "a composite step", 0,
@@ -67,10 +69,10 @@ class RegexCompositeParserBehaviour {
 
     @Test
     void shouldParseCompositeStepWithPriority() {
-        String compositeStepsAsText = "Composite: Given a composite step" + NL+
-                "Priority: 1" + NL +
-                "Given a step" + NL +
-                "Then another step";
+        String compositeStepsAsText = "Composite: Given a composite step"
+                + NL + "Priority: 1"
+                + NL + "Given a step"
+                + NL + "Then another step";
         List<Composite> composites = parser.parseComposites(compositeStepsAsText);
         assertThat(composites.size(), equalTo(1));
         assertCompositeStep(composites.get(0), StepType.GIVEN, "a composite step", 1,
@@ -79,12 +81,13 @@ class RegexCompositeParserBehaviour {
 
     @Test
     void shouldParseCompositeStepWithLineBreaks() {
-        String compositeStepsAsText = "Composite: Given a composite step with UNIX separators" + NL+
-                "Given a step" + NL + NL +
-                "Then another step" + NL +
-                "Composite: Given a composite step with MS-DOS separators" + CRLF+
-                "Given a step" + CRLF + CRLF +
-                "Then another step" + CRLF;
+        String compositeStepsAsText = "Composite: Given a composite step with UNIX separators"
+                + NL + "Given a step"
+                + NL + NL + "Then another step"
+                + NL + "Composite: Given a composite step with MS-DOS separators"
+                + CRLF + "Given a step"
+                + CRLF + CRLF + "Then another step"
+                + CRLF;
         List<Composite> composites = parser.parseComposites(compositeStepsAsText);
         assertThat(composites.size(), equalTo(2));
         assertCompositeStep(composites.get(0), StepType.GIVEN, "a composite step with UNIX separators", 0,
@@ -95,10 +98,11 @@ class RegexCompositeParserBehaviour {
 
     @Test
     void shouldParseTwoCompositeStep() {
-        String compositeStepsAsText = "Composite: Given the first composite step" + NL+
-                "Given a step" + NL +
-                "Composite: When the second composite step" + NL+
-                "Then another step" + NL;
+        String compositeStepsAsText = "Composite: Given the first composite step"
+                + NL + "Given a step"
+                + NL + "Composite: When the second composite step"
+                + NL + "Then another step"
+                + NL;
         List<Composite> composites = parser.parseComposites(compositeStepsAsText);
         assertThat(composites.size(), equalTo(2));
         assertCompositeStep(composites.get(0), StepType.GIVEN, "the first composite step", 0,
@@ -109,10 +113,11 @@ class RegexCompositeParserBehaviour {
 
     @Test
     void shouldParseTwoCompositeStepWithCRLF() {
-        String compositeStepsAsText = "Composite: Given the first composite step" + CRLF+
-                "Given a step" + CRLF +
-                "Composite: When the second composite step" + CRLF+
-                "Then another step" + CRLF;
+        String compositeStepsAsText = "Composite: Given the first composite step"
+                + CRLF + "Given a step"
+                + CRLF + "Composite: When the second composite step"
+                + CRLF + "Then another step"
+                + CRLF;
         List<Composite> composites = parser.parseComposites(compositeStepsAsText);
         assertThat(composites.size(), equalTo(2));
         assertCompositeStep(composites.get(0), StepType.GIVEN, "the first composite step", 0,
@@ -123,8 +128,8 @@ class RegexCompositeParserBehaviour {
 
     @Test
     void shouldParseCompositeStepWithCustomLocale() {
-        String compositeStepsAsText = "Композитный: Дано композитный шаг" + NL+
-                "Дано шаг";
+        String compositeStepsAsText = "Композитный: Дано композитный шаг"
+                + NL + "Дано шаг";
         CompositeParser localizedParser = new RegexCompositeParser(new LocalizedKeywords(new Locale("ru")));
         List<Composite> composites = localizedParser.parseComposites(compositeStepsAsText);
         assertThat(composites.size(), equalTo(1));
