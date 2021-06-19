@@ -86,8 +86,7 @@ public class StoryFinder {
 
     /**
      * Finds paths from a source URL, allowing for single include/exclude
-     * pattern. Paths found are normalised by {@link
-     * StoryFinder#normalise(List<String>)}
+     * pattern. Paths found are normalised by {@link StoryFinder#normalise(List)}
      * 
      * @param searchIn the source URL to search in
      * @param include the include pattern, or <code>""</code> if none
@@ -100,7 +99,7 @@ public class StoryFinder {
 
     /**
      * Finds paths from a source URL, allowing for includes/excludes patterns.
-     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
+     * Paths found are normalised by {@link StoryFinder#normalise(List)}
      * 
      * @param searchIn the source URL to search in
      * @param includes the Array of include patterns, or <code>null</code> if
@@ -117,7 +116,7 @@ public class StoryFinder {
      * Finds paths from a source path, allowing for include/exclude patterns,
      * which can be comma-separated values of multiple patterns.
      * 
-     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
+     * Paths found are normalised by {@link StoryFinder#normalise(List)}
      * 
      * @param searchIn the source path to search in
      * @param include the CSV include pattern, or <code>null</code> if none
@@ -130,7 +129,7 @@ public class StoryFinder {
 
     /**
      * Finds paths from a source path, allowing for include/exclude patterns.
-     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
+     * Paths found are normalised by {@link StoryFinder#normalise(List)}
      * 
      * @param searchIn the source path to search in
      * @param includes the Array of include patterns, or <code>null</code> if
@@ -145,7 +144,7 @@ public class StoryFinder {
 
     /**
      * Finds paths from a source URL, allowing for includes/excludes patterns.
-     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
+     * Paths found are normalised by {@link StoryFinder#normalise(List)}
      * 
      * @param searchIn the source URL to search in
      * @param includes the List of include patterns, or <code>null</code> if
@@ -160,7 +159,7 @@ public class StoryFinder {
 
     /**
      * Finds paths from a source path, allowing for include/exclude patterns.
-     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
+     * Paths found are normalised by {@link StoryFinder#normalise(List)}
      * .
      * 
      * @param searchIn the source path to search in
@@ -176,17 +175,13 @@ public class StoryFinder {
 
     /**
      * Finds paths from a source path, allowing for includes/excludes. Paths
-     * found are prefixed with specified path by {@link
-     * StoryFinder#prefix(String, List<String>)} and normalised by {@link
-     * StoryFinder#normalise(List<String>)}.
+     * found are prefixed with specified path by {@link StoryFinder#prefix(String, List)} and normalised by
+     * {@link StoryFinder#normalise(List)}.
      * 
      * @param searchIn the source path to search in
-     * @param includes the List of include patterns, or <code>null</code> if
-     *            none
-     * @param excludes the List of exclude patterns, or <code>null</code> if
-     *            none
-     * @param prefixWith the root path prefixed to all paths found, or
-     *            <code>null</code> if none
+     * @param includes the List of include patterns, or <code>null</code> if none
+     * @param excludes the List of exclude patterns, or <code>null</code> if none
+     * @param prefixWith the root path prefixed to all paths found, or <code>null</code> if none
      * @return A List of paths found
      */
     public List<String> findPaths(String searchIn, List<String> includes, List<String> excludes, String prefixWith) {
@@ -225,7 +220,7 @@ public class StoryFinder {
 
     /**
      * Comparator used for sorting. A <code>null</code> comparator means that
-     * {@link Collections#sort()} will use natural ordering.
+     * {@link Collections#sort(List)} will use natural ordering.
      * 
      * @return A Comparator or <code>null</code> for natural ordering.
      */

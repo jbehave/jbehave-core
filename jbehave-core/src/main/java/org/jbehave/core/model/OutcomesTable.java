@@ -62,7 +62,7 @@ public class OutcomesTable {
     }
 
     /**
-     * @deprecated Use {@link #OutcomesTable(Keywords,Map<Type,String>)}
+     * @deprecated Use {@link #OutcomesTable(Keywords, Map)}
      */
     @Deprecated
     public OutcomesTable(Keywords keywords, String dateFormat) {

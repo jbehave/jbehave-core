@@ -37,7 +37,7 @@ public class ConvertedParameters implements Parameters {
     /**
      * Creates an instance of ConvertedParameters with given values
      * 
-     * @param values the Map<String,String> of values
+     * @param values the Map&lt;String,String&gt; of values
      * @param parameterConverters the ParameterConverters used for conversion
      */
     public ConvertedParameters(Map<String, String> values, ParameterConverters parameterConverters) {

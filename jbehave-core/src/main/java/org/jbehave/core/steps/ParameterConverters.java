@@ -755,9 +755,8 @@ public class ParameterConverters {
         }
 
         /**
-         * Canonicalize a number representation to a format suitable for the
-         * {@link BigDecimal(String)} constructor, taking into account the
-         * settings of the currently configured DecimalFormat.
+         * Canonicalize a number representation to a format suitable for the {@link BigDecimal#BigDecimal(String)}
+         * constructor, taking into account the settings of the currently configured DecimalFormat.
          *
          * @param value a localized number value
          * @return A canonicalized string value suitable for consumption by

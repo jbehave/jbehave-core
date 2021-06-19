@@ -11,12 +11,11 @@ import org.jbehave.core.annotations.ScenarioType;
  * or {@link org.jbehave.core.annotations.Then @Then}
  * that can be matched. It also provides the list of before and after steps,
  * representing methods annotated with {@link org.jbehave.core.annotations.BeforeStories @BeforeStories},
- * {@link org.jbehave.core.annotations.AfterStories @AfterStories}, {@link org.jbehave.core.annotations.BeforeStory
- *
- * @BeforeStory}, {@link org.jbehave.core.annotations.AfterStory @AfterStory}, {
- * @link org.jbehave.core.annotations.BeforeScenario
- * @BeforeScenario}, {@link org.jbehave.core.annotations.AfterScenario @AfterScenario}, that do not require any
- * matching.
+ * {@link org.jbehave.core.annotations.AfterStories @AfterStories},
+ * {@link org.jbehave.core.annotations.BeforeStory @BeforeStory},
+ * {@link org.jbehave.core.annotations.AfterStory @AfterStory},
+ * {@link org.jbehave.core.annotations.BeforeScenario @BeforeScenario},
+ * {@link org.jbehave.core.annotations.AfterScenario @AfterScenario}, that do not require any matching.
  */
 public interface CandidateSteps {
 

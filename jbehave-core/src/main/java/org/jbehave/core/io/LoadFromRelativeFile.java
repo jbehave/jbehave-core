@@ -28,7 +28,7 @@ import java.util.List;
  * {@link LoadFromRelativeFile#intellijProjectStoryFilePath}
  * {@link LoadFromRelativeFile#intellijProjectTestStoryFilePath}
  * 
- * @see {@link CodeLocations#codeLocationFromClass(Class)}
+ * @see CodeLocations#codeLocationFromClass(Class)
  * 
  */
 public class LoadFromRelativeFile implements ResourceLoader, StoryLoader {

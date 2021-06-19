@@ -71,8 +71,9 @@ import org.jbehave.core.parsers.StepPatternParser;
  * For instance, you could define a method as:
  * 
  * <pre>
- * @When("I log in as $username with password: $password")
+ * <code>@When("I log in as $username with password: $password")
  * public void logIn(String username, String password) { //... }
+ * </code>
  * </pre>
  * 
  * and this would match the step:

@@ -19,7 +19,7 @@ public class LoadFromClasspath implements StoryLoader {
 
     /**
      * Uses default encoding UTF-8.
-     * @see {@link #LoadFromClasspath(Charset)}.
+     * @see #LoadFromClasspath(Charset)
      */
     public LoadFromClasspath() {
         this(StandardCharsets.UTF_8);
@@ -28,7 +28,7 @@ public class LoadFromClasspath implements StoryLoader {
     /**
      * Uses encoding provided.
      * @param charset the Charset
-     * @see {@link #LoadFromClasspath(ClassLoader,Charset)}.
+     * @see #LoadFromClasspath(ClassLoader,Charset)
      */
     public LoadFromClasspath(Charset charset) {
         this(Thread.currentThread().getContextClassLoader(), charset);
@@ -37,7 +37,7 @@ public class LoadFromClasspath implements StoryLoader {
     /**
      * Uses a class to get the ClassLoader
      * @param loadFromClass the Class to get the ClassLoader from
-     * @see {@link #LoadFromClasspath(ClassLoader)}.
+     * @see #LoadFromClasspath(ClassLoader)
      */
     public LoadFromClasspath(Class<?> loadFromClass) {
         this(loadFromClass.getClassLoader());

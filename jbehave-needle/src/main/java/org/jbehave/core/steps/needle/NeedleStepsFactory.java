@@ -132,7 +132,7 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 
     /**
      * Create parameter converters from methods annotated with @AsParameterConverter
-     * @see {@link AbstractStepsFactory}
+     * @see AbstractStepsFactory
      */
     private List<ParameterConverter> methodReturningConverters(final Class<?> type) {
         final List<ParameterConverter> converters = new ArrayList<>();
@@ -161,7 +161,7 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
      * @param type
      *        the Type of the steps instance
      * @return A boolean, <code>true</code> if at least one annotated method is found.
-     * @see {@link AbstractStepsFactory}
+     * @see AbstractStepsFactory
      */
     static boolean hasAnnotatedMethods(final Type type) {
         if (type instanceof Class<?>) {

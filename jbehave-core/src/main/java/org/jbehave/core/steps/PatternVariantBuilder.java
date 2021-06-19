@@ -53,7 +53,6 @@ import java.util.regex.Pattern;
  * </td>
  * </tr>
  * </table>
- * 
  * <p>
  * These directives can be used to conveniently create several variants of a
  * step pattern, without having to repeat it as a whole as one or more aliases.
@@ -62,36 +61,34 @@ import java.util.regex.Pattern;
  * Examples:
  * </p>
  * <ul>
- * <li>
- * <p>
- * <code>
- * 
- * @Then("the result {must |has to |}be $x")<br> public void checkResult(int
- *            x)...<br></code>
- *            </p>
- *            <p>
- *            Would match any of these variants from a story file:
- *            <ul>
- *            <li>Then the result must be 42</li> <li>Then the result has to be
- *            42</li> <li>Then the result be 42</li>
- *            </ul>
- *            </p>
- *            </li> <li>
- *            <p>
- *            <code>
- * @When("$A {+|plus|is added to} $B")<br> public void add(int A, int B)...<br>
- *           </code>
- *           </p>
- *           <p>
- *           Would match any of these variants from a story file:
- *           <ul>
- *           <li>When 42 + 23</li> <li>When 42 plus 23</li> <li>When 42 is added
- *           to 23</li>
- *           </ul>
- *           </p>
- *           </li>
- *           </ul>
- * 
+ *     <li>
+ *         <p>
+ *             <code>@Then("the result {must |has to |}be $x")<br> public void checkResult(int x)...</code>
+ *         </p>
+ *         <p>
+ *             Would match any of these variants from a story file:
+ *             <ul>
+ *                 <li>Then the result must be 42</li>
+ *                 <li>Then the result has to be 42</li>
+ *                 <li>Then the result be 42</li>
+ *             </ul>
+ *         </p>
+ *     </li>
+ *     <li>
+ *         <p>
+ *             <code>@When("$A {+|plus|is added to} $B")<br> public void add(int A, int B)...</code>
+ *         </p>
+ *         <p>
+ *             Would match any of these variants from a story file:
+ *             <ul>
+ *                 <li>When 42 + 23</li>
+ *                 <li>When 42 plus 23</li>
+ *                 <li>When 42 is added to 23</li>
+ *             </ul>
+ *         </p>
+ *     </li>
+ * </ul>
+ *
  * @author Daniel Schneller
  */
 public class PatternVariantBuilder {
