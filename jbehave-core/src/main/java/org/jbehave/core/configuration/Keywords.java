@@ -39,7 +39,6 @@ public class Keywords {
     public static final String EXAMPLES_TABLE_HEADER_SEPARATOR = "ExamplesTableHeaderSeparator";
     public static final String EXAMPLES_TABLE_VALUE_SEPARATOR = "ExamplesTableValueSeparator";
     public static final String EXAMPLES_TABLE_IGNORABLE_SEPARATOR = "ExamplesTableIgnorableSeparator";
-    public static final String EXAMPLES_TABLE_COMMENT_SEPARATOR = "ExamplesTableCommentSeparator";
     public static final String GIVEN = "Given";
     public static final String WHEN = "When";
     public static final String THEN = "Then";
@@ -87,7 +86,6 @@ public class Keywords {
             EXAMPLES_TABLE_HEADER_SEPARATOR,
             EXAMPLES_TABLE_VALUE_SEPARATOR,
             EXAMPLES_TABLE_IGNORABLE_SEPARATOR,
-            EXAMPLES_TABLE_COMMENT_SEPARATOR,
             GIVEN,
             WHEN,
             THEN,
@@ -136,7 +134,6 @@ public class Keywords {
     private final String examplesTableHeaderSeparator;
     private final String examplesTableValueSeparator;
     private final String examplesTableIgnorableSeparator;
-    private final String examplesTableCommentSeparator;
     private final String given;
     private final String when;
     private final String then;
@@ -187,7 +184,6 @@ public class Keywords {
         keywords.put(EXAMPLES_TABLE_HEADER_SEPARATOR, "|");
         keywords.put(EXAMPLES_TABLE_VALUE_SEPARATOR, "|");
         keywords.put(EXAMPLES_TABLE_IGNORABLE_SEPARATOR, "|--");
-        keywords.put(EXAMPLES_TABLE_COMMENT_SEPARATOR, "#");
         keywords.put(GIVEN, "Given");
         keywords.put(WHEN, "When");
         keywords.put(THEN, "Then");
@@ -249,7 +245,6 @@ public class Keywords {
         this.examplesTableHeaderSeparator = keyword(EXAMPLES_TABLE_HEADER_SEPARATOR, keywords);
         this.examplesTableValueSeparator = keyword(EXAMPLES_TABLE_VALUE_SEPARATOR, keywords);
         this.examplesTableIgnorableSeparator = keyword(EXAMPLES_TABLE_IGNORABLE_SEPARATOR, keywords);
-        this.examplesTableCommentSeparator = keyword(EXAMPLES_TABLE_COMMENT_SEPARATOR, keywords);
         this.given = keyword(GIVEN, keywords);
         this.when = keyword(WHEN, keywords);
         this.then = keyword(THEN, keywords);
@@ -361,10 +356,6 @@ public class Keywords {
 
     public String examplesTableIgnorableSeparator() {
         return examplesTableIgnorableSeparator;
-    }
-
-    public String examplesTableCommentSeparator() {
-        return examplesTableCommentSeparator;
     }
 
     public String given() {

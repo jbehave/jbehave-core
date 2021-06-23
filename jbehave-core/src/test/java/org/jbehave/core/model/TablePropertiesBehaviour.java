@@ -82,7 +82,7 @@ class TablePropertiesBehaviour {
         assertThat(properties.getHeaderSeparator(), equalTo("|"));
         assertThat(properties.getValueSeparator(), equalTo("|"));
         assertThat(properties.getIgnorableSeparator(), equalTo("|--"));
-        assertThat(properties.getCommentSeparator(), equalTo("#"));
+        assertThat(properties.getCommentSeparator(), equalTo(null));
         assertThat(properties.isTrim(), is(true));
         assertThat(properties.isMetaByRow(), is(false));
         assertThat(properties.getTransformer(), is(nullValue()));

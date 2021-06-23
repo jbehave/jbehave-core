@@ -474,7 +474,6 @@ public class ExamplesTable {
             properties.setProperty(HEADER_SEPARATOR_KEY, keywords.examplesTableHeaderSeparator());
             properties.setProperty(VALUE_SEPARATOR_KEY, keywords.examplesTableValueSeparator());
             properties.setProperty(IGNORABLE_SEPARATOR_KEY, keywords.examplesTableIgnorableSeparator());
-            properties.setProperty(COMMENT_SEPARATOR_KEY, keywords.examplesTableCommentSeparator());
             properties.putAll(parseProperties(propertiesAsString));
         }
 
