@@ -2,10 +2,12 @@ package org.jbehave.core.configuration;
 
 import static java.util.Arrays.asList;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -478,12 +480,14 @@ public class Keywords {
         return word.split(SYNONYM_SEPARATOR);
     }
 
-    public String[] startingWords() {
-        List<String> words = new ArrayList<>();
-        for (String word : startingWordsByType().values()) {
-            words.addAll(asList(synonymsOf(word)));
-        }
-        return words.toArray(new String[words.size()]);
+    public Stream<String> startingWords(Predicate<StepType> stepTypeFilter) {
+        return startingWordsByType()
+                .entrySet()
+                .stream()
+                .filter(e -> stepTypeFilter.test(e.getKey()))
+                .map(Entry::getValue)
+                .map(this::synonymsOf)
+                .flatMap(Stream::of);
     }
 
     public Map<StepType, String> startingWordsByType() {

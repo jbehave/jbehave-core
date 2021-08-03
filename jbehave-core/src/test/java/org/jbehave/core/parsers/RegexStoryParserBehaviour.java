@@ -37,7 +37,6 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.model.TableTransformers;
 import org.junit.jupiter.api.Test;
 
-
 class RegexStoryParserBehaviour {
 
     private static final String NL = "\n";
@@ -818,6 +817,32 @@ class RegexStoryParserBehaviour {
                 "!-- 2 Scenario: this should not be parsed as a separate scenario",
                 "Given 1st step",
                 "!-- 3 One more comment")));
+    }
+
+    @Test
+    void shouldParseStoryWithNotFormattedComments() {
+        String wholeStory = "Scenario: with not formatted comments"
+                + NL + "!-- This is a comment"
+                + NL + "!-- This is a tricky comment !--"
+                + NL + "!--"
+                + NL + "!--Then ignored step"
+                + NL + "Given 1st step"
+                + NL + "!--One more comment"
+                + NL + "!--And one more ignored step";
+
+        Story story = parser.parseStory(wholeStory, storyPath);
+        List<Scenario> scenarios = story.getScenarios();
+        assertThat(scenarios.size(), equalTo(1));
+        Scenario scenario = scenarios.get(0);
+        assertThat(scenario.getTitle(), equalTo("with not formatted comments"));
+        assertThat(scenario.getSteps(), equalTo(asList(
+                "!-- This is a comment",
+                "!-- This is a tricky comment !--",
+                "!--",
+                "!--Then ignored step",
+                "Given 1st step",
+                "!--One more comment",
+                "!--And one more ignored step")));
     }
 
     @Test

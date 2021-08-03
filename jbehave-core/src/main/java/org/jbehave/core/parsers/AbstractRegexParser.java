@@ -2,15 +2,18 @@ package org.jbehave.core.parsers;
 
 import static java.util.regex.Pattern.DOTALL;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.steps.StepType;
 
 abstract class AbstractRegexParser {
 
@@ -84,39 +87,28 @@ abstract class AbstractRegexParser {
     // Regex Patterns
 
     private Pattern findingSteps() {
-        String initialStartingWords = concatenateInitialStartingWords();
-        String followingStartingWords = concatenateFollowingStartingWords();
+        String startingWords = concatenateStartingWords();
         return compile(
-                "((" + initialStartingWords + ")\\s(.*?))(\\Z|" + followingStartingWords + "|\\n"
-                        + keywords().examplesTable() + ")", DOTALL);
+                "((" + startingWords + ")(.*?))(\\Z|" + startingWords + "|\\n" + keywords().examplesTable() + ")",
+                DOTALL);
     }
 
-    protected String concatenateInitialStartingWords() {
-        return concatenateStartingWords("");
+    protected String concatenateStartingWords() {
+        List<String> startingWords = Stream.concat(
+                keywords().startingWords(stepType -> stepType != StepType.IGNORABLE).map(s -> s + "\\s"),
+                keywords().startingWords(stepType -> stepType == StepType.IGNORABLE)
+        ).collect(toList());
+        return concatenateWithOr(CRLF, startingWords);
     }
 
-    protected String concatenateFollowingStartingWords() {
-        return concatenateStartingWords("\\s");
-    }
-
-    private String concatenateStartingWords(String afterKeyword) {
-        return concatenateWithOr(CRLF, afterKeyword, keywords().startingWords());
-    }
-
-    protected String concatenateWithOr(String... keywords) {
-        return concatenateWithOr(null, null, keywords);
-    }
-
-    private String concatenateWithOr(String beforeKeyword, String afterKeyword, String[] keywords) {
-        String before = beforeKeyword != null ? beforeKeyword : NONE;
-        String after = afterKeyword != null ? afterKeyword : NONE;
-        StringBuilder builder = new StringBuilder(before).append("(?:");
+    protected String concatenateWithOr(String beforeKeyword, List<String> keywords) {
+        StringBuilder builder = new StringBuilder(beforeKeyword).append("(?:");
         for (String keyword : keywords) {
             builder.append(keyword).append('|');
         }
-        if (keywords.length > 0) {
+        if (!keywords.isEmpty()) {
             builder.deleteCharAt(builder.length() - 1); // remove last "|"
         }
-        return builder.append(')').append(after).toString();
+        return builder.append(')').toString();
     }
 }

@@ -177,14 +177,6 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
         return new Lifecycle(examplesTable);
     }
 
-    private Pattern findingBeforeAndAfterSteps() {
-        String initialStartingWords = concatenateWithOr("\\n", "", keywords().before(), keywords().after());
-        String followingStartingWords = concatenateFollowingStartingWords();
-        return compile(
-                "((" + initialStartingWords + ")\\s(.)*?)\\s*(\\Z|" + followingStartingWords + "|\\n"
-                        + keywords().examplesTable() + ")", DOTALL);
-    }
-
     private List<Steps> parseBeforeLifecycle(String lifecycleAsText) {
         List<Steps> list = new ArrayList<>();
         for (String byScope : lifecycleAsText.split(keywords().scope())) {
@@ -380,39 +372,44 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
     }
 
     private Pattern findingLifecycleScope() {
-        String startingWords = concatenateInitialStartingWords();
+        String startingWords = concatenateStartingWords();
         return compile(keywords().scope() + "((.)*?)\\s*(" + keywords().outcome() + "|" + keywords().metaFilter() + "|" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingLifecycleOutcome() {
-        String startingWords = concatenateInitialStartingWords();
+        String startingWords = concatenateStartingWords();
         String outcomes = concatenateWithOr(keywords().outcomeAny(), keywords().outcomeSuccess(), keywords().outcomeFailure());
         return compile("\\s*(" + outcomes + ")\\s*(" + keywords().metaFilter() + "|" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingLifecycleFilters() {
-        String startingWords = concatenateInitialStartingWords();
+        String startingWords = concatenateStartingWords();
         String filters = concatenateWithOr(keywords().metaFilter());
         return compile("\\s*(" + filters + "[\\w\\+\\-\\_\\s]*)(" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingScenarioTitle() {
-        String startingWords = concatenateInitialStartingWords();
-        return compile(keywords().scenario() + "(.*?)\\s*(" + keywords().meta() + "|" + startingWords + "|$).*", DOTALL);
+        String startingWords = concatenateStartingWords();
+        return compile(keywords().scenario() + "(.*?)\\s*(" + keywords().meta() + "|" + keywords().givenStories() + "|"
+                + startingWords + "|$).*", DOTALL);
     }
 
     private Pattern findingScenarioMeta() {
-        String startingWords = concatenateInitialStartingWords();
+        String startingWords = concatenateStartingWords();
         return compile(".*" + keywords().meta() + "(.*?)\\s*(" + keywords().givenStories() + "|" + startingWords + "|$).*",
                 DOTALL);
     }
 
     private Pattern findingScenarioGivenStories() {
-        String startingWords = concatenateInitialStartingWords();
+        String startingWords = concatenateStartingWords();
         return compile("\\n" + keywords().givenStories() + "((.|\\n)*?)\\s*(" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingExamplesTable() {
         return compile("\\n" + keywords().examplesTable() + "\\s*(.*?)(?:\\n" + keywords().ignorable() + ".*)?$", DOTALL);
+    }
+
+    private String concatenateWithOr(String... keywords) {
+        return concatenateWithOr(NONE, asList(keywords));
     }
 }
