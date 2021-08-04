@@ -150,10 +150,12 @@ class MetaFilterBehaviour {
             meta.setProperty("a", "" + i);
             return this;
         }
+
         public MetaBuilder b(int i) {
             meta.setProperty("b", "" + i);
             return this;
         }
+
         public MetaBuilder c(int i) {
             meta.setProperty("c", "" + i);
             return this;

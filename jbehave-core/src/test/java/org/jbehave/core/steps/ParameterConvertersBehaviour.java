@@ -203,6 +203,7 @@ class ParameterConvertersBehaviour {
         }
 
     }
+
     @Test
     void shouldConvertValuesToNumbersWithFrenchNumberFormat() {
         Locale locale = Locale.FRENCH;

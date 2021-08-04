@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.jbehave.core.steps.weld;
 
 import java.util.ArrayList;

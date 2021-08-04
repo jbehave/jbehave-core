@@ -461,10 +461,10 @@ public class TemplateableOutput extends NullStoryReporter {
         public List<OutputStep> getBeforeSteps() {
             return beforeSteps;
         }
+
         public List<OutputStep> getAfterSteps() {
             return afterSteps;
         }
-
 
         public List<String> getPendingMethods() {
             return pendingMethods;

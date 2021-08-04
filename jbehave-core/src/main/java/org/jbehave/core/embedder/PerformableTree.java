@@ -838,6 +838,7 @@ public class PerformableTree {
     public static interface Performable {
 
         void perform(RunContext context) throws InterruptedException;
+
         void reportFailures(FailureContext context);
 
     }

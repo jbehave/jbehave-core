@@ -57,6 +57,7 @@ public class EnsuringOrderUsingSteps implements Embeddable {
         }
 
     }
+
     public static class A {
         @BeforeScenario
         public void add() {
