@@ -120,7 +120,7 @@ class StoryNarrator {
         }
         reporter.afterScenarioSteps(null);
         reportScenarioStep(reporter, scenarioStep, Stage.AFTER);
-        reporter.afterScenario(timing);
+        reporter.afterScenario(getTiming());
         reporter.beforeScenario(spyScenarioUuid(new Scenario("Parametrised Scenario", Meta.EMPTY)));
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
@@ -144,7 +144,7 @@ class StoryNarrator {
         reporter.afterScenarioSteps(null);
         reportScenarioStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario(timing);
+        reporter.afterScenario(getTiming());
         reporter.afterScenarios();
 
         reporter.beforeStorySteps(Stage.AFTER);

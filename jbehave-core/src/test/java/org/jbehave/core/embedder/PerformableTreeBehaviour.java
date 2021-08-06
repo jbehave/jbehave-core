@@ -1,5 +1,6 @@
 package org.jbehave.core.embedder;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,7 +21,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -73,11 +73,6 @@ class PerformableTreeBehaviour {
 
     @Test
     void shouldAddExcludedPerformableScenariosToPerformableStory() {
-        Scenario scenario = new Scenario("scenario title", Meta.createMeta("@skip", new Keywords()));
-        Meta storyMeta = new Meta();
-        Story story = new Story(STORY_PATH, null, storyMeta, null, singletonList(scenario));
-        List<Story> stories = singletonList(story);
-
         StepCollector stepCollector = mock(StepCollector.class);
         Configuration configuration = mock(Configuration.class);
         when(configuration.stepCollector()).thenReturn(stepCollector);
@@ -99,10 +94,14 @@ class PerformableTreeBehaviour {
         MetaFilter filter = new MetaFilter("-skip", embedderMonitor);
         BatchFailures failures = mock(BatchFailures.class);
 
+        Scenario scenario = new Scenario("scenario title", Meta.createMeta("@skip", new Keywords()));
+        Meta storyMeta = new Meta();
+        Story story = new Story(STORY_PATH, null, storyMeta, null, singletonList(scenario));
+
         PerformableTree performableTree = new PerformableTree();
         PerformableTree.RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
                 embedderMonitor, filter, failures);
-        performableTree.addStories(runContext, stories);
+        performableTree.addStories(runContext, singletonList(story));
 
         assertThat(performableTree.getRoot().getStories().get(0).getScenarios().size(), equalTo(1));
 
@@ -140,52 +139,14 @@ class PerformableTreeBehaviour {
     @Test
     void shouldReplaceParameters() {
         ParameterControls parameterControls = new ParameterControls();
-        PerformableTree performableTree = new PerformableTree();
         Configuration configuration = mock(Configuration.class);
         when(configuration.storyControls()).thenReturn(new StoryControls());
-        List<CandidateSteps> candidateSteps = emptyList();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
-        EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
-        BatchFailures failures = mock(BatchFailures.class);
-        PerformableTree.RunContext context = spy(performableTree.newRunContext(configuration, allStepCandidates,
-                embedderMonitor, new MetaFilter(), failures));
 
         StoryControls storyControls = mock(StoryControls.class);
         when(configuration.storyControls()).thenReturn(storyControls);
         when(storyControls.skipBeforeAndAfterScenarioStepsIfGivenStory()).thenReturn(false);
         when(configuration.parameterConverters()).thenReturn(new DefaultParameterConverters());
         when(configuration.parameterControls()).thenReturn(parameterControls);
-
-        GivenStories givenStories = new GivenStories("");
-
-        Map<String,String> scenarioExample = new HashMap<>();
-        scenarioExample.put("var1","E");
-        scenarioExample.put("var3","<var2>F");
-
-        Map<String,String> scenarioExampleSecond = new HashMap<>();
-        scenarioExampleSecond.put("var1","G<var2>");
-        scenarioExampleSecond.put("var3","<var2>");
-        ExamplesTable scenarioExamplesTable = ExamplesTable.empty().withRows(
-                Arrays.asList(scenarioExample, scenarioExampleSecond));
-
-        String scenarioTitle = "scenario title";
-        Scenario scenario = new Scenario(scenarioTitle, new Meta(), givenStories, scenarioExamplesTable, emptyList());
-
-        Narrative narrative = mock(Narrative.class);
-        Lifecycle lifecycle = mock(Lifecycle.class);
-        Story story = new Story(null, null, new Meta(), narrative, givenStories, lifecycle,
-                singletonList(scenario));
-
-        ExamplesTable storyExamplesTable = mock(ExamplesTable.class);
-        when(lifecycle.getExamplesTable()).thenReturn(storyExamplesTable);
-        Map<String,String> storyExampleFirstRow = new HashMap<>();
-        storyExampleFirstRow.put("var1","a");
-        storyExampleFirstRow.put("var2","b");
-        Map<String,String> storyExampleSecondRow = new HashMap<>();
-        storyExampleSecondRow.put("var1","c");
-        storyExampleSecondRow.put("var2","d");
-
-        when(storyExamplesTable.getRows()).thenReturn(Arrays.asList(storyExampleFirstRow, storyExampleSecondRow));
 
         Keywords keywords = mock(Keywords.class);
         when(configuration.keywords()).thenReturn(keywords);
@@ -194,6 +155,28 @@ class PerformableTreeBehaviour {
         when(configuration.stepMonitor()).thenReturn(stepMonitor);
         StepCollector stepCollector = mock(StepCollector.class);
         when(configuration.stepCollector()).thenReturn(stepCollector);
+
+        GivenStories givenStories = new GivenStories("");
+
+        Map<String, String> scenarioExamplesRow1 = createExamplesRow("var1", "E", "var3", "<var2>F");
+        ExamplesTable scenarioExamplesTable = ExamplesTable.empty().withRows(asList(
+                scenarioExamplesRow1,
+                createExamplesRow("var1", "G<var2>", "var3", "<var2>")
+        ));
+
+        String scenarioTitle = "scenario title";
+        Scenario scenario = new Scenario(scenarioTitle, new Meta(), givenStories, scenarioExamplesTable, emptyList());
+
+        Lifecycle lifecycle = mock(Lifecycle.class);
+        Story story = new Story(null, null, new Meta(), mock(Narrative.class), givenStories, lifecycle,
+                singletonList(scenario));
+
+        ExamplesTable storyExamplesTable = ExamplesTable.empty().withRows(asList(
+                createExamplesRow("var1", "a", "var2", "b"),
+                createExamplesRow("var1", "c", "var2", "d")
+        ));
+        when(lifecycle.getExamplesTable()).thenReturn(storyExamplesTable);
+
         Map<Stage, List<Step>> lifecycleSteps = new EnumMap<>(Stage.class);
         lifecycleSteps.put(Stage.BEFORE, emptyList());
         lifecycleSteps.put(Stage.AFTER, emptyList());
@@ -202,15 +185,21 @@ class PerformableTreeBehaviour {
         when(stepCollector.collectLifecycleSteps(eq(emptyList()), eq(lifecycle), isEmptyMeta(), eq(Scope.SCENARIO),
                 any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
 
+        List<CandidateSteps> candidateSteps = emptyList();
+        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+
+        PerformableTree performableTree = new PerformableTree();
+        PerformableTree.RunContext context = spy(performableTree.newRunContext(configuration, allStepCandidates,
+                mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class)));
         performableTree.addStories(context, singletonList(story));
         List<PerformableTree.PerformableScenario> performableScenarios = performableTree.getRoot().getStories().get(0)
                 .getScenarios();
 
-        assertThat(performableScenarios.size(), is(scenarioExample.size()));
+        assertThat(performableScenarios.size(), is(scenarioExamplesRow1.size()));
         assertThat(performableScenarios.get(0).getScenario().getTitle(), is(scenarioTitle + " [1]"));
         List<PerformableTree.ExamplePerformableScenario> examplePerformableScenarios = performableScenarios.get(0)
                 .getExamples();
-        assertThat(examplePerformableScenarios.size(), is(scenarioExample.size()));
+        assertThat(examplePerformableScenarios.size(), is(scenarioExamplesRow1.size()));
         assertThat(examplePerformableScenarios.get(0).getParameters().get("var1"), is("E"));
         assertThat(examplePerformableScenarios.get(0).getParameters().get("var2"), is("b"));
         assertThat(examplePerformableScenarios.get(0).getParameters().get("var3"), is("bF"));
@@ -221,7 +210,7 @@ class PerformableTreeBehaviour {
 
         assertThat(performableScenarios.get(1).getScenario().getTitle(), is(scenarioTitle + " [2]"));
         examplePerformableScenarios = performableScenarios.get(1).getExamples();
-        assertThat(examplePerformableScenarios.size(), is(scenarioExample.size()));
+        assertThat(examplePerformableScenarios.size(), is(scenarioExamplesRow1.size()));
         assertThat(examplePerformableScenarios.get(0).getParameters().get("var1"), is("E"));
         assertThat(examplePerformableScenarios.get(0).getParameters().get("var2"), is("d"));
         assertThat(examplePerformableScenarios.get(0).getParameters().get("var3"), is("dF"));
@@ -229,6 +218,13 @@ class PerformableTreeBehaviour {
         assertThat(examplePerformableScenarios.get(1).getParameters().get("var1"), is("Gd"));
         assertThat(examplePerformableScenarios.get(1).getParameters().get("var2"), is("d"));
         assertThat(examplePerformableScenarios.get(1).getParameters().get("var3"), is("d"));
+    }
+
+    private Map<String, String> createExamplesRow(String key1, String value1, String key2, String value2) {
+        Map<String, String> storyExampleFirstRow = new HashMap<>();
+        storyExampleFirstRow.put(key1, value1);
+        storyExampleFirstRow.put(key2, value2);
+        return storyExampleFirstRow;
     }
 
     private RunContext performStoryRun(boolean skipScenariosAfterGivenStoriesFailure, String givenStoryAsString) {
@@ -244,12 +240,10 @@ class PerformableTreeBehaviour {
         when(storyLoader.loadStoryAsText(givenStoryPath)).thenReturn(givenStoryAsString);
         List<CandidateSteps> candidateSteps = emptyList();
         AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
-        EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
-        BatchFailures failures = mock(BatchFailures.class);
 
         PerformableTree performableTree = new PerformableTree();
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates, embedderMonitor,
-                new MetaFilter(), failures);
+        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
+                mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class));
         performableTree.addStories(runContext, singletonList(story));
         performableTree.perform(runContext, story);
         return runContext;
@@ -282,12 +276,10 @@ class PerformableTreeBehaviour {
         when(configuration.storyReporter(STORY_PATH)).thenReturn(storyReporter);
         List<CandidateSteps> candidateSteps = emptyList();
         AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
-        EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
-        BatchFailures failures = mock(BatchFailures.class);
 
         PerformableTree performableTree = new PerformableTree();
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates, embedderMonitor,
-                new MetaFilter(), failures);
+        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
+                mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class));
         performableTree.addStories(runContext, singletonList(story));
         performableTree.perform(runContext, story);
 
@@ -310,13 +302,12 @@ class PerformableTreeBehaviour {
         List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
                 .createCandidateSteps();
         AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
-        EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
         BatchFailures failures = new BatchFailures();
 
         PerformableTree performableTree = new PerformableTree();
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates, embedderMonitor,
-                new MetaFilter(), failures);
-        performableTree.addStories(runContext, Arrays.asList(story1, story2));
+        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
+                mock(EmbedderMonitor.class), new MetaFilter(), failures);
+        performableTree.addStories(runContext, asList(story1, story2));
         performableTree.perform(runContext, story1);
         performableTree.perform(runContext, story2);
 
@@ -337,12 +328,11 @@ class PerformableTreeBehaviour {
         List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
                 .createCandidateSteps();
         AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
-        EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
         BatchFailures failures = new BatchFailures();
 
         PerformableTree performableTree = new PerformableTree();
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates, embedderMonitor,
-                new MetaFilter(), failures);
+        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
+                mock(EmbedderMonitor.class), new MetaFilter(), failures);
         performableTree.addStories(runContext, singletonList(story));
         performableTree.perform(runContext, story);
         performableTree.perform(runContext, story);

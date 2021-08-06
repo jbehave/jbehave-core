@@ -92,7 +92,6 @@ class ArchivingFileManagerBehaviour {
 
     @Test
     void cannotUnarchiveMissingFile() throws Exception {
-        List<String> errors = new ArrayList<String>();
         FileItem file2FileItem = mock(FileItem.class, "file2");
         FileItem zipFileItem = mock(FileItem.class, "zip");
         when(zipFileItem.getName()).thenReturn(zip.getName());      
@@ -104,6 +103,7 @@ class ArchivingFileManagerBehaviour {
         dir1.delete();
         // remove zip
         zip.delete();
+        List<String> errors = new ArrayList<>();
         List<File> files = manager.upload(asList(file2FileItem, zipFileItem), errors);
         manager.unarchiveFiles(files, errors);
         assertThat(errors.size(), is(2));

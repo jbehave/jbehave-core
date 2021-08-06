@@ -1,6 +1,9 @@
 package org.jbehave.core.reporters;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -20,9 +23,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -45,6 +46,7 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
@@ -75,7 +77,6 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         // Then
         assertFileOutputIsSameAs(file, name);
     }
-
 
     @Test
     void shouldOutputStoryToTxtWhenExcludedByFilter() throws IOException {
@@ -207,7 +208,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryJson() throws IOException, SAXException {
+    void shouldOutputStoryJson() throws IOException {
         // Given
         String name = "stream-story.json";
         File file = new File("target/" + name);
@@ -235,98 +236,103 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryReporter reporter = new JsonOutput(new PrintStream(out), new Properties(), new LocalizedKeywords());
 
         // When
-        Story givenStory = spyStoryUuid(new Story("/path/to/story", new Description("Given story"),
-                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>()));
-        Story rootStory = spyStoryUuid(new Story("/path/to/story", new Description("Root story"),
-                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>()));
-
+        String storyPath = "/path/to/story";
+        Story rootStory = spyStoryUuid(new Story(storyPath, new Description("Root story"),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<>()));
         String step = "My step";
-        Scenario scenario = spyScenarioUuid(new Scenario("My scenario", Meta.EMPTY, null, examplesTable, Collections.<String>emptyList()));
-        Timing timing = getTiming();
+        Story givenStory = spyStoryUuid(new Story(storyPath, new Description("Given story"),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<>()));
+        Scenario scenario = spyScenarioUuid(
+                new Scenario("My scenario", Meta.EMPTY, new GivenStories(givenStory.getPath()), examplesTable,
+                        singletonList(step)));
 
         reporter.beforeStory(rootStory, false);
         reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
-        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
+        reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
         reportStep(reporter, step, Stage.BEFORE);
+
         reporter.beforeGivenStories();
-        reporter.givenStories(Collections.singletonList(givenStory.getPath()));
+        reporter.givenStories(scenario.getGivenStories().getPaths());
         reporter.beforeStory(givenStory, true);
         reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
-        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
+        reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
         reportStep(reporter, step, Stage.BEFORE);
+
         reporter.beforeGivenStories();
-        reporter.givenStories(Collections.singletonList(givenStory.getPath()));
+        reporter.givenStories(singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
         reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
-        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
+        reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
         reportStep(reporter, step, Stage.BEFORE);
         reportStep(reporter, step, null);
         reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario(timing);
+        reporter.afterScenario(getTiming());
+        reporter.afterScenarios();
+        reporter.afterStory(true);
+        reporter.afterGivenStories();
+
+        reportStep(reporter, step, null);
+        reportStep(reporter, step, Stage.AFTER);
+        reporter.afterExamples();
+        reporter.afterScenario(getTiming());
+        reporter.afterScenarios();
+        reporter.afterStory(true);
+        reporter.afterGivenStories();
+
+        reportStep(reporter, step, null);
+        reportStep(reporter, step, Stage.AFTER);
+        reporter.afterExamples();
+        reporter.afterScenario(getTiming());
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(scenario.getSteps(), examplesTable);
+        reporter.example(example, 0);
+        reportStep(reporter, step, Stage.BEFORE);
+        reporter.beforeGivenStories();
+        reporter.givenStories(scenario.getGivenStories().getPaths());
+        reporter.beforeStory(givenStory, true);
+        reporter.lifecycle(lifecycle);
+        reporter.beforeScenarios();
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(scenario.getSteps(), examplesTable);
+        reporter.example(example, 0);
+        reportStep(reporter, step, Stage.BEFORE);
+        reporter.beforeGivenStories();
+        reporter.givenStories(singletonList(givenStory.getPath()));
+        reporter.beforeStory(givenStory, true);
+        reporter.lifecycle(lifecycle);
+        reporter.beforeScenarios();
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(scenario.getSteps(), examplesTable);
+        reporter.example(example, 0);
+        reportStep(reporter, step, Stage.BEFORE);
+        reportStep(reporter, step, null);
+        reportStep(reporter, step, Stage.AFTER);
+        reporter.afterExamples();
+        reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reportStep(reporter, step, null);
         reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario(timing);
+        reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reportStep(reporter, step, null);
         reportStep(reporter, step, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario(timing);
-        reporter.beforeScenario(scenario);
-        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
-        reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE);
-        reporter.beforeGivenStories();
-        reporter.givenStories(Collections.singletonList(givenStory.getPath()));
-        reporter.beforeStory(givenStory, true);
-        reporter.lifecycle(lifecycle);
-        reporter.beforeScenarios();
-        reporter.beforeScenario(scenario);
-        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
-        reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE);
-        reporter.beforeGivenStories();
-        reporter.givenStories(Collections.singletonList(givenStory.getPath()));
-        reporter.beforeStory(givenStory, true);
-        reporter.lifecycle(lifecycle);
-        reporter.beforeScenarios();
-        reporter.beforeScenario(scenario);
-        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
-        reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE);
-        reportStep(reporter, step, null);
-        reportStep(reporter, step, Stage.AFTER);
-        reporter.afterExamples();
-        reporter.afterScenario(timing);
-        reporter.afterScenarios();
-        reporter.afterStory(true);
-        reporter.afterGivenStories();
-        reportStep(reporter, step, null);
-        reportStep(reporter, step, Stage.AFTER);
-        reporter.afterExamples();
-        reporter.afterScenario(timing);
-        reporter.afterScenarios();
-        reporter.afterStory(true);
-        reporter.afterGivenStories();
-        reportStep(reporter, step, null);
-        reportStep(reporter, step, Stage.AFTER);
-        reporter.afterExamples();
-        reporter.afterScenario(timing);
+        reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(false);
 
@@ -346,22 +352,22 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         // When
         Story rootStory = spyStoryUuid(new Story("/path/to/story", new Description("Root story"),
-                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>()));
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<>()));
 
         Scenario scenario = spyScenarioUuid(new Scenario("My scenario", Meta.EMPTY, null, examplesTable,
-                Collections.<String>emptyList()));
+                emptyList()));
         Timing timing = getTiming();
 
         reporter.beforeStory(rootStory, false);
         reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
-        reporter.beforeExamples(Collections.emptyList(), examplesTable);
+        reporter.beforeExamples(emptyList(), examplesTable);
         reporter.example(example, 0);
         reporter.afterExamples();
         reporter.afterScenario(timing);
         reporter.beforeScenario(scenario);
-        reporter.beforeExamples(Collections.emptyList(), examplesTable);
+        reporter.beforeExamples(emptyList(), examplesTable);
         reporter.example(example, 0);
         reporter.afterExamples();
         reporter.afterScenario(timing);
@@ -387,14 +393,9 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         // Given
         final OutputStream out = new ByteArrayOutputStream();
-        PrintStreamFactory factory = new PrintStreamFactory() {
-
-            @Override
-            public PrintStream createPrintStream() {
-                return new PrintStream(out);
-            }
-        };
-        StoryReporter reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
+        PrintStreamFactory factory = () -> new PrintStream(out);
+        StoryReporter reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(),
+                true);
 
 
         reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new NullPointerException()));
@@ -411,14 +412,9 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     void shouldSuppressStackTraceForKnownFailure() {
         // Given
         final OutputStream out = new ByteArrayOutputStream();
-        PrintStreamFactory factory = new PrintStreamFactory() {
-
-            @Override
-            public PrintStream createPrintStream() {
-                return new PrintStream(out);
-            }
-        };
-        StoryReporter reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
+        PrintStreamFactory factory = () -> new PrintStream(out);
+        StoryReporter reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(),
+                true);
 
 
         reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new MyKnownFailure()));
@@ -484,7 +480,8 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         // When
         StoryNarrator.narrateAnInterestingStory(new IdeOnlyConsoleOutput(), false);
         StoryNarrator.narrateAnInterestingStory(new IdeOnlyConsoleOutput(new LocalizedKeywords()), false);
-        StoryNarrator.narrateAnInterestingStory(new IdeOnlyConsoleOutput(new Properties(), new LocalizedKeywords(), true), false);
+        StoryNarrator.narrateAnInterestingStory(
+                new IdeOnlyConsoleOutput(new Properties(), new LocalizedKeywords(), true), false);
     }
 
     @Test
@@ -520,7 +517,8 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         // Given
         String storyPath = storyPath(MyStory.class);
-        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(CodeLocations.codeLocationFromClass(this.getClass()), storyPath));
+        FilePrintStreamFactory factory = new FilePrintStreamFactory(
+                new StoryLocation(CodeLocations.codeLocationFromClass(this.getClass()), storyPath));
         File file = factory.outputFile();
         file.delete();
         assertThat(file.exists(), is(false));
@@ -582,8 +580,8 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(CodeLocations.codeLocationFromClass(this.getClass()), storyPath));
         StoryReporter reporter = new StoryReporterBuilder() {
             @Override
-            public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
-                if (format == org.jbehave.core.reporters.Format.TXT) {
+            public StoryReporter reporterFor(String storyPath, Format format) {
+                if (format == TXT) {
                     factory.useConfiguration(new FilePrintStreamFactory.FileConfiguration("text"));
                     return new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
                 } else {
@@ -619,11 +617,12 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryReporter reporter = new TxtOutput(new PrintStream(out));
 
         // When
-        OutcomesTable outcomesTable = new OutcomesTable(new LocalizedKeywords(), mapOf(Date.class, "dd/MM/yyyy"));
+        OutcomesTable outcomesTable = new OutcomesTable(new LocalizedKeywords(),
+                singletonMap(Date.class, "dd/MM/yyyy"));
         Date actualDate = StoryNarrator.dateFor("01/01/2011");
         Date expectedDate = StoryNarrator.dateFor("02/01/2011");
-        outcomesTable.addOutcome("A wrong date", actualDate, new IsDateEqual(expectedDate, outcomesTable.getFormat(
-            Date.class)));
+        outcomesTable.addOutcome("A wrong date", actualDate,
+                new IsDateEqual(expectedDate, outcomesTable.getFormat(Date.class)));
         try {
             outcomesTable.verify();
         } catch (UUIDExceptionWrapper e) {
@@ -638,12 +637,6 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
-    private Map<Type, String> mapOf(Type type, String value) {
-        Map<Type,String> map = new HashMap<>();
-        map.put(type, value);
-        return map;
-    }
-
     @Test
     void shouldReportEventsToJsonOutputEmptyScenarioLifecycle() throws IOException {
         // Given
@@ -655,28 +648,28 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         ExamplesTable table = new ExamplesTable("|actual|expected|\n|some data|some data|\n");
         Lifecycle lifecycle = new Lifecycle(table);
         ExamplesTable emptyExamplesTable = ExamplesTable.EMPTY;
-        Story story = spyStoryUuid(new Story("/path/to/story", new Description("Story with lifecycle and empty scenario"), null,
-                null, null, lifecycle, new ArrayList<Scenario>()));
-        Timing timing = getTiming();
+        Story story = spyStoryUuid(
+                new Story("/path/to/story", new Description("Story with lifecycle and empty scenario"), null, null,
+                        null, lifecycle, new ArrayList<>()));
 
         reporter.beforeStory(story, false);
         reporter.lifecycle(lifecycle);
         reporter.beforeScenarios();
         reporter.beforeScenario(spyScenarioUuid(new Scenario("Normal scenario", Meta.EMPTY)));
-        reporter.beforeExamples(Collections.singletonList("Then '<expected>' is equal to '<actual>'"), emptyExamplesTable);
+        reporter.beforeExamples(singletonList("Then '<expected>' is equal to '<actual>'"), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
         reportStep(reporter, scenarioStep, Stage.BEFORE);
         reportStep(reporter, scenarioStep, null);
         reportStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario(timing);
+        reporter.afterScenario(getTiming());
         reporter.beforeScenario(spyScenarioUuid(new Scenario("Some empty scenario", Meta.EMPTY)));
-        reporter.beforeExamples(Collections.<String>emptyList(), emptyExamplesTable);
+        reporter.beforeExamples(emptyList(), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
         reportStep(reporter, scenarioStep, Stage.BEFORE);
         reportStep(reporter, scenarioStep, Stage.AFTER);
         reporter.afterExamples();
-        reporter.afterScenario(timing);
+        reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(false);
 
@@ -687,9 +680,8 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
     private void assertJson(String expectedJsonFileName, String actualJson) throws IOException {
         String expected = IOUtils.toString(getClass().getResourceAsStream("/" + expectedJsonFileName), true);
-        JsonParser parser = new JsonParser();
-        JsonObject expectedObject = parser.parse(actualJson).getAsJsonObject();
-        JsonObject actualObject = parser.parse(expected).getAsJsonObject();
+        JsonObject expectedObject = JsonParser.parseString(actualJson).getAsJsonObject();
+        JsonObject actualObject = JsonParser.parseString(expected).getAsJsonObject();
         assertThat(expectedObject, is(actualObject));
     }
 
@@ -702,8 +694,8 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
     private Timing getTiming() {
         Timing timing = mock(Timing.class);
-        when(timing.getStart()).thenReturn(1l);
-        when(timing.getEnd()).thenReturn(2l);
+        when(timing.getStart()).thenReturn(1L);
+        when(timing.getEnd()).thenReturn(2L);
         return timing;
     }
 
@@ -723,13 +715,12 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     private static class MyKnownFailure extends KnownFailure {
     }
 
-    private abstract class MyStory extends JUnitStory {
+    private static abstract class MyStory extends JUnitStory {
 
     }
 
     private PrintStream createPrintStream(File file) throws FileNotFoundException {
         return new PrintStream(new FilePrintStreamFactory.FilePrintStream(file,true));
     }
-
 
 }

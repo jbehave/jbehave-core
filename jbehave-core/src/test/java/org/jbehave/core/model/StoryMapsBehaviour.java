@@ -20,7 +20,6 @@ class StoryMapsBehaviour {
         // Given
         String storyPath1 = "/path/to/story_one.story"; 
         String storyPath2 = "/path/to/story_two.story";
-        String storyPath3 = "/path/to/story_three.story";
         // story paths in non-natural order to verify ordering
         List<String> storyPaths = asList(storyPath2, storyPath1);
         Map<String, Story> storiesByPath = new HashMap<>();
@@ -45,6 +44,7 @@ class StoryMapsBehaviour {
         assertThat(storyLanes.getLanes().get(0), equalTo("filter"));
         assertThat(storyLanes.inLane("filter", storiesByPath.get(storyPath1)), is(true));
         assertThat(storyLanes.inLane("filter", storiesByPath.get(storyPath2)), is(true));
+        String storyPath3 = "/path/to/story_three.story";
         assertThat(storyLanes.inLane("filter", new Story(storyPath3)), is(false));
         assertThat(storyLanes.inLane("none", new Story(storyPath3)), is(false));
     }
