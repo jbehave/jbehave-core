@@ -11,8 +11,7 @@ import org.jbehave.core.steps.BeforeOrAfterStep;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepCandidate;
 
-public class AllStepCandidates
-{
+public class AllStepCandidates {
     private final List<BeforeOrAfterStep> beforeStoriesSteps = new ArrayList<>();
     private final List<BeforeOrAfterStep> afterStoriesSteps = new ArrayList<>();
 

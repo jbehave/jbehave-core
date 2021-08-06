@@ -45,16 +45,14 @@ import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
 import org.junit.jupiter.api.Test;
 
-class MarkUnmatchedStepsAsPendingBehaviour
-{
+class MarkUnmatchedStepsAsPendingBehaviour {
 
     private final StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
     private final StepMonitor stepMonitor = new NullStepMonitor();
     private final Map<String, String> parameters = new HashMap<>();
 
     @Test
-    void shouldCreateExecutableStepsWhenCandidatesAreMatched()
-    {
+    void shouldCreateExecutableStepsWhenCandidatesAreMatched() {
         // Given
         StepCandidate candidate = mock(StepCandidate.class);
         Step executableStep = mock(Step.class);
@@ -73,8 +71,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldCreateExecutableStepsOnlyFromPreviousNonAndStep()
-    {
+    void shouldCreateExecutableStepsOnlyFromPreviousNonAndStep() {
         // Given
         StepCandidate candidate = mock(StepCandidate.class, "candidate");
         StepCandidate andCandidate = mock(StepCandidate.class, "andCandidate");
@@ -97,8 +94,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldCreateExecutableStepsUponOutcome()
-    {
+    void shouldCreateExecutableStepsUponOutcome() {
         // Given
         StepCandidate anyCandidate = mock(StepCandidate.class, "anyCandidate");
         StepCandidate successCandidate = mock(StepCandidate.class, "successCandidate");
@@ -140,8 +136,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldCreateExecutableStepsUponOutcomeAndScope()
-    {
+    void shouldCreateExecutableStepsUponOutcomeAndScope() {
         // Given
         StepCandidate anyCandidate = mock(StepCandidate.class, "anyCandidate");
         StepCandidate successCandidate = mock(StepCandidate.class, "successCandidate");
@@ -184,8 +179,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldAddPrioritizedComposedStepsWhenACompositeIsMatched()
-    {
+    void shouldAddPrioritizedComposedStepsWhenACompositeIsMatched() {
         // Given
         StepCandidate compositeCandidate = mock(StepCandidate.class, "compositeCandidate");
         StepCandidate composedCandidate1 = mock(StepCandidate.class, "composedCandidate1");
@@ -211,8 +205,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldCreatePendingStepsWhenCandidatesAreNotFound()
-    {
+    void shouldCreatePendingStepsWhenCandidatesAreNotFound() {
         // Given
         String givenPendingStep = "Given a pending step";
         String andGivenPendingStep = "And a given pending step";
@@ -232,8 +225,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldCreatePendingStepsWhenCandidatesAreNotMatched()
-    {
+    void shouldCreatePendingStepsWhenCandidatesAreNotMatched() {
         // Given
         String givenPendingStep = "Given a pending step";
         String andGivenPendingStep = "And a given pending step";
@@ -262,8 +254,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
         assertIsPending(executableSteps.get(3), andWhenPendingStep, whenPendingStep);
     }
 
-    private void assertIsPending(Step step, String stepAsString, String previousNonAndStep)
-    {
+    private void assertIsPending(Step step, String stepAsString, String previousNonAndStep) {
         assertThat(step, instanceOf(PendingStep.class));
         PendingStep pendingStep = (PendingStep) step;
         assertThat(pendingStep.stepAsString(), equalTo(stepAsString));
@@ -279,8 +270,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldCreateIgnorableSteps()
-    {
+    void shouldCreateIgnorableSteps() {
         // Given
         StepCandidate candidate = mock(StepCandidate.class);
         StoryReporter reporter = mock(StoryReporter.class);
@@ -301,8 +291,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldCreateComment()
-    {
+    void shouldCreateComment() {
         // Given
         StepCandidate candidate = mock(StepCandidate.class);
         StoryReporter reporter = mock(StoryReporter.class);
@@ -323,8 +312,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldCollectBeforeAndAfterScenarioAnnotatedSteps()
-    {
+    void shouldCollectBeforeAndAfterScenarioAnnotatedSteps() {
         // Given some candidate steps classes with before and after scenario methods
         Meta storyAndScenarioMeta = mock(Meta.class);
         BeforeOrAfterStep bafStep11 = mock(BeforeOrAfterStep.class);
@@ -352,8 +340,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldCollectBeforeAndAfterStoryAnnotatedSteps()
-    {
+    void shouldCollectBeforeAndAfterStoryAnnotatedSteps() {
         // Given some candidate steps classes with before and after story methods
         Story story = new Story();
         Meta storyMeta = story.getMeta();
@@ -382,8 +369,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldCollectBeforeAndAfterStoriesAnnotatedSteps()
-    {
+    void shouldCollectBeforeAndAfterStoriesAnnotatedSteps() {
         // Given some candidate steps classes with before and after stories
         // methods
         CandidateSteps steps1 = mock(Steps.class);
@@ -415,8 +401,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldSortCandidateStepsByPriorityByDefault()
-    {
+    void shouldSortCandidateStepsByPriorityByDefault() {
         // Given some candidate steps classes
         // and some methods split across them
         StepCandidate candidate1 = mock(StepCandidate.class);
@@ -452,8 +437,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldPrioritiseCandidateStepsByInjectableStrategy()
-    {
+    void shouldPrioritiseCandidateStepsByInjectableStrategy() {
         // Given some candidate steps classes
         // and some methods split across them
         StepCandidate candidate1 = mock(StepCandidate.class);
@@ -489,8 +473,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void afterScenarioStepsShouldBeInReverseOrder()
-    {
+    void afterScenarioStepsShouldBeInReverseOrder() {
         List<CandidateSteps> steps = new ArrayList<>();
         steps.add(new ClassWithMethodsAandB());
         steps.add(new ClassWithMethodsCandD());
@@ -498,15 +481,12 @@ class MarkUnmatchedStepsAsPendingBehaviour
 
         Map<ScenarioType, List<BeforeOrAfterStep>> beforeScenario = new EnumMap<>(ScenarioType.class);
         Map<ScenarioType, List<BeforeOrAfterStep>> afterScenario = new EnumMap<>(ScenarioType.class);
-        for (ScenarioType type : ScenarioType.values())
-        {
+        for (ScenarioType type : ScenarioType.values()) {
             beforeScenario.put(type, new ArrayList<>());
             afterScenario.put(type, new ArrayList<>());
         }
-        for (CandidateSteps step : steps)
-        {
-            for (ScenarioType scenarioType : ScenarioType.values())
-            {
+        for (CandidateSteps step : steps) {
+            for (ScenarioType scenarioType : ScenarioType.values()) {
                 beforeScenario.get(scenarioType).addAll(step.listBeforeScenario().get(scenarioType));
                 afterScenario.get(scenarioType).addAll(step.listAfterScenario().get(scenarioType));
             }
@@ -527,8 +507,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldInvokeBeforeOrAfterScenarioWithParameter()
-    {
+    void shouldInvokeBeforeOrAfterScenarioWithParameter() {
         BeforeOrAfterScenarioWithParameterSteps steps = new BeforeOrAfterScenarioWithParameterSteps();
         Meta meta = beforeAndAfterMeta();
 
@@ -545,8 +524,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldInvokeBeforeOrAfterScenarioWithParameterAndException()
-    {
+    void shouldInvokeBeforeOrAfterScenarioWithParameterAndException() {
         BeforeOrAfterScenarioWithParameterAndExceptionSteps steps =
                 new BeforeOrAfterScenarioWithParameterAndExceptionSteps();
         Meta meta = beforeAndAfterMeta();
@@ -569,8 +547,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldInvokeBeforeOrAfterStoryWithParameter()
-    {
+    void shouldInvokeBeforeOrAfterStoryWithParameter() {
         BeforeOrAfterStoryWithParameter steps = new BeforeOrAfterStoryWithParameter();
         boolean givenStory = false;
         Meta storyMeta = beforeAndAfterMeta();
@@ -587,8 +564,7 @@ class MarkUnmatchedStepsAsPendingBehaviour
     }
 
     @Test
-    void shouldInvokeBeforeOrAfterStoryWithParameterAndException()
-    {
+    void shouldInvokeBeforeOrAfterStoryWithParameterAndException() {
         BeforeOrAfterStoryWithParameterAndExceptionSteps steps = new BeforeOrAfterStoryWithParameterAndExceptionSteps();
         boolean givenStory = false;
         Meta storyMeta = beforeAndAfterMeta();
@@ -608,114 +584,97 @@ class MarkUnmatchedStepsAsPendingBehaviour
         assertThat(steps.exception, equalTo(failureOccurred));
     }
 
-    private Scenario createScenario(String... stepsAsStrings)
-    {
+    private Scenario createScenario(String... stepsAsStrings) {
         return new Scenario(asList(stepsAsStrings));
     }
 
-    private Meta beforeAndAfterMeta()
-    {
+    private Meta beforeAndAfterMeta() {
         Properties properties = new Properties();
         properties.put("before", "before");
         properties.put("after", "after");
         return new Meta(properties);
     }
 
-    public static class ClassWithMethodsAandB extends Steps
-    {
+    public static class ClassWithMethodsAandB extends Steps {
+
         @BeforeScenario(uponType = ScenarioType.NORMAL)
-        public void a()
-        {
+        public void a() {
         }
 
         @AfterScenario(uponType = ScenarioType.NORMAL)
-        public void b()
-        {
+        public void b() {
         }
     }
 
-    public static class ClassWithMethodsCandD extends Steps
-    {
+    public static class ClassWithMethodsCandD extends Steps {
+
         @BeforeScenario(uponType = ScenarioType.NORMAL)
-        public void c()
-        {
+        public void c() {
         }
 
         @AfterScenario(uponType = ScenarioType.NORMAL)
-        public void d()
-        {
+        public void d() {
         }
     }
 
-    public static class BeforeOrAfterScenarioWithParameterSteps extends Steps
-    {
+    public static class BeforeOrAfterScenarioWithParameterSteps extends Steps {
+
         private String value;
 
         @BeforeScenario(uponType = ScenarioType.NORMAL)
-        public void beforeScenario(@Named("before") String before)
-        {
+        public void beforeScenario(@Named("before") String before) {
             this.value = before;
         }
 
         @AfterScenario(uponType = ScenarioType.NORMAL)
-        public void afterScenario(@Named("after") String after)
-        {
+        public void afterScenario(@Named("after") String after) {
             this.value = after;
         }
     }
 
-    public static class BeforeOrAfterScenarioWithParameterAndExceptionSteps extends Steps
-    {
+    public static class BeforeOrAfterScenarioWithParameterAndExceptionSteps extends Steps {
         private String value;
         private UUIDExceptionWrapper exception;
 
         @BeforeScenario(uponType = ScenarioType.NORMAL)
-        public void beforeScenario(@Named("before") String before, UUIDExceptionWrapper exception)
-        {
+        public void beforeScenario(@Named("before") String before, UUIDExceptionWrapper exception) {
             this.value = before;
             this.exception = exception;
         }
 
         @AfterScenario(uponType = ScenarioType.NORMAL)
-        public void afterScenario(@Named("after") String after, UUIDExceptionWrapper exception)
-        {
+        public void afterScenario(@Named("after") String after, UUIDExceptionWrapper exception) {
             this.value = after;
             this.exception = exception;
         }
     }
 
-    public static class BeforeOrAfterStoryWithParameter extends Steps
-    {
+    public static class BeforeOrAfterStoryWithParameter extends Steps {
         private String value;
 
         @BeforeStory
-        public void beforeStory(@Named("before") String before)
-        {
+        public void beforeStory(@Named("before") String before) {
             this.value = before;
         }
 
         @AfterStory
-        public void afterStory(@Named("after") String after)
-        {
+        public void afterStory(@Named("after") String after) {
             this.value = after;
         }
     }
 
-    public static class BeforeOrAfterStoryWithParameterAndExceptionSteps extends Steps
-    {
+    public static class BeforeOrAfterStoryWithParameterAndExceptionSteps extends Steps {
         private String value;
         private UUIDExceptionWrapper exception;
 
         @BeforeStory
-        public void beforeStory(@Named("before") String before, UUIDExceptionWrapper exception)
-        {
+        public void beforeStory(@Named("before") String before, UUIDExceptionWrapper exception) {
             this.value = before;
             this.exception = exception;
         }
 
         @AfterStory
-        public void afterStory(@Named("after") String after, UUIDExceptionWrapper exception)
-        {
+        public void afterStory(@Named("after") String after, UUIDExceptionWrapper exception) {
             this.value = after;
             this.exception = exception;
         }

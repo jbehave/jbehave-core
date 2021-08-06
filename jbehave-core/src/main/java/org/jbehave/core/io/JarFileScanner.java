@@ -19,8 +19,7 @@ import org.codehaus.plexus.util.SelectorUtils;
 /**
  * Find all matching file entries in a jar.
  */
-public class JarFileScanner
-{
+public class JarFileScanner {
 
     private URL jarURL;
     private List<String> includes;

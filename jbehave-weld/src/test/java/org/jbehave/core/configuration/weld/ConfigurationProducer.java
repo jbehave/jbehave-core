@@ -25,8 +25,8 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.FunctionalParameterConverter;
 
 @ApplicationScoped
-public class ConfigurationProducer
-{
+public class ConfigurationProducer {
+
     public ConfigurationProducer() {
     }
     

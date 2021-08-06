@@ -222,8 +222,8 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldReportEventsToJsonOutputScenarioNestedGivenStoriesWithMultipleExamplesAndLifecycles() throws IOException
-    {
+    void shouldReportEventsToJsonOutputScenarioNestedGivenStoriesWithMultipleExamplesAndLifecycles()
+            throws IOException {
         ExamplesTable examplesTable = new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|");
         Lifecycle lifecycle = new Lifecycle(new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|"));
         Map<String, String> example = new HashMap<>();
@@ -335,8 +335,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldReportEventsToJsonOutputIfScenarioIsEmptyWithLifecycleExamplesTable() throws IOException
-    {
+    void shouldReportEventsToJsonOutputIfScenarioIsEmptyWithLifecycleExamplesTable() {
         ExamplesTable examplesTable = new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|");
         Lifecycle lifecycle = new Lifecycle(new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|"));
         Map<String, String> example = new HashMap<>();

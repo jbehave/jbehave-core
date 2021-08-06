@@ -44,8 +44,7 @@ class StoryControlsBehaviour {
     @ParameterizedTest
     @MethodSource("data")
     void shouldPrioritizeCurrentStoryControls(Function<StoryControls, Object> getter,
-            BiFunction<StoryControls, Object, Object> setter, List<Object> values) throws Throwable
-    {
+            BiFunction<StoryControls, Object, Object> setter, List<Object> values) throws Throwable {
         Object defaultValue = values.get(0);
         Object threadLocalValue = values.get(1);
         StoryControls storyControls = new StoryControls();

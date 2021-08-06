@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Valery_Yatsynovich
  */
-class TextManipulatorBehaviour
-{
+class TextManipulatorBehaviour {
     @Test
     void shouldEscapeParenthesesWithVerticalBars() {
         String actual = TextManipulator.escape("some string with (parentheses)");
