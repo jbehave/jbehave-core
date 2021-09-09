@@ -109,7 +109,7 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
 
             if (StringUtils.isNotEmpty(excludes) || StringUtils.isNotEmpty(includes)) {
                 IncludeExcludeFileSelector[] selectors = new IncludeExcludeFileSelector[] {
-                        new IncludeExcludeFileSelector() };
+                    new IncludeExcludeFileSelector() };
                 if (StringUtils.isNotEmpty(excludes)) {
                     selectors[0].setExcludes(excludes.split(","));
                 }

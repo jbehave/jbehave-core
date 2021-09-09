@@ -10,7 +10,6 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -248,15 +247,14 @@ class StoryNarrator {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
         meta.setProperty("author", "Mauro");
+        Scenario scenario = new Scenario("A scenario", Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY,
+                new ArrayList<>());
         Story story = spyStoryUuid(new Story("/path/to/story", new Description("An interesting story"), new Meta(meta),
-                new Narrative("renovate my house", "customer", "get a loan"), Arrays.asList(
-                new Scenario("A scenario", Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY,
-                        new ArrayList<String>()))));
+                new Narrative("renovate my house", "customer", "get a loan"), asList(scenario)));
         reporter.beforeStory(story, false);
         if (storyExluded) {
             reporter.storyExcluded(story, "-theme testing");
         } else  {
-            Scenario scenario = story.getScenarios().get(0);
             reporter.beforeScenario(spyScenarioUuid(scenario));
             reporter.scenarioExcluded(scenario, "-theme testing");
             reporter.afterScenario(getTiming());
