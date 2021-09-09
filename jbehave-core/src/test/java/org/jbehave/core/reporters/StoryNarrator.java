@@ -278,8 +278,8 @@ class StoryNarrator {
 
     private static Timing getTiming() {
         Timing timing = mock(Timing.class);
-        when(timing.getStart()).thenReturn(1l);
-        when(timing.getEnd()).thenReturn(2l);
+        when(timing.getStart()).thenReturn(1L);
+        when(timing.getEnd()).thenReturn(2L);
         return timing;
     }
 }
