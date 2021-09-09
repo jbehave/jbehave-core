@@ -2,10 +2,10 @@ package org.jbehave.core.configuration;
 
 import java.lang.annotation.Annotation;
 
-@SuppressWarnings("serial")
 /**
  * Thrown when an annotation is required and not found.
  */
+@SuppressWarnings("serial")
 public class AnnotationRequired extends RuntimeException {
 
     /**
