@@ -25,7 +25,8 @@ public class ConfigurationProducer {
     public ConfigurationProducer() {
     }
 
-    @Produces @WeldConfiguration
+    @Produces
+    @WeldConfiguration
     public Configuration getConfiguration() {
         LoadFromClasspath resourceLoader = new LoadFromClasspath(getClass().getClassLoader());
         TableTransformers tableTransformers = new TableTransformers();

@@ -30,7 +30,8 @@ public class ConfigurationProducer {
     public ConfigurationProducer() {
     }
     
-    @Produces @WeldConfiguration
+    @Produces
+    @WeldConfiguration
     Configuration getConfiguration() {
         
         Properties viewResources = new Properties();

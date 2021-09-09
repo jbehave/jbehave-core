@@ -20,15 +20,17 @@ import org.jbehave.examples.core.steps.SearchSteps;
  */
 @Singleton
 public class WeldStepProducer {
-    @Inject @New 
+    @Inject
+    @New
     private TradingService tradingService;
-    
-    @Singleton @Produces
+
+    @Produces
+    @Singleton
     public TradingService getTradingService() {
         return tradingService;
     }
-    
-    //extended Trader example steps using an annotated static classes to mark them as Weld Steps 
+
+    //extended Trader example steps using an annotated static classes to mark them as Weld Steps
     
     @WeldStep
     public static class WeldBeforeAfterSteps extends BeforeAfterSteps {

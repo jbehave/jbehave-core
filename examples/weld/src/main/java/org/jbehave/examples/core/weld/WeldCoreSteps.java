@@ -11,7 +11,8 @@ import org.jbehave.examples.core.steps.TraderSteps;
 /**
  * POJO annotated to allow Weld injection.
  */
-@WeldStep @Singleton
+@WeldStep
+@Singleton
 public class WeldCoreSteps extends TraderSteps {
 
     @Inject
