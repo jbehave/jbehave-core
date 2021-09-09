@@ -87,8 +87,7 @@ public class ScanningStepsFactory extends AbstractStepsFactory {
             for (Method method : methodsAnnotatedWith) {
                 types.add(method.getDeclaringClass());
             }
-        }
-        catch (ReflectionsException e) {
+        } catch (ReflectionsException e) {
             // https://github.com/ronmamo/reflections/issues/297
             if (!"Scanner MethodAnnotationsScanner was not configured".equals(e.getMessage())) {
                 throw e;

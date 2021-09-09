@@ -41,8 +41,7 @@ public class AuthenticationSteps {
         try {
             auth = manager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             authException = null;
-        }
-        catch (AuthenticationException e) {
+        } catch (AuthenticationException e) {
             auth = null;
             authException = e;
         }
