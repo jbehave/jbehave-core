@@ -168,7 +168,7 @@ public class SpringStepsFactoryBehaviour {
 
     }
 
-    public static abstract class AbstractSteps {
+    public abstract static class AbstractSteps {
 
     }
 

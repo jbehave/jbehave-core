@@ -718,7 +718,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     private static class MyKnownFailure extends KnownFailure {
     }
 
-    private static abstract class MyStory extends JUnitStory {
+    private abstract static class MyStory extends JUnitStory {
 
     }
 

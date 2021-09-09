@@ -95,7 +95,7 @@ class EmbedderClassLoaderBehaviour {
 
     }
 
-    public static abstract class MyAbstractStory extends JUnitStory {
+    public abstract static class MyAbstractStory extends JUnitStory {
 
     }
 

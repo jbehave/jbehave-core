@@ -675,7 +675,7 @@ public class ExamplesTableBehaviour {
         return null;
     }
 
-    public static abstract class AbstractRootMyParameters {
+    public abstract static class AbstractRootMyParameters {
         private String rootParentString;
 
         public String getRootParentString() {
@@ -683,7 +683,7 @@ public class ExamplesTableBehaviour {
         }
     }
 
-    public static abstract class AbstractMyParameters extends AbstractRootMyParameters {
+    public abstract static class AbstractMyParameters extends AbstractRootMyParameters {
         private String parentString;
 
         public String getParentString() {
