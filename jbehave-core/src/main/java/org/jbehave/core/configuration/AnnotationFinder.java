@@ -69,10 +69,9 @@ public class AnnotationFinder {
     }
 
     /**
-     * Creates the inherit member name by prefixing "inherit" to the capitalized
-     * member name.
+     * Creates the inherit member name by prefixing "inherit" to the capitalized member name.
      * 
-     * @param memberName
+     * @param memberName the initial member name
      * @return The inherit member name
      */
     protected String createInheritMemberName(String memberName) {

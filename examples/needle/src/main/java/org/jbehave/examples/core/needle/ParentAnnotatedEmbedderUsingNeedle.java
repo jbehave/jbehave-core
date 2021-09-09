@@ -51,10 +51,9 @@ public abstract class ParentAnnotatedEmbedderUsingNeedle extends InjectableEmbed
         }
 
         /**
-         * <code>true</code> when injection target is or extends/implements instance
-         * type
+         * <code>true</code> when injection target is or extends/implements instance type
          *
-         * @param injectionTargetInformation
+         * @param injectionTargetInformation the information about the injection target
          * @return true when type is assignable from instance
          */
         protected boolean isTargetAssignable(final InjectionTargetInformation injectionTargetInformation) {

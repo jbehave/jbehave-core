@@ -27,11 +27,9 @@ public interface StepPatternParser {
     /**
      * Parses a step pattern to create a step matcher
      *
-     *
-     * @param stepType
+     * @param stepType    the step type
      * @param stepPattern the step pattern
-     * @return A StepMatcher that will capture the parameters associated with a
-     *         step
+     * @return A StepMatcher that will capture the parameters associated with a step
      */
     StepMatcher parseStep(StepType stepType, String stepPattern);
 
