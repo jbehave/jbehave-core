@@ -25,19 +25,19 @@ class EmbedderClassLoaderBehaviour {
 
     @Test
     void shouldInstantiateNewEmbedder() {
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(asList());
         assertThatIsInstantiated(classLoader, MyEmbedder.class.getName(), MyEmbedder.class);
     }
 
     @Test
     void shouldInstantiateNewStory() {
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(asList());
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }
 
     @Test
     void shouldIdentifyIfStoryIsAbstract() {
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(asList());
         assertThat(classLoader.isAbstract(MyStory.class.getName()), is(false));
         assertThat(classLoader.isAbstract(MyAbstractStory.class.getName()), is(true));
         assertThat(classLoader.isAbstract("InexistentClass"), is(false));        
@@ -77,7 +77,7 @@ class EmbedderClassLoaderBehaviour {
 
     @Test
     void shouldNotInstantiateClassWithInexistentName() {
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(asList());
         assertThrows(InstantiationFailed.class, () -> classLoader.newInstance(Embeddable.class, "UnexistentClass"));
     }
 
