@@ -569,20 +569,20 @@ public class TemplateableOutput extends NullStoryReporter {
             return lifecycle.getAfterSteps(scope, outcome);
         }
 
-        public Set<Outcome> getOutcomes() {
-            return lifecycle.getOutcomes();
-        }
-
-        public MetaFilter getMetaFilter(Outcome outcome) {
-            return lifecycle.getMetaFilter(outcome);
-        }
-        
         public List<String> getAfterSteps(Outcome outcome) {
             return lifecycle.getAfterSteps(outcome);
         }
 
         public List<String> getAfterSteps(Outcome outcome, Meta meta) {
             return lifecycle.getAfterSteps(outcome, meta);
+        }
+
+        public Set<Outcome> getOutcomes() {
+            return lifecycle.getOutcomes();
+        }
+
+        public MetaFilter getMetaFilter(Outcome outcome) {
+            return lifecycle.getMetaFilter(outcome);
         }
 
     }

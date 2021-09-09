@@ -111,6 +111,12 @@ public class StoryManager {
 
     }
 
+    private void runStories(RunContext context, List<Story> stories) {
+        stories.stream()
+                .sorted(configuration.storyExecutionComparator())
+                .forEach(story -> filterRunning(context, story));
+    }
+
     private void performStories(RunContext context,
             PerformableTree performableTree, List<Story> stories) {
         // before stories
@@ -128,12 +134,6 @@ public class StoryManager {
 
         // after stories
         performableTree.performBeforeOrAfterStories(context, Stage.AFTER);
-    }
-
-    private void runStories(RunContext context, List<Story> stories) {
-        stories.stream()
-               .sorted(configuration.storyExecutionComparator())
-               .forEach(story -> filterRunning(context, story));
     }
 
     private void filterRunning(RunContext context, Story story) {

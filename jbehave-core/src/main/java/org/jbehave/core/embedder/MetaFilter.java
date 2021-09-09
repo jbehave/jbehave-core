@@ -169,6 +169,14 @@ public class MetaFilter {
             parse(exclude, "-");
         }
 
+        private void parse(Properties properties, String prefix) {
+            properties.clear();
+            for (String found : found(prefix)) {
+                Property property = new Property(StringUtils.removeStartIgnoreCase(found, prefix));
+                properties.setProperty(property.getName(), property.getValue());
+            }
+        }
+
         @Override
         public boolean match(Meta meta) {
             boolean matched;
@@ -184,12 +192,27 @@ public class MetaFilter {
             return matched;
         }
 
-        private void parse(Properties properties, String prefix) {
-            properties.clear();
-            for (String found : found(prefix)) {
-                Property property = new Property(StringUtils.removeStartIgnoreCase(found, prefix));
-                properties.setProperty(property.getName(), property.getValue());
+        private boolean match(Properties properties, Meta meta) {
+            boolean matches = false;
+            for (Object key : properties.keySet()) {
+                String property = (String) properties.get(key);
+                for (String metaName : meta.getPropertyNames()) {
+                    if (key.equals(metaName)) {
+                        String value = meta.getProperty(metaName);
+                        if (StringUtils.isBlank(value)) {
+                            matches = true;
+                        } else if (property.contains("*")) {
+                            matches = value.matches(property.replace("*", ".*"));
+                        } else {
+                            matches = properties.get(key).equals(value);
+                        }
+                    }
+                    if (matches) {
+                        break;
+                    }
+                }
             }
+            return matches;
         }
 
         private Set<String> found(String prefix) {
@@ -217,29 +240,6 @@ public class MetaFilter {
                 }
             }
             return merged;
-        }
-
-        private boolean match(Properties properties, Meta meta) {
-            boolean matches = false;
-            for (Object key : properties.keySet()) {
-                String property = (String) properties.get(key);
-                for (String metaName : meta.getPropertyNames()) {
-                    if (key.equals(metaName)) {
-                        String value = meta.getProperty(metaName);
-                        if (StringUtils.isBlank(value)) {
-                            matches = true;
-                        } else if (property.contains("*")) {
-                            matches = value.matches(property.replace("*", ".*"));
-                        } else {
-                            matches = properties.get(key).equals(value);
-                        }
-                    }
-                    if (matches) {
-                        break;
-                    }
-                }
-            }
-            return matches;
         }
 
     }

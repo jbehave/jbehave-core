@@ -213,10 +213,10 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     @Override
     public void failedOutcomes(String step, OutcomesTable table) {
         failed(step, table.failureCause());
-        print(table);
+        printOutcomesTable(table);
     }
 
-    private void print(OutcomesTable table) {
+    private void printOutcomesTable(OutcomesTable table) {
         print(format("outcomesTableStart", NL));
         List<Outcome<?>> rows = table.getOutcomes();
         print(format("outcomesTableHeadStart", "|"));
@@ -263,7 +263,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         if (dryRun.get()) {
             print(format("dryRun", "{0}\n", keywords.dryRun()));
         }
-        print(story.getMeta());
+        printMeta(story.getMeta());
     }
 
     @Override
@@ -327,7 +327,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
                 if (!metaFilter.isEmpty()) {
                     print(format("lifecycleMetaFilter", "{0} {1}\n", keywords.metaFilter(), metaFilter.asString()));
                 }
-                print(afterSteps);
+                printLifecycleSteps(afterSteps);
                 print(format("lifecycleOutcomeEnd", "\n"));
                 print(format("lifecycleAfterScopeEnd", "\n"));
             }
@@ -337,7 +337,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     private void printWithScope(List<String> steps, Scope scope) {
         if (!steps.isEmpty()) {
             print(format("lifecycleBeforeScopeStart", "{0} {1}\n", keywords.scope(), formatScope(scope)));
-            print(steps);
+            printLifecycleSteps(steps);
             print(format("lifecycleBeforeScopeEnd", "\n"));
         }
     }
@@ -363,13 +363,13 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         }
     }
 
-    private void print(List<String> steps) {
+    private void printLifecycleSteps(List<String> steps) {
         for (String step : steps) {
             print(format("lifecycleStep", "{0}\n", step));
         }
     }
 
-    private void print(Meta meta) {
+    private void printMeta(Meta meta) {
         if (!meta.isEmpty()) {
             print(format("metaStart", "{0}\n", keywords.meta()));
             for (String name : meta.getPropertyNames()) {
@@ -480,7 +480,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     public void beforeScenario(Scenario scenario) {
         cause.set(null);
         print(format("beforeScenario", "{0} {1} {2}\n", scenario.getId(), keywords.scenario(), scenario.getTitle()));
-        print(scenario.getMeta());
+        printMeta(scenario.getMeta());
     }
 
     @Override
@@ -595,12 +595,12 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         return formatted.toString();
     }
 
-    private String escape(String defaultPattern) {
-        return (String) escapeAll(defaultPattern)[0];
-    }
-
     private Object[] escapeAll(Object... args) {
         return escape(format, args);
+    }
+
+    private String escape(String defaultPattern) {
+        return (String) escapeAll(defaultPattern)[0];
     }
 
     /**
@@ -690,6 +690,10 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
                         format("parameterValueNewline", NL)));
     }
 
+    protected void print(PrintStream output, String text) {
+        output.print(text);
+    }
+
     protected String transformPrintingTable(String text, String tableStart, String tableEnd) {
         String tableAsString = substringBetween(text, tableStart, tableEnd);
         return text
@@ -704,10 +708,6 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
                 .replace(verbatimAsString, formatVerbatim(new Verbatim(verbatimAsString)))
                 .replace(verbatimStart, format("parameterValueStart", EMPTY))
                 .replace(verbatimEnd, format("parameterValueEnd", EMPTY));
-    }
-
-    protected void print(PrintStream output, String text) {
-        output.print(text);
     }
 
     @Override

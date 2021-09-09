@@ -29,7 +29,7 @@ import org.mockito.Mockito;
 class CompositeCandidateStepsBehaviour {
 
     @Test
-    void shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters() {
+    void shouldMatchCompositesFromClassAndCreateComposedStepsUsingMatchedParameters() {
         CandidateSteps compositeSteps = new SimpleCompositeSteps();
         shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters(compositeSteps);
     }

@@ -80,27 +80,6 @@ public class Lifecycle {
         return unwrap(filter(this.after, scope));
     }
 
-    public List<Steps> getAfter() {
-        return after;
-    }
-
-    public Set<Outcome> getOutcomes() {
-        Set<Outcome> outcomes = new LinkedHashSet<>();
-        for (Steps steps : after) {
-            outcomes.add(steps.outcome);
-        }
-        return outcomes;
-    }
-
-    public MetaFilter getMetaFilter(Outcome outcome) {
-        for (Steps steps : after) {
-            if (outcome.equals(steps.outcome) && isNotBlank(steps.metaFilter)) {
-                return new MetaFilter(steps.metaFilter);
-            }
-        }
-        return MetaFilter.EMPTY;
-    }
-
     public List<String> getAfterSteps(Outcome outcome) {
         return getAfterSteps(outcome, Meta.EMPTY);
     }
@@ -122,6 +101,27 @@ public class Lifecycle {
             }
         }
         return unwrap(afterSteps);
+    }
+
+    public List<Steps> getAfter() {
+        return after;
+    }
+
+    public Set<Outcome> getOutcomes() {
+        Set<Outcome> outcomes = new LinkedHashSet<>();
+        for (Steps steps : after) {
+            outcomes.add(steps.outcome);
+        }
+        return outcomes;
+    }
+
+    public MetaFilter getMetaFilter(Outcome outcome) {
+        for (Steps steps : after) {
+            if (outcome.equals(steps.outcome) && isNotBlank(steps.metaFilter)) {
+                return new MetaFilter(steps.metaFilter);
+            }
+        }
+        return MetaFilter.EMPTY;
     }
 
     private List<String> unwrap(List<Steps> stepsCollection) {

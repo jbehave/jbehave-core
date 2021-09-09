@@ -91,14 +91,6 @@ public class JUnit4DescriptionGenerator {
                 AFTER_SCENARIO_STEP_NAME);
     }
 
-    private void addBeforeOrAfterScenarioStep(Function<ScenarioType, List<BeforeOrAfterStep>> stepsProvider,
-            ScenarioType scenarioType, Description description, String stepName) {
-        List<BeforeOrAfterStep> beforeOrAfterSteps = new ArrayList<>();
-        beforeOrAfterSteps.addAll(stepsProvider.apply(scenarioType));
-        beforeOrAfterSteps.addAll(stepsProvider.apply(ScenarioType.ANY));
-        addBeforeOrAfterStep(beforeOrAfterSteps, description, stepName);
-    }
-
     private void addScenarioSteps(Lifecycle lifecycle, Description scenarioDescription, Scenario scenario) {
         List<String> beforeSteps = lifecycle.getBeforeSteps(Scope.STEP);
         List<String> afterSteps = lifecycle.getAfterSteps(Scope.STEP);
@@ -111,6 +103,14 @@ public class JUnit4DescriptionGenerator {
             tempPreviousNonAndStep = previousNonAndStep;
             addSteps(scenarioDescription, afterSteps);
         }
+    }
+
+    private void addBeforeOrAfterScenarioStep(Function<ScenarioType, List<BeforeOrAfterStep>> stepsProvider,
+            ScenarioType scenarioType, Description description, String stepName) {
+        List<BeforeOrAfterStep> beforeOrAfterSteps = new ArrayList<>();
+        beforeOrAfterSteps.addAll(stepsProvider.apply(scenarioType));
+        beforeOrAfterSteps.addAll(stepsProvider.apply(ScenarioType.ANY));
+        addBeforeOrAfterStep(beforeOrAfterSteps, description, stepName);
     }
 
     private void addBeforeOrAfterStep(List<BeforeOrAfterStep> beforeOrAfterSteps, Description description,

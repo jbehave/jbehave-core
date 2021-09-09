@@ -241,6 +241,20 @@ public class Embedder {
         }
     }
 
+    private void handleFailures(ReportsCount count) {
+        boolean failed = count.failed();
+        if (configuration().pendingStepStrategy() instanceof FailingUponPendingStep) {
+            failed = failed || count.pending();
+        }
+        if (failed) {
+            if (embedderControls().ignoreFailureInView()) {
+                embedderMonitor.reportsViewFailures(count);
+            } else {
+                embedderFailureStrategy().handleFailures(count);
+            }
+        }
+    }
+
     public void generateReportsView() {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
         File outputDirectory = builder.outputDirectory();
@@ -268,20 +282,6 @@ public class Embedder {
 
     }
 
-    private void handleFailures(ReportsCount count) {
-        boolean failed = count.failed();
-        if (configuration().pendingStepStrategy() instanceof FailingUponPendingStep) {
-            failed = failed || count.pending();
-        }
-        if (failed) {
-            if (embedderControls().ignoreFailureInView()) {
-                embedderMonitor.reportsViewFailures(count);
-            } else {
-                embedderFailureStrategy().handleFailures(count);
-            }
-        }
-    }
-
     public void generateSurefireReport() {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
         if (builder.hasSurefireReporter()) {
@@ -291,6 +291,13 @@ public class Embedder {
 
     public void reportStepdocs() {
         reportStepdocs(configuration(), stepsFactory().createCandidateSteps());
+    }
+
+    public void reportStepdocs(Configuration configuration, List<CandidateSteps> candidateSteps) {
+        StepFinder finder = configuration.stepFinder();
+        StepdocReporter reporter = configuration.stepdocReporter();
+        List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
+        reporter.stepdocs(finder.stepdocs(candidateSteps), stepsInstances);
     }
 
     public void reportStepdocsAsEmbeddables(List<String> classNames) {
@@ -310,13 +317,6 @@ public class Embedder {
                 embedderMonitor.embeddableNotConfigurable(embeddable.getClass().getName());
             }
         }
-    }
-
-    public void reportStepdocs(Configuration configuration, List<CandidateSteps> candidateSteps) {
-        StepFinder finder = configuration.stepFinder();
-        StepdocReporter reporter = configuration.stepdocReporter();
-        List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
-        reporter.stepdocs(finder.stepdocs(candidateSteps), stepsInstances);
     }
 
     public void reportMatchingStepdocs(String stepAsString) {
