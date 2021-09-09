@@ -83,13 +83,15 @@ class GuiceAnnotationBuilderBehaviour {
         assertThat(configuration.storyReporterBuilder().outputDirectory().getName(), equalTo("my-output-directory"));
         assertThat(configuration.storyReporterBuilder().viewResources().getProperty("index"),
                 equalTo("my-reports-index.ftl"));
-        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"), equalTo("true"));
+        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"),
+                equalTo("true"));
         assertThat(configuration.storyReporterBuilder().reportFailureTrace(), is(true));
     }
 
     @Test
     void shouldBuildConfigurationFromAnnotationsUsingConfigureAndGuiceConverters() {
-        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class);
+        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(
+                AnnotatedUsingConfigureAndGuiceConverters.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatCustomObjectIsConverted(configuration.parameterConverters());
         assertThatDateIsConvertedWithFormat(configuration.parameterConverters(), new SimpleDateFormat("yyyy-MM-dd"));
@@ -98,7 +100,8 @@ class GuiceAnnotationBuilderBehaviour {
 
     @Test
     void shouldBuildConfigurationFromAnnotationsUsingInjectorWithoutParent() {
-        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class) {
+        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(
+                AnnotatedUsingConfigureAndGuiceConverters.class) {
 
             @Override
             protected Injector createInjector(List<Module> modules) {
@@ -179,7 +182,8 @@ class GuiceAnnotationBuilderBehaviour {
 
     @Test
     void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuiceAndConverters() {
-        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class);
+        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(
+                AnnotatedUsingConfigureAndGuiceConverters.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
     }
@@ -202,7 +206,8 @@ class GuiceAnnotationBuilderBehaviour {
     @Test
     void shouldNotBuildContainerIfModuleNotInstantiable() {
         AnnotationMonitor annotationMonitor = mock(AnnotationMonitor.class);
-        AnnotationBuilder builderPrivateModule = new GuiceAnnotationBuilder(AnnotatedWithPrivateModule.class, annotationMonitor);
+        AnnotationBuilder builderPrivateModule = new GuiceAnnotationBuilder(AnnotatedWithPrivateModule.class,
+                annotationMonitor);
         assertThatStepsInstancesAre(builderPrivateModule.buildCandidateSteps());
         verify(annotationMonitor).elementCreationFailed(isA(Class.class), isA(Exception.class));
     }

@@ -177,7 +177,8 @@ public abstract class AbstractStepResult implements StepResult {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(parametrisedStep()).append(getTiming()).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(parametrisedStep()).append(
+                getTiming()).toString();
     }
 
     public static StepResult successful(String step) {

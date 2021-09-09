@@ -48,7 +48,8 @@ class FreemarkerViewGeneratorBehaviour {
 
         File outputDirectory = new File("src/test/java/org/jbehave/core/reporters/reports");
         // When
-        SortedMap<String, List<File>> files = generator.readReportFiles(outputDirectory, "index.html", asList("html", "txt"));
+        SortedMap<String, List<File>> files = generator.readReportFiles(outputDirectory, "index.html",
+                asList("html", "txt"));
 
         // Then
         assertThat(files.size(), equalTo(2));
@@ -63,7 +64,8 @@ class FreemarkerViewGeneratorBehaviour {
 
         // Then
         assertThat(generator.readReportFiles(null, "index.html", asList("html", "txt")).size(), equalTo(0));
-        assertThat(generator.readReportFiles(new File("inexistent"), "index.html", asList("html", "txt")).size(), equalTo(0));
+        assertThat(generator.readReportFiles(new File("inexistent"), "index.html", asList("html", "txt")).size(),
+                equalTo(0));
     }
     
     

@@ -46,7 +46,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(GuiceAnnotatedEmbedderRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
 public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
 
@@ -65,7 +66,8 @@ public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
 
         @Override
         protected void configure() {
-            bind(StoryControls.class).toInstance(new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false));
+            bind(StoryControls.class).toInstance(
+                    new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false));
             bind(StoryLoader.class).toInstance(new LoadFromClasspath(this.getClass().getClassLoader()));
             bind(ParameterConverter.class).toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
             bind(StoryReporterBuilder.class).toInstance(

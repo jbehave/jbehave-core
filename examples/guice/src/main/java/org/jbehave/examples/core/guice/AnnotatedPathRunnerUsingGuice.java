@@ -43,7 +43,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(GuiceAnnotatedPathRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
 @UsingPaths(searchIn = "../core/src/main/java", includes = { "**/*.story" }, excludes = { "**/examples_table*.story" })
 public class AnnotatedPathRunnerUsingGuice {

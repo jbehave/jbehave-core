@@ -43,7 +43,8 @@ class ExportFromFilesystemBehaviour {
         when(indexer.indexResources(rootURI, sourcePath, sourceSyntax, includes)).thenReturn(index);
 
         // When
-        ResourceExporter exporter = new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt, sourceSyntax, includes);
+        ResourceExporter exporter = new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt, sourceSyntax,
+                includes);
         exporter.exportResources(rootURI);
 
         // Then

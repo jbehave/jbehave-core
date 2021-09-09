@@ -25,7 +25,8 @@ public abstract class AbstractFilesystemMojo extends AbstractMojo {
     private static final String CONFLUENCE = "confluence";
 
     /**
-     * The REST provider.  Currently supported are "redmine" and "xwiki".  Also supported is "confluence" for import only.
+     * The REST provider.  Currently supported are "redmine" and "xwiki".  Also supported is "confluence" for import
+     * only.
      */
     @Parameter(property = "jbehave.rest.provider", defaultValue = "xwiki")
     String restProvider;

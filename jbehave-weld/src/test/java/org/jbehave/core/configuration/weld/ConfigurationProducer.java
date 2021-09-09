@@ -54,7 +54,8 @@ public class ConfigurationProducer {
                             .withViewResources(viewResources).withFailureTrace(true))
                     .useParameterConverters(new ParameterConverters(resourceLoader, tableTransformers)
                             .addConverters(new MyDateConverter(),
-                                new FunctionalParameterConverter<>(String.class, CustomObject.class, CustomObject::new)))
+                                new FunctionalParameterConverter<>(String.class, CustomObject.class, CustomObject::new))
+                    )
                     .useTableTransformers(tableTransformers);
                     
     }

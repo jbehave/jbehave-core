@@ -26,7 +26,8 @@ import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.MyStory
 import org.junit.runner.RunWith;
 
 @RunWith(AnnotatedEmbedderRunner.class)
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = false, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = false,
+        ignoreFailureInView = true)
 @UsingSteps(instances = { A.class, B.class, C.class, EnsuringOrderUsingSteps.class })
 @Configure(storyReporterBuilder = MyStoryReporterBuilder.class)
 public class EnsuringOrderUsingSteps implements Embeddable {
@@ -41,7 +42,8 @@ public class EnsuringOrderUsingSteps implements Embeddable {
     @Override
     @org.junit.Test
     public void run() {
-        embedder.runStoriesAsPaths(Arrays.asList("org/jbehave/examples/core/stories/failing/ensuring_order_using_steps.story"));
+        embedder.runStoriesAsPaths(
+                Arrays.asList("org/jbehave/examples/core/stories/failing/ensuring_order_using_steps.story"));
     }
 
     private static final List<String> ORDER = new LinkedList<>();

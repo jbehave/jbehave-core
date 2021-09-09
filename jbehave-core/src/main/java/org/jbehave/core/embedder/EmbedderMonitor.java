@@ -58,7 +58,8 @@ public interface EmbedderMonitor {
 
     void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties);
 
-    void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties, Throwable cause);
+    void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
+            Throwable cause);
 
     void processingSystemProperties(Properties properties);
 

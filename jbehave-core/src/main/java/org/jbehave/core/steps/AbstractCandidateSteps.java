@@ -31,7 +31,8 @@ public abstract class AbstractCandidateSteps implements CandidateSteps {
         }
     }
 
-    private Predicate<StepCandidate> isDuplicate(StepCandidate candidate, String candidateName, String parameterPrefix) {
+    private Predicate<StepCandidate> isDuplicate(StepCandidate candidate, String candidateName,
+            String parameterPrefix) {
         return c ->
                candidateName.startsWith(StringUtils.substringBefore(c.getName(), parameterPrefix))
             && c.matches(candidateName)

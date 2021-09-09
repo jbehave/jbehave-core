@@ -38,7 +38,8 @@ class EmbedderControlsBehaviour {
         System.setProperty(PropertyBasedEmbedderControls.VERBOSE_FAILURES, "true");
         System.setProperty(PropertyBasedEmbedderControls.VERBOSE_FILTERING, "true");
         System.setProperty(PropertyBasedEmbedderControls.STORY_TIMEOUT_IN_SECS, "500");
-        System.setProperty(PropertyBasedEmbedderControls.STORY_TIMEOUT_IN_SECS_BY_PATH, "**/shorts/*.story:3,**/longs/*.story:20");
+        System.setProperty(PropertyBasedEmbedderControls.STORY_TIMEOUT_IN_SECS_BY_PATH,
+                "**/shorts/*.story:3,**/longs/*.story:20");
         System.setProperty(PropertyBasedEmbedderControls.FAIL_ON_STORY_TIMEOUT, "true");
         System.setProperty(PropertyBasedEmbedderControls.THREADS, "5");
 

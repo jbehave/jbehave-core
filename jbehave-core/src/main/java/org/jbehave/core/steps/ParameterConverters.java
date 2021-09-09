@@ -260,11 +260,12 @@ public class ParameterConverters {
      * {@link ParameterConverter} should be thread-safe
      */
     public ParameterConverters(StepMonitor monitor, Keywords keywords, ResourceLoader resourceLoader,
-                               ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers, Locale locale,
-                               String collectionSeparator, boolean threadSafe) {
+            ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers,
+            Locale locale, String collectionSeparator, boolean threadSafe) {
         this(monitor, new ArrayList<>(), threadSafe);
-        this.addConverters(defaultConverters(keywords, resourceLoader, parameterControls, tableParsers, tableTransformers, locale,
-                collectionSeparator));
+        this.addConverters(
+                defaultConverters(keywords, resourceLoader, parameterControls, tableParsers, tableTransformers, locale,
+                        collectionSeparator));
     }
 
     private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters, boolean threadSafe) {
@@ -275,8 +276,8 @@ public class ParameterConverters {
     }
 
     protected ParameterConverter[] defaultConverters(Keywords keywords, ResourceLoader resourceLoader,
-                                                              ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers, Locale locale,
-                                                              String collectionSeparator) {
+            ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers,
+            Locale locale, String collectionSeparator) {
         this.escapedCollectionSeparator = escapeRegexPunctuation(collectionSeparator);
         ExamplesTableFactory tableFactory = new ExamplesTableFactory(keywords, resourceLoader, this, parameterControls,
                 tableParsers, tableTransformers);
@@ -650,7 +651,8 @@ public class ParameterConverters {
 
         @Override
         public boolean canConvertTo(Type type) {
-            return isAssignableFromRawType(List.class, type) && elementConverters.peek().canConvertTo(argumentType(type));
+            return isAssignableFromRawType(List.class, type) && elementConverters.peek().canConvertTo(
+                    argumentType(type));
         }
 
         @Override

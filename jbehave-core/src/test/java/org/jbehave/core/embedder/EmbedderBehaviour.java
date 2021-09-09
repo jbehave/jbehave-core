@@ -608,7 +608,8 @@ class EmbedderBehaviour {
         RunContext runContext = mockRunContext(performableTree, monitor, configuration, stepsFactory, filter);
 
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(performableTree).perform(runContext, stories.get(storyPath));
+            doThrow(new RuntimeException(storyPath + " failed")).when(performableTree).perform(runContext,
+                    stories.get(storyPath));
         }
 
         // When

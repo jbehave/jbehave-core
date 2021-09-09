@@ -298,7 +298,8 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         embedder.useClassLoader(classLoader);
         embedder.useEmbedderControls(embedderControls());
         if (executorsClass != null) {
-            ExecutorServiceFactory executorServiceFactory = classLoader.newInstance(ExecutorServiceFactory.class, executorsClass);
+            ExecutorServiceFactory executorServiceFactory = classLoader.newInstance(ExecutorServiceFactory.class,
+                    executorsClass);
             embedder.useExecutorService(executorServiceFactory.create(embedder.embedderControls()));
         }
         embedder.useEmbedderMonitor(embedderMonitor());
@@ -504,8 +505,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         
         @Override
         public void invalidTimeoutFormat(String path) {
-            getLog().warn("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format");
-            getLog().warn("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"");
+            getLog().warn("Failed to set specific story timeout for story " + path
+                    + " because 'storyTimeoutInSecsByPath' has incorrect format");
+            getLog().warn("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. "
+                    + "E.g. \"*/long/*.story:5000,*/short/*.story:200\"");
         }
 
         @Override

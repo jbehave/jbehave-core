@@ -72,7 +72,8 @@ class PicoAnnotationBuilderBehaviour {
         assertThat(configuration.storyReporterBuilder().outputDirectory().getName(), equalTo("my-output-directory"));
         assertThat(configuration.storyReporterBuilder().viewResources().getProperty("index"),
                 equalTo("my-reports-index.ftl"));
-        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"), equalTo("true"));
+        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"),
+                equalTo("true"));
         assertThat(configuration.storyReporterBuilder().reportFailureTrace(), is(true));
     }
 
@@ -208,7 +209,8 @@ class PicoAnnotationBuilderBehaviour {
 
         @Override
         public void configure(MutablePicoContainer container) {
-            container.addComponent(StoryControls.class, new StoryControls().doDryRun(true).doSkipScenariosAfterFailure(true));
+            container.addComponent(StoryControls.class,
+                    new StoryControls().doDryRun(true).doSkipScenariosAfterFailure(true));
             container.addComponent(FailureStrategy.class, SilentlyAbsorbingFailure.class);
             container.addComponent(StepPatternParser.class, new RegexPrefixCapturingPatternParser("MyPrefix"));
             container.addComponent(StoryLoader.class, new LoadFromURL());

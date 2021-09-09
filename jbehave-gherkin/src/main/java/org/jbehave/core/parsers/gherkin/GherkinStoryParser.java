@@ -75,7 +75,8 @@ public class GherkinStoryParser extends TransformingStoryParser {
 
                 private void writeNarrative(String description) {
                     boolean matches = false;
-                    Matcher findingNarrative = compile(".*" + keywords.narrative() + "(.*?)", DOTALL).matcher(description);
+                    Matcher findingNarrative = compile(".*" + keywords.narrative() + "(.*?)", DOTALL).matcher(
+                            description);
                     if (findingNarrative.matches()) {
                         String narrative = findingNarrative.group(1).trim();
                         matches = writeNarrativeWithDefaultSyntax(out, narrative);
@@ -91,8 +92,9 @@ public class GherkinStoryParser extends TransformingStoryParser {
 
                 private boolean writeNarrativeWithDefaultSyntax(final StringBuffer out, String narrative) {
                     boolean matches = false;
-                    Matcher findingElements = compile(".*" + keywords.inOrderTo() + "(.*)\\s*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo()
-                            + "(.*)", DOTALL).matcher(narrative);
+                    Matcher findingElements = compile(
+                            ".*" + keywords.inOrderTo() + "(.*)\\s*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo()
+                                    + "(.*)", DOTALL).matcher(narrative);
                     if (findingElements.matches()) {
                         String inOrderTo = findingElements.group(1).trim();
                         String asA = findingElements.group(2).trim();
@@ -108,16 +110,17 @@ public class GherkinStoryParser extends TransformingStoryParser {
 
                 private boolean writeNarrativeWithAlternativeSyntax(final StringBuffer out, String narrative) {
                     boolean matches = false;
-                    Matcher findingElements = compile(".*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo() + "(.*)\\s*" + keywords.soThat()
-                            + "(.*)", DOTALL).matcher(narrative);
+                        Matcher findingElements = compile(
+                                ".*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo() + "(.*)\\s*" + keywords.soThat()
+                                        + "(.*)", DOTALL).matcher(narrative);
                     if (findingElements.matches()) {
                         String asA = findingElements.group(1).trim();
                         String iWantTo = findingElements.group(2).trim();
                         String soThat = findingElements.group(3).trim();
-                        out.append(keywords.narrative()).append("\n");
-                        out.append(keywords.asA()).append(" ").append(asA).append("\n");
-                        out.append(keywords.iWantTo()).append(" ").append(iWantTo).append("\n\n");                          
-                        out.append(keywords.soThat()).append(" ").append(soThat).append("\n");
+                        out.append(keywords.narrative()).append("\n")
+                                .append(keywords.asA()).append(" ").append(asA).append("\n")
+                                .append(keywords.iWantTo()).append(" ").append(iWantTo).append("\n\n")
+                                .append(keywords.soThat()).append(" ").append(soThat).append("\n");
                         matches = true;
                     }
                     return matches;

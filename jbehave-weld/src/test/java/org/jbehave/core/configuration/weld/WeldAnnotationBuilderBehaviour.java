@@ -62,7 +62,8 @@ class WeldAnnotationBuilderBehaviour {
         assertThat(configuration.storyReporterBuilder().outputDirectory().getName(), equalTo("my-output-directory"));
         assertThat(configuration.storyReporterBuilder().viewResources().getProperty("index"),
                 equalTo("my-reports-index.ftl"));
-        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"), equalTo("true"));
+        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"),
+                equalTo("true"));
         assertThat(configuration.storyReporterBuilder().reportFailureTrace(), is(true));
         
     }
@@ -96,8 +97,9 @@ class WeldAnnotationBuilderBehaviour {
     void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndWeldSteps() {
         AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingWeldWithSteps.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
-        
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration),WeldStepBean.class, FooSteps.class);
+
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), WeldStepBean.class,
+                FooSteps.class);
     }
     
     @Test

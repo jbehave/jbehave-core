@@ -63,9 +63,11 @@ class CodeLocationsBehaviour {
 
     @Test
     void shouldHandleSpacesAndSpecialChars() throws MalformedURLException {
-        assertThat(CodeLocations.getPathFromURL(CodeLocations.codeLocationFromPath("some Path")), not(containsString("%20")));
+        assertThat(CodeLocations.getPathFromURL(CodeLocations.codeLocationFromPath("some Path")),
+                not(containsString("%20")));
         assertThat(CodeLocations.getPathFromURL(pathToURL("c:/a b c+++/")), endsWith("/c:/a b c+++"));
-        assertThat(CodeLocations.getPathFromURL(pathToURL("/home/user/foo bar/+++/")), endsWith("/home/user/foo bar/+++"));
+        assertThat(CodeLocations.getPathFromURL(pathToURL("/home/user/foo bar/+++/")),
+                endsWith("/home/user/foo bar/+++"));
         assertThat(CodeLocations.getPathFromURL(CodeLocations.codeLocationFromURL("http://www.example.com/stories/")), equalTo("http://www.example.com/stories/"));
         assertThat(CodeLocations.getPathFromURL(CodeLocations.codeLocationFromPath("äöü")), endsWith("/äöü"));
     }

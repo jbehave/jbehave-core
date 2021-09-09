@@ -314,7 +314,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
         perform(reporter ->  reporter.storyCancelled(story, storyDuration), storyCancelled, story, storyDuration);
     }
 
-    private void perform(Consumer<StoryReporter> crossReferencingInvoker, Method delayedMethod, Object... delayedMethodArgs) {
+    private void perform(Consumer<StoryReporter> crossReferencingInvoker, Method delayedMethod,
+            Object... delayedMethodArgs) {
         crossReferencingInvoker.accept(crossReferencing);
         if (multiThreading) {
             delayedMethods.add(new DelayedMethod(delayedMethod, delayedMethodArgs));

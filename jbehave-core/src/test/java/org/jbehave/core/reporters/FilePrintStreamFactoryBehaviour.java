@@ -48,7 +48,8 @@ class FilePrintStreamFactoryBehaviour {
         FileConfiguration configuration = new FileConfiguration("ext");
         
         // When
-        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration);
+        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath),
+                configuration);
         assertThat(factory.configuration(), equalTo(configuration));        
         FileConfiguration newConfiguration = new FileConfiguration();
         factory.useConfiguration(newConfiguration);
@@ -85,10 +86,12 @@ class FilePrintStreamFactoryBehaviour {
     private void assertThatOutputNameIs(String storyPath, String outputName, FilePathResolver pathResolver) {
         // Given
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
-        String extension = "ext";        
-        FileConfiguration configuration = (pathResolver != null ? new FileConfiguration("", extension, pathResolver) : new FileConfiguration(extension));
+        String extension = "ext";
+        FileConfiguration configuration = (pathResolver != null ? new FileConfiguration("", extension, pathResolver)
+                : new FileConfiguration(extension));
         // When
-        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration);
+        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath),
+                configuration);
         // Then
         assertThat(factory.outputName(), equalTo(outputName));
     }
@@ -99,7 +102,8 @@ class FilePrintStreamFactoryBehaviour {
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = "org/jbehave/examples/trader/stories/my_given.story";
         FileConfiguration configuration = new FileConfiguration("ext");
-        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration) {
+        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath),
+                configuration) {
             @Override
             protected File outputDirectory() {
                 return new File((String)null);
@@ -112,11 +116,13 @@ class FilePrintStreamFactoryBehaviour {
 
     private void ensureOutputFileIsSame(URL codeLocation, String storyPath) {
         FileConfiguration configuration = new FileConfiguration("ext");
-        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration);
+        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath),
+                configuration);
         factory.createPrintStream();
         File outputFile = factory.getOutputFile();
-        String expected = new File(codeLocation.getFile()).getParent().replace('\\', '/') + "/" + configuration.getRelativeDirectory() + "/"
-                + "org.jbehave.examples.trader.stories.my_given." + configuration.getExtension();
+        String expected = new File(codeLocation.getFile()).getParent().replace('\\', '/') + "/"
+                + configuration.getRelativeDirectory() + "/org.jbehave.examples.trader.stories.my_given."
+                + configuration.getExtension();
         assertThat(outputFile.toString().replace('\\', '/'), equalTo(expected));
 
     }

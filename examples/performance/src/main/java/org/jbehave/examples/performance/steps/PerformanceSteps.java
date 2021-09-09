@@ -16,7 +16,8 @@ public class PerformanceSteps {
         
     }
     
-    @When("a scenario is generated to $path with a tabular argument of $tabularLines lines and an examples table of $examplesLines lines")
+    @When("a scenario is generated to $path with a tabular argument of $tabularLines lines and an examples table of"
+            + " $examplesLines lines")
     public void aScenarioWithVeryLongTables(String path, int tabularLines, int examplesLines) {
         StringBuilder builder = new StringBuilder();        
         builder.append("Scenario: A scenario with long tables\n");

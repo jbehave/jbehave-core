@@ -20,7 +20,8 @@ public class JBehaveNeedleConfiguration {
     public static final String RESOURCE_JBEHAVE_NEEDLE = "jbehave-needle";
 
     private final LoadResourceBundle loadResourceBundle = LoadResourceBundle.INSTANCE;
-    private final ReadInjectionProviderClassNames readInjectionProviderClassNames = ReadInjectionProviderClassNames.INSTANCE;
+    private final ReadInjectionProviderClassNames readInjectionProviderClassNames =
+            ReadInjectionProviderClassNames.INSTANCE;
     private final CreateInstanceByDefaultConstructor createInstance = CreateInstanceByDefaultConstructor.INSTANCE;
 
     private final Set<InjectionProvider<?>> injectionProviders = new HashSet<>();
@@ -42,8 +43,8 @@ public class JBehaveNeedleConfiguration {
                 if (isInjectionProvider(clazz)) {
                     injectionProviders.add((InjectionProvider<?>) createInstance.apply(clazz));
                 } else if (isInjectionProviderInstanceSupplier(clazz)) {
-                    final InjectionProviderInstancesSupplier supplier = (InjectionProviderInstancesSupplier) createInstance
-                            .apply(clazz);
+                    final InjectionProviderInstancesSupplier supplier =
+                            (InjectionProviderInstancesSupplier) createInstance.apply(clazz);
                     final Set<InjectionProvider<?>> providers = supplier.get();
                     if (providers != null) {
                         injectionProviders.addAll(providers);

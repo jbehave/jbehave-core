@@ -17,7 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 public class BeforeOrAfterFailed extends RuntimeException {
 
     public BeforeOrAfterFailed(Method method, Throwable cause) {
-        super(format("Method {0} (annotated with {1} in class {2}) failed: {3}", method.getName(), toAnnotationNames(method.getAnnotations()), method.getDeclaringClass().getName(), cause), cause);
+        super(format("Method {0} (annotated with {1} in class {2}) failed: {3}", method.getName(),
+                toAnnotationNames(method.getAnnotations()), method.getDeclaringClass().getName(), cause), cause);
     }
 
     private static String toAnnotationNames(Annotation[] annotations) {

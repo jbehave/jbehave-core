@@ -285,7 +285,8 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
                         keywords.iWantTo(), narrative.iWantTo()));
             } else {
                 print(format("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n", keywords.narrative(), keywords.asA(),
-                        narrative.asA(), keywords.iWantTo(), narrative.iWantTo(), keywords.soThat(), narrative.soThat()));
+                        narrative.asA(), keywords.iWantTo(), narrative.iWantTo(), keywords.soThat(),
+                        narrative.soThat()));
             }
         }
     }
@@ -510,7 +511,8 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     public void example(Map<String, String> tableRow, int exampleIndex) {
         print(format("example", "\n{0} {1}\n", keywords.examplesTableRow(), tableRow));
         print(output, format("beforeExampleParameters", EMPTY));
-        tableRow.entrySet().forEach(cell -> print(output, format("exampleParameter", EMPTY, cell.getKey(), cell.getValue())));
+        tableRow.entrySet().forEach(
+                cell -> print(output, format("exampleParameter", EMPTY, cell.getKey(), cell.getValue())));
         print(output, format("afterExampleParameters", EMPTY));
     }
 
@@ -680,9 +682,12 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
             textToPrint = text;
         }
         print(output, textToPrint
-                .replace(format(PARAMETER_VALUE_START, PARAMETER_VALUE_START), format("parameterValueStart", EMPTY))
-                .replace(format(PARAMETER_VALUE_END, PARAMETER_VALUE_END), format("parameterValueEnd", EMPTY))
-                .replace(format(PARAMETER_VALUE_NEWLINE, PARAMETER_VALUE_NEWLINE), format("parameterValueNewline", NL)));
+                .replace(format(PARAMETER_VALUE_START, PARAMETER_VALUE_START),
+                        format("parameterValueStart", EMPTY))
+                .replace(format(PARAMETER_VALUE_END, PARAMETER_VALUE_END),
+                        format("parameterValueEnd", EMPTY))
+                .replace(format(PARAMETER_VALUE_NEWLINE, PARAMETER_VALUE_NEWLINE),
+                        format("parameterValueNewline", NL)));
     }
 
     protected String transformPrintingTable(String text, String tableStart, String tableEnd) {

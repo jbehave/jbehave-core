@@ -70,10 +70,12 @@ class StepResultBehaviour {
         String pending = "When a step is performed";
         pending("When a step is $performed").withParameterValues(pending).describeTo(reporter);
         String notPerformed = "Then the step should describe itself properly to reporters";
-        notPerformed("Then the step should $describe itself properly to reporters").withParameterValues(notPerformed).describeTo(reporter);
+        notPerformed("Then the step should $describe itself properly to reporters").withParameterValues(notPerformed)
+                .describeTo(reporter);
         String failed = "And any errors should appear at the end of the story";
         UUIDExceptionWrapper cause = new UUIDExceptionWrapper(new IllegalStateException());
-        failed("And any errors should $appear at the end of the story", cause).withParameterValues(failed).describeTo(reporter);
+        failed("And any errors should $appear at the end of the story", cause).withParameterValues(failed).describeTo(
+                reporter);
 
         // Then
         verify(reporter).successful(successful);

@@ -33,13 +33,16 @@ import org.jbehave.examples.core.steps.TraderSteps;
 import org.junit.runner.RunWith;
 
 @RunWith(AnnotatedPathRunner.class)
-@Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class,
+@Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class,
+        storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class,
         parameterConverters = { MyDateConverter.class })
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true,
-                storyTimeouts = "100", threads = 1, metaFilters = "-skip", systemProperties = "java.awt.headless=true")
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true, storyTimeouts = "100", threads = 1, metaFilters = "-skip",
+        systemProperties = "java.awt.headless=true")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
     PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
-@UsingPaths(searchIn = "../core/src/main/java", includes = { "**/*.story" }, excludes = { "**/custom/*.story,**/failing/*.story,**/given/*.story,**/pending/*.story" })
+@UsingPaths(searchIn = "../core/src/main/java", includes = { "**/*.story" },
+        excludes = { "**/custom/*.story,**/failing/*.story,**/given/*.story,**/pending/*.story" })
 public class CoreAnnotatedPathRunner {
 
     public static class MyStoryControls extends StoryControls {

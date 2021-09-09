@@ -14,7 +14,8 @@ public class CoreStoriesUsingScanning extends CoreStories {
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-        return new ScanningStepsFactory(configuration(), "org.jbehave.examples.core.steps").notMatchingNames(".*Failing.*");
+        return new ScanningStepsFactory(configuration(), "org.jbehave.examples.core.steps").notMatchingNames(
+                ".*Failing.*");
     }
 
 }

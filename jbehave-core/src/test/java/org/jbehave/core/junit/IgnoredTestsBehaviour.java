@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Test;
  * (OK) IgnoredTestsTest
  *      (OK) shouldPass
  *
- * This implies to me that the {@link JUnit4StoryRunner} should behave similarly that even if there are stories/scenarios
- * that are ignored (via meta tag filtering) then the highest level node should show (OK) and not (Pending).
+ * This implies to me that the {@link JUnit4StoryRunner} should behave similarly that even if there are
+ * stories/scenarios that are ignored (via meta tag filtering) then the highest level node should show (OK) and not
+ * (Pending).
  */
 class IgnoredTestsBehaviour {
 

@@ -21,7 +21,8 @@ import org.junit.runner.RunWith;
 @RunWith(NeedleAnnotatedEmbedderRunner.class)
 @Configure
 @UsingNeedle
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 public class AnnotatedEmbedderUsingNeedle extends InjectableEmbedder {
 
     @Override

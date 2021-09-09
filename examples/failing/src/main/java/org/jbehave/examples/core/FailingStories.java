@@ -20,6 +20,7 @@ public class FailingStories extends CoreStories {
 
     @Override
     public List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(CoreStories.class), "**/failing/*.story","**/given_relative_path*");
+        return new StoryFinder().findPaths(codeLocationFromClass(CoreStories.class), "**/failing/*.story",
+                "**/given_relative_path*");
     }
 }

@@ -42,7 +42,8 @@ class AnnotationFinderBehaviour {
     @Test
     void shouldInheritValues() {
         AnnotationFinder inheritingAnnotated = new AnnotationFinder(InheritingAnnotated.class);
-        List<String> annotatedValues = inheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values");
+        List<String> annotatedValues = inheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class,
+                String.class, "values");
         assertThat(annotatedValues.size(), equalTo(3));
         assertThat(annotatedValues, hasItem("1"));        
         assertThat(annotatedValues, hasItem("2"));        
@@ -52,7 +53,8 @@ class AnnotationFinderBehaviour {
     @Test
     void shouldInheritValuesWithoutDuplicates() {
         AnnotationFinder inheritingAnnotated = new AnnotationFinder(InheritingAnnotatedWithDuplicates.class);
-        List<String> annotatedValues = inheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values");
+        List<String> annotatedValues = inheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class,
+                String.class, "values");
         assertThat(annotatedValues.size(), equalTo(3));
         assertThat(annotatedValues, hasItem("1"));        
         assertThat(annotatedValues, hasItem("2"));        
@@ -62,7 +64,8 @@ class AnnotationFinderBehaviour {
     @Test
     void shouldNotInheritValuesIfInheritFlagIsFalse() {
         AnnotationFinder notInheritingAnnotated = new AnnotationFinder(NotInheritingAnnotated.class);
-        List<String> annotatedValues = notInheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values");
+        List<String> annotatedValues = notInheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class,
+                String.class, "values");
         assertThat(annotatedValues.size(), equalTo(2));
         assertThat(annotatedValues, hasItem("2"));        
         assertThat(annotatedValues, hasItem("3"));      

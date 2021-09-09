@@ -8,7 +8,8 @@ public class ParameterDelimiters extends CoreStory {
 
     @Override
     public Configuration configuration() {
-        return super.configuration().useParameterControls(new ParameterControls().useNameDelimiterLeft("[").useNameDelimiterRight("]"));
+        return super.configuration().useParameterControls(
+                new ParameterControls().useNameDelimiterLeft("[").useNameDelimiterRight("]"));
     }
  
 }

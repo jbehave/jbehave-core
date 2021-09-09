@@ -44,7 +44,8 @@ public class TableTransformers {
         useTransformer(REPLACING, new Replacing());
     }
 
-    public String transform(String transformerName, String tableAsString, TableParsers tableParsers, TableProperties properties) {
+    public String transform(String transformerName, String tableAsString, TableParsers tableParsers,
+            TableProperties properties) {
         TableTransformer transformer = transformers.get(transformerName);
         if (transformer != null) {
             return transformer.transform(tableAsString, tableParsers, properties);

@@ -11,6 +11,7 @@ public class CoreStoriesFailing extends CoreStories {
     @Override
     public List<String> storyPaths() {
         String filter = System.getProperty("story.filter", "**/failing/*.story");
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/custom/*.story,**/given/*.story,**/pending/*.story");
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter,
+                "**/custom/*.story,**/given/*.story,**/pending/*.story");
     }
 }

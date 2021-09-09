@@ -99,8 +99,8 @@ class ParameterConvertersBehaviour {
     private static String POSITIVE_INFINITY = new DecimalFormatSymbols().getInfinity();
     private static String NEGATIVE_INFINITY = "-" + POSITIVE_INFINITY;
 
-    private static final String JSON_AS_STRING = "{\"string\":\"String1\",\"integer\":2,\"stringList\":[\"String2\",\"String3\"],"
-            + "\"integerList\":[3,4]}";
+    private static final String JSON_AS_STRING = "{\"string\":\"String1\",\"integer\":2,\"stringList\":"
+            + "[\"String2\",\"String3\"],\"integerList\":[3,4]}";
 
     @SuppressWarnings("unchecked")
     @Test
@@ -112,8 +112,8 @@ class ParameterConvertersBehaviour {
         ParameterConverters converters = new ParameterConverters(resourceLoader, parameterControls, tableTransformers,
                 true);
         TableParsers tableParsers = new TableParsers(keywords, converters);
-        ParameterConverter<?, ?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader, parameterControls,
-                tableParsers, tableTransformers, Locale.ENGLISH, ",");
+        ParameterConverter<?, ?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader,
+                parameterControls, tableParsers, tableTransformers, Locale.ENGLISH, ",");
         assertThatDefaultConvertersInclude(defaultConverters, BooleanConverter.class, NumberConverter.class,
                 StringListConverter.class,
                 DateConverter.class,
@@ -524,7 +524,8 @@ class ParameterConvertersBehaviour {
         FromStringParameterConverter<Enum<?>> converter = new FluentEnumConverter();
         Type type = SomeEnum.class;
         assertThat(converter.canConvertTo(type), is(true));
-        assertThat(converter.convertValue("multiple words and 1 number", type), is((Enum)SomeEnum.MULTIPLE_WORDS_AND_1_NUMBER));
+        assertThat(converter.convertValue("multiple words and 1 number", type),
+                is((Enum) SomeEnum.MULTIPLE_WORDS_AND_1_NUMBER));
     }
 
     @Test
@@ -747,7 +748,8 @@ class ParameterConvertersBehaviour {
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 
         // When
-        String jsonAsString = "{\"string2\":\"11\",\"integer2\":22,\"stringList2\":[\"1\",\"1\"],\"integerList2\":[2,2]}";
+        String jsonAsString = "{\"string2\":\"11\",\"integer2\":22,\"stringList2\":[\"1\",\"1\"],"
+                + "\"integerList2\":[2,2]}";
         MyJsonDto jsonDto = (MyJsonDto) factory.createJson(jsonAsString, MyJsonDto.class);
 
         // Then
@@ -791,12 +793,13 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldAceeptParameterizedTypesAutomatically() {
-        FromStringParameterConverter<Set<Bar>> parameterizedTypeConverter = new FromStringParameterConverter<Set<Bar>>() {
-            @Override
-            public Set<Bar> convertValue(String value, Type type) {
-                throw new IllegalStateException("Not implemented");
-            }
-        };
+        FromStringParameterConverter<Set<Bar>> parameterizedTypeConverter =
+                new FromStringParameterConverter<Set<Bar>>() {
+                    @Override
+                    public Set<Bar> convertValue(String value, Type type) {
+                        throw new IllegalStateException("Not implemented");
+                    }
+                };
         assertThat(parameterizedTypeConverter.canConvertTo(new TypeLiteral<Set<Bar>>() {}.getType()), is(true));
         assertThat(parameterizedTypeConverter.canConvertTo(new TypeLiteral<Set<Number>>() {}.getType()), is(false));
         assertThat(parameterizedTypeConverter.canConvertTo(new TypeLiteral<Set>() {}.getType()), is(false));
@@ -1030,7 +1033,8 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private class SecondParameterConverter extends AbstractParameterConverter<FirstConverterOutput, SecondConverterOutput> {
+    private class SecondParameterConverter
+            extends AbstractParameterConverter<FirstConverterOutput, SecondConverterOutput> {
         @Override
         public SecondConverterOutput convertValue(FirstConverterOutput value, Type type) {
             return new SecondConverterOutput(value.getOutput() + "second");
@@ -1043,7 +1047,8 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private class ThirdParameterConverter extends AbstractParameterConverter<SecondConverterOutput, ThirdConverterOutput> {
+    private class ThirdParameterConverter
+            extends AbstractParameterConverter<SecondConverterOutput, ThirdConverterOutput> {
         @Override
         public ThirdConverterOutput convertValue(SecondConverterOutput value, Type type) {
             return new ThirdConverterOutput(value.getOutput() + "third");

@@ -375,15 +375,16 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.afterStory(false);
 
         // Then
-        String expected = "{\"id\": \"story-id\", \"path\": \"\\/path\\/to\\/story\", \"title\": \"Root story\",\"lifecycle\":"
-                + " {\"keyword\": \"Lifecycle:\",\"parameters\": {\"names\": [\"key\",\"row\"],\"values\": [[\"key1\",\"row1\"]"
-                + ",[\"key2\",\"row2\"]]}},\"scenarios\": [{\"keyword\": \"Scenario:\", \"id\": \"scenario-id\", \"title\": "
-                + "\"My scenario\",\"examples\": {\"keyword\": \"Examples:\",\"steps\": [],\"parameters\": {\"names\": "
-                + "[\"key\",\"row\"],\"values\": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},\"examples\": [{\"keyword\": "
-                + "\"Example:\", \"parameters\": {}}]},\"start\":1,\"end\":2},{\"keyword\": \"Scenario:\", \"id\": "
+        String expected = "{\"id\": \"story-id\", \"path\": \"\\/path\\/to\\/story\", \"title\": \"Root story\","
+                + "\"lifecycle\": {\"keyword\": \"Lifecycle:\",\"parameters\": {\"names\": [\"key\",\"row\"],\"values\""
+                + ": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]}},\"scenarios\": [{\"keyword\": \"Scenario:\", \"id\": "
                 + "\"scenario-id\", \"title\": \"My scenario\",\"examples\": {\"keyword\": \"Examples:\",\"steps\": [],"
-                + "\"parameters\": {\"names\": [\"key\",\"row\"],\"values\": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},"
-                + "\"examples\": [{\"keyword\": \"Example:\", \"parameters\": {}}]},\"start\":1,\"end\":2}]}";
+                + "\"parameters\": {\"names\": [\"key\",\"row\"],\"values\": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]}"
+                + ",\"examples\": [{\"keyword\": \"Example:\", \"parameters\": {}}]},\"start\":1,\"end\":2},"
+                + "{\"keyword\": \"Scenario:\", \"id\": \"scenario-id\", \"title\": \"My scenario\",\"examples\": "
+                + "{\"keyword\": \"Examples:\",\"steps\": [],\"parameters\": {\"names\": [\"key\",\"row\"],\"values\": "
+                + "[[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},\"examples\": [{\"keyword\": \"Example:\", \"parameters\""
+                + ": {}}]},\"start\":1,\"end\":2}]}";
 
         assertThat(dos2unix(out.toString()), equalTo(expected));
     }
@@ -455,7 +456,8 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 + "\n";
         String actual = dos2unix(out.toString());
         assertThat(actual, containsString(expected));
-        assertThat(actual, containsString("at org.jbehave.core.reporters.PrintStreamOutputBehaviour.shouldReportFailureTraceWhenToldToDoSo("));
+        assertThat(actual, containsString(
+                "at org.jbehave.core.reporters.PrintStreamOutputBehaviour.shouldReportFailureTraceWhenToldToDoSo("));
 
 
         // Given
@@ -487,7 +489,8 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     @Test
     void shouldReportEventsToPrintStreamInItalian() {
         // Given
-        UUIDExceptionWrapper exception = new UUIDExceptionWrapper(new RuntimeException("Lasciate in pace i miei soldi!"));
+        UUIDExceptionWrapper exception = new UUIDExceptionWrapper(
+                new RuntimeException("Lasciate in pace i miei soldi!"));
         OutputStream out = new ByteArrayOutputStream();
         LocalizedKeywords keywords = new LocalizedKeywords(Locale.ITALIAN);
         StoryReporter reporter = new TxtOutput(new PrintStream(out), new Properties(), keywords,
@@ -577,7 +580,8 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     @Test
     void shouldBuildPrintStreamReportersAndOverrideDefaultForAGivenFormat() throws IOException {
         final String storyPath = storyPath(MyStory.class);
-        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(CodeLocations.codeLocationFromClass(this.getClass()), storyPath));
+        final FilePrintStreamFactory factory = new FilePrintStreamFactory(
+                new StoryLocation(CodeLocations.codeLocationFromClass(this.getClass()), storyPath));
         StoryReporter reporter = new StoryReporterBuilder() {
             @Override
             public StoryReporter reporterFor(String storyPath, Format format) {

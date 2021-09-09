@@ -16,7 +16,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(WeldAnnotatedPathRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingWeld
 @UsingPaths(searchIn = "../core/src/main/java", includes = { "**/*.story" }, excludes = { "" })
 public class AnnotatedPathRunnerUsingWeld {

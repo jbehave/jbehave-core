@@ -34,7 +34,8 @@ public class Scenario extends StepsContainer {
         this(title, null, null, null, steps);
     }
 
-    public Scenario(String title, Meta meta, GivenStories givenStories, ExamplesTable examplesTable, List<String> steps) {
+    public Scenario(String title, Meta meta, GivenStories givenStories, ExamplesTable examplesTable,
+            List<String> steps) {
         super(steps);
         this.title = title;
         this.meta = meta;

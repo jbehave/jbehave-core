@@ -47,7 +47,8 @@ public class StepCandidate {
 
     public StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Class<?> stepsType,
             InjectableStepsFactory stepsFactory, StepsContext stepsContext, Keywords keywords,
-            StepPatternParser stepPatternParser, ParameterConverters parameterConverters, ParameterControls parameterControls) {
+            StepPatternParser stepPatternParser, ParameterConverters parameterConverters,
+            ParameterControls parameterControls) {
         this.patternAsString = patternAsString;
         this.priority = priority;
         this.stepType = stepType;

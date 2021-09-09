@@ -18,7 +18,8 @@ import org.needle4j.injection.InjectionTargetInformation;
 
 @RunWith(NeedleAnnotatedEmbedderRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingNeedle(provider = TradingServiceInjectionProvider.class)
 public abstract class ParentAnnotatedEmbedderUsingNeedle extends InjectableEmbedder {
 

@@ -121,7 +121,8 @@ public class CoreStories extends JUnitStories {
                         new StoryReporterBuilder()
                                 .withCodeLocation(codeLocationFromClass(embeddableClass))
                                 .withDefaultFormats().withViewResources(viewResources)
-                                .withFormats(contextFormat, ANSI_CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
+                                .withFormats(contextFormat, ANSI_CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE)
+                                .withFailureTrace(true)
                                 .withFailureTraceCompression(true)
                                 .withSurefireReporter(surefireReporter))
                 .useParameterConverters(parameterConverters)
@@ -133,15 +134,13 @@ public class CoreStories extends JUnitStories {
     @Override
     public InjectableStepsFactory stepsFactory() {
         MyContext context = new MyContext();
-        return new InstanceStepsFactory(configuration(),
-                new AndSteps(), new BankAccountSteps(), new BeforeAfterSteps(),
-                new CalendarSteps(), new CompositeSteps(), new CompositeNestedSteps(), new ContextSteps(context), new StepsContextSteps(),
-                new TableMappingSteps(), new IgnoringSteps(), new JsonSteps(),
+        return new InstanceStepsFactory(configuration(), new AndSteps(), new BankAccountSteps(), new BeforeAfterSteps(),
+                new CalendarSteps(), new CompositeSteps(), new CompositeNestedSteps(), new ContextSteps(context),
+                new StepsContextSteps(), new TableMappingSteps(), new IgnoringSteps(), new JsonSteps(),
                 new MetaParametrisationSteps(), new NamedAnnotationsSteps(), new NamedParametersSteps(),
                 new ParameterDelimitersSteps(), new ParametrisationByDelimitedNameSteps(), new ParametrisedSteps(),
-                new PendingSteps(), new PriorityMatchingSteps(),
-                new RestartingSteps(), new SandpitSteps(), new SearchSteps(),
-                new TableSteps(), new TraderSteps(new TradingService()), new VerbatimSteps()
+                new PendingSteps(), new PriorityMatchingSteps(), new RestartingSteps(), new SandpitSteps(),
+                new SearchSteps(), new TableSteps(), new TraderSteps(new TradingService()), new VerbatimSteps()
         );
     }
 

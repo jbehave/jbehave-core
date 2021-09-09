@@ -961,7 +961,8 @@ public class PerformableTree {
                 State state = context.state();
                 performStorySteps(context, beforeSteps, Stage.BEFORE);
                 performGivenStories(context, givenStories, story.getGivenStories());
-                if (!context.failureOccurred() || !context.configuration().storyControls().skipStoryIfGivenStoryFailed()) {
+                if (!context.failureOccurred() || !context.configuration().storyControls()
+                        .skipStoryIfGivenStoryFailed()) {
                     performScenarios(context);
                 }
                 performStorySteps(context, afterSteps, Stage.AFTER);
@@ -1266,7 +1267,8 @@ public class PerformableTree {
 
         @Override
         public void perform(RunContext context) throws InterruptedException {
-            Meta parameterMeta = parameterMeta(context.configuration().keywords(), parameters).inheritFrom(getStoryAndScenarioMeta());
+            Meta parameterMeta = parameterMeta(context.configuration().keywords(), parameters).inheritFrom(
+                    getStoryAndScenarioMeta());
             if (parameterMeta.isEmpty() || !context.filter().excluded(parameterMeta)) {
                 resetStateIfConfigured(context);
                 context.stepsContext().resetExample();

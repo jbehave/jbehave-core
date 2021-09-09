@@ -16,7 +16,8 @@ import org.junit.runner.RunWith;
 
 @RunWith(PicoAnnotatedEmbedderRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingPico(modules = { ConfigurationModule.class })
 public abstract class ParentAnnotatedEmbedderUsingPico extends InjectableEmbedder {
 

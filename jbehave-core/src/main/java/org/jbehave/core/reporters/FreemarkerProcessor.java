@@ -41,7 +41,8 @@ public class FreemarkerProcessor implements TemplateProcessor {
     @SuppressWarnings("serial")
     public static class FreemarkerProcessingFailed extends RuntimeException {
 
-        public FreemarkerProcessingFailed(Configuration configuration, String resource, Map<String, Object> dataModel, Exception cause) {
+        public FreemarkerProcessingFailed(Configuration configuration, String resource, Map<String, Object> dataModel,
+                Exception cause) {
             super("Freemarker failed to process template " + resource + " using configuration " + configuration
                     + " and data model " + dataModel, cause);
         }

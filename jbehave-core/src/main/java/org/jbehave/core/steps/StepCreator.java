@@ -162,7 +162,8 @@ public class StepCreator {
         return parameterNames;
     }
 
-    private ParameterName parameterName(String[] annotatedNames, String[] paranamerNames, String[] contextNames, int i) {
+    private ParameterName parameterName(String[] annotatedNames, String[] paranamerNames, String[] contextNames,
+            int i) {
         boolean annotated = true;
         boolean fromContext = false;
 
@@ -303,7 +304,8 @@ public class StepCreator {
         // mark parameter values that are parsed
         boolean hasTable = hasTable(types);
         for (int position = 0; position < types.length; position++) {
-            parametrisedStep = markParsedParameterValue(parametrisedStep, types[position], parameterValues[position], hasTable);
+            parametrisedStep = markParsedParameterValue(parametrisedStep, types[position], parameterValues[position],
+                    hasTable);
         }
         // mark parameter values that are named
         for (String name : namedParameters.keySet()) {
@@ -341,7 +343,8 @@ public class StepCreator {
                     return stepText.replace(value, markedVerbatim(value));
                 }
                 String markedValue = markedValue(value);
-                // identify parameter values to mark as padded by spaces to avoid duplicated replacements of overlapping values (JBEHAVE-837)
+                // identify parameter values to mark as padded by spaces to avoid duplicated replacements of overlapping
+                // values (JBEHAVE-837)
                 String leftPad = SPACE;
                 String rightPad = stepText.endsWith(value) ? NONE : SPACE;
                 return stepText.replace(pad(value, leftPad, rightPad), pad(markedValue, leftPad, rightPad));
@@ -388,7 +391,8 @@ public class StepCreator {
             ((Class) type).isAnnotationPresent(AsParameters.class);
         } else if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
-            result = isExamplesTableParameters(rawClass(parameterizedType)) || isExamplesTableParameters(argumentClass(parameterizedType));
+            result = isExamplesTableParameters(rawClass(parameterizedType)) || isExamplesTableParameters(
+                    argumentClass(parameterizedType));
         }
 
         return result;
@@ -737,7 +741,8 @@ public class StepCreator {
 
         @Override
         public StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
-            ParameterConverters paramConvertersWithExceptionInjector = paramConvertersWithExceptionInjector(storyFailureIfItHappened);
+            ParameterConverters paramConvertersWithExceptionInjector = paramConvertersWithExceptionInjector(
+                    storyFailureIfItHappened);
             MethodInvoker methodInvoker = new MethodInvoker(method, paramConvertersWithExceptionInjector, paranamer,
                     meta);
             Timer timer = new Timer().start();
@@ -754,7 +759,8 @@ public class StepCreator {
             }
         }
 
-        private ParameterConverters paramConvertersWithExceptionInjector(UUIDExceptionWrapper storyFailureIfItHappened) {
+        private ParameterConverters paramConvertersWithExceptionInjector(
+                UUIDExceptionWrapper storyFailureIfItHappened) {
             return parameterConverters.newInstanceAdding(new UUIDExceptionWrapperInjector(storyFailureIfItHappened));
         }
 

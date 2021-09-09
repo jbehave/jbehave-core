@@ -30,7 +30,8 @@ public class CoreStoriesWithCustomReports extends CoreStories {
         Properties viewResources = new Properties();
         viewResources.put("reports", "ftl/custom-reports.ftl");
         configuration.useViewGenerator(new FreemarkerViewGenerator(this.getClass()));
-        Keywords keywords = new LocalizedKeywords(new Locale("en"), "i18n/custom", "i18n/keywords", this.getClass().getClassLoader());
+        Keywords keywords = new LocalizedKeywords(new Locale("en"), "i18n/custom", "i18n/keywords",
+                this.getClass().getClassLoader());
         StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder()
                 .withKeywords(keywords)
                 .withViewResources(viewResources)
@@ -43,7 +44,8 @@ public class CoreStoriesWithCustomReports extends CoreStories {
     @Override
     public List<String> storyPaths() {
         String filter = System.getProperty("story.filter", "**/*.story");
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/failing/*.story,**/given/*.story,**/pending/*.story");
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter,
+                "**/failing/*.story,**/given/*.story,**/pending/*.story");
     }
 
     public static class CustomHtmlOutput extends HtmlTemplateOutput {

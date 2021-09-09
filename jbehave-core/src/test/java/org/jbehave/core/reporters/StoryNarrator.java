@@ -53,9 +53,12 @@ class StoryNarrator {
         Steps beforeStorySteps = new Steps(Scope.STORY, asList(beforeStoryStep));
         Steps afterScenarioSteps = new Steps(Scope.SCENARIO, asList(scenarioStep));
         Steps afterStorySteps = new Steps(Scope.STORY, asList(afterStoryStep));
-        Lifecycle lifecycle = new Lifecycle(asList(beforeScenarioSteps, beforeStorySteps), asList(afterScenarioSteps, afterStorySteps));
-        Story story = spyStoryUuid(new Story("/path/to/story", new Description("An interesting story & special chars"), new Meta(meta),
-                new Narrative("renovate my house", "customer", "get a loan"), GivenStories.EMPTY, lifecycle, new ArrayList<Scenario>()));
+        Lifecycle lifecycle = new Lifecycle(asList(beforeScenarioSteps, beforeStorySteps),
+                asList(afterScenarioSteps, afterStorySteps));
+        Story story = spyStoryUuid(
+                new Story("/path/to/story", new Description("An interesting story & special chars"), new Meta(meta),
+                        new Narrative("renovate my house", "customer", "get a loan"), GivenStories.EMPTY, lifecycle,
+                        new ArrayList<Scenario>()));
         boolean givenStory = false;
         Timing timing = getTiming();
 
@@ -85,9 +88,12 @@ class StoryNarrator {
         reportCompositeStep(reporter);
         reportSuccessfulStep(reporter, "When I request $20");
         reportSuccessfulStep(reporter, "When I ask Liz for a loan of $100");
-        reportSuccessfulStep(reporter, "When I ask Liz for a loan of $" + StepCreator.PARAMETER_VALUE_START + "99" + StepCreator.PARAMETER_VALUE_END);
+        reportSuccessfulStep(reporter, "When I ask Liz for a loan of $" + StepCreator.PARAMETER_VALUE_START + "99"
+                + StepCreator.PARAMETER_VALUE_END);
         reportSuccessfulStep(reporter, "When I write special chars <>&\"");
-        reportSuccessfulStep(reporter, "When I write special chars in parameter " + StepCreator.PARAMETER_VALUE_START + "<>&\"" + StepCreator.PARAMETER_VALUE_END);
+        reportSuccessfulStep(reporter,
+                "When I write special chars in parameter " + StepCreator.PARAMETER_VALUE_START + "<>&\""
+                        + StepCreator.PARAMETER_VALUE_END);
         reportSuccessfulStep(reporter, "When I write two parameters "
                 + StepCreator.PARAMETER_VALUE_START + ",,," + StepCreator.PARAMETER_VALUE_END
                 + " and "
@@ -98,7 +104,8 @@ class StoryNarrator {
         reporter.restartedStory(story, new RestartingStoryFailure("Restarted Story"));
         reporter.storyCancelled(story, new StoryDuration(1).setDurationInSecs(2));
         if (withFailure) {
-            reportFailedStep(reporter, "Then I should have a balance of $30", new UUIDExceptionWrapper(new Exception("Expected <30> got <25>")));
+            reportFailedStep(reporter, "Then I should have a balance of $30",
+                    new UUIDExceptionWrapper(new Exception("Expected <30> got <25>")));
         } else {
             reportPendingStep(reporter, "Then I should have a balance of $30");
         }
@@ -137,7 +144,8 @@ class StoryNarrator {
         reportSuccessfulStep(reporter, "Given money $50");
         reportSuccessfulStep(reporter, "Then I give it to Paul");
         if (withFailure) {
-            reportFailedStep(reporter, "Then I should have a balance of $30", new UUIDExceptionWrapper(new Exception("Expected <30> got <25>"))); // !
+            reportFailedStep(reporter, "Then I should have a balance of $30",
+                    new UUIDExceptionWrapper(new Exception("Expected <30> got <25>"))); // !
         } else {
             reportPendingStep(reporter, "Then I should have a balance of $30");
         }
@@ -240,9 +248,10 @@ class StoryNarrator {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
         meta.setProperty("author", "Mauro");
-        Story story = spyStoryUuid(new Story("/path/to/story",
-                new Description("An interesting story"), new Meta(meta), new Narrative("renovate my house", "customer", "get a loan"),
-                Arrays.asList(new Scenario("A scenario", Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY, new ArrayList<String>()))));
+        Story story = spyStoryUuid(new Story("/path/to/story", new Description("An interesting story"), new Meta(meta),
+                new Narrative("renovate my house", "customer", "get a loan"), Arrays.asList(
+                new Scenario("A scenario", Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY,
+                        new ArrayList<String>()))));
         reporter.beforeStory(story, false);
         if (storyExluded) {
             reporter.storyExcluded(story, "-theme testing");

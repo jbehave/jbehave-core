@@ -36,7 +36,8 @@ class SurefireReporterBehaviour {
 
         // Given
         String reportName = "surefire-simple";
-        SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(false);
+        SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(
+                false);
         SurefireReporter reporter = new SurefireReporter(this.getClass(), options);
 
         // When
@@ -55,7 +56,8 @@ class SurefireReporterBehaviour {
 
         // Given
         String reportName = "surefire-breadcrumb";
-        SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(false).withNamingStrategy(new SurefireReporter.BreadcrumbNamingStrategy());
+        SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(
+                false).withNamingStrategy(new SurefireReporter.BreadcrumbNamingStrategy());
         SurefireReporter reporter = new SurefireReporter(this.getClass(), options);
 
         // When
@@ -80,7 +82,9 @@ class SurefireReporterBehaviour {
 
     private PerformableRoot performableRoot() {
         PerformableRoot root = new PerformableRoot();
-        Story story = new Story("/path/to/an_interesting.story", new Description("An interesting story"), new Meta(Arrays.asList("+theme testing", "+author Mauro")), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
+        Story story = new Story("/path/to/an_interesting.story", new Description("An interesting story"),
+                new Meta(Arrays.asList("+theme testing", "+author Mauro")),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
         PerformableStory performableStory = new PerformableStory(story, new LocalizedKeywords(), false);
         root.add(performableStory);
         Scenario scenario = new Scenario("title", Arrays.asList(""));

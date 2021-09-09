@@ -74,7 +74,8 @@ class StoryLoaderBehaviour {
 
     @Test
     void shouldLoadStoryFromURL() {
-        String storyPath = CodeLocations.codeLocationFromClass(this.getClass()) + "org/jbehave/core/io/stories/my_pending_story";
+        String storyPath = CodeLocations.codeLocationFromClass(this.getClass())
+                + "org/jbehave/core/io/stories/my_pending_story";
         String storyAsText = "Given my step";
  
         // When
@@ -134,7 +135,8 @@ class StoryLoaderBehaviour {
         String storyPath = "org/jbehave/core/io/stories/MyPendingStory.txt";
 
         // When
-        StoryLoader loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class), new StoryFilePath[]{});
+        StoryLoader loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class),
+                new StoryFilePath[] {});
 
         // Then fail as expected
         assertThrows(StoryResourceNotFound.class, () -> loader.loadStoryAsText(storyPath));
@@ -158,7 +160,8 @@ class StoryLoaderBehaviour {
         String storyPath = null;
 
         // When
-        LoadFromRelativeFile loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class));
+        LoadFromRelativeFile loader = new LoadFromRelativeFile(
+                CodeLocations.codeLocationFromClass(MyPendingStory.class));
 
         // Then fail as expected
         assertThrows(InvalidStoryResource.class, () -> loader.loadContent(storyPath));

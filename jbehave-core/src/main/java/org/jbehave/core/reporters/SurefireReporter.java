@@ -60,7 +60,8 @@ public class SurefireReporter {
             this(DEFAULT_REPORT_NAME, DEFAULT_NAMING_STRATEGY, DEFAULT_REPORT_BY_STORY, DEFAULT_INCLUDE_PROPERTIES);
         }
 
-        public Options(String reportName, TestCaseNamingStrategy namingStrategy, boolean reportByStory, boolean includeProperties) {
+        public Options(String reportName, TestCaseNamingStrategy namingStrategy, boolean reportByStory,
+                boolean includeProperties) {
             this.reportName = reportName;
             this.namingStrategy = namingStrategy;
             this.includeProperties = includeProperties;
@@ -142,7 +143,8 @@ public class SurefireReporter {
 
     private void validateOutput(File file, String surefireXsd) throws SAXException, IOException {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = schemaFactory.newSchema(new StreamSource(this.getClass().getClassLoader().getResourceAsStream(surefireXsd)));
+        Schema schema = schemaFactory.newSchema(
+                new StreamSource(this.getClass().getClassLoader().getResourceAsStream(surefireXsd)));
         Validator validator = schema.newValidator();
         validator.validate(new StreamSource(file));
     }
@@ -155,7 +157,8 @@ public class SurefireReporter {
         private final List<TestCase> testCases;
         private final boolean includeProperties;
 
-        public TestSuite(Class<?> embeddableClass, TestCaseNamingStrategy namingStrategy, List<PerformableStory> stories, boolean includeProperties) {
+        public TestSuite(Class<?> embeddableClass, TestCaseNamingStrategy namingStrategy,
+                List<PerformableStory> stories, boolean includeProperties) {
             this.embeddableClass = embeddableClass;
             this.namingStrategy = namingStrategy;
             this.testCounts = collectTestCounts(stories);

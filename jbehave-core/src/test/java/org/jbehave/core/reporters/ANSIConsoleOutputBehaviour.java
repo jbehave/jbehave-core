@@ -67,7 +67,8 @@ class ANSIConsoleOutputBehaviour {
     void shouldUnderlineParameterValues() {
         output.assignCode("params", MAGENTA);
         output.overwritePattern("params", "{0} and {1}");
-        assertThat(output.format("params", "", value("one"), value("two")), Matchers.is("\033[35m\033[4;35mone\033[0;35m and \033[4;35mtwo\033[0;35m\033[0m"));
+        assertThat(output.format("params", "", value("one"), value("two")),
+                Matchers.is("\033[35m\033[4;35mone\033[0;35m and \033[4;35mtwo\033[0;35m\033[0m"));
     }
 
     private String value(String str) {

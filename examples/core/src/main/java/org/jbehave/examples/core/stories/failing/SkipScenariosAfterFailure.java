@@ -8,7 +8,8 @@ public class SkipScenariosAfterFailure extends CoreStory {
 
     @Override
     public Configuration configuration() {
-        return super.configuration().useStoryControls(new StoryControls().doSkipScenariosAfterFailure(true).doSkipBeforeAndAfterScenarioStepsIfGivenStory(true));
+        return super.configuration().useStoryControls(new StoryControls().doSkipScenariosAfterFailure(true)
+                .doSkipBeforeAndAfterScenarioStepsIfGivenStory(true));
     }
 
 }

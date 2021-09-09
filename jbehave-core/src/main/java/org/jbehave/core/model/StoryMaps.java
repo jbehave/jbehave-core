@@ -39,7 +39,8 @@ public class StoryMaps {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("metaFilters", indexed.keySet()).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("metaFilters", indexed.keySet())
+                .toString();
     }
 
 }

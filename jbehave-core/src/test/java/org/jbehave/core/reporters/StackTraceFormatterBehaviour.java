@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("checkstyle:LineLength")
 class StackTraceFormatterBehaviour {
 
     @Test
@@ -101,7 +102,7 @@ class StackTraceFormatterBehaviour {
 
         // Then it looks like
         String expected = "java.lang.Exception: some cause\n"
-                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:100)\n"
+                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:101)\n"
                 + "\t(reflection-invoke)\n"
                 + "\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n"
                 + "...";

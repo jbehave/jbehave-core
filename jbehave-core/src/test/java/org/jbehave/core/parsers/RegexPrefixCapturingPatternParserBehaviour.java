@@ -65,11 +65,14 @@ class RegexPrefixCapturingPatternParserBehaviour {
 
     @Test
     void shouldMatchStepWithPatternsUsingCustomCharacterClass() {
-        RegexPrefixCapturingPatternParser parserAllowingOnlyLettersInParameterNames = new RegexPrefixCapturingPatternParser("$", "[\\p{L}]");
-        assertThatPatternMatchesStep(parserAllowingOnlyLettersInParameterNames, "a house with $numberOfFirstFloorDoors doors and $facing windows",
-                "a house with 3 doors and 4 windows", true, "numberOfFirstFloorDoors", "facing");
-        assertThatPatternMatchesStep(parserAllowingOnlyLettersInParameterNames, "a house with $numberOf1stFloorDoors doors and $facing2 windows",
-                "a house with 3 doors and 4 windows", false);
+        RegexPrefixCapturingPatternParser parserAllowingOnlyLettersInParameterNames =
+                new RegexPrefixCapturingPatternParser("$", "[\\p{L}]");
+        assertThatPatternMatchesStep(parserAllowingOnlyLettersInParameterNames,
+                "a house with $numberOfFirstFloorDoors doors and $facing windows", "a house with 3 doors and 4 windows",
+                true, "numberOfFirstFloorDoors", "facing");
+        assertThatPatternMatchesStep(parserAllowingOnlyLettersInParameterNames,
+                "a house with $numberOf1stFloorDoors doors and $facing2 windows", "a house with 3 doors and 4 windows",
+                false);
     }
 
     @Test

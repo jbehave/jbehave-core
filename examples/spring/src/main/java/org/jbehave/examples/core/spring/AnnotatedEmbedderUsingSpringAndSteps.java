@@ -29,7 +29,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(SpringAnnotatedEmbedderRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
     PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 @UsingSpring(resources = { "org/jbehave/examples/core/spring/configuration.xml" })

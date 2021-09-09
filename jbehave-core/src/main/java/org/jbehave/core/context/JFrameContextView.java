@@ -70,7 +70,8 @@ public class JFrameContextView implements ContextView {
     }
 
     protected String formatText(String story, String scenario, String step) {
-        return format(labelTemplate(), (story != null ? escapeHtml4(story) : ""), (scenario != null ? escapeHtml4(scenario) : ""), escapeHtml4(step));
+        return format(labelTemplate(), (story != null ? escapeHtml4(story) : ""),
+                (scenario != null ? escapeHtml4(scenario) : ""), escapeHtml4(step));
     }
 
     protected String labelTemplate() {

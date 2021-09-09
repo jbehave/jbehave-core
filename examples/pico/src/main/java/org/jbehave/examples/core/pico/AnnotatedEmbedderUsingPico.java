@@ -46,7 +46,8 @@ import org.picocontainer.MutablePicoContainer;
  */
 @RunWith(PicoAnnotatedEmbedderRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingPico(modules = { ConfigurationModule.class, StepsModule.class })
 public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
 
@@ -64,7 +65,8 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
 
         @Override
         public void configure(MutablePicoContainer container) {
-            container.addComponent(StoryControls.class, new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false));
+            container.addComponent(StoryControls.class,
+                    new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false));
             container.addComponent(StoryLoader.class, new LoadFromClasspath(this.getClass().getClassLoader()));
             container.addComponent(ParameterConverter.class, new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
             container.addComponent(new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)

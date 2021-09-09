@@ -129,7 +129,8 @@ class LocalizedKeywordsBehaviour {
         try {
             ensureKeywordsAreLocalisedFor(new Locale("en"), "unknown");
         } catch (ResourceBundleNotFound e) {
-            String path = StringUtils.substringAfter(e.getMessage(),"Resource bundle unknown not found for locale en in classLoader");
+            String path = StringUtils.substringAfter(e.getMessage(),
+                    "Resource bundle unknown not found for locale en in classLoader");
             assertThat(path.split(ResourceBundleNotFound.PATH_SEPARATOR).length, greaterThan(0));
         }
     }
@@ -216,13 +217,15 @@ class LocalizedKeywordsBehaviour {
         return keywordsFor(locale, null, bundleName, classLoader);
     }
 
-    private LocalizedKeywords keywordsFor(Locale locale, Locale baseLocale, String bundleName, ClassLoader classLoader) {
+    private LocalizedKeywords keywordsFor(Locale locale, Locale baseLocale, String bundleName,
+            ClassLoader classLoader) {
         ClassLoader cl = classLoader != null ? classLoader : this.getClass().getClassLoader();
         LocalizedKeywords keywords;
         if (bundleName == null) {
             keywords = (locale == null ? new LocalizedKeywords() : new LocalizedKeywords(locale));
         } else {
-            keywords = (baseLocale == null ? new LocalizedKeywords(locale, bundleName, cl) : new LocalizedKeywords(locale, baseLocale, bundleName, cl));
+            keywords = (baseLocale == null ? new LocalizedKeywords(locale, bundleName, cl) : new LocalizedKeywords(
+                    locale, baseLocale, bundleName, cl));
         }
         if (locale != null) {
             assertThat(keywords.getLocale(), equalTo(locale));

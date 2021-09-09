@@ -192,14 +192,16 @@ public class Steps extends AbstractCandidateSteps {
         return candidates;
     }
 
-    private void addCandidatesFromVariants(List<StepCandidate> candidates, Method method, StepType stepType, String value, int priority) {
+    private void addCandidatesFromVariants(List<StepCandidate> candidates, Method method, StepType stepType,
+            String value, int priority) {
         PatternVariantBuilder b = new PatternVariantBuilder(value);
         for (String variant : b.allVariants()) {
             addCandidate(candidates, method, stepType, variant, priority);
         }
     }
-    
-    private void addCandidatesFromAliases(List<StepCandidate> candidates, Method method, StepType stepType, int priority) {
+
+    private void addCandidatesFromAliases(List<StepCandidate> candidates, Method method, StepType stepType,
+            int priority) {
         if (method.isAnnotationPresent(Aliases.class)) {
             String[] aliases = method.getAnnotation(Aliases.class).values();
             for (String alias : aliases) {

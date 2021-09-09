@@ -10,7 +10,8 @@ import org.junit.runner.RunWith;
 
 @RunWith(WeldAnnotatedEmbedderRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingWeld
 public abstract class ParentAnnotatedEmbedderUsingWeld extends InjectableEmbedder {
 

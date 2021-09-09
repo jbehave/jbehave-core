@@ -21,9 +21,11 @@ class StoryMapperBehaviour {
     void shouldMapStoriesAllowedByFilter() {
         // Given
         Meta meta1 = mock(Meta.class, "meta1");
-        Story story1 = new Story("/path/to/story1", Description.EMPTY, meta1, Narrative.EMPTY, asList(new Scenario("scenario1", meta1)));
+        Story story1 = new Story("/path/to/story1", Description.EMPTY, meta1, Narrative.EMPTY,
+                asList(new Scenario("scenario1", meta1)));
         Meta meta2 = mock(Meta.class, "meta2");
-        Story story2 = new Story("/path/to/story2", Description.EMPTY, meta2, Narrative.EMPTY, asList(new Scenario("scenario2", meta2)));
+        Story story2 = new Story("/path/to/story2", Description.EMPTY, meta2, Narrative.EMPTY,
+                asList(new Scenario("scenario2", meta2)));
         MetaFilter filter = mock(MetaFilter.class);
         String filterAsString = "-some property";
         

@@ -35,7 +35,8 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
-            return configureFailureTraces(storyReporterBuilder, new IdeOnlyConsoleOutput(storyReporterBuilder.keywords()));
+            return configureFailureTraces(storyReporterBuilder,
+                    new IdeOnlyConsoleOutput(storyReporterBuilder.keywords()));
         }
     };
 
@@ -43,7 +44,8 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                                                  StoryReporterBuilder storyReporterBuilder) {
-            return configureFailureTraces(storyReporterBuilder, new TeamCityConsoleOutput(storyReporterBuilder.keywords()));
+            return configureFailureTraces(storyReporterBuilder,
+                    new TeamCityConsoleOutput(storyReporterBuilder.keywords()));
         }
     };
 

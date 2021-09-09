@@ -33,9 +33,11 @@ class JarFileScannerBehaviour {
     @Test
     void shouldScanJarFromPathWithNoIncludes() {
         List<String> emptyIncludes = scan("src/test/resources/stories.jar", "", "**/*.story");
-        assertThat(emptyIncludes, not(hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story", "etsy_steps.xml")));
+        assertThat(emptyIncludes,
+                not(hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story", "etsy_steps.xml")));
         List<String> nullIncludes = scan("src/test/resources/stories.jar", null, "**/*.story");
-        assertThat(nullIncludes, not(hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story", "etsy_steps.xml")));
+        assertThat(nullIncludes,
+                not(hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story", "etsy_steps.xml")));
     }
 
     @Test

@@ -245,7 +245,8 @@ public class AnnotationBuilder {
 
     @SuppressWarnings("unchecked")
     private StoryFinder storyFinder() {
-        return instanceOf(StoryFinder.class, (Class<? extends StoryFinder>)finder.getAnnotatedValue(UsingPaths.class, Class.class, "storyFinder"));
+        return instanceOf(StoryFinder.class,
+                (Class<? extends StoryFinder>) finder.getAnnotatedValue(UsingPaths.class, Class.class, "storyFinder"));
     }
 
     private boolean control(AnnotationFinder finder, String name) {

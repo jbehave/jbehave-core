@@ -16,7 +16,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(SpringAnnotatedPathRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingSpring(resources = { "org/jbehave/examples/core/spring/configuration.xml",
     "org/jbehave/examples/core/spring/steps.xml" })
 @UsingPaths(searchIn = "../core/src/main/java", includes = { "**/*.story" }, excludes = { "**/examples_table*.story" })

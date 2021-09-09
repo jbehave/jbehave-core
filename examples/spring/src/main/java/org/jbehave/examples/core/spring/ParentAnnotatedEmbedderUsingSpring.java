@@ -10,7 +10,8 @@ import org.junit.runner.RunWith;
 
 @RunWith(SpringAnnotatedEmbedderRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingSpring(resources = { "org/jbehave/examples/core/spring/configuration.xml" })
 public abstract class ParentAnnotatedEmbedderUsingSpring extends InjectableEmbedder {
 

@@ -51,7 +51,8 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
     }
 
     @Override
-    public List<Step> collectBeforeScenarioSteps(List<BeforeOrAfterStep> beforeScenarioSteps, Meta storyAndScenarioMeta) {
+    public List<Step> collectBeforeScenarioSteps(List<BeforeOrAfterStep> beforeScenarioSteps,
+            Meta storyAndScenarioMeta) {
         return createSteps(beforeScenarioSteps, storyAndScenarioMeta);
     }
 
@@ -117,7 +118,8 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
                     } else {
                         List<Step> composedSteps = new ArrayList<>();
                         if (candidate.isComposite()) {
-                            candidate.addComposedSteps(composedSteps, stepAsString, namedParameters, prioritisedCandidates);
+                            candidate.addComposedSteps(composedSteps, stepAsString, namedParameters,
+                                    prioritisedCandidates);
                         }
                         if (outcome != null) {
                             step = candidate.createMatchedStepUponOutcome(stepAsString, namedParameters, composedSteps,

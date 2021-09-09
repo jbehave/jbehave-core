@@ -100,8 +100,10 @@ public class CoreStoriesEmbedders {
                     .withDefaultFormats()
                     .withFormats(CONSOLE, TXT, HTML, XML))
                 .useTableTransformers(tableTransformers)
-                .useParameterConverters(new ParameterConverters(resourceLoader, tableTransformers)
-                        .addConverters(new ParameterConverters.DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
+                .useParameterConverters(new ParameterConverters(resourceLoader, tableTransformers).addConverters(
+                        new ParameterConverters.DateConverter(
+                                new SimpleDateFormat("yyyy-MM-dd"))) // use custom date pattern
+                )
                 .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                                 "%")) // use '%' instead of '$' to identify parameters
                 .useStepMonitor(new SilentStepMonitor());
@@ -110,14 +112,13 @@ public class CoreStoriesEmbedders {
         @Override
         public InjectableStepsFactory stepsFactory() {
             MyContext context = new MyContext();
-            return new InstanceStepsFactory(configuration(),
-                    new AndSteps(), new BankAccountSteps(), new BeforeAfterSteps(),
-                    new CalendarSteps(), new CompositeSteps(), new CompositeNestedSteps(), new ContextSteps(context), new StepsContextSteps(),
-                    new TableMappingSteps(), new IgnoringSteps(), new JsonSteps(),
-                    new MetaParametrisationSteps(), new NamedAnnotationsSteps(), new NamedParametersSteps(),
-                    new ParameterDelimitersSteps(), new ParametrisationByDelimitedNameSteps(), new ParametrisedSteps(),
-                    new PendingSteps(), new PriorityMatchingSteps(),
-                    new RestartingSteps(), new SandpitSteps(), new SearchSteps(),
+            return new InstanceStepsFactory(configuration(), new AndSteps(), new BankAccountSteps(),
+                    new BeforeAfterSteps(), new CalendarSteps(), new CompositeSteps(), new CompositeNestedSteps(),
+                    new ContextSteps(context), new StepsContextSteps(), new TableMappingSteps(), new IgnoringSteps(),
+                    new JsonSteps(), new MetaParametrisationSteps(), new NamedAnnotationsSteps(),
+                    new NamedParametersSteps(), new ParameterDelimitersSteps(),
+                    new ParametrisationByDelimitedNameSteps(), new ParametrisedSteps(), new PendingSteps(),
+                    new PriorityMatchingSteps(), new RestartingSteps(), new SandpitSteps(), new SearchSteps(),
                     new TableSteps(), new TraderSteps(new TradingService()), new VerbatimSteps()
             );
         }

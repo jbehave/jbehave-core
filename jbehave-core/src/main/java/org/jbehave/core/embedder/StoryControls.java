@@ -107,7 +107,8 @@ public class StoryControls {
         return this;
     }
 
-    public StoryControls doSkipBeforeAndAfterScenarioStepsIfGivenStory(boolean skipBeforeAndAfterScenarioStepsIfGivenStory) {
+    public StoryControls doSkipBeforeAndAfterScenarioStepsIfGivenStory(
+            boolean skipBeforeAndAfterScenarioStepsIfGivenStory) {
         this.skipBeforeAndAfterScenarioStepsIfGivenStory = skipBeforeAndAfterScenarioStepsIfGivenStory;
         return this;
     }

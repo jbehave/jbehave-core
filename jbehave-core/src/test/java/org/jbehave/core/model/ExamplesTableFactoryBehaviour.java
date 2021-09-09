@@ -15,7 +15,8 @@ class ExamplesTableFactoryBehaviour {
 
     private static final String RESOURCE_PATH = "/path/to/table";
 
-    private static final String PROPERTIES = "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,commentSeparator=#}\n";
+    private static final String PROPERTIES =
+            "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,commentSeparator=#}\n";
 
     private static final String TABLE_WITH_INLINED_SEPARATTORS = PROPERTIES
             + "!header 1!header 2! .... !header n!\n"

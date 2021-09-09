@@ -13,7 +13,8 @@ public class FailingBeforeStories extends CoreStory {
 
     @Override
     public Configuration configuration() {
-        return super.configuration().useStoryControls(new StoryControls().doResetStateBeforeStory(false).doResetStateBeforeScenario(false));
+        return super.configuration().useStoryControls(
+                new StoryControls().doResetStateBeforeStory(false).doResetStateBeforeScenario(false));
     }
 
     @Override

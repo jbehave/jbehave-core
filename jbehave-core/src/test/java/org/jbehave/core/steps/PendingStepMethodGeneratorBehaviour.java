@@ -32,7 +32,8 @@ class PendingStepMethodGeneratorBehaviour {
     void shouldGenerateMethodForAndPendingStepWithPreviousNonAndStep() {
 
         // When
-        PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("And I am pending", "Given I was pending");
+        PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("And I am pending",
+                "Given I was pending");
 
         // Then
         String method =
@@ -47,7 +48,8 @@ class PendingStepMethodGeneratorBehaviour {
     @Test
     void shouldNormaliseStepPatternToJavaCompatibleMethodNameAndString() {
         // When
-        String pattern = "I'm searching for \".*\", and for others chars such as :;!|, and I look for <this>: $ \\ / () {} [] ";
+        String pattern = "I'm searching for \".*\", and for others chars such as :;!|, "
+                + "and I look for <this>: $ \\ / () {} [] ";
         PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("When " + pattern, null);
 
         // Then
@@ -87,7 +89,8 @@ class PendingStepMethodGeneratorBehaviour {
         method =
             "@When(\"" + escapeJava(pattern) + "\")\n"
             + "@Pending\n"
-            + "public void whenImSearchingFor¢£¤¥ª­µºÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ() {\n"
+            + "public void whenImSearchingFor¢£¤¥ª­µºÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ() "
+            + "{\n"
             + "  // PENDING\n"
             + "}\n";
         assertThat(generator.generateMethod(pendingStep), equalTo(method));

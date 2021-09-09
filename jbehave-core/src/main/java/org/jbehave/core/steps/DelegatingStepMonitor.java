@@ -42,14 +42,16 @@ public class DelegatingStepMonitor implements StepMonitor {
     }
 
     @Override
-    public void stepMatchesType(String stepAsString, String previousAsString, boolean matchesType, StepType stepType, Method method, Object stepsInstance) {
+    public void stepMatchesType(String stepAsString, String previousAsString, boolean matchesType, StepType stepType,
+            Method method, Object stepsInstance) {
         for (StepMonitor monitor : delegates) {
             monitor.stepMatchesType(stepAsString, previousAsString, matchesType, stepType, method, stepsInstance);
         }
     }
 
     @Override
-    public void stepMatchesPattern(String step, boolean matches, StepPattern stepPattern, Method method, Object stepsInstance) {
+    public void stepMatchesPattern(String step, boolean matches, StepPattern stepPattern, Method method,
+            Object stepsInstance) {
         for (StepMonitor monitor : delegates) {
             monitor.stepMatchesPattern(step, matches, stepPattern, method, stepsInstance);
         }

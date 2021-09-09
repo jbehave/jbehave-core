@@ -263,7 +263,8 @@ class AnnotationBuilderBehaviour {
 
     }
 
-    @UsingEmbedder(batch = true, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, skip = true, verboseFailures = true, verboseFiltering = true, 
+    @UsingEmbedder(batch = true, generateViewAfterStories = true, ignoreFailureInStories = true,
+            ignoreFailureInView = true, skip = true, verboseFailures = true, verboseFiltering = true,
             storyTimeouts = "**/longs/*.story:60,**/shorts/*.story:10", failOnStoryTimeout = true, threads = 2)
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedEmbedderControls extends InjectableEmbedder {

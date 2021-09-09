@@ -19,7 +19,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(GroovyAnnotatedEmbedderRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingGroovy()
 public class AnnotatedEmbedderUsingGroovy extends InjectableEmbedder {
 

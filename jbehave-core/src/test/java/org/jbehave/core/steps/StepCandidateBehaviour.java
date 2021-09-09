@@ -67,7 +67,8 @@ class StepCandidateBehaviour {
         return candidateWith(patternAsString, stepType, method, instance, new ParameterControls());
     }
 
-    private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance, ParameterControls parameterControls) {
+    private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance,
+            ParameterControls parameterControls) {
         Class<?> stepsType = instance.getClass();
         MostUsefulConfiguration configuration = new MostUsefulConfiguration();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(configuration, instance);
@@ -229,7 +230,8 @@ class StepCandidateBehaviour {
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
         StepCandidate candidate = candidateWith("the grid should look like $grid", THEN, method, someSteps);
-        performStep(candidate, "Then the grid should look like" + windowsNewline + ".." + unixNewline + ".." + windowsNewline);
+        performStep(candidate,
+                "Then the grid should look like" + windowsNewline + ".." + unixNewline + ".." + windowsNewline);
         assertThat((String) someSteps.args, equalTo(".." + systemNewline + ".." + systemNewline));
     }
 
@@ -315,7 +317,8 @@ class StepCandidateBehaviour {
         namedParameters.put("nth", "ground");
         String patternAsString = "I live on the ith floor but some call it the nth";
         Method method = stepMethodFor("methodWithNamedParametersInNaturalOrder", AnnotationNamedParameterSteps.class);
-        StepCandidate candidate = candidateWith(patternAsString, WHEN, method, steps, new ParameterControls().useNameDelimiterLeft("[").useNameDelimiterRight("]"));
+        StepCandidate candidate = candidateWith(patternAsString, WHEN, method, steps,
+                new ParameterControls().useNameDelimiterLeft("[").useNameDelimiterRight("]"));
         String stepAsString = "When I live on the [ith] floor but some call it the [nth]";
         StoryReporter reporter = mock(StoryReporter.class);
         StepResult result = candidate.createMatchedStep(stepAsString, namedParameters, emptyList())

@@ -22,7 +22,8 @@ class GroovyStepsFactoryBehaviour {
     void shouldCreateStepsInstancesFromGroovyWhenAnnotated() {
         GroovyResourceFinder resourceFinder = new GroovyResourceFinder(codeLocationFromClass(this.getClass()),
                 "**/steps/groovy/*.groovy", "**/invalidSteps.groovy");
-        GroovyStepsFactory factory = new GroovyStepsFactory(new MostUsefulConfiguration(), new GroovyContext(resourceFinder));
+        GroovyStepsFactory factory = new GroovyStepsFactory(new MostUsefulConfiguration(),
+                new GroovyContext(resourceFinder));
         List<Class<?>> types = factory.stepsTypes();
         MatcherAssert.assertThat(types.size(), Matchers.equalTo(1));
         assertThat(types.get(0).getSimpleName(), equalTo("AnnotatedSteps"));

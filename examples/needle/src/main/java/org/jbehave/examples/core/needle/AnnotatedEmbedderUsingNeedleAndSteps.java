@@ -28,7 +28,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(NeedleAnnotatedEmbedderRunner.class)
 @Configure()
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingSteps(instances = { NeedleTraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
     PendingSteps.class, PriorityMatchingSteps.class, SandpitSteps.class })
 @UsingNeedle

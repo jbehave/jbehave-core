@@ -80,16 +80,20 @@ class IOUtilsBehaviour {
     @Test
     void shouldProcessInputStream() throws IOException {
         assertThat(IOUtils.toString(new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8)), true), equalTo(""));
-        assertThat(IOUtils.toString(new ByteArrayInputStream("a".getBytes(StandardCharsets.UTF_8)), true), equalTo("a"));
-        assertThat(IOUtils.toString(new ByteArrayInputStream("asdf".getBytes(StandardCharsets.UTF_8)), true), equalTo("asdf"));
-        assertThat(IOUtils.toString(new ByteArrayInputStream("äöü".getBytes(StandardCharsets.UTF_8)), true), equalTo("äöü"));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("a".getBytes(StandardCharsets.UTF_8)), true),
+                equalTo("a"));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("asdf".getBytes(StandardCharsets.UTF_8)), true),
+                equalTo("asdf"));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("äöü".getBytes(StandardCharsets.UTF_8)), true),
+                equalTo("äöü"));
 
         ByteArrayInputStream input = new ByteArrayInputStream("asdf".getBytes(StandardCharsets.UTF_8));
         assertThat(IOUtils.toString(input, false), equalTo("asdf"));
         input.close();
 
         String longString = createLongString();
-        assertThat(IOUtils.toString(new ByteArrayInputStream(longString.getBytes(StandardCharsets.UTF_8)), true), equalTo(longString));
+        assertThat(IOUtils.toString(new ByteArrayInputStream(longString.getBytes(StandardCharsets.UTF_8)), true),
+                equalTo(longString));
 
         assertThat(IOUtils.toString(new FileInputStream("src/test/resources/testfile"), true), equalTo("##########"));
 

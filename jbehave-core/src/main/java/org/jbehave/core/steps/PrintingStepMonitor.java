@@ -18,8 +18,10 @@ import org.jbehave.core.model.StepPattern;
 public abstract class PrintingStepMonitor implements StepMonitor {
 
     private static final String CONVERTED_VALUE_OF_TYPE = "Converted value '%s' of type '%s' to '%s' with %s '%s'";
-    private static final String STEP_MATCHES_TYPE = "Step '%s' (with previous step '%s') %s type '%s' for method '%s' with annotations '%s' in steps instance '%s'";
-    private static final String STEP_MATCHES_PATTERN = "Step '%s' %s pattern '%s' for method '%s' with annotations '%s' in steps instance '%s'";
+    private static final String STEP_MATCHES_TYPE = "Step '%s' (with previous step '%s') %s type '%s' for method '%s' "
+            + "with annotations '%s' in steps instance '%s'";
+    private static final String STEP_MATCHES_PATTERN = "Step '%s' %s pattern '%s' for method '%s' with annotations '%s'"
+            + " in steps instance '%s'";
     private static final String PERFORMING = "Performing step '%s'%s";
     private static final String DRY_RUN = " (DRY RUN)";
     private static final String MATCHES = "matches";

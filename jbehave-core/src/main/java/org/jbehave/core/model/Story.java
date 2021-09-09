@@ -51,11 +51,13 @@ public class Story {
         this(path, description, meta, narrative, null, scenarios);
     }
 
-    public Story(String path, Description description, Meta meta, Narrative narrative, GivenStories givenStories, List<Scenario> scenarios) {
+    public Story(String path, Description description, Meta meta, Narrative narrative, GivenStories givenStories,
+            List<Scenario> scenarios) {
         this(path, description, meta, narrative, givenStories, null, scenarios);
     }
-    
-    public Story(String path, Description description, Meta meta, Narrative narrative, GivenStories givenStories, Lifecycle lifecycle, List<Scenario> scenarios) {
+
+    public Story(String path, Description description, Meta meta, Narrative narrative, GivenStories givenStories,
+            Lifecycle lifecycle, List<Scenario> scenarios) {
         this.path = path;
         this.description = description;
         this.narrative = narrative;

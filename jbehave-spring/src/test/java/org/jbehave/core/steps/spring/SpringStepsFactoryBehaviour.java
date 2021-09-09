@@ -54,7 +54,8 @@ public class SpringStepsFactoryBehaviour {
     @Test
     void stepsWithDependenciesCanBeCreated() {
         // Given
-        ApplicationContext context = createApplicationContext("org/jbehave/core/steps/spring/steps-with-dependency.xml");
+        ApplicationContext context = createApplicationContext(
+                "org/jbehave/core/steps/spring/steps-with-dependency.xml");
         // When
         SpringStepsFactory factory = new SpringStepsFactory(
                 new MostUsefulConfiguration(), context);

@@ -117,15 +117,13 @@ public abstract class CoreStory extends JUnitStory {
     @Override
     public InjectableStepsFactory stepsFactory() {
         MyContext context = new MyContext();
-        return new InstanceStepsFactory(configuration(),
-                new AndSteps(), new BankAccountSteps(), new BeforeAfterSteps(),
-                new CalendarSteps(), new CompositeSteps(), new CompositeNestedSteps(), new ContextSteps(context), new StepsContextSteps(),
-                new TableMappingSteps(), new IgnoringSteps(), new JsonSteps(),
+        return new InstanceStepsFactory(configuration(), new AndSteps(), new BankAccountSteps(), new BeforeAfterSteps(),
+                new CalendarSteps(), new CompositeSteps(), new CompositeNestedSteps(), new ContextSteps(context),
+                new StepsContextSteps(), new TableMappingSteps(), new IgnoringSteps(), new JsonSteps(),
                 new MetaParametrisationSteps(), new NamedAnnotationsSteps(), new NamedParametersSteps(),
                 new ParameterDelimitersSteps(), new ParametrisationByDelimitedNameSteps(), new ParametrisedSteps(),
-                new PendingSteps(), new PriorityMatchingSteps(),
-                new RestartingSteps(), new SandpitSteps(), new SearchSteps(),
-                new TableSteps(), new TraderSteps(new TradingService())
+                new PendingSteps(), new PriorityMatchingSteps(), new RestartingSteps(), new SandpitSteps(),
+                new SearchSteps(), new TableSteps(), new TraderSteps(new TradingService())
         );
     }
 }

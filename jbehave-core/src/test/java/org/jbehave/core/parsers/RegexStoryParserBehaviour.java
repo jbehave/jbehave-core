@@ -284,7 +284,8 @@ class RegexStoryParserBehaviour {
                 wholeStory, storyPath);
 
         Scenario scenario = story.getScenarios().get(0);
-        assertThat(scenario.getTitle(), equalTo("Show that we have Given/When/Then as part of description or step content"));
+        assertThat(scenario.getTitle(),
+                equalTo("Show that we have Given/When/Then as part of description or step content"));
         assertThat(scenario.getGivenStories().getPaths(), equalTo(asList("GivenAStoryContainingAKeyword")));
         List<String> steps = scenario.getSteps();
         assertThat(steps.get(0), equalTo("Given a scenario Given"));
@@ -489,7 +490,8 @@ class RegexStoryParserBehaviour {
         assertThat(afterSteps.get(0), equalTo("Given a step after any scenario"));
         assertThat(afterSteps.get(1), equalTo("Given a step after successful scenario"));
         assertThat(afterSteps.get(2), equalTo("Given a step after failed scenario"));
-        assertThat(new ArrayList<>(lifecycle.getOutcomes()), equalTo(Arrays.asList(Outcome.ANY, Outcome.SUCCESS, Outcome.FAILURE)));
+        assertThat(new ArrayList<>(lifecycle.getOutcomes()),
+                equalTo(Arrays.asList(Outcome.ANY, Outcome.SUCCESS, Outcome.FAILURE)));
         assertThat(lifecycle.getAfterSteps(Outcome.ANY).size(), equalTo(1));
         assertThat(lifecycle.getAfterSteps(Outcome.ANY).get(0), equalTo("Given a step after any scenario"));
         assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS).size(), equalTo(1));
@@ -499,15 +501,18 @@ class RegexStoryParserBehaviour {
         assertThat(lifecycle.getMetaFilter(Outcome.ANY).asString(), equalTo("+all"));
         Keywords keywords = new Keywords();
         assertThat(lifecycle.getAfterSteps(Outcome.ANY, Meta.createMeta("@all", keywords)).size(), equalTo(1));
-        assertThat(lifecycle.getAfterSteps(Outcome.ANY, Meta.createMeta("@all", keywords)).get(0), equalTo("Given a step after any scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.ANY, Meta.createMeta("@all", keywords)).get(0),
+                equalTo("Given a step after any scenario"));
         assertThat(lifecycle.getAfterSteps(Outcome.ANY, Meta.createMeta("@none", keywords)).size(), equalTo(0));
         assertThat(lifecycle.getMetaFilter(Outcome.SUCCESS).asString(), equalTo("+happy"));
         assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS, Meta.createMeta("@happy", keywords)).size(), equalTo(1));
-        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS, Meta.createMeta("@happy", keywords)).get(0), equalTo("Given a step after successful scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS, Meta.createMeta("@happy", keywords)).get(0),
+                equalTo("Given a step after successful scenario"));
         assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS, Meta.createMeta("@none", keywords)).size(), equalTo(0));
         assertThat(lifecycle.getMetaFilter(Outcome.FAILURE).asString(), equalTo("+sad"));        
         assertThat(lifecycle.getAfterSteps(Outcome.FAILURE, Meta.createMeta("@sad", keywords)).size(), equalTo(1));
-        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE, Meta.createMeta("@sad", keywords)).get(0), equalTo("Given a step after failed scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE, Meta.createMeta("@sad", keywords)).get(0),
+                equalTo("Given a step after failed scenario"));
         assertThat(lifecycle.getAfterSteps(Outcome.FAILURE, Meta.createMeta("@none", keywords)).size(), equalTo(0));
         Scenario scenario = story.getScenarios().get(0);
         List<String> steps = scenario.getSteps();
@@ -585,7 +590,8 @@ class RegexStoryParserBehaviour {
                 wholeStory, storyPath);
 
         Scenario scenario = story.getScenarios().get(0);
-        assertThat(scenario.getTitle(), equalTo("Show that we can comment out GivenStories and Examples portions of a scenario"));
+        assertThat(scenario.getTitle(),
+                equalTo("Show that we can comment out GivenStories and Examples portions of a scenario"));
         assertThat(scenario.getGivenStories().getPaths(), equalTo(Arrays.<String>asList()));
         List<String> steps = scenario.getSteps();
         assertThat(steps.get(0), equalTo("!-- GivenStories: AGivenStoryToBeCommented"));
@@ -745,7 +751,8 @@ class RegexStoryParserBehaviour {
         assertThat(story.toString(), containsString("Narrative"));
         assertThat(story.getNarrative().inOrderTo(), equalTo("see what we're not delivering"));
         assertThat(story.getNarrative().asA(), equalTo("developer"));
-        assertThat(story.getNarrative().iWantTo(), equalTo("see the narrative for my story when a scenario in that story breaks"));
+        assertThat(story.getNarrative().iWantTo(),
+                equalTo("see the narrative for my story when a scenario in that story breaks"));
 
         assertThat(story.getGivenStories().getPaths(), hasItem("path1"));
         assertThat(story.getGivenStories().getPaths(), hasItem("path2"));
@@ -774,8 +781,10 @@ class RegexStoryParserBehaviour {
 
         Meta scenarioAsMeta = firstScenario.asMeta("scenario_");
         assertThat(scenarioAsMeta.getProperty("scenario_title"), equalTo(firstScenario.getTitle()));
-        assertThat(scenarioAsMeta.getProperty("scenario_givenStories"), equalTo(firstScenario.getGivenStories().asString()));
-        assertThat(scenarioAsMeta.getProperty("scenario_examplesTable"), equalTo(firstScenario.getExamplesTable().asString()));
+        assertThat(scenarioAsMeta.getProperty("scenario_givenStories"),
+                equalTo(firstScenario.getGivenStories().asString()));
+        assertThat(scenarioAsMeta.getProperty("scenario_examplesTable"),
+                equalTo(firstScenario.getExamplesTable().asString()));
 
         assertThat(story.toString(), containsString("A passing scenario"));
         Scenario secondScenario = story.getScenarios().get(1);
@@ -984,7 +993,8 @@ class RegexStoryParserBehaviour {
 
         Scenario scenario = story.getScenarios().get(0);
         GivenStories givenStories = scenario.getGivenStories();
-        assertThat(givenStories.asString(), equalTo("path/to/one#{0}, path/to/two#{1}, path/to/three#{2}, path/to/four#{a}, path/to/five"));
+        assertThat(givenStories.asString(),
+                equalTo("path/to/one#{0}, path/to/two#{1}, path/to/three#{2}, path/to/four#{a}, path/to/five"));
         assertThat(givenStories.toString(), containsString(givenStories.asString()));
         assertThat(givenStories.getPaths(), equalTo(asList(
                 "path/to/one#{0}", // matches first parameters row

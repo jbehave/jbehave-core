@@ -15,7 +15,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * </p>
  * <p>Given a code location URL and a story path, it provides the methods:
  * <ul>
- * <li>{@link #getURL()}: the story location URL, prefixing the code location external form if story path is not a URL</li>
+ * <li>{@link #getURL()}: the story location URL, prefixing the code location external form if story path is not a
+ * URL</li>
  * <li>{@link #getPath()}: the story location path, removing the code location external form if story path is a URL</li>
  * </ul>
  * </p>

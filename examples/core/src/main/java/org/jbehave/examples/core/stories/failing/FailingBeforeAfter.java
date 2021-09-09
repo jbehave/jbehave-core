@@ -11,7 +11,8 @@ public class FailingBeforeAfter extends CoreStory {
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new FailingBeforeAfterSteps());
+        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()),
+                new FailingBeforeAfterSteps());
     }
 
 }

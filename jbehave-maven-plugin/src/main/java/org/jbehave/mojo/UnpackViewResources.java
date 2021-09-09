@@ -25,7 +25,8 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
  * Mojo to unpack resources to view directory, whose location is derived from
  * the configured {@link StoryReporterBuilder} accessible from the {@link Embedder}.
  */
-@Mojo(name = "unpack-view-resources", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, requiresDependencyResolution = ResolutionScope.TEST)
+@Mojo(name = "unpack-view-resources", defaultPhase = LifecyclePhase.PROCESS_RESOURCES,
+        requiresDependencyResolution = ResolutionScope.TEST)
 public class UnpackViewResources extends AbstractEmbedderMojo {
 
     @Component
@@ -107,7 +108,8 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
             unArchiver.setDestDirectory(destination);
 
             if (StringUtils.isNotEmpty(excludes) || StringUtils.isNotEmpty(includes)) {
-                IncludeExcludeFileSelector[] selectors = new IncludeExcludeFileSelector[] { new IncludeExcludeFileSelector() };
+                IncludeExcludeFileSelector[] selectors = new IncludeExcludeFileSelector[] {
+                        new IncludeExcludeFileSelector() };
                 if (StringUtils.isNotEmpty(excludes)) {
                     selectors[0].setExcludes(excludes.split(","));
                 }

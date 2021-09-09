@@ -24,6 +24,7 @@ class StoryControlsBehaviour {
     private static final String NEW_VALUE = "newValue";
     private static final String EMPTY = "";
 
+    @SuppressWarnings("checkstyle:LineLength")
     public static Stream<Arguments> data() {
         //@formatter:off
         return Stream.of(

@@ -65,6 +65,7 @@ public class StackTraceFormatter {
         }
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     private static Replacement[] REPLACEMENTS = new Replacement[] {
         new Replacement(
                 // JDK 9+

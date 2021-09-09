@@ -46,6 +46,7 @@ public class XmlOutput extends PrintStreamOutput {
         super(XML, output, defaultXmlPatterns(), outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     private static Properties defaultXmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("beforeStep", "");

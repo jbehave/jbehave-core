@@ -78,8 +78,8 @@ class StepCreatorBehaviour {
         SomeSteps stepsInstance = new SomeSteps();
         MostUsefulConfiguration configuration = new MostUsefulConfiguration();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(configuration, stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory,
-                stepsContext, configuration.parameterConverters(), new ParameterControls(), null, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext,
+                configuration.parameterConverters(), new ParameterControls(), null, new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aFailingBeforeScenarioMethod");
@@ -90,9 +90,9 @@ class StepCreatorBehaviour {
         assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
         Throwable cause = stepResult.getFailure().getCause();
         assertThat(cause, instanceOf(BeforeOrAfterFailed.class));
-        assertThat(
-                cause.getMessage(),
-                equalTo("Method aFailingBeforeScenarioMethod (annotated with @BeforeScenario in class org.jbehave.core.steps.SomeSteps) failed: java.lang.RuntimeException"));
+        assertThat(cause.getMessage(),
+                equalTo("Method aFailingBeforeScenarioMethod (annotated with @BeforeScenario in class"
+                        + " org.jbehave.core.steps.SomeSteps) failed: java.lang.RuntimeException"));
     }
 
     @Test
@@ -221,7 +221,8 @@ class StepCreatorBehaviour {
             String secondParameterValue) throws IntrospectionException {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I use parameters $theme and $variant", Pattern.compile("When I use parameters (.*) and (.*)"), new String[]{"theme", "variant"});
+        StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I use parameters $theme and $variant",
+                Pattern.compile("When I use parameters (.*) and (.*)"), new String[] { "theme", "variant" });
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, new ParameterControls());
         Map<String, String> parameters = new HashMap<>();
         StoryReporter storyReporter = mock(StoryReporter.class);
@@ -251,7 +252,8 @@ class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, new ParameterControls().useDelimiterNamedParameters(false));
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher,
+                new ParameterControls().useDelimiterNamedParameters(false));
         Map<String, String> parameters = new HashMap<>();
         parameters.put("theme", firstParameterValue);
         parameters.put("variant", secondParameterValue);
@@ -805,7 +807,8 @@ class StepCreatorBehaviour {
                 && type.equals(arg.getExecutionType())));
     }
 
-    private StepCreator stepCreatorUsing(SomeSteps stepsInstance, StepMatcher stepMatcher, ParameterControls parameterControls) {
+    private StepCreator stepCreatorUsing(SomeSteps stepsInstance, StepMatcher stepMatcher,
+            ParameterControls parameterControls) {
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
         return new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext, parameterConverters,
                 parameterControls, stepMatcher, new SilentStepMonitor());

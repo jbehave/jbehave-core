@@ -16,9 +16,11 @@ import org.junit.runner.RunWith;
  */
 @RunWith(NeedleAnnotatedPathRunner.class)
 @Configure
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true)
 @UsingNeedle
-@UsingPaths(searchIn = "../trader/src/main/java", includes = { "**/*.story" }, excludes = { "**/examples_table*.story" })
+@UsingPaths(searchIn = "../trader/src/main/java", includes = { "**/*.story" },
+        excludes = { "**/examples_table*.story" })
 public class AnnotatedPathRunnerUsingNeedle {
 
 }

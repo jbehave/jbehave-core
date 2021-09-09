@@ -38,8 +38,12 @@ import org.jbehave.examples.core.steps.TraderSteps;
 import org.junit.runner.RunWith;
 
 @RunWith(AnnotatedEmbedderRunner.class)
-@Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, parameterConverters = { MyDateConverter.class })
-@UsingEmbedder(embedder = MyEmbedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, verboseFailures = true, verboseFiltering = true, storyTimeouts = "100", threads = 1, metaFilters = "-skip")
+@Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class,
+        storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class,
+        parameterConverters = { MyDateConverter.class })
+@UsingEmbedder(embedder = MyEmbedder.class, generateViewAfterStories = true, ignoreFailureInStories = true,
+        ignoreFailureInView = true, verboseFailures = true, verboseFiltering = true, storyTimeouts = "100", threads = 1,
+        metaFilters = "-skip")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
     PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 public class CoreAnnotatedEmbedder extends InjectableEmbedder {

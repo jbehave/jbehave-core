@@ -100,8 +100,10 @@ class OutcomesTableBehaviour {
         assertThat(table.asString(), equalTo("|Description|Value|Matcher|Verified|\n"
                 + "|a success|one|\"one\"|true|\n" + "|a failure|true|is <false>|false|\n"));
         List<Outcome<?>> outcomes = table.getOutcomes();
-        assertThat(outcomes.get(0).toString(), equalTo("OutcomesTable.Outcome[description=a success,matcher=\"one\",value=one,verified=true]"));
-        assertThat(outcomes.get(1).toString(), equalTo("OutcomesTable.Outcome[description=a failure,matcher=is <false>,value=true,verified=false]"));
+        assertThat(outcomes.get(0).toString(),
+                equalTo("OutcomesTable.Outcome[description=a success,matcher=\"one\",value=one,verified=true]"));
+        assertThat(outcomes.get(1).toString(),
+                equalTo("OutcomesTable.Outcome[description=a failure,matcher=is <false>,value=true,verified=false]"));
     }
 
 }

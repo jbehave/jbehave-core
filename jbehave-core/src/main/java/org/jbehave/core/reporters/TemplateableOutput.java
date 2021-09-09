@@ -750,7 +750,8 @@ public class TemplateableOutput extends NullStoryReporter {
         private Object[] formatParameters(EscapeMode escapeMode, String parameterPattern) {
             Object[] arguments = new Object[parameters.size()];
             for (int a = 0; a < parameters.size(); a++) {
-                arguments[a] = MessageFormat.format(parameterPattern, escapeMode.escapeString(parameters.get(a).getValue()));
+                arguments[a] = MessageFormat.format(parameterPattern,
+                        escapeMode.escapeString(parameters.get(a).getValue()));
             }
             return arguments;
         }

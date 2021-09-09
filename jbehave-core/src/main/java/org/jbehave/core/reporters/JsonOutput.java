@@ -93,6 +93,7 @@ public class JsonOutput extends PrintStreamOutput {
         return text;
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     private static Properties defaultXmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "\"dryRun\": \"{0}\"");

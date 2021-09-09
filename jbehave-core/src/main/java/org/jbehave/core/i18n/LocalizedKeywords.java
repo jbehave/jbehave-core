@@ -51,7 +51,8 @@ public class LocalizedKeywords extends Keywords {
         this(locale, locale, bundleName, baseBundleName, classLoader);
     }
 
-    public LocalizedKeywords(Locale locale, Locale baseLocale, String bundleName, String baseBundleName, ClassLoader classLoader) {
+    public LocalizedKeywords(Locale locale, Locale baseLocale, String bundleName, String baseBundleName,
+            ClassLoader classLoader) {
         super(keywords(locale, bundleName, baseLocale, baseBundleName, classLoader));
         this.locale = locale;
     }

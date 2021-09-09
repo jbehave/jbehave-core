@@ -58,7 +58,8 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
      * @param steps
      *        step classes
      */
-    public NeedleStepsFactory(final Configuration configuration, final Set<InjectionProvider<?>> injectionProviders, final Class<?>... steps) {
+    public NeedleStepsFactory(final Configuration configuration, final Set<InjectionProvider<?>> injectionProviders,
+            final Class<?>... steps) {
         super(setUpInjectionProviders(JBehaveNeedleConfiguration.RESOURCE_JBEHAVE_NEEDLE));
         if (injectionProviders != null) {
             addInjectionProvider(toArray(injectionProviders));
@@ -92,7 +93,8 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
         if (instance == null) {
             try {
                 final Object stepsInstance = createInstanceUsingNeedleTestCase(type);
-                final InjectionProvider<?>[] foundProviders = CollectInjectionProvidersFromStepsInstance.INSTANCE.apply(stepsInstance);
+                final InjectionProvider<?>[] foundProviders = CollectInjectionProvidersFromStepsInstance.INSTANCE.apply(
+                        stepsInstance);
 
                 addInjectionProvider(foundProviders);
 
@@ -108,8 +110,11 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
     }
 
     /**
-     * Uses private instantiation methods of NeedleTestCase via {@link ReflectionUtil#invokeMethod(Object, String, Object...)}. First tries to create new
-     * instance with constructor injection, then falls back to default constructor. If creation fails, an IllegalStateException is thrown.
+     * Uses private instantiation methods of NeedleTestCase via
+     * {@link ReflectionUtil#invokeMethod(Object, String, Object...)}. First tries to create new instance with
+     * constructor injection, then falls back to default constructor. If creation fails, an IllegalStateException is
+     * thrown.
+     *
      * @param type type of instance to create
      * @return new instance of type. Never <code>null</code>
      * @throws IllegalStateException when creation fails.

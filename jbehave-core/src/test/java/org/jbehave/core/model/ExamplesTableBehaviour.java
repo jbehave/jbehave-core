@@ -138,7 +138,8 @@ public class ExamplesTableBehaviour {
 
     @Test
     void shouldParseTableWithCommentsInValues() {
-        String tableWithEmptyValues = "{commentSeparator=#}\n|one #comment|two|\n |11 #comment|12 #comment|\n |21|22|\n";
+        String tableWithEmptyValues = "{commentSeparator=#}\n|one #comment|two|\n"
+                + " |11 #comment|12 #comment|\n |21|22|\n";
         ExamplesTable table = new ExamplesTable(tableWithEmptyValues);
         assertThat(table.getRowCount(), equalTo(2));
         for (Parameters row : table.getRowsAsParameters()) {
@@ -153,7 +154,8 @@ public class ExamplesTableBehaviour {
 
     @Test
     void shouldParseTableWithUntrimmedCommentsInValues() {
-        String tableWithEmptyValues = "{commentSeparator=#, trim=false}\n|one #comment|two|\n |11 #comment|12 #comment|\n |21|22|\n";
+        String tableWithEmptyValues = "{commentSeparator=#, trim=false}\n|one #comment|two|\n"
+                + " |11 #comment|12 #comment|\n |21|22|\n";
         ExamplesTable table = new ExamplesTable(tableWithEmptyValues);
         assertThat(table.getRowCount(), equalTo(2));
         for (Parameters row : table.getRowsAsParameters()) {
@@ -497,7 +499,8 @@ public class ExamplesTableBehaviour {
         ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
 
         // Then
-        for (MyParametersWithAnnotatedFields parameters : examplesTable.getRowsAs(MyParametersWithAnnotatedFields.class)) {
+        for (MyParametersWithAnnotatedFields parameters : examplesTable.getRowsAs(
+                MyParametersWithAnnotatedFields.class)) {
             assertThat(parameters.string, equalTo("11"));
             assertThat(parameters.integer, equalTo(22));
             assertThat(parameters.stringList, equalTo(asList("1", "1")));

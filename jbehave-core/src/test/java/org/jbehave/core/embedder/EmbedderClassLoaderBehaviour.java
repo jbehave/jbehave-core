@@ -67,7 +67,8 @@ class EmbedderClassLoaderBehaviour {
     void shouldProvideShortJarPathUrlContentAsString() throws MalformedURLException {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.asList("/path/to/one.jar",
                 "/target/classes"));
-        List<String> expectedPaths = classLoader.asShortPaths(new File("one.jar").toURI().toURL(), new File("/target/classes").toURI().toURL());
+        List<String> expectedPaths = classLoader.asShortPaths(new File("one.jar").toURI().toURL(), new File(
+                "/target/classes").toURI().toURL());
         String expected = expectedPaths.stream()
                 .collect(Collectors.joining(", ", "[", "]"));
         assertThat(classLoader.toString(),

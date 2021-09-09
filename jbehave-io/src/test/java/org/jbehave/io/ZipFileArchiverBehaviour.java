@@ -65,7 +65,8 @@ class ZipFileArchiverBehaviour {
         assertThat(archiver.isArchive(zip), is(true));
         clearDir(dir);
         archiver.unarchive(zip, dir);
-        assertFilesUnarchived(asList("archive", "archive/file1.txt", "archive/subdir1", "archive/subdir1/subfile1.txt"));
+        assertFilesUnarchived(
+                asList("archive", "archive/file1.txt", "archive/subdir1", "archive/subdir1/subfile1.txt"));
     }
 
     @Test

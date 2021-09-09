@@ -31,7 +31,8 @@ public class ThreadsStories extends JUnitStories {
     public ThreadsStories() {
         Embedder embedder = configuredEmbedder();
         embedder.embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true).doVerboseFiltering(true).useThreads(1).useStoryTimeouts("7secs").doFailOnStoryTimeout(false);
+                .doIgnoreFailureInView(true).doVerboseFiltering(true).useThreads(1).useStoryTimeouts("7secs")
+                .doFailOnStoryTimeout(false);
         embedder.useMetaFilters(Arrays.asList("groovy: story_path ==~ /.*long.*/"));
         embedder.useTimeoutParsers(new CustomTimeoutParser());
     }
@@ -40,7 +41,9 @@ public class ThreadsStories extends JUnitStories {
     public Configuration configuration() {
         Class<? extends Embeddable> embeddableClass = this.getClass();
         return new MostUsefulConfiguration().useStoryLoader(new LoadFromClasspath(embeddableClass))
-                .useStoryControls(new StoryControls().useStoryMetaPrefix("story_").useScenarioMetaPrefix("scenario_")) // optional prefixes
+                .useStoryControls(new StoryControls().useStoryMetaPrefix("story_")
+                        .useScenarioMetaPrefix("scenario_")  // optional prefixes
+                )
                 .useStoryReporterBuilder(
                         new StoryReporterBuilder()
                                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))

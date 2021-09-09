@@ -114,7 +114,8 @@ public abstract class PrintingEmbedderMonitor extends NullEmbedderMonitor {
 
     @Override
     public void reportsViewGenerated(ReportsCount count) {
-        print("Reports view generated with %d stories (of which %d pending) containing %d scenarios (of which %d pending)",
+        print("Reports view generated with %d stories (of which %d pending) containing %d scenarios (of which %d "
+                        + "pending)",
                 count.getStories(), count.getStoriesPending(), count.getScenarios(), count.getScenariosPending());
         if (count.getStoriesExcluded() > 0 || count.getScenariosExcluded() > 0) {
             print("Meta filters excluded %d stories and  %d scenarios", count.getStoriesExcluded(),
@@ -185,9 +186,10 @@ public abstract class PrintingEmbedderMonitor extends NullEmbedderMonitor {
     
     @Override
     public void invalidTimeoutFormat(String path) {
-        print("Failed to set specific story timeout for story %s because 'storyTimeoutInSecsByPath' has incorrect format",
-                path);
-        print("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"");
+        print("Failed to set specific story timeout for story %s because 'storyTimeoutInSecsByPath' has incorrect "
+                + "format", path);
+        print("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*"
+                + ".story:5000,*/short/*.story:200\"");
     }
 
     @Override

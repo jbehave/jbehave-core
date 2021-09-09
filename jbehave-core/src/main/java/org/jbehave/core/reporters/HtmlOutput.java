@@ -47,6 +47,7 @@ public class HtmlOutput extends PrintStreamOutput {
         super(HTML, output, defaultHtmlPatterns(), outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     private static Properties defaultHtmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("beforeStep", "");

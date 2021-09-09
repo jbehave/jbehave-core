@@ -51,7 +51,8 @@ class CompositeCandidateStepsBehaviour {
         Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("customer", "Ms Smith");
         List<Step> composedSteps = new ArrayList<>();
-        candidate.addComposedSteps(composedSteps, "Given Mr Jones has previously bought a ticket", namedParameters, candidates);
+        candidate.addComposedSteps(composedSteps, "Given Mr Jones has previously bought a ticket", namedParameters,
+                candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform(mock(StoryReporter.class), null);
@@ -94,13 +95,15 @@ class CompositeCandidateStepsBehaviour {
     void shouldMatchCompositesAndCreateComposedStepsUsingNamedParameters() {
         CompositeStepsUsingNamedParameters steps = new CompositeStepsUsingNamedParameters();
         List<StepCandidate> candidates = steps.listCandidates();
-        StepCandidate candidate = candidateMatchingStep(candidates, "Given <customer> has previously bough a <product>");
+        StepCandidate candidate = candidateMatchingStep(candidates,
+                "Given <customer> has previously bough a <product>");
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("customer", "Mr Jones");
         namedParameters.put("product", "ticket");
         List<Step> composedSteps = new ArrayList<>();
-        candidate.addComposedSteps(composedSteps, "Given <customer> has previously bought a <product>", namedParameters, candidates);
+        candidate.addComposedSteps(composedSteps, "Given <customer> has previously bought a <product>", namedParameters,
+                candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform(mock(StoryReporter.class), null);
@@ -146,7 +149,8 @@ class CompositeCandidateStepsBehaviour {
         namedParameters.put("customer", "Mr Jones");
         namedParameters.put("product", "ticket");
         List<Step> composedSteps = new ArrayList<>();
-        candidate.addComposedSteps(composedSteps, "Given <customer> has previously bought a <product>", namedParameters, candidates);
+        candidate.addComposedSteps(composedSteps, "Given <customer> has previously bought a <product>", namedParameters,
+                candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform(mock(StoryReporter.class), null);
@@ -279,7 +283,8 @@ class CompositeCandidateStepsBehaviour {
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<>();
         List<Step> composedSteps = new ArrayList<>();
-        candidate.addComposedSteps(composedSteps, "Given I am logged in as someUserName", noNamedParameters, candidates);
+        candidate.addComposedSteps(composedSteps, "Given I am logged in as someUserName", noNamedParameters,
+                candidates);
         for (Step step : composedSteps) {
             step.perform(mock(StoryReporter.class), null);
         }

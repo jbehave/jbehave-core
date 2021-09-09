@@ -233,8 +233,8 @@ class PerformableTreeBehaviour {
         Story story = new Story(STORY_PATH, null, null, null, new GivenStories(givenStoryPath),
                 singletonList(scenario));
 
-        Configuration configuration = new MostUsefulConfiguration()
-                .useStoryControls(new StoryControls().doSkipStoryIfGivenStoryFailed(skipScenariosAfterGivenStoriesFailure));
+        Configuration configuration = new MostUsefulConfiguration().useStoryControls(
+                new StoryControls().doSkipStoryIfGivenStoryFailed(skipScenariosAfterGivenStoriesFailure));
         StoryLoader storyLoader = mock(StoryLoader.class);
         configuration.useStoryLoader(storyLoader);
         when(storyLoader.loadStoryAsText(givenStoryPath)).thenReturn(givenStoryAsString);

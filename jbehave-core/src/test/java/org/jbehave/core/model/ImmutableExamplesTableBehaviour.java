@@ -1,9 +1,9 @@
 package org.jbehave.core.model;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ class ImmutableExamplesTableBehaviour {
             () -> assertThrows(UnsupportedOperationException.class, () -> immutableTable.getRow(0).put("", "")),
             () -> assertThrows(UnsupportedOperationException.class, () -> immutableTable.withNamedParameters(values)),
             () -> assertThrows(UnsupportedOperationException.class, () -> immutableTable.withRowValues(0, values)),
-            () -> assertThrows(UnsupportedOperationException.class, () -> immutableTable.withRows(Arrays.asList(values)))
+            () -> assertThrows(UnsupportedOperationException.class, () -> immutableTable.withRows(asList(values)))
         );
     }
 }

@@ -88,7 +88,8 @@ class StepsBehaviour {
     void shouldListCandidateStepsFromAnnotatedMethodsInPojo() {
         PojoSteps steps = new PojoSteps();
         Configuration configuration = new MostUsefulConfiguration();
-        List<StepCandidate> candidates = new InstanceStepsFactory(configuration, steps).createCandidateSteps().get(0).listCandidates();
+        List<StepCandidate> candidates = new InstanceStepsFactory(configuration, steps).createCandidateSteps().get(0)
+                .listCandidates();
         assertThat(candidates.size(), equalTo(6));
 
         performMatchedStep(candidates, "GIVEN a given", "Given a given");
@@ -346,7 +347,8 @@ class StepsBehaviour {
     void shouldNotFailWithDuplicateCandidateFoundExceptionIfStepsWordingsDoNotMatchEachOther() {
         StepsWithParameters steps = new StepsWithParameters();
         Configuration configuration = new MostUsefulConfiguration();
-        List<StepCandidate> candidates = new InstanceStepsFactory(configuration, steps).createCandidateSteps().get(0).listCandidates();
+        List<StepCandidate> candidates = new InstanceStepsFactory(configuration, steps).createCandidateSteps().get(0)
+                .listCandidates();
         assertThat(candidates.size(), equalTo(2));
 
         performMatchedStep(candidates, "GIVEN a given param '$someParameterName'",
