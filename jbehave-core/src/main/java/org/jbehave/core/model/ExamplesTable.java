@@ -39,32 +39,24 @@ import org.jbehave.core.steps.Parameters;
 import org.jbehave.core.steps.Row;
 
 /**
- * <p>
- * Represents a tabular structure that holds rows of example data for parameters
- * named via the column headers:
- * <p/>
- * 
+ * Represents a tabular structure that holds rows of example data for parameters named via the column headers:
  * <pre>
  * |header 1|header 2| .... |header n|
  * |value 11|value 12| .... |value 1n|
  * ...
  * |value m1|value m2| .... |value mn|
  * </pre>
- * <p>
- * Different header and value column separators can be specified to replace the
- * default separator "|":
- * </p>
- * 
+ *
+ * <p>Different header and value column separators can be specified to replace the default separator "|":
  * <pre>
  * !!header 1!!header 2!! .... !!header n!!
  * !value 11!value 12! .... !value 1n!
  * ...
  * !value m1!value m2| .... !value mn!
  * </pre>
- * <p>
- * Rows starting with an ignorable separator are allowed and ignored:
  * </p>
- * 
+ *
+ * <p>Rows starting with an ignorable separator are allowed and ignored:
  * <pre>
  * |header 1|header 2| .... |header n|
  * |-- A commented row --|
@@ -73,12 +65,10 @@ import org.jbehave.core.steps.Row;
  * |-- Another commented row --|
  * |value m1|value m2| .... |value mn|
  * </pre>
- * <p>
- * Ignorable separator is configurable and defaults to "|--".
  * </p>
- * <p>
- * The separators are also configurable via inlined properties:
- * 
+ *
+ * <p>Ignorable separator is configurable and defaults to "|--".</p>
+ * <p>The separators are also configurable via inlined properties:
  * <pre>
  * {ignorableSeparator=!--,headerSeparator=!,valueSeparator=!}
  * !header 1!header 2! .... !header n!
@@ -88,41 +78,29 @@ import org.jbehave.core.steps.Row;
  * !-- Another commented row --!
  * !value m1!value m2! .... !value mn!
  * </pre>
- * 
  * </p>
- * <p>
- * By default all column values are trimmed. To avoid trimming the values, use
- * the "trim" inlined property:
- * 
+ *
+ * <p>By default all column values are trimmed. To avoid trimming the values, use the "trim" inlined property:
  * <pre>
  * {trim=false}
  * | header 1 | header 2 | .... | header n |
  * | value 11 | value 12 | .... | value 1n |
  * </pre>
+ * </p>
  * 
- * <p>
- * Comments is column values are supported via the "commentSeparator" inlined property:
- * 
+ * <p>Comments is column values are supported via the "commentSeparator" inlined property:
  * <pre>
  * {commentSeparator=#}
  * | header 1#comment | header 2 | .... | header n |
  * | value 11#comment | value 12 | .... | value 1n |
  * </pre>
+ * Comments including the separator are stripped.</p>
  * 
- * Comments including the separator are stripped. 
- * </p>
+ * <p>The table allows the retrieval of row values as converted parameters. Use {@link #getRowAsParameters(int)} and
+ * invoke {@link Parameters#valueAs(String, Type)} specifying the header and the class type of the parameter.</p>
  * 
- * <p>
- * The table allows the retrieval of row values as converted parameters. Use
- * {@link #getRowAsParameters(int)} and invoke
- * {@link Parameters#valueAs(String, Type)} specifying the header and the class
- * type of the parameter.
- * </p>
- * 
- * <p>
- * The table allows the transformation of its string representation via the
- * "transformer" inlined property (multiple transformers will be applied in chain-mode):
- * 
+ * <p>The table allows the transformation of its string representation via the "transformer" inlined property
+ * (multiple transformers will be applied in chain-mode):
  * <pre>
  * {transformer=myTransformerName}
  * {transformer=myOtherTransformerName}
@@ -131,35 +109,25 @@ import org.jbehave.core.steps.Row;
  * ...
  * |value m1|value m2| .... |value mn|
  * </pre>
- * 
  * The transformers need to be registered by name via the
- * {@link TableTransformers#useTransformer(String, TableTransformer)}. A few
- * transformers are already registered by default in {@link TableTransformers}.
- * </p>
+ * {@link TableTransformers#useTransformer(String, TableTransformer)}. A few transformers are already registered by
+ * default in {@link TableTransformers}.</p>
  * 
- * <p>
- * The table allow filtering on meta by row via the "metaByRow" inlined property:
- * 
+ * <p>The table allow filtering on meta by row via the "metaByRow" inlined property:
  * <pre>
  * {metaByRow=true}
  * | Meta:       | header 1 | .... | header n |
  * | @name=value | value 11 | .... | value 1n |
  * </pre>
+ * </p>
+ *
+ * <p>Once created, the table row can be modified, via the {@link #withRowValues(int, Map)} method, by specifying the
+ * map of row values to be changed.</p>
  * 
- * </p>
- * <p>
- * Once created, the table row can be modified, via the
- * {@link #withRowValues(int, Map)} method, by specifying the map of row values
- * to be changed.
- * </p>
- * 
- * <p>
- * A table can also be created by providing the entire data content, via the {@link #withRows(List)} method.
- * </p>
- * The parsing code assumes that the number of columns for data rows is the same
- * as in the header, if a row has less fields, the remaining are filled with
- * empty values, if it has more, the fields are ignored.
- * <p>
+ * <p>A table can also be created by providing the entire data content, via the {@link #withRows(List)} method.</p>
+ *
+ * <p>The parsing code assumes that the number of columns for data rows is the same as in the header, if a row has
+ * less fields, the remaining are filled with empty values, if it has more, the fields are ignored.</p>
  */
 public class ExamplesTable {
     private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();

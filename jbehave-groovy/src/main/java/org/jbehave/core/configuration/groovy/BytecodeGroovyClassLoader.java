@@ -15,15 +15,13 @@ import groovy.lang.GroovyClassLoader;
 import groovyjarjarasm.asm.ClassWriter;
 
 /**
- * Groovy does not cache the bytecode sequences for generated classes.
- * BytecodeReadingParanamer needs these to get paramater names from classes The
- * Groovy compiler does create the debug tables, and they are the same as the
- * ones made for a native Java class, so this derived GroovyClassLoader fills in
- * for the missing functionality from the base GroovyClassLoader.
+ * Groovy does not cache the bytecode sequences for generated classes. BytecodeReadingParanamer needs these to get
+ * paramater names from classes The Groovy compiler does create the debug tables, and they are the same as the ones made
+ * for a native Java class, so this derived GroovyClassLoader fills in for the missing functionality from the base
+ * GroovyClassLoader.
  * 
- * Groovy allows a mechanism via a system property to force the dump of bytecode
- * to a (temp) directory, but caching the bytecode avoids having to clean up
- * temp directories after the run.
+ * <p>Groovy allows a mechanism via a system property to force the dump of bytecode to a (temp) directory, but caching
+ * the bytecode avoids having to clean up temp directories after the run.</p>
  */
 public class BytecodeGroovyClassLoader extends GroovyClassLoader {
 

@@ -8,14 +8,11 @@ import org.jbehave.core.io.StoryNameResolver;
 import org.jbehave.core.io.UnderscoredToCapitalized;
 
 /**
- * <p>
- * Freemarker-based {@link ViewGenerator}, which uses the configured FTL
- * templates for the views. The default view properties are overridable via the
- * method {@link Properties} parameter. To override, specify the path to the new
+ * Freemarker-based {@link ViewGenerator}, which uses the configured FTL templates for the views. The default view
+ * properties are overridable via the method {@link Properties} parameter. To override, specify the path to the new
  * template under the appropriate key:
- * <p>
- * The view generator provides the following default properties:
- * 
+ *
+ * <p>The view generator provides the following default properties:
  * <pre>
  * &quot;views&quot;: &quot;ftl/jbehave-views.ftl&quot;
  * &quot;maps&quot;: &quot;ftl/jbehave-maps.ftl&quot;
@@ -26,14 +23,11 @@ import org.jbehave.core.io.UnderscoredToCapitalized;
  * &quot;defaultFormats&quot;: &quot;stats&quot;
  * &quot;viewDirectory&quot;: &quot;view&quot;
  * </pre>
- * 
  * </p>
- * <p>
- * The view generator can also specify the {@link StoryNameResolver} (defaulting
- * to {@link UnderscoredToCapitalized}) and the class or ClassLoader which
- * Freemarker uses to load the templates from (defaulting to
- * {@link FreemarkerProcessor}).
- * </p>
+ *
+ * <p>The view generator can also specify the {@link StoryNameResolver} (defaulting  to
+ * {@link UnderscoredToCapitalized}) and the class or ClassLoader which Freemarker uses to load the templates from
+ * (defaulting to {@link FreemarkerProcessor}).</p>
  * 
  * @author Mauro Talevi
  */

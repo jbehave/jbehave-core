@@ -12,12 +12,10 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.steps.Timing;
 
 /**
- * Decorates console output to allow TeamCity build script interaction:
- *
- * https://confluence.jetbrains.com/display/TCD9/Build+Script+Interaction+with+
- * TeamCity
+ * Decorates console output to allow TeamCity build script interaction: *
+ * https://confluence.jetbrains.com/display/TCD9/Build+Script+Interaction+with+TeamCity
  * 
- * Scenarios are interpreted as TeamCity tests.  Pending scenarios are considered as ignored.
+ * <p>Scenarios are interpreted as TeamCity tests. Pending scenarios are considered as ignored.</p>
  */
 public class TeamCityConsoleOutput extends ConsoleOutput {
 

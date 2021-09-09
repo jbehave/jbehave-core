@@ -10,15 +10,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.steps.StepType;
 
 /**
- * A step pattern parser that provides a step matcher which will capture
+ * <p>A step pattern parser that provides a step matcher which will capture
  * parameters starting with the given prefix in any matching step. Default
- * prefix is $.
+ * prefix is $.</p>
  * 
- * The parameter names are by default assumed to be any unicode-supported
+ * <p>The parameter names are by default assumed to be any unicode-supported
  * alphanumeric sequence, not limited to ASCII (see
  * http://www.regular-expressions.info/unicode.html), i.e. corresponding to
  * character class [\p{L}\p{N}\p{Pc}]. A different character class can optionally be
- * provided.
+ * provided.</p>
  * 
  * @author Elizabeth Keogh
  * @author Mauro Talevi

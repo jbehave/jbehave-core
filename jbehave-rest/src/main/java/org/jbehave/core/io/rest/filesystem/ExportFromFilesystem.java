@@ -14,12 +14,11 @@ import org.jbehave.core.io.rest.ResourceIndexer;
 import org.jbehave.core.io.rest.ResourceUploader;
 
 /**
- * Implementation that reads from filesystem the resources and uploads them.
+ * <p>Implementation that reads from filesystem the resources and uploads them.</p>
  * 
- * An include pattern of the resources may be provided.
+ * <p>An include pattern of the resources may be provided.</p>
  * 
- * The exporter requires an instance of a {@link ResourceIndexer} and of a
- * {@link ResourceUploader}.
+ * <p>The exporter requires an instance of a {@link ResourceIndexer} and of a {@link ResourceUploader}.</p>
  */
 public class ExportFromFilesystem implements ResourceExporter {
 

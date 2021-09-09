@@ -35,12 +35,9 @@ import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.TemplateableViewGenerator.Reports.ViewType;
 
 /**
- * <p>
- * {@link ViewGenerator}, which uses the configured {@link TemplateProcessor} to
- * generate the views from templates. The default view properties are
- * overridable via the method {@link Properties} parameter. To override, specify
- * the path to the new template under the appropriate key:
- * 
+ * {@link ViewGenerator}, which uses the configured {@link TemplateProcessor} to generate the views from templates. The
+ * default view properties are overridable via the method {@link Properties} parameter. To override, specify the path to
+ * the new template under the appropriate key:
  * <pre>
  * &quot;views&quot;: the path to global view template, including reports and maps views
  * &quot;maps&quot;: the path to the maps view template
@@ -48,15 +45,13 @@ import org.jbehave.core.reporters.TemplateableViewGenerator.Reports.ViewType;
  * &quot;decorated&quot;: the path to the template to generate a decorated (i.e. styled) single report
  * &quot;nonDecorated&quot;: the path to the template to generated a non decorated single report
  * </pre>
- * <p>
- * The view generator provides the following resources:
- * 
+ *
+ * <p>The view generator provides the following resources:
  * <pre>
  * &quot;decorateNonHtml&quot; = &quot;true&quot;
  * &quot;defaultFormats&quot; = &quot;stats&quot;
  * &quot;viewDirectory&quot; = &quot;view&quot;
  * </pre>
- * 
  * </p>
  * 
  * @author Mauro Talevi

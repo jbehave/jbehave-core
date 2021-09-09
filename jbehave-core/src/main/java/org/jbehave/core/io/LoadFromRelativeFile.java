@@ -7,26 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Loads story resources from relative file paths that are
- * traversal to a given location.
+ * <p>Loads story resources from relative file paths that are traversal to a given location.</p>
+ * <code>
+ * StoryLoader loader = new LoadFromRelativeFile(codeLocationFromClass(YourStory.class));
+ * </code>
+ * <p>By default, it uses traversal directory 'target/test-classes' with source dir in 'src/test/java'.</p>
  * 
- * StoryLoader loader = new
- * LoadFromRelativeFile(codeLocationFromClass(YourStory.class));
- * 
- * By default, it uses traversal directory
- * 'target/test-classes' with source dir in 'src/test/java'.
- * 
- * Other traversal locations can be specified via the varargs constructor:
- * 
- * StoryLoader loader = new
- * LoadFromRelativeFile(codeLocationFromClass(YourStory.class),
- * mavenModuleTestStoryFilePath("src/test/java"),
- * intellijProjectTestStoryFilePath("src/test/java"));
- * 
- * Convenience methods : {@link LoadFromRelativeFile#mavenModuleStoryFilePath},
- * {@link LoadFromRelativeFile#mavenModuleTestStoryFilePath}
- * {@link LoadFromRelativeFile#intellijProjectStoryFilePath}
- * {@link LoadFromRelativeFile#intellijProjectTestStoryFilePath}
+ * <p>Other traversal locations can be specified via the varargs constructor:</p>
+ * <code>
+ * StoryLoader loader = new LoadFromRelativeFile(codeLocationFromClass(YourStory.class),
+ *         mavenModuleTestStoryFilePath("src/test/java"), intellijProjectTestStoryFilePath("src/test/java"));
+ * </code>
+ *
+ * <p>Convenience methods : {@link LoadFromRelativeFile#mavenModuleStoryFilePath},
+ * {@link LoadFromRelativeFile#mavenModuleTestStoryFilePath}, {@link LoadFromRelativeFile#intellijProjectStoryFilePath},
+ * {@link LoadFromRelativeFile#intellijProjectTestStoryFilePath}</p>
  * 
  * @see CodeLocations#codeLocationFromClass(Class)
  * 

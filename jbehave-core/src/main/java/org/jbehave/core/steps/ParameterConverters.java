@@ -665,11 +665,9 @@ public class ParameterConverters {
     }
 
     /**
-     * <p>
-     * Converts values to numbers, supporting any subclass of {@link Number}
-     * (including generic Number type), and it unboxed counterpart, using a
-     * {@link NumberFormat} to parse to a {@link Number} and to convert it to a
-     * specific number type:
+     * Converts values to numbers, supporting any subclass of {@link Number} (including generic Number type), and it
+     * unboxed counterpart, using a {@link NumberFormat} to parse to a {@link Number} and to convert it to a specific
+     * number type:
      * <ul>
      * <li>Byte, byte: {@link Number#byteValue()}</li>
      * <li>Short, short: {@link Number#shortValue()}</li>
@@ -680,12 +678,9 @@ public class ParameterConverters {
      * <li>BigInteger: {@link BigInteger#valueOf(long)}</li>
      * <li>BigDecimal: {@link BigDecimal#valueOf(double)}</li>
      * </ul>
-     * If no number format is provided, it defaults to
-     * {@link NumberFormat#getInstance()}.
-     * <p>
-     * The localized instance {@link NumberFormat#getInstance(Locale)} can be
-     * used to convert numbers in specific locales.
-     * </p>
+     * If no number format is provided, it defaults to {@link NumberFormat#getInstance()}.
+     * <p>The localized instance {@link NumberFormat#getInstance(Locale)} can be used to convert numbers in specific
+     * locales.</p>
      */
     public static class NumberConverter extends FromStringParameterConverter<Number> {
         private static List<Class<?>> primitiveTypes = asList(byte.class, short.class, int.class, float.class,
@@ -964,14 +959,10 @@ public class ParameterConverters {
     }
 
     /**
-     * An {@link EnumConverter} allowing stories prose to be more natural.
-     * Before performing the actual conversion, it transforms values to upper-case,
-     * with any non-alphanumeric character replaced by an underscore ('_').
-     * <p>
-     * <b>Example</b>:
-     * assuming we have defined the step "{@code Given I am on the $page}"
-     * which is mapped to the method {@code iAmOnPage(PageEnum page)},
-     * we can then write in a scenario:
+     * <p>An {@link EnumConverter} allowing stories prose to be more natural. Before performing the actual conversion,
+     * it ransforms values to upper-case, with any non-alphanumeric character replaced by an underscore ('_').</p>
+     * <p><b>Example</b>: assuming we have defined the step "{@code Given I am on the $page}" which is mapped to the
+     * method {@code iAmOnPage(PageEnum page)}, we can then write in a scenario:
      * <pre>{@code
      * Given I am on the login page
      * }</pre>
@@ -979,11 +970,10 @@ public class ParameterConverters {
      * <pre>{@code
      * Given I am on the LOGIN_PAGE
      * }</pre>
-     * <p>
-     * <b>Warning</b>. This <i>requires</i> enum constants to follow the
+     * </p>
+     * <p><b>Warning</b>. This <i>requires</i> enum constants to follow the
      * <a href="https://google-styleguide.googlecode.com/svn/trunk/javaguide.html#s5.2.4-constant-names">
-     * standard conventions for constant names</a>, i.e. all uppercase letters,
-     * with words separated by underscores.
+     * standard conventions for constant names</a>, i.e. all uppercase letters, with words separated by underscores.</p>
      */
     public static class FluentEnumConverter extends EnumConverter {
 
