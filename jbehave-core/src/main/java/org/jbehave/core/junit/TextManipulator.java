@@ -3,6 +3,7 @@ package org.jbehave.core.junit;
 import java.util.HashSet;
 import java.util.Set;
 
+@SuppressWarnings("checkstyle:AvoidEscapedUnicodeCharacters")
 public class TextManipulator {
     private static final char ONE_DOT_LEADER = '\u2024';
 

@@ -17,6 +17,7 @@ class TextManipulatorBehaviour {
         assertEquals("some,  string with , crlf, ", actual);
     }
 
+    @SuppressWarnings("checkstyle:AvoidEscapedUnicodeCharacters")
     @Test
     void shouldEscapeDotWithOneDotLeader() {
         String actual = TextManipulator.escape("some string. with dots.");

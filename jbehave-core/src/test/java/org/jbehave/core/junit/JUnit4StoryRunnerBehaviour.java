@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@SuppressWarnings("checkstyle:AvoidEscapedUnicodeCharacters")
 @ExtendWith(MockitoExtension.class)
 class JUnit4StoryRunnerBehaviour {
 

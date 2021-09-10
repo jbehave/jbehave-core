@@ -231,6 +231,7 @@ class JUnit4DescriptionGeneratorBehaviour {
         assertThat(firstChild(firstScenario).getDisplayName(), is(not(firstChild(secondScenario).getDisplayName())));
     }
 
+    @SuppressWarnings("checkstyle:AvoidEscapedUnicodeCharacters")
     @Test
     void shouldGenerateDescriptionForGivenStories() {
         when(givenStories.getPaths()).thenReturn(emptyList());
@@ -326,6 +327,7 @@ class JUnit4DescriptionGeneratorBehaviour {
         assertEquals(1, generator.getTestCases());
     }
 
+    @SuppressWarnings("checkstyle:AvoidEscapedUnicodeCharacters")
     @Test
     void shouldSkipExampleTablesForParameterizedGivenStories() {
         when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));

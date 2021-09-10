@@ -48,6 +48,7 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.ParameterConverters.FromStringParameterConverter;
 import org.jbehave.core.steps.context.StepsContext;
 
+@SuppressWarnings("checkstyle:AvoidEscapedUnicodeCharacters")
 public class StepCreator {
 
     public static final String PARAMETER_TABLE_START = "\uff3b";
