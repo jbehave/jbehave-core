@@ -1,4 +1,4 @@
-package org.jbehave.examples.executable_jar.steps;
+package org.jbehave.examples.executablejar.steps;
 
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Then;

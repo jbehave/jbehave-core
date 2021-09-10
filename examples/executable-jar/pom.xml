@@ -33,7 +33,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>org.jbehave.examples.executable_jar.MyStories</mainClass>
+              <mainClass>org.jbehave.examples.executablejar.MyStories</mainClass>
             </manifest>
           </archive>
         </configuration>

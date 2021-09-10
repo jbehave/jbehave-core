@@ -1,4 +1,4 @@
-package org.jbehave.examples.executable_jar;
+package org.jbehave.examples.executablejar;
 
 import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML;
@@ -28,7 +28,7 @@ import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
-import org.jbehave.examples.executable_jar.steps.MySteps;
+import org.jbehave.examples.executablejar.steps.MySteps;
 import org.junit.runner.RunWith;
 
 /**
