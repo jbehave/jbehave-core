@@ -114,7 +114,7 @@
         <step outcome="failed">
             Then I don&apos;t return loan
             <failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed
-                at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:83)
+                at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:85)
                 at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:121)
                 at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:55)
                 (reflection-invoke)

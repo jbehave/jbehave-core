@@ -543,14 +543,8 @@ public class ParameterConverters {
          */
         T convertValue(S value, Type type);
 
-        /**
-         * @return the source type
-         */
         Type getSourceType();
 
-        /**
-         * @return the target type
-         */
         Type getTargetType();
     }
 
@@ -815,7 +809,9 @@ public class ParameterConverters {
         }
 
         /**
-         * @param numberFormat Specific NumberFormat to use.
+         * Creates converter for a list of numbers using the specified number format and value separator
+         *
+         * @param numberFormat   Specific NumberFormat to use.
          * @param valueSeparator A regexp to use as list separate
          */
         public NumberListConverter(NumberFormat numberFormat, String valueSeparator) {
@@ -845,6 +841,8 @@ public class ParameterConverters {
         }
 
         /**
+         * Creates converter for a list of strings using the value separator
+         *
          * @param valueSeparator A regexp to use as list separator
          */
         public StringListConverter(String valueSeparator) {

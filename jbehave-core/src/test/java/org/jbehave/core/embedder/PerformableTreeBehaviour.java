@@ -61,9 +61,6 @@ import org.jbehave.core.steps.context.StepsContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
-/**
- * @author Valery Yatsynovich
- */
 class PerformableTreeBehaviour {
 
     private static final String GIVEN_SCENARIO_FAIL = "Scenario: given scenario title\nWhen I fail";

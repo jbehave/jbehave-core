@@ -12,9 +12,6 @@ import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.Composite;
 import org.jbehave.core.parsers.CompositeParser;
 
-/**
- * @author Valery Yatsynovich
- */
 public class CompositeCandidateSteps extends AbstractCandidateSteps {
 
     private final Set<String> compositePaths;

@@ -7,9 +7,6 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * @author Valery_Yatsynovich
- */
 class GivenStoriesBehaviour {
 
     private static final String GIVEN_STORY_PATH1 = "/path/to/given1.story";

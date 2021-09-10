@@ -14,9 +14,6 @@ import org.jbehave.core.model.Composite;
 import org.jbehave.core.steps.StepType;
 import org.junit.jupiter.api.Test;
 
-/**
- * @author Valery Yatsynovich
- */
 class RegexCompositeParserBehaviour {
 
     private static final String NL = "\n";

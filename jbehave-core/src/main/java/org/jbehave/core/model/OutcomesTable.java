@@ -58,6 +58,8 @@ public class OutcomesTable {
     }
 
     /**
+     * Creates outcomes table using the specified keywords and date format
+     *
      * @deprecated Use {@link #OutcomesTable(Keywords, Map)}
      */
     @Deprecated
@@ -118,6 +120,8 @@ public class OutcomesTable {
     }
 
     /**
+     * Provides used date format
+     *
      * @deprecated Use {@link #getFormat(Type)}
      */
     @Deprecated

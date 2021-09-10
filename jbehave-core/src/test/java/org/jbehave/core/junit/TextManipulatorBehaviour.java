@@ -4,9 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * @author Valery_Yatsynovich
- */
 class TextManipulatorBehaviour {
     @Test
     void shouldEscapeParenthesesWithVerticalBars() {

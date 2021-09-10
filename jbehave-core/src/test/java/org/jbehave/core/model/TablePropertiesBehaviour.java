@@ -14,9 +14,6 @@ import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.steps.ParameterConverters;
 import org.junit.jupiter.api.Test;
 
-/**
- * @author Valery Yatsynovich
- */
 class TablePropertiesBehaviour {
 
     private final Keywords keywords = new LocalizedKeywords();

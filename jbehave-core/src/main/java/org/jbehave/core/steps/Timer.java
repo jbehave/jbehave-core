@@ -9,9 +9,6 @@ public class Timer {
         return this;
     }
 
-    /**
-     * @return the timer
-     */
     public Timer stop() {
         end = System.currentTimeMillis();
         return this;

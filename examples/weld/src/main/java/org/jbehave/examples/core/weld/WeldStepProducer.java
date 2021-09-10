@@ -14,10 +14,6 @@ import org.jbehave.examples.core.steps.PriorityMatchingSteps;
 import org.jbehave.examples.core.steps.SandpitSteps;
 import org.jbehave.examples.core.steps.SearchSteps;
 
-/**
- * @author aaronwalker
- *
- */
 @Singleton
 public class WeldStepProducer {
     @Inject
