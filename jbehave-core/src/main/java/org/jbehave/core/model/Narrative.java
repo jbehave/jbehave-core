@@ -16,10 +16,12 @@ public class Narrative {
     private final String iWantTo;
     private final String soThat;
 
+    @SuppressWarnings("checkstyle:ParameterName")
     public Narrative(String inOrderTo, String asA, String iWantTo) {
         this(inOrderTo, asA, iWantTo, "");
     }
 
+    @SuppressWarnings("checkstyle:ParameterName")
     public Narrative(String inOrderTo, String asA, String iWantTo, String soThat) {
         this.inOrderTo = inOrderTo;
         this.asA = asA;

@@ -150,13 +150,13 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void narrative(Narrative aNarrative) {
-        perform(reporter ->  reporter.narrative(aNarrative), narrative, aNarrative);
+    public void narrative(Narrative narrative) {
+        perform(reporter ->  reporter.narrative(narrative), ConcurrentStoryReporter.narrative, narrative);
     }
     
     @Override
-    public void lifecycle(Lifecycle aLifecycle) {
-        perform(reporter ->  reporter.lifecycle(aLifecycle), lifecycle, aLifecycle);
+    public void lifecycle(Lifecycle lifecycle) {
+        perform(reporter ->  reporter.lifecycle(lifecycle), ConcurrentStoryReporter.lifecycle, lifecycle);
     }
 
     @Override

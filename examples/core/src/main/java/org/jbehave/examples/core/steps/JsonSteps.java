@@ -18,9 +18,9 @@ public class JsonSteps {
     private AnotherJsonDto anotherJsonDto;
     private List<AJsonDto> listOfJsonDtos;
 
-    @Given("a json $aJson")
-    public void givenAJson(final AJsonDto aJson) {
-        this.aJsonDto = aJson;
+    @Given("a json $jsonDto")
+    public void givenAJson(final AJsonDto jsonDto) {
+        this.aJsonDto = jsonDto;
     }
 
     @Given("another json $anotherJson")
