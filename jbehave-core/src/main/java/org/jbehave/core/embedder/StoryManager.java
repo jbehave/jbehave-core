@@ -258,6 +258,7 @@ public class StoryManager {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
+            // swallow exception quietly
         }
     }
 
@@ -400,8 +401,8 @@ public class StoryManager {
             if (isDone()) {
                 try {
                     return future.get().getThrowable() != null;
-                } catch (InterruptedException e) {
-                } catch (ExecutionException e) {
+                } catch (InterruptedException | ExecutionException e) {
+                    // swallow exception quietly
                 }
             }
             return false;

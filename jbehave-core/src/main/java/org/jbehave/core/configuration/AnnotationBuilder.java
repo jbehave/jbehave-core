@@ -291,6 +291,7 @@ public class AnnotationBuilder {
                         ofClass.getConstructor(ClassLoader.class);
                 return constructor.newInstance(annotatedClass.getClassLoader());
             } catch (NoSuchMethodException ns) {
+                // fall-back to another approach of object construction
             }
             // by class constructor
             try {
@@ -298,6 +299,7 @@ public class AnnotationBuilder {
                         ofClass.getConstructor(Class.class);
                 return constructor.newInstance(annotatedClass);
             } catch (NoSuchMethodException ns) {
+                // fall-back to another approach of object construction
             }                 
             // by class instance
             return ofClass.newInstance();
