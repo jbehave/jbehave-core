@@ -15,6 +15,7 @@ import org.jbehave.core.annotations.When;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.steps.Parameters;
 
+@SuppressWarnings("checkstyle:MemberName")
 public class ExampleSteps {
     private int x;
     private Map<String, Integer> variables;

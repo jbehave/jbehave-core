@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.configuration.Keywords;
 
+@SuppressWarnings("checkstyle:MemberName")
 public class Narrative {
 
     public static final Narrative EMPTY = new Narrative("", "", "");

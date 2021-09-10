@@ -45,6 +45,7 @@ public class UploadToRedmine extends UploadToREST {
         }
     }
 
+    @SuppressWarnings("checkstyle:MemberName")
     private static class Entity {
         private Page wiki_page;
     }

@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
+@SuppressWarnings("checkstyle:MemberName")
 public class JFrameContextView implements ContextView {
 
     protected JFrame frame;

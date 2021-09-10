@@ -20,6 +20,7 @@ import org.jbehave.core.steps.StepType;
  * words (Given, When, Then And, "!--") using in parsing, as well as providing
  * keywords used in reporting.
  */
+@SuppressWarnings("checkstyle:MemberName")
 public class Keywords {
 
     private static final String SYNONYM_SEPARATOR = "\\|";

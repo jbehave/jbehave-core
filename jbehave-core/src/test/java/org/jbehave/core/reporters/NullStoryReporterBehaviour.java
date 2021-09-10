@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class NullStoryReporterBehaviour {
 
-    private final String NL = System.getProperty("line.separator");
+    private static final String NL = System.getProperty("line.separator");
 
     @Test
     void shouldOnlyReportOverriddenMethods() {

@@ -14,13 +14,13 @@ import org.jbehave.core.annotations.Then;
 
 public class JsonSteps {
 
-    private AJsonDto aJsonDto;
+    private JsonDto jsonDto;
     private AnotherJsonDto anotherJsonDto;
-    private List<AJsonDto> listOfJsonDtos;
+    private List<JsonDto> listOfJsonDtos;
 
     @Given("a json $jsonDto")
-    public void givenAJson(final AJsonDto jsonDto) {
-        this.aJsonDto = jsonDto;
+    public void givenAJson(final JsonDto jsonDto) {
+        this.jsonDto = jsonDto;
     }
 
     @Given("another json $anotherJson")
@@ -29,13 +29,13 @@ public class JsonSteps {
     }
 
     @Given("a list of jsons $listOfJsons")
-    public void givenAListOfJsons(final List<AJsonDto> listOfJsons) {
+    public void givenAListOfJsons(final List<JsonDto> listOfJsons) {
         this.listOfJsonDtos = listOfJsons;
     }
 
     @Then("the String value is $value")
     public void thenStringValueIs(final String value) {
-        assertThat(value, equalTo(this.aJsonDto.getString()));
+        assertThat(value, equalTo(this.jsonDto.getString()));
     }
 
     @Then("the Double value is $value")
@@ -50,7 +50,7 @@ public class JsonSteps {
 
     @Then("the Integer value is $value")
     public void checkIntegerValue(final Integer value) {
-        assertThat(value, equalTo(this.aJsonDto.getInteger()));
+        assertThat(value, equalTo(this.jsonDto.getInteger()));
     }
 
     @Then("the Boolean value is $value")
@@ -65,7 +65,7 @@ public class JsonSteps {
 
     @Then("the BigDecimal value is $value")
     public void checkBigDecimalValue(final BigDecimal value) {
-        assertThat(value, equalTo(this.aJsonDto.getBigDecimal()));
+        assertThat(value, equalTo(this.jsonDto.getBigDecimal()));
     }
 
     @Then("the $index{-st|-nd} BigDecimal value in list is $value")
@@ -74,22 +74,22 @@ public class JsonSteps {
     }
 
     @AsJson
-    public static class AJsonDto {
+    public static class JsonDto {
 
-        private String aString;
-        private Integer anInteger;
-        private BigDecimal aBigDecimal;
+        private String string;
+        private Integer integer;
+        private BigDecimal bigDecimal;
 
         public String getString() {
-            return aString;
+            return string;
         }
 
         public Integer getInteger() {
-            return anInteger;
+            return integer;
         }
 
         public BigDecimal getBigDecimal() {
-            return aBigDecimal;
+            return bigDecimal;
         }
 
         @Override
@@ -101,15 +101,15 @@ public class JsonSteps {
     @AsJson
     public static class AnotherJsonDto {
 
-        private Double aDouble;
-        private Boolean aBoolean;
+        private Double doubleVar;
+        private Boolean booleanVar;
 
         public Double getDouble() {
-            return aDouble;
+            return doubleVar;
         }
 
         public Boolean getBoolean() {
-            return aBoolean;
+            return booleanVar;
         }
 
         @Override
