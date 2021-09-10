@@ -10,10 +10,10 @@ import org.jbehave.core.io.rest.RESTClient.Type;
 import org.junit.jupiter.api.Test;
 
 
-class LoadFromRESTBehaviour {
+class LoadFromRestBehaviour {
 
     @Test
-    void canLoadFromREST() {
+    void canLoadFromRest() {
         RESTClient client = mock(RESTClient.class);
         when(client.getType()).thenReturn(Type.JSON);
         String url = "http://wiki/page";

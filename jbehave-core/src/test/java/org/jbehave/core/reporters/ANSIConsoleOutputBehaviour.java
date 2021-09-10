@@ -8,6 +8,7 @@ import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 class ANSIConsoleOutputBehaviour {
     private ANSIConsoleOutput output = new ANSIConsoleOutput();
 

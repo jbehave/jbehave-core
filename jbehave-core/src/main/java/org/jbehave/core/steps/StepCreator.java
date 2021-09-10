@@ -770,6 +770,7 @@ public class StepCreator {
             return perform(storyReporter, storyFailureIfItHappened);
         }
 
+        @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
         private class UUIDExceptionWrapperInjector extends FromStringParameterConverter<UUIDExceptionWrapper> {
             private final UUIDExceptionWrapper storyFailureIfItHappened;
 

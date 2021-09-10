@@ -16,6 +16,7 @@ import org.jbehave.core.reporters.SGRCodes.SGRCode;
  * Uses {@link SGRCodes} to decorate ConsoleOutput format patterns.
  * </p>
  */
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class ANSIConsoleOutput extends ConsoleOutput {
 
     private static final char ESCAPE_CHARACTER = (char) 27;

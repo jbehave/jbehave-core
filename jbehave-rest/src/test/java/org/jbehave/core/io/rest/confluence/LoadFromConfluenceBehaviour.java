@@ -17,7 +17,7 @@ class LoadFromConfluenceBehaviour {
     @Test
     void shouldLoadFromConfluence() {
         // given
-        LoadFromConfluence loader = new LoadFromConfluence(new MockRESTClient());
+        LoadFromConfluence loader = new LoadFromConfluence(new MockRestClient());
 
         // when
         String story = loader.loadResourceAsText("https://demo.confluence.com/rest/prototype/1/content/12517648");
@@ -32,9 +32,9 @@ class LoadFromConfluenceBehaviour {
                 "Examples:", "|precondition|be-captured|", "|xyz|not be captured|")));
     }
 
-    private static class MockRESTClient extends RESTClient {
+    private static class MockRestClient extends RESTClient {
 
-        public MockRESTClient() {
+        public MockRestClient() {
             super(Type.XML);
         }
 

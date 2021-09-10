@@ -19,7 +19,7 @@ class FailureStrategyBehaviour {
     }
 
     @Test
-    void shouldAllowFailuresToBeRethrownWhenWrappedAsUUIDExceptions() {
+    void shouldAllowFailuresToBeRethrownWhenWrappedAsUuidExceptions() {
         RethrowingFailure rethrowingFailure = new RethrowingFailure();
         UUIDExceptionWrapper throwable = new UUIDExceptionWrapper(new IllegalStateException());
         assertThrows(IllegalStateException.class, () -> rethrowingFailure.handleFailure(throwable));

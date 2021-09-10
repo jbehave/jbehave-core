@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 class UploadToXWikiBehaviour {
 
     @Test
-    void canFormatAsJSONWithDefaultSyntax() {
+    void canFormatAsJsonWithDefaultSyntax() {
         UploadToXWiki uploader = new UploadToXWiki(Type.JSON);
         String resourcePath = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story";
         String content = read("xwiki.json");
@@ -26,7 +26,7 @@ class UploadToXWikiBehaviour {
     }
 
     @Test
-    void canFormatAsJSONWithGivenSyntax() {
+    void canFormatAsJsonWithGivenSyntax() {
         UploadToXWiki uploader = new UploadToXWiki(Type.JSON);
         String resourcePath = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story";
         String content = read("xwiki.json");

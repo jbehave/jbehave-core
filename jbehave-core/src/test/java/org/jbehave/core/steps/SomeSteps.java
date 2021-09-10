@@ -122,7 +122,7 @@ public class SomeSteps extends Steps {
         this.args = multipleArgs;
     }
 
-    public void aMethodThatExpectsUUIDExceptionWrapper(UUIDExceptionWrapper exception) {
+    public void methodThatExpectsUuidExceptionWrapper(UUIDExceptionWrapper exception) {
         this.args = exception;
     }
 

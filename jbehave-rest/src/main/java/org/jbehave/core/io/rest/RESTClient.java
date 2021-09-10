@@ -13,6 +13,7 @@ import jakarta.ws.rs.client.Entity;
 /**
  * Provides access to REST resources
  */
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class RESTClient {
 
     public enum Type {

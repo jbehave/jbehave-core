@@ -466,7 +466,7 @@ class StepCreatorBehaviour {
 
         // When
         Step stepWithMeta = stepCreator.createBeforeOrAfterStep(
-                SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
+                SomeSteps.methodFor("methodThatExpectsUuidExceptionWrapper"), mock(Meta.class));
         UUIDExceptionWrapper occurredFailure = new UUIDExceptionWrapper();
         StepResult stepResult = stepWithMeta.perform(null, occurredFailure);
 
@@ -484,7 +484,7 @@ class StepCreatorBehaviour {
 
         // When
         Step stepWithMeta = stepCreator.createBeforeOrAfterStep(
-                SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
+                SomeSteps.methodFor("methodThatExpectsUuidExceptionWrapper"), mock(Meta.class));
         UUIDExceptionWrapper occurredFailure = new UUIDExceptionWrapper();
         StepResult stepResult = stepWithMeta.perform(null, occurredFailure);
 

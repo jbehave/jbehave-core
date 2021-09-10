@@ -110,7 +110,7 @@ class StackTraceFormatterBehaviour {
     }
 
     @Test
-    void UUIDExecptionShouldBeUnwrapped() {
+    void shouldUnwrapUuidException() {
         StackTraceFormatter formatter = new StackTraceFormatter(false);
         Exception ex = new Exception();
         Exception wrapEx = new UUIDExceptionWrapper(ex);

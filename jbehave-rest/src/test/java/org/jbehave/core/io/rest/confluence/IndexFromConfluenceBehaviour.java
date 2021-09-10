@@ -17,7 +17,7 @@ class IndexFromConfluenceBehaviour {
     @Test
     void shouldIndexFromConfluence() {
         // given
-        IndexFromConfluence indexer = new IndexFromConfluence(new MockRESTClient());
+        IndexFromConfluence indexer = new IndexFromConfluence(new MockRestClient());
 
         // when
         Map<String, Resource> index = indexer.indexResources("https://demo.confluence.com/display/JBEV/jBehave");
@@ -26,9 +26,9 @@ class IndexFromConfluenceBehaviour {
         assertThat(index.size(), equalTo(2));
     }
 
-    private static class MockRESTClient extends RESTClient {
+    private static class MockRestClient extends RESTClient {
 
-        public MockRESTClient() {
+        public MockRestClient() {
             super(Type.XML);
         }
 

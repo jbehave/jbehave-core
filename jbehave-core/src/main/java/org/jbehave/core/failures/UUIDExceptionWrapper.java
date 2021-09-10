@@ -8,7 +8,7 @@ import java.util.UUID;
  * throughout the reports. In particular, it allows failing scenario screenshots
  * to be linked to from the HTML report.
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "checkstyle:AbbreviationAsWordInName" })
 public class UUIDExceptionWrapper extends RuntimeException {
 
     private UUID uuid = UUID.randomUUID();
