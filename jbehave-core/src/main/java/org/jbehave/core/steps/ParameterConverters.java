@@ -183,11 +183,11 @@ public class ParameterConverters {
     /**
      * Create a ParameterConverters with given thread-safety
      *
-     * @param resourceLoader the resource loader
+     * @param resourceLoader    the resource loader
      * @param parameterControls the parameter controls
      * @param tableTransformers the table transformers
-     * @param threadSafe the boolean flag to determine if access to
-     * {@link ParameterConverter} should be thread-safe
+     * @param threadSafe        the boolean flag to determine if access to {@link ParameterConverter} should be
+     *                          thread-safe
      */
     public ParameterConverters(ResourceLoader resourceLoader, ParameterControls parameterControls,
             TableTransformers tableTransformers, boolean threadSafe) {
@@ -201,14 +201,14 @@ public class ParameterConverters {
      * sure that this character doesn't have a special meaning in your Locale
      * (for instance "," is used as decimal separator in some Locale)
      *
-     * @param monitor the StepMonitor reporting the conversions
-     * @param resourceLoader the resource loader
-     * @param parameterControls the parameter controls
-     * @param tableTransformers the table transformers
-     * @param locale the Locale to use when reading numbers
+     * @param monitor             the StepMonitor reporting the conversions
+     * @param resourceLoader      the resource loader
+     * @param parameterControls   the parameter controls
+     * @param tableTransformers   the table transformers
+     * @param locale              the Locale to use when reading numbers
      * @param collectionSeparator the String to use as collection separator
-     * @param threadSafe the boolean flag to determine if modification of
-     * {@link ParameterConverter} should be thread-safe
+     * @param threadSafe          the boolean flag to determine if modification of {@link ParameterConverter} should be
+     *                            thread-safe
      */
     public ParameterConverters(StepMonitor monitor, ResourceLoader resourceLoader, ParameterControls parameterControls,
             TableTransformers tableTransformers, Locale locale, String collectionSeparator, boolean threadSafe) {
@@ -223,15 +223,15 @@ public class ParameterConverters {
      * sure that this character doesn't have a special meaning in your Locale
      * (for instance "," is used as decimal separator in some Locale)
      *
-     * @param monitor the StepMonitor reporting the conversions
-     * @param resourceLoader the resource loader
-     * @param keywords the keywords
-     * @param parameterControls the parameter controls
-     * @param tableTransformers the table transformers
-     * @param locale the Locale to use when reading numbers
+     * @param monitor             the StepMonitor reporting the conversions
+     * @param resourceLoader      the resource loader
+     * @param keywords            the keywords
+     * @param parameterControls   the parameter controls
+     * @param tableTransformers   the table transformers
+     * @param locale              the Locale to use when reading numbers
      * @param collectionSeparator the String to use as collection separator
-     * @param threadSafe the boolean flag to determine if modification of
-     * {@link ParameterConverter} should be thread-safe
+     * @param threadSafe          the boolean flag to determine if modification of {@link ParameterConverter} should be
+     *                            thread-safe
      */
     public ParameterConverters(StepMonitor monitor, Keywords keywords, ResourceLoader resourceLoader,
             ParameterControls parameterControls, TableTransformers tableTransformers, Locale locale,
@@ -248,16 +248,16 @@ public class ParameterConverters {
      * sure that this character doesn't have a special meaning in your Locale
      * (for instance "," is used as decimal separator in some Locale)
      *
-     * @param monitor the StepMonitor reporting the conversions
-     * @param resourceLoader the resource loader
-     * @param keywords the keywords
-     * @param parameterControls the parameter controls
-     * @param tableParsers the table parsers
-     * @param tableTransformers the table transformers
-     * @param locale the Locale to use when reading numbers
+     * @param monitor             the StepMonitor reporting the conversions
+     * @param resourceLoader      the resource loader
+     * @param keywords            the keywords
+     * @param parameterControls   the parameter controls
+     * @param tableParsers        the table parsers
+     * @param tableTransformers   the table transformers
+     * @param locale              the Locale to use when reading numbers
      * @param collectionSeparator the String to use as collection separator
-     * @param threadSafe the boolean flag to determine if modification of
-     * {@link ParameterConverter} should be thread-safe
+     * @param threadSafe          the boolean flag to determine if modification of {@link ParameterConverter} should be
+     *                            thread-safe
      */
     public ParameterConverters(StepMonitor monitor, Keywords keywords, ResourceLoader resourceLoader,
             ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers,
@@ -750,8 +750,7 @@ public class ParameterConverters {
          * constructor, taking into account the settings of the currently configured DecimalFormat.
          *
          * @param value a localized number value
-         * @return A canonicalized string value suitable for consumption by
-         * BigDecimal
+         * @return A canonicalized string value suitable for consumption by BigDecimal
          */
         private String canonicalize(String value) {
             char decimalPointSeparator = '.'; // default
