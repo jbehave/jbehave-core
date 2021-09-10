@@ -91,6 +91,7 @@ import org.jbehave.core.steps.ParameterConverters.ParameterConversionFailed;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.StringListConverter;
 import org.jbehave.core.steps.SomeSteps.MyParameters;
+import org.jbehave.core.steps.SomeSteps.SomeEnum;
 import org.junit.jupiter.api.Test;
 
 class ParameterConvertersBehaviour {

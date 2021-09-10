@@ -155,12 +155,12 @@ public class SomeSteps extends Steps {
         return null;
     }
 
-}
+    enum SomeEnum {
+        ONE,
+        TWO,
+        THREE,
+        MULTIPLE_WORDS_AND_1_NUMBER,
+        ;
+    }
 
-enum SomeEnum {
-    ONE,
-    TWO,
-    THREE,
-    MULTIPLE_WORDS_AND_1_NUMBER,
-    ;
 }
