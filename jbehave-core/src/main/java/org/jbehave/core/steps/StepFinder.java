@@ -194,6 +194,7 @@ public class StepFinder {
 
         private class LevenshteinDistance {
 
+            @SuppressWarnings("checkstyle:LocalVariableName")
             public int calculate(String s, String t) {
                 int[][] d; // matrix
                 int n; // length of s

@@ -105,6 +105,7 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
         return Narrative.EMPTY;
     }
 
+    @SuppressWarnings("checkstyle:LocalVariableName")
     private Narrative createNarrative(String narrative) {
         Matcher findingElements = findingNarrativeElements().matcher(narrative);
         if (findingElements.matches()) {

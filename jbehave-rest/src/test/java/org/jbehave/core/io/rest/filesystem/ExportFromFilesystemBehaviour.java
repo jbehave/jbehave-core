@@ -35,8 +35,8 @@ class ExportFromFilesystemBehaviour {
         File file2 = new File(sourcePath + "/Another_story" + sourceExt);
         write(text2, file2);
         Map<String, Resource> index = new HashMap<>();
-        Resource aResource = new Resource(rootURI + "/A_story");
-        index.put("A_story", aResource);
+        Resource resource = new Resource(rootURI + "/A_story");
+        index.put("A_story", resource);
         Resource anotherResource = new Resource(rootURI + "/Another_story");
         index.put("Another_story", anotherResource);
         String includes = "**";
@@ -48,7 +48,7 @@ class ExportFromFilesystemBehaviour {
         exporter.exportResources(rootURI);
 
         // Then
-        verify(uploader).uploadResource(aResource);
+        verify(uploader).uploadResource(resource);
         verify(uploader).uploadResource(anotherResource);
     }
 

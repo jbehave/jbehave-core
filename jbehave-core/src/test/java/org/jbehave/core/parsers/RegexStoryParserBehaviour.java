@@ -900,30 +900,30 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseLongStory() {
-        String aGivenWhenThen =
+        String steps =
                 "Given a step"
                 + NL + "When I run it"
                 + NL + "Then I should seen an output" + NL;
 
-        StringBuilder aScenario = new StringBuilder();
+        StringBuilder scenario = new StringBuilder();
 
-        aScenario.append("Scenario: A long scenario").append(NL);
+        scenario.append("Scenario: A long scenario").append(NL);
         int numberOfGivenWhenThensPerScenario = 50;
         for (int i = 0; i < numberOfGivenWhenThensPerScenario; i++) {
-            aScenario.append(aGivenWhenThen);
+            scenario.append(steps);
         }
 
         int numberOfScenarios = 100;
         StringBuilder wholeStory = new StringBuilder();
         wholeStory.append("Story: A very long story").append(NL);
         for (int i = 0; i < numberOfScenarios; i++) {
-            wholeStory.append(aScenario).append(NL);
+            wholeStory.append(scenario).append(NL);
         }
 
         Story story = parser.parseStory(wholeStory.toString(), null);
         assertThat(story.getScenarios().size(), equalTo(numberOfScenarios));
-        for (Scenario scenario : story.getScenarios()) {
-            assertThat(scenario.getSteps().size(), equalTo(numberOfGivenWhenThensPerScenario * 3));
+        for (Scenario storyScenario : story.getScenarios()) {
+            assertThat(storyScenario.getSteps().size(), equalTo(numberOfGivenWhenThensPerScenario * 3));
         }
     }
 

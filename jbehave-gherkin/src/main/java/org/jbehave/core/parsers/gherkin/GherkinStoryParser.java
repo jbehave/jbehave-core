@@ -90,6 +90,7 @@ public class GherkinStoryParser extends TransformingStoryParser {
                     }                   
                 }
 
+                @SuppressWarnings("checkstyle:LocalVariableName")
                 private boolean writeNarrativeWithDefaultSyntax(final StringBuffer out, String narrative) {
                     boolean matches = false;
                     Matcher findingElements = compile(
@@ -108,6 +109,7 @@ public class GherkinStoryParser extends TransformingStoryParser {
                     return matches;
                 }
 
+                @SuppressWarnings("checkstyle:LocalVariableName")
                 private boolean writeNarrativeWithAlternativeSyntax(final StringBuffer out, String narrative) {
                     boolean matches = false;
                         Matcher findingElements = compile(

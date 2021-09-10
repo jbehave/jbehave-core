@@ -447,14 +447,14 @@ class StepCreatorBehaviour {
         stepCreator.useParanamer(new CachingParanamer(new BytecodeReadingParanamer()));
 
         // When
-        Date aDate = new Date();
-        when(parameterConverters.convert(anyString(), eq(Date.class))).thenReturn(aDate);
+        Date date = new Date();
+        when(parameterConverters.convert(anyString(), eq(Date.class))).thenReturn(date);
         Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodWithDate"), new Meta());
         StepResult stepResult = stepWithMeta.perform(null, null);
 
         // Then
         assertThat(stepResult, instanceOf(Silent.class));
-        assertThat((Date) stepsInstance.args, is(aDate));
+        assertThat((Date) stepsInstance.args, is(date));
     }
 
     @Test
