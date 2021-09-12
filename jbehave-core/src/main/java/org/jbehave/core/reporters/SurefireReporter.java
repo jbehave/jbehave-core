@@ -187,6 +187,8 @@ public class SurefireReporter {
                         case SUCCESSFUL:
                             counts.addSuccessful();
                             break;
+                        default:
+                            throw new IllegalArgumentException("Unsupported status: " + status);
                     }
                 }
             }
