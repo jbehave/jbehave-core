@@ -61,9 +61,11 @@ public class MyStories extends JUnitStories {
         ParameterControls parameterControls = new ParameterControls();
         // Start from default ParameterConverters instance
         ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, tableTransformers);
+        // A simple table parser
+        TableParsers tableParser =  new TableParsers();
         // factory to allow parameter conversion and loading from external resources (used by StoryParser too)
         ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), resourceLoader,
-                parameterConverters, parameterControls, tableTransformers);
+                parameterConverters, parameterControls, tableParser, tableTransformers);
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
