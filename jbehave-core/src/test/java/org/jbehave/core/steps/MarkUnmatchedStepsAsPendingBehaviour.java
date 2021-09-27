@@ -7,10 +7,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.mockito.Mockito.argThat;
+import static org.jbehave.core.steps.JBehaveMatchers.step;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -261,9 +262,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         assertThat(pendingStep.previousNonAndStepAsString(), equalTo(previousNonAndStep));
         StoryReporter reporter = mock(StoryReporter.class);
         Throwable throwable = step.perform(reporter, null).getFailure();
-        verify(reporter).beforeStep(
-                argThat(arg -> stepAsString.equals(arg.getStepAsString()) && StepExecutionType.PENDING
-                        .equals(arg.getExecutionType())));
+        verify(reporter).beforeStep(step(StepExecutionType.PENDING, stepAsString));
         assertThat(throwable, instanceOf(PendingStepFound.class));
         assertThat(throwable.getMessage(), equalTo(stepAsString));
 
@@ -285,9 +284,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform(reporter, null);
         assertThat(result, instanceOf(Ignorable.class));
-        verify(reporter).beforeStep(
-                argThat(arg -> stepAsString.equals(arg.getStepAsString()) && StepExecutionType.IGNORABLE
-                        .equals(arg.getExecutionType())));
+        verify(reporter).beforeStep(step(StepExecutionType.IGNORABLE, stepAsString));
     }
 
     @Test
@@ -306,9 +303,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform(reporter, null);
         assertThat(result, instanceOf(Comment.class));
-        verify(reporter).beforeStep(
-                argThat(arg -> stepAsString.equals(arg.getStepAsString()) && StepExecutionType.COMMENT
-                        .equals(arg.getExecutionType())));
+        verify(reporter).beforeStep(step(StepExecutionType.COMMENT, stepAsString));
     }
 
     @Test
@@ -510,17 +505,20 @@ class MarkUnmatchedStepsAsPendingBehaviour {
     void shouldInvokeBeforeOrAfterScenarioWithParameter() {
         BeforeOrAfterScenarioWithParameterSteps steps = new BeforeOrAfterScenarioWithParameterSteps();
         Meta meta = beforeAndAfterMeta();
+        StoryReporter storyReporter = mock(StoryReporter.class);
 
         ScenarioType scenarioType = ScenarioType.NORMAL;
         List<Step> beforeSteps = stepCollector.collectBeforeScenarioSteps(steps.listBeforeScenario().get(scenarioType),
                 meta);
-        beforeSteps.get(0).perform(null, null);
+        beforeSteps.get(0).perform(storyReporter, null);
         assertThat(steps.value, equalTo("before"));
+        verify(storyReporter).beforeStep(step(StepExecutionType.EXECUTABLE, "beforeScenario"));
 
         List<Step> afterSteps = stepCollector.collectAfterScenarioSteps(steps.listAfterScenario().get(scenarioType),
                 meta);
-        afterSteps.get(0).perform(null, null);
+        afterSteps.get(0).perform(storyReporter, null);
         assertThat(steps.value, equalTo("after"));
+        verify(storyReporter).beforeStep(step(StepExecutionType.EXECUTABLE, "afterScenario"));
     }
 
     @Test
@@ -528,22 +526,24 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         BeforeOrAfterScenarioWithParameterAndExceptionSteps steps =
                 new BeforeOrAfterScenarioWithParameterAndExceptionSteps();
         Meta meta = beforeAndAfterMeta();
-
+        StoryReporter storyReporter = mock(StoryReporter.class);
         UUIDExceptionWrapper failureOccurred = new UUIDExceptionWrapper();
 
         ScenarioType scenarioType = ScenarioType.NORMAL;
         List<Step> beforeSteps = stepCollector.collectBeforeScenarioSteps(steps.listBeforeScenario().get(scenarioType),
                 meta);
-        beforeSteps.get(0).doNotPerform(null, failureOccurred);
+        beforeSteps.get(0).doNotPerform(storyReporter, failureOccurred);
         assertThat(steps.value, equalTo("before"));
         assertThat(steps.exception, equalTo(failureOccurred));
+        verify(storyReporter).beforeStep(step(StepExecutionType.EXECUTABLE, "beforeScenario"));
 
         List<Step> afterSteps = stepCollector.collectAfterScenarioSteps(steps.listAfterScenario().get(scenarioType),
                 meta);
         failureOccurred = new UUIDExceptionWrapper();
-        afterSteps.get(0).doNotPerform(null, failureOccurred);
+        afterSteps.get(0).doNotPerform(storyReporter, failureOccurred);
         assertThat(steps.value, equalTo("after"));
         assertThat(steps.exception, equalTo(failureOccurred));
+        verify(storyReporter).beforeStep(step(StepExecutionType.EXECUTABLE, "afterScenario"));
     }
 
     @Test
@@ -551,16 +551,19 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         BeforeOrAfterStoryWithParameter steps = new BeforeOrAfterStoryWithParameter();
         boolean givenStory = false;
         Meta storyMeta = beforeAndAfterMeta();
+        StoryReporter storyReporter = mock(StoryReporter.class);
 
         List<Step> beforeSteps = stepCollector.collectBeforeOrAfterStorySteps(steps.listBeforeStory(givenStory),
                 storyMeta);
-        beforeSteps.get(0).perform(null, null);
+        beforeSteps.get(0).perform(storyReporter, null);
         assertThat(steps.value, equalTo("before"));
+        verify(storyReporter).beforeStep(step(StepExecutionType.EXECUTABLE, "beforeStory"));
 
         List<Step> afterSteps = stepCollector.collectBeforeOrAfterStorySteps(steps.listAfterStory(givenStory),
                 storyMeta);
-        afterSteps.get(0).perform(null, null);
+        afterSteps.get(0).perform(storyReporter, null);
         assertThat(steps.value, equalTo("after"));
+        verify(storyReporter).beforeStep(step(StepExecutionType.EXECUTABLE, "afterStory"));
     }
 
     @Test
@@ -568,20 +571,23 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         BeforeOrAfterStoryWithParameterAndExceptionSteps steps = new BeforeOrAfterStoryWithParameterAndExceptionSteps();
         boolean givenStory = false;
         Meta storyMeta = beforeAndAfterMeta();
+        StoryReporter storyReporter = mock(StoryReporter.class);
 
         List<Step> beforeSteps = stepCollector.collectBeforeOrAfterStorySteps(steps.listBeforeStory(givenStory),
                 storyMeta);
         UUIDExceptionWrapper failureOccurred = new UUIDExceptionWrapper();
-        beforeSteps.get(0).doNotPerform(null, failureOccurred);
+        beforeSteps.get(0).doNotPerform(storyReporter, failureOccurred);
         assertThat(steps.value, equalTo("before"));
         assertThat(steps.exception, equalTo(failureOccurred));
+        verify(storyReporter).beforeStep(step(StepExecutionType.EXECUTABLE, "beforeStory"));
 
         List<Step> afterSteps = stepCollector.collectBeforeOrAfterStorySteps(steps.listAfterStory(givenStory),
                 storyMeta);
         failureOccurred = new UUIDExceptionWrapper();
-        afterSteps.get(0).doNotPerform(null, failureOccurred);
+        afterSteps.get(0).doNotPerform(storyReporter, failureOccurred);
         assertThat(steps.value, equalTo("after"));
         assertThat(steps.exception, equalTo(failureOccurred));
+        verify(storyReporter).beforeStep(step(StepExecutionType.EXECUTABLE, "afterStory"));
     }
 
     private Scenario createScenario(String... stepsAsStrings) {

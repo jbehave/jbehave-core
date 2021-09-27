@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.jbehave.core.steps.JBehaveMatchers.step;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.jbehave.core.steps.StepType.GIVEN;
@@ -16,7 +17,6 @@ import static org.jbehave.core.steps.StepType.IGNORABLE;
 import static org.jbehave.core.steps.StepType.THEN;
 import static org.jbehave.core.steps.StepType.WHEN;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -424,8 +424,7 @@ class StepCandidateBehaviour {
         StepResult doNotPerform = step.doNotPerform(reporter, null);
         assertThat(doNotPerform, instanceOf(NotPerformed.class));
         assertThat(doNotPerform.parametrisedStep(), equalTo(stepAsString));
-        verify(reporter).beforeStep(argThat(arg -> stepAsString.equals(arg.getStepAsString())
-                && StepExecutionType.NOT_PERFORMED.equals(arg.getExecutionType())));
+        verify(reporter).beforeStep(step(StepExecutionType.NOT_PERFORMED, stepAsString));
         verifyNoMoreInteractions(reporter);
     }
 
@@ -623,8 +622,7 @@ class StepCandidateBehaviour {
     }
 
     private void verifyBeforeExecutableStep(StoryReporter storyReporter, String stepAsString) {
-        verify(storyReporter).beforeStep(argThat(arg -> stepAsString.equals(arg.getStepAsString())
-                && StepExecutionType.EXECUTABLE.equals(arg.getExecutionType())));
+        verify(storyReporter).beforeStep(step(StepExecutionType.EXECUTABLE, stepAsString));
     }
 
 }

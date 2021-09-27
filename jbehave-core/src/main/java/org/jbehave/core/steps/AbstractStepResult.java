@@ -16,7 +16,6 @@ import org.jbehave.core.reporters.StoryReporter;
  * <li>NotPerformed</li>
  * <li>Pending</li>
  * <li>Successful</li>
- * <li>Silent</li>
  * <li>Ignorable</li>
  * <li>Skipped</li>
  * </ul>
@@ -85,18 +84,6 @@ public abstract class AbstractStepResult implements StepResult {
             reporter.successful(parametrisedStep());
         }
 
-    }
-
-    public static class Silent extends Successful {
-
-        public Silent(Method method) {
-            super(method);
-        }
-
-        @Override
-        public void describeTo(StoryReporter reporter) {
-            // do not report
-        }
     }
 
     public static class Ignorable extends AbstractStepResult {
@@ -215,10 +202,6 @@ public abstract class AbstractStepResult implements StepResult {
 
     public static StepResult failed(Method method, UUIDExceptionWrapper e) {
         return new Failed(method, e);
-    }
-
-    public static StepResult silent(Method method) {
-        return new Silent(method);
     }
 
     public static StepResult skipped() {
