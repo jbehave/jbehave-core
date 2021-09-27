@@ -6,7 +6,6 @@ import static org.jbehave.core.steps.AbstractStepResult.failed;
 import static org.jbehave.core.steps.AbstractStepResult.ignorable;
 import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
 import static org.jbehave.core.steps.AbstractStepResult.pending;
-import static org.jbehave.core.steps.AbstractStepResult.silent;
 import static org.jbehave.core.steps.AbstractStepResult.skipped;
 import static org.jbehave.core.steps.AbstractStepResult.successful;
 
@@ -686,12 +685,12 @@ public class StepCreator {
         }
 
         @Override
-        public final StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+        public final StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailure) {
             storyReporter.beforeStep(new org.jbehave.core.model.Step(stepExecutionType, getStepAsString()));
-            return perform();
+            return perform(storyFailure);
         }
 
-        protected abstract StepResult perform();
+        protected abstract StepResult perform(UUIDExceptionWrapper storyFailure);
 
         @Override
         public String asString(Keywords keywords) {
@@ -731,17 +730,18 @@ public class StepCreator {
         }
     }
 
-    private class BeforeOrAfterStep extends AbstractStep {
+    private class BeforeOrAfterStep extends ReportingAbstractStep {
         private final Method method;
         private final Meta meta;
 
         public BeforeOrAfterStep(Method method, Meta meta) {
+            super(StepExecutionType.EXECUTABLE, method.getName());
             this.method = method;
             this.meta = meta;
         }
 
         @Override
-        public StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
             ParameterConverters paramConvertersWithExceptionInjector = paramConvertersWithExceptionInjector(
                     storyFailureIfItHappened);
             MethodInvoker methodInvoker = new MethodInvoker(method, paramConvertersWithExceptionInjector, paranamer,
@@ -750,7 +750,7 @@ public class StepCreator {
             try {
                 Object outputObject = methodInvoker.invoke();
                 storeOutput(outputObject, method);
-                return silent(method).setTimings(timer.stop());
+                return successful(method).setTimings(timer.stop());
             } catch (InvocationTargetException e) {
                 return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, e.getCause())))
                         .setTimings(timer.stop());
@@ -859,7 +859,7 @@ public class StepCreator {
         }
 
         @Override
-        public StepResult perform() {
+        public StepResult perform(UUIDExceptionWrapper storyFailure) {
             String stepAsString = getStepAsString();
             Timer timer = new Timer().start();
             try {
@@ -947,7 +947,7 @@ public class StepCreator {
         }
 
         @Override
-        protected StepResult perform() {
+        protected StepResult perform(UUIDExceptionWrapper storyFailure) {
             return pending(getStepAsString());
         }
 
@@ -980,7 +980,7 @@ public class StepCreator {
         }
 
         @Override
-        protected StepResult perform() {
+        protected StepResult perform(UUIDExceptionWrapper storyFailure) {
             return ignorable(getStepAsString());
         }
 
@@ -997,7 +997,7 @@ public class StepCreator {
         }
 
         @Override
-        protected StepResult perform() {
+        protected StepResult perform(UUIDExceptionWrapper storyFailure) {
             return comment(getStepAsString());
         }
 
