@@ -101,10 +101,8 @@ public class PerformableTree {
             if (performableStory.hasIncludedScenarios()) {
                 Map<String, String> givenStoryParameters = new HashMap<>(storyParameters);
                 addMetaParameters(givenStoryParameters, storyMeta);
-                if (story.hasGivenStories()) {
-                    performableStory.addGivenStories(performableGivenStories(context, story.getGivenStories(),
-                            givenStoryParameters));
-                }
+                performableStory.setGivenStories(performableGivenStories(context, story.getGivenStories(),
+                        givenStoryParameters));
             }
 
             performableStory.addAfterSteps(lifecycleSteps.get(Stage.AFTER));
@@ -267,13 +265,13 @@ public class PerformableTree {
         performableScenario.addBeforeSteps(context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
         performableScenario.addBeforeSteps(lifecycleSteps.get(Stage.BEFORE));
         addMetaParameters(parameters, storyAndScenarioMeta);
-        performableScenario.addGivenStories(performableGivenStories(context, scenario.getGivenStories(), parameters));
+        performableScenario.setGivenStories(performableGivenStories(context, scenario.getGivenStories(), parameters));
         performableScenario.addSteps(context.scenarioSteps(lifecycle, storyAndScenarioMeta, scenario, parameters));
         performableScenario.addAfterSteps(lifecycleSteps.get(Stage.AFTER));
         performableScenario.addAfterSteps(context.afterScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
     }
 
-    private List<PerformableStory> performableGivenStories(RunContext context, GivenStories givenStories,
+    private PerformableGivenStories performableGivenStories(RunContext context, GivenStories givenStories,
             Map<String, String> parameters) {
         List<PerformableStory> stories = new ArrayList<>();
         if (givenStories.getPaths().size() > 0) {
@@ -288,7 +286,7 @@ public class PerformableTree {
                 stories.add(performableStory(childContext, story, parameters));
             }
         }
-        return stories;
+        return new PerformableGivenStories(stories, givenStories);
     }
 
     private Story storyWithMatchingScenarios(Story story, Map<String,String> parameters) {
@@ -879,7 +877,7 @@ public class PerformableTree {
         SUCCESSFUL, FAILED, PENDING, NOT_PERFORMED, EXCLUDED;
     }
 
-    public static class PerformableStory extends AbstractPerformableGivenStories {
+    public static class PerformableStory implements Performable {
 
         private final Story story;
         private final transient Keywords keywords;
@@ -887,7 +885,7 @@ public class PerformableTree {
         private boolean excluded;
         private Status status;
         private Timing timing = new Timing();
-        private List<PerformableStory> givenStories = new ArrayList<>();
+        private PerformableGivenStories givenStories = new PerformableGivenStories(List.of(), null);
         private List<PerformableSteps> beforeSteps = new ArrayList<>();
         private List<PerformableScenario> scenarios = new ArrayList<>();
         private List<PerformableSteps> afterSteps = new ArrayList<>();
@@ -926,8 +924,8 @@ public class PerformableTree {
             return timing;
         }
 
-        public void addGivenStories(List<PerformableStory> performableGivenStories) {
-            this.givenStories.addAll(performableGivenStories);
+        public void setGivenStories(PerformableGivenStories givenStories) {
+            this.givenStories = givenStories;
         }
 
         public void addBeforeSteps(PerformableSteps beforeSteps) {
@@ -960,7 +958,7 @@ public class PerformableTree {
                 context.reporter().lifecycle(story.getLifecycle());
                 State state = context.state();
                 performStorySteps(context, beforeSteps, Stage.BEFORE);
-                performGivenStories(context, givenStories, story.getGivenStories());
+                givenStories.perform(context);
                 if (!context.failureOccurred() || !context.configuration().storyControls()
                         .skipStoryIfGivenStoryFailed()) {
                     performScenarios(context);
@@ -1129,28 +1127,11 @@ public class PerformableTree {
 
     }
 
-    public abstract static class AbstractPerformableGivenStories implements Performable {
-
-        protected void performGivenStories(RunContext context, List<PerformableStory> performableGivenStories,
-                                                GivenStories givenStories) throws InterruptedException {
-            if (performableGivenStories.size() > 0) {
-                context.reporter().beforeGivenStories();
-                context.reporter().givenStories(givenStories);
-                for (PerformableStory story : performableGivenStories) {
-                    story.perform(context);
-                }
-                context.reporter().afterGivenStories();
-            }
-        }
-
-    }
-
-    public abstract static class AbstractPerformableScenario extends AbstractPerformableGivenStories {
+    public abstract static class AbstractPerformableScenario implements Performable {
 
         private transient Story story;
-        private transient Scenario scenario;
         protected final Map<String, String> parameters;
-        protected final List<PerformableStory> givenStories = new ArrayList<>();
+        protected PerformableGivenStories givenStories;
         protected final PerformableSteps beforeSteps = new PerformableSteps();
         protected final PerformableSteps steps = new PerformableSteps();
         protected final PerformableSteps afterSteps = new PerformableSteps();
@@ -1162,12 +1143,11 @@ public class PerformableTree {
 
         public AbstractPerformableScenario(Story story, Scenario scenario, Map<String, String> parameters) {
             this.story = story;
-            this.scenario = scenario;
             this.parameters = parameters;
         }
 
-        public void addGivenStories(List<PerformableStory> givenStories) {
-            this.givenStories.addAll(givenStories);
+        public void setGivenStories(PerformableGivenStories givenStories) {
+            this.givenStories = givenStories;
         }
 
         public void addBeforeSteps(PerformableSteps beforeSteps) {
@@ -1203,7 +1183,7 @@ public class PerformableTree {
         protected void performScenario(RunContext context) throws InterruptedException {
             perform(beforeSteps, context, r -> r.beforeScenarioSteps(Stage.BEFORE),
                 r -> r.afterScenarioSteps(Stage.BEFORE));
-            performGivenStories(context, givenStories, scenario.getGivenStories());
+            givenStories.perform(context);
             performRestartableSteps(context);
             perform(afterSteps, context, r -> r.beforeScenarioSteps(Stage.AFTER),
                 r -> r.afterScenarioSteps(Stage.AFTER));
@@ -1285,6 +1265,34 @@ public class PerformableTree {
             return Meta.EMPTY;
         }
 
+    }
+
+    public static class PerformableGivenStories implements Performable {
+
+        private final List<PerformableStory> performableGivenStories;
+        private final GivenStories givenStories;
+
+        public PerformableGivenStories(List<PerformableStory> performableGivenStories, GivenStories givenStories) {
+            this.performableGivenStories = performableGivenStories;
+            this.givenStories = givenStories;
+        }
+
+        @Override
+        public void perform(RunContext context) throws InterruptedException {
+            if (performableGivenStories.size() > 0) {
+                StoryReporter storyReporter = context.reporter();
+                storyReporter.beforeGivenStories();
+                storyReporter.givenStories(givenStories);
+                for (PerformableStory story : performableGivenStories) {
+                    story.perform(context);
+                }
+                storyReporter.afterGivenStories();
+            }
+        }
+
+        @Override
+        public void reportFailures(FailureContext context) {
+        }
     }
 
     public static class PerformableSteps implements Performable {
