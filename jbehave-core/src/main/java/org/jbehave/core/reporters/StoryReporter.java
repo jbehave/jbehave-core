@@ -13,6 +13,7 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.LifecycleStepsType;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -43,13 +44,13 @@ public interface StoryReporter {
 
     void lifecycle(Lifecycle lifecycle);
 
-    void beforeStorySteps(Stage stage);
+    void beforeStorySteps(Stage stage, LifecycleStepsType type);
 
-    void afterStorySteps(Stage stage);
+    void afterStorySteps(Stage stage, LifecycleStepsType type);
 
-    void beforeScenarioSteps(Stage stage);
+    void beforeScenarioSteps(Stage stage, LifecycleStepsType type);
 
-    void afterScenarioSteps(Stage stage);
+    void afterScenarioSteps(Stage stage, LifecycleStepsType type);
 
     void beforeComposedSteps();
 

@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
 class TemplateOutputBehaviour extends AbstractOutputBehaviour {
 
     @Test
-    void shouldOutputStoryToHtml() throws IOException {
+    void shouldOutputStoryToHtml() throws IOException, ParserConfigurationException, SAXException {
         // Given
         String name = "template-story.html";
         File file = newFile("target/" + name);
@@ -26,7 +26,7 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, true);
 
         // Then
-        assertFileOutputIsSameAs(file, name);
+        assertXml(name, fileContent(file));
     }
 
     @Test
@@ -40,7 +40,7 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, true);
 
         // Then
-        assertFileOutputIsSameAs(file, name);
+        assertJson(name, fileContent(file));
         validateFileOutput(file);
     }
 
@@ -55,7 +55,7 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, true);
 
         // Then
-        assertFileOutputIsSameAs(file, name);
+        assertXml(name, fileContent(file));
         validateFileOutput(file);
     }
 

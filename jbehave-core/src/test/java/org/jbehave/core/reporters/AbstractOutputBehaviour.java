@@ -2,6 +2,7 @@ package org.jbehave.core.reporters;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
+import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,15 +13,20 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import org.jbehave.core.io.IOUtils;
 import org.xml.sax.SAXException;
 
+import groovy.util.Node;
+import groovy.xml.XmlParser;
+
 public abstract class AbstractOutputBehaviour {
 
     protected void assertThatOutputIs(String out, String pathToExpected) throws IOException {
-        String expected = dos2unix(IOUtils.toString(getClass().getResourceAsStream(pathToExpected), true));
+        String expected = getResourceAsString(pathToExpected);
         String actual = dos2unix(out);
         assertThat(actual, equalToCompressingWhiteSpace(expected));
     }
@@ -31,7 +37,7 @@ public abstract class AbstractOutputBehaviour {
 
     protected void assertFileOutputIsSameAs(File file, String name) throws IOException {
         String out = fileContent(file);
-        assertThatOutputIs(out, "/" + name);
+        assertThatOutputIs(out, name);
     }
 
     protected String fileContent(File file) throws IOException {
@@ -53,9 +59,29 @@ public abstract class AbstractOutputBehaviour {
         }
     }
 
+    protected void assertJson(String expectedJsonFileName, String actualJson) throws IOException {
+        String expected = getResourceAsString(expectedJsonFileName);
+        JsonObject expectedObject = JsonParser.parseString(actualJson).getAsJsonObject();
+        JsonObject actualObject = JsonParser.parseString(expected).getAsJsonObject();
+        assertThat(expectedObject, is(actualObject));
+    }
+
+    protected void assertXml(String expectedXmlFileName, String actualXml)
+            throws IOException, ParserConfigurationException, SAXException {
+        String expected = getResourceAsString(expectedXmlFileName);
+        XmlParser parser = new XmlParser(false, false);
+        Node expectedObject = parser.parseText(actualXml);
+        Node actualObject = parser.parseText(expected);
+        assertThat(expectedObject.toString(), is(actualObject.toString()));
+    }
+
     protected File newFile(String path) {
         File file = new File(path);
         file.delete();
         return file;
+    }
+
+    private String getResourceAsString(String resource) throws IOException {
+        return dos2unix(IOUtils.toString(getClass().getResourceAsStream('/' + resource), true));
     }
 }

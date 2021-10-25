@@ -83,7 +83,13 @@
       ]
     }
   },
-  "beforeStorySteps": [
+  "beforeSystemStorySteps": [
+    {
+      "outcome": "successful",
+      "value": "Given a before story step"
+    }
+  ],
+  "beforeUserStorySteps": [
     {
       "outcome": "successful",
       "value": "Given a before story step"
@@ -94,7 +100,13 @@
       "keyword": "Scenario:",
       "id": "scenario-id",
       "title": "I ask for a loan",
-      "beforeScenarioSteps": [
+      "beforeSystemScenarioSteps": [
+        {
+          "outcome": "successful",
+          "value": "Given a scenario step"
+        }
+      ],
+      "beforeUserScenarioSteps": [
         {
           "outcome": "successful",
           "value": "Given a scenario step"
@@ -238,7 +250,13 @@
           }
         }
       ],
-      "afterScenarioSteps": [
+      "afterUserScenarioSteps": [
+        {
+          "outcome": "successful",
+          "value": "Given a scenario step"
+        }
+      ],
+      "afterSystemScenarioSteps": [
         {
           "outcome": "successful",
           "value": "Given a scenario step"
@@ -280,7 +298,13 @@
               "money": "$30",
               "to": "Mauro"
             },
-            "beforeScenarioSteps": [
+            "beforeSystemScenarioSteps": [
+              {
+                "outcome": "successful",
+                "value": "Given a scenario step"
+              }
+            ],
+            "beforeUserScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "Given a scenario step"
@@ -296,7 +320,13 @@
                 "value": "Then I give it to Mauro"
               }
             ],
-            "afterScenarioSteps": [
+            "afterUserScenarioSteps": [
+              {
+                "outcome": "successful",
+                "value": "Given a scenario step"
+              }
+            ],
+            "afterSystemScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "Given a scenario step"
@@ -309,7 +339,13 @@
               "money": "$50",
               "to": "Paul"
             },
-            "beforeScenarioSteps": [
+            "beforeSystemScenarioSteps": [
+              {
+                "outcome": "successful",
+                "value": "Given a scenario step"
+              }
+            ],
+            "beforeUserScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "Given a scenario step"
@@ -330,7 +366,13 @@
                 "value": "Then I should have a balance of $30"
               }
             ],
-            "afterScenarioSteps": [
+            "afterUserScenarioSteps": [
+              {
+                "outcome": "successful",
+                "value": "Given a scenario step"
+              }
+            ],
+            "afterSystemScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "Given a scenario step"
@@ -343,7 +385,13 @@
       "end": 2
     }
   ],
-  "afterStorySteps": [
+  "afterUserStorySteps": [
+    {
+      "outcome": "successful",
+      "value": "Given an after story step"
+    }
+  ],
+  "afterSystemStorySteps": [
     {
       "outcome": "successful",
       "value": "Given an after story step"

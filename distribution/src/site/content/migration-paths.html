@@ -37,10 +37,17 @@
         Use storyTimeouts instead.</li>
     <li>Stop reporting BeforeStories/AfterStories steps as stories. New hooks are introduced: org.jbehave.core.reporters.StoryReporter#beforeStoriesSteps and org.jbehave.core.reporters.StoryReporter#afterStoriesSteps</li>
     <li>Fix typo in StoryReporter method: lifecyle -> lifecycle</li>
-    <li>Replace StoryReporter#beforeStep(String) hook with StoryReporter#beforeStep(Step)</li>
     <li>Invoke StoryReporter#beforeStep(Step) hook before all steps (including comment, pending, ignorable), previously the hook was invoked only for parameterized steps</li>
     <li>CurrencyConverter, PatternConverter, FileConverter and VerbatimConverter classes were removed, their functionality is covered by new instances of FunctionalParameterConverter class</li>
     <li>Always trigger StoryReporter.beforeStep(Step) hook and report all outcomes (previously only failures were reported, successful outcome was silent) for methods annotated with @BeforeStories, @AfterStories, @BeforeStory, @AfterStory, @BeforeScenario, @AfterScenario</li>
+    <li>Replace StoryReporter hooks:</li>
+    <ul>
+        <li>StoryReporter#beforeStep(String) with StoryReporter#beforeStep(Step)</li>
+        <li>StoryReporter#beforeStorySteps(Stage) with StoryReporter#beforeStorySteps(Stage, LifecycleStepsType)</li>
+        <li>StoryReporter#afterStorySteps(Stage) with StoryReporter#afterStorySteps(Stage, LifecycleStepsType)</li>
+        <li>StoryReporter#beforeScenarioSteps(Stage) with StoryReporter#beforeScenarioSteps(Stage, LifecycleStepsType)</li>
+        <li>StoryReporter#afterScenarioSteps(Stage) with StoryReporter#afterScenarioSteps(Stage, LifecycleStepsType)</li>
+    </ul>
 </ul>
 
 <h2>From 3.x to 4.0</h2>
