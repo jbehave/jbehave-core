@@ -31,9 +31,6 @@ import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -57,6 +54,7 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
+import org.jbehave.core.steps.LifecycleStepsType;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
@@ -93,7 +91,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToTxtUsingCustomPatterns() throws IOException {
+    void shouldOutputStoryToTxtUsingCustomPatterns() throws IOException, ParserConfigurationException, SAXException {
         // Given
         String name = "stream-story-custom-patterns.txt";
         File file = newFile("target/" + name);
@@ -108,11 +106,10 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         // Then
         assertFileOutputIsSameAs(file, name);
-
     }
 
     @Test
-    void shouldOutputStoryToHtml() throws IOException {
+    void shouldOutputStoryToHtml() throws IOException, ParserConfigurationException, SAXException {
         // Given
         String name = "stream-story.html";
         File file = newFile("target/" + name);
@@ -122,7 +119,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        assertFileOutputIsSameAs(file, name);
+        assertXml(name, fileContent(file));
     }
 
     @Test
@@ -141,7 +138,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToHtmlUsingCustomPatterns() throws IOException {
+    void shouldOutputStoryToHtmlUsingCustomPatterns() throws IOException, ParserConfigurationException, SAXException {
         // Given
         String name = "stream-story-custom-patterns.html";
         File file = newFile("target/" + name);
@@ -155,7 +152,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        assertFileOutputIsSameAs(file, name);
+        assertXml(name, fileContent(file));
     }
 
     @Test
@@ -169,8 +166,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        assertFileOutputIsSameAs(file, name);
-        validateFileOutput(file);
+        assertXml(name, fileContent(file));
     }
 
     @Test
@@ -189,7 +185,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToXmlUsingCustomPatterns() throws IOException {
+    void shouldOutputStoryToXmlUsingCustomPatterns() throws IOException, ParserConfigurationException, SAXException {
         // Given
         String name = "stream-story-custom-patterns.xml";
         File file = newFile("target/" + name);
@@ -203,7 +199,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        assertFileOutputIsSameAs(file, name);
+        assertXml(name, fileContent(file));
     }
 
     @Test
@@ -251,7 +247,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE);
+        reportStep(reporter, step, Stage.BEFORE, LifecycleStepsType.USER);
 
         reporter.beforeGivenStories();
         reporter.givenStories(scenario.getGivenStories().getPaths());
@@ -261,7 +257,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE);
+        reportStep(reporter, step, Stage.BEFORE, LifecycleStepsType.USER);
 
         reporter.beforeGivenStories();
         reporter.givenStories(singletonList(givenStory.getPath()));
@@ -271,31 +267,31 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE);
-        reportStep(reporter, step, null);
-        reportStep(reporter, step, Stage.AFTER);
+        reportStep(reporter, step, Stage.BEFORE, LifecycleStepsType.USER);
+        reportStep(reporter, step, null, null);
+        reportStep(reporter, step, Stage.AFTER, LifecycleStepsType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
 
-        reportStep(reporter, step, null);
-        reportStep(reporter, step, Stage.AFTER);
+        reportStep(reporter, step, null, null);
+        reportStep(reporter, step, Stage.AFTER, LifecycleStepsType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
 
-        reportStep(reporter, step, null);
-        reportStep(reporter, step, Stage.AFTER);
+        reportStep(reporter, step, null, null);
+        reportStep(reporter, step, Stage.AFTER, LifecycleStepsType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE);
+        reportStep(reporter, step, Stage.BEFORE, LifecycleStepsType.USER);
         reporter.beforeGivenStories();
         reporter.givenStories(scenario.getGivenStories().getPaths());
         reporter.beforeStory(givenStory, true);
@@ -304,7 +300,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE);
+        reportStep(reporter, step, Stage.BEFORE, LifecycleStepsType.USER);
         reporter.beforeGivenStories();
         reporter.givenStories(singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
@@ -313,23 +309,23 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE);
-        reportStep(reporter, step, null);
-        reportStep(reporter, step, Stage.AFTER);
+        reportStep(reporter, step, Stage.BEFORE, LifecycleStepsType.USER);
+        reportStep(reporter, step, null, null);
+        reportStep(reporter, step, Stage.AFTER, LifecycleStepsType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
-        reportStep(reporter, step, null);
-        reportStep(reporter, step, Stage.AFTER);
+        reportStep(reporter, step, null, null);
+        reportStep(reporter, step, Stage.AFTER, LifecycleStepsType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
-        reportStep(reporter, step, null);
-        reportStep(reporter, step, Stage.AFTER);
+        reportStep(reporter, step, null, null);
+        reportStep(reporter, step, Stage.AFTER, LifecycleStepsType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
@@ -661,38 +657,30 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(spyScenarioUuid(new Scenario("Normal scenario", Meta.EMPTY)));
         reporter.beforeExamples(singletonList("Then '<expected>' is equal to '<actual>'"), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
-        reportStep(reporter, scenarioStep, Stage.BEFORE);
-        reportStep(reporter, scenarioStep, null);
-        reportStep(reporter, scenarioStep, Stage.AFTER);
+        reportStep(reporter, scenarioStep, Stage.BEFORE, LifecycleStepsType.USER);
+        reportStep(reporter, scenarioStep, null, null);
+        reportStep(reporter, scenarioStep, Stage.AFTER, LifecycleStepsType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.beforeScenario(spyScenarioUuid(new Scenario("Some empty scenario", Meta.EMPTY)));
         reporter.beforeExamples(emptyList(), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
-        reportStep(reporter, scenarioStep, Stage.BEFORE);
-        reportStep(reporter, scenarioStep, Stage.AFTER);
+        reportStep(reporter, scenarioStep, Stage.BEFORE, LifecycleStepsType.USER);
+        reportStep(reporter, scenarioStep, Stage.AFTER, LifecycleStepsType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(false);
 
         // Then
-
         assertJson("story-empty-scenario-with-lifecycle.json", out.toString());
     }
 
-    private void assertJson(String expectedJsonFileName, String actualJson) throws IOException {
-        String expected = IOUtils.toString(getClass().getResourceAsStream("/" + expectedJsonFileName), true);
-        JsonObject expectedObject = JsonParser.parseString(actualJson).getAsJsonObject();
-        JsonObject actualObject = JsonParser.parseString(expected).getAsJsonObject();
-        assertThat(expectedObject, is(actualObject));
-    }
-
-    private void reportStep(StoryReporter reporter, String step, Stage stage) {
-        reporter.beforeScenarioSteps(stage);
+    private void reportStep(StoryReporter reporter, String step, Stage stage, LifecycleStepsType type) {
+        reporter.beforeScenarioSteps(stage, type);
         reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, step));
         reporter.successful(step);
-        reporter.afterScenarioSteps(stage);
+        reporter.afterScenarioSteps(stage, type);
     }
 
     private Timing getTiming() {

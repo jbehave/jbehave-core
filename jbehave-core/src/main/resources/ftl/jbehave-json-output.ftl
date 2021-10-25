@@ -164,10 +164,11 @@
 </#list>
 ]
 <#if !story.getAfterSteps().isEmpty()>
-,"after": {"keyword": "${keywords.after}", "steps":
+,"after": {"keyword": "${keywords.after}", "steps": [
 <#list story.getAfterSteps() as step>
 <@renderStep step/><#if step_has_next>,</#if>
 </#list>
+]
 }
 </#if>
 <#if story.isCancelled()?string == 'true'>

@@ -19,6 +19,7 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.LifecycleStepsType;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -100,13 +101,13 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeScenarioSteps(Stage stage) {
-        delegate(reporter -> reporter.beforeScenarioSteps(stage));
+    public void beforeScenarioSteps(Stage stage, LifecycleStepsType type) {
+        delegate(reporter -> reporter.beforeScenarioSteps(stage, type));
     }
 
     @Override
-    public void afterScenarioSteps(Stage stage) {
-        delegate(reporter -> reporter.afterScenarioSteps(stage));
+    public void afterScenarioSteps(Stage stage, LifecycleStepsType type) {
+        delegate(reporter -> reporter.afterScenarioSteps(stage, type));
     }
 
     @Override
@@ -120,13 +121,13 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeStorySteps(Stage stage) {
-        delegate(reporter -> reporter.beforeStorySteps(stage));
+    public void beforeStorySteps(Stage stage, LifecycleStepsType type) {
+        delegate(reporter -> reporter.beforeStorySteps(stage, type));
     }
 
     @Override
-    public void afterStorySteps(Stage stage) {
-        delegate(reporter -> reporter.afterStorySteps(stage));
+    public void afterStorySteps(Stage stage, LifecycleStepsType type) {
+        delegate(reporter -> reporter.afterStorySteps(stage, type));
     }
 
     @Override

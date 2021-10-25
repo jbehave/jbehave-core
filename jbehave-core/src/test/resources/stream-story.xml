@@ -31,11 +31,19 @@
 </scope>
 </after>
 </lifecycle>
-<beforeStorySteps>
+<beforeSystemStorySteps>
 <step outcome="successful">Given a before story step</step>
-</beforeStorySteps>
+</beforeSystemStorySteps>
+<beforeUserStorySteps>
+<step outcome="successful">Given a before story step</step>
+</beforeUserStorySteps>
 <scenario id="scenario-id" keyword="Scenario:" title="I ask for a loan">
+<beforeSystemScenarioSteps>
 <step outcome="successful">Given a scenario step</step>
+</beforeSystemScenarioSteps>
+<beforeUserScenarioSteps>
+<step outcome="successful">Given a scenario step</step>
+</beforeUserScenarioSteps>
 <givenStories keyword="GivenStories:">
 <givenStory parameters="">/given/story1</givenStory>
 <givenStory parameters="">/given/story2</givenStory>
@@ -72,7 +80,12 @@
 <outcome><value>A wrong date</value><value>01/01/2011</value><value>&quot;02/01/2011&quot;</value><value>No</value></outcome>
 </outcomes>
 </steps>
+<afterUserScenarioSteps>
 <step outcome="successful">Given a scenario step</step>
+</afterUserScenarioSteps>
+<afterSystemScenarioSteps>
+<step outcome="successful">Given a scenario step</step>
+</afterSystemScenarioSteps>
 <timing phase="start">1</timing>
 <timing phase="end">2</timing>
 </scenario>
@@ -87,28 +100,51 @@
 </parameters>
 
 <example keyword="Example:">{money=$30, to=Mauro}</example>
+<beforeSystemScenarioSteps>
 <step outcome="successful">Given a scenario step</step>
+</beforeSystemScenarioSteps>
+<beforeUserScenarioSteps>
+<step outcome="successful">Given a scenario step</step>
+</beforeUserScenarioSteps>
 <steps>
 <step outcome="successful">Given money $30</step>
 <step outcome="successful">Then I give it to Mauro</step>
 </steps>
+<afterUserScenarioSteps>
 <step outcome="successful">Given a scenario step</step>
+</afterUserScenarioSteps>
+<afterSystemScenarioSteps>
+<step outcome="successful">Given a scenario step</step>
+</afterSystemScenarioSteps>
 
 <example keyword="Example:">{money=$50, to=Paul}</example>
+<beforeSystemScenarioSteps>
 <step outcome="successful">Given a scenario step</step>
+</beforeSystemScenarioSteps>
+<beforeUserScenarioSteps>
+<step outcome="successful">Given a scenario step</step>
+</beforeUserScenarioSteps>
 <steps>
 <step outcome="successful">Given money $50</step>
 <step outcome="successful">Then I give it to Paul</step>
 <step outcome="pending" keyword="PENDING">Then I should have a balance of $30</step>
 </steps>
+<afterUserScenarioSteps>
 <step outcome="successful">Given a scenario step</step>
+</afterUserScenarioSteps>
+<afterSystemScenarioSteps>
+<step outcome="successful">Given a scenario step</step>
+</afterSystemScenarioSteps>
 </examples>
 <timing phase="start">1</timing>
 <timing phase="end">2</timing>
 </scenario>
-<afterStorySteps>
+<afterUserStorySteps>
 <step outcome="successful">Given an after story step</step>
-</afterStorySteps>
+</afterUserStorySteps>
+<afterSystemStorySteps>
+<step outcome="successful">Given an after story step</step>
+</afterSystemStorySteps>
 <pendingMethod>@When(&quot;something \&quot;$param\&quot;&quot;)
 @Pending
 public void whenSomething() {

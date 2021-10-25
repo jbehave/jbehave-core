@@ -94,6 +94,10 @@ class PerformableTreeBehaviour {
         Scenario scenario = new Scenario("scenario title", Meta.createMeta("@skip", new Keywords()));
         Meta storyMeta = new Meta();
         Story story = new Story(STORY_PATH, null, storyMeta, null, singletonList(scenario));
+        
+        when(stepCollector.collectLifecycleSteps(eq(stepCandidates), eq(story.getLifecycle()), eq(storyMeta),
+                eq(Scope.STORY), any(MatchingStepMonitor.class)))
+                        .thenReturn(Map.of(Stage.BEFORE, List.of(), Stage.AFTER, List.of()));
 
         PerformableTree performableTree = new PerformableTree();
         PerformableTree.RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,

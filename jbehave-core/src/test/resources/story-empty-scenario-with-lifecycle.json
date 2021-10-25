@@ -38,7 +38,7 @@
               "actual": "some data",
               "expected": "some data"
             },
-            "beforeScenarioSteps": [
+            "beforeUserScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "Then '((some data))' is ((equal to)) '((some data))'"
@@ -50,7 +50,7 @@
                 "value": "Then '((some data))' is ((equal to)) '((some data))'"
               }
             ],
-            "afterScenarioSteps": [
+            "afterUserScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "Then '((some data))' is ((equal to)) '((some data))'"
@@ -80,13 +80,13 @@
               "actual": "some data",
               "expected": "some data"
             },
-            "beforeScenarioSteps": [
+            "beforeUserScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "Then '((some data))' is ((equal to)) '((some data))'"
               }
             ],
-            "afterScenarioSteps": [
+            "afterUserScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "Then '((some data))' is ((equal to)) '((some data))'"

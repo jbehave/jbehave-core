@@ -31,11 +31,19 @@ Given an after story step
 
 
 
+BeforeSystemStorySteps
+Given a before story step
 
+BeforeUserStorySteps
 Given a before story step
 
 Scenario: I ask for a loan
+BeforeSystemScenarioSteps
 Given a scenario step
+
+BeforeUserScenarioSteps
+Given a scenario step
+
 GivenStories:
 /given/story1
 /given/story2
@@ -64,7 +72,12 @@ Then I don't return loan <<< FAILED
 |Description|Value|Matcher|Verified|
 |I don't return all|100|<50.0>|No|
 |A wrong date|01/01/2011|"02/01/2011"|No|
+AfterUserScenarioSteps
 Given a scenario step
+
+AfterSystemScenarioSteps
+Given a scenario step
+
 
 Scenario: Parametrised Scenario
 Examples:
@@ -76,20 +89,43 @@ Then I give it to <to>
 |$50|Paul|
 
 Example: {money=$30, to=Mauro}
-Given a scenario step
-Given money $30
-Then I give it to Mauro
+BeforeSystemScenarioSteps
 Given a scenario step
 
-Example: {money=$50, to=Paul}
+BeforeUserScenarioSteps
 Given a scenario step
+
+Given money $30
+Then I give it to Mauro
+AfterUserScenarioSteps
+Given a scenario step
+
+AfterSystemScenarioSteps
+Given a scenario step
+
+
+Example: {money=$50, to=Paul}
+BeforeSystemScenarioSteps
+Given a scenario step
+
+BeforeUserScenarioSteps
+Given a scenario step
+
 Given money $50
 Then I give it to Paul
 Then I should have a balance of $30 <<< FAILED
+AfterUserScenarioSteps
+Given a scenario step
+
+AfterSystemScenarioSteps
 Given a scenario step
 
 
 
+AfterUserStorySteps
+Given an after story step
+
+AfterSystemStorySteps
 Given an after story step
 
 @When("something \"$param\"")

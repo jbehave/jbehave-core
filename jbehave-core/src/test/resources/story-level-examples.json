@@ -54,7 +54,7 @@
               "key1": "value1",
               "key2": "value2"
             },
-            "beforeScenarioSteps": [
+            "beforeUserScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "My step"
@@ -125,7 +125,7 @@
                               "key1": "value1",
                               "key2": "value2"
                             },
-                            "beforeScenarioSteps": [
+                            "beforeUserScenarioSteps": [
                               {
                                 "outcome": "successful",
                                 "value": "My step"
@@ -196,7 +196,7 @@
                                               "key1": "value1",
                                               "key2": "value2"
                                             },
-                                            "beforeScenarioSteps": [
+                                            "beforeUserScenarioSteps": [
                                               {
                                                 "outcome": "successful",
                                                 "value": "My step"
@@ -208,7 +208,7 @@
                                                 "value": "My step"
                                               }
                                             ],
-                                            "afterScenarioSteps": [
+                                            "afterUserScenarioSteps": [
                                               {
                                                 "outcome": "successful",
                                                 "value": "My step"
@@ -230,7 +230,7 @@
                                 "value": "My step"
                               }
                             ],
-                            "afterScenarioSteps": [
+                            "afterUserScenarioSteps": [
                               {
                                 "outcome": "successful",
                                 "value": "My step"
@@ -252,7 +252,7 @@
                 "value": "My step"
               }
             ],
-            "afterScenarioSteps": [
+            "afterUserScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "My step"
@@ -296,7 +296,7 @@
               "key1": "value1",
               "key2": "value2"
             },
-            "beforeScenarioSteps": [
+            "beforeUserScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "My step"
@@ -367,7 +367,7 @@
                               "key1": "value1",
                               "key2": "value2"
                             },
-                            "beforeScenarioSteps": [
+                            "beforeUserScenarioSteps": [
                               {
                                 "outcome": "successful",
                                 "value": "My step"
@@ -438,7 +438,7 @@
                                               "key1": "value1",
                                               "key2": "value2"
                                             },
-                                            "beforeScenarioSteps": [
+                                            "beforeUserScenarioSteps": [
                                               {
                                                 "outcome": "successful",
                                                 "value": "My step"
@@ -450,7 +450,7 @@
                                                 "value": "My step"
                                               }
                                             ],
-                                            "afterScenarioSteps": [
+                                            "afterUserScenarioSteps": [
                                               {
                                                 "outcome": "successful",
                                                 "value": "My step"
@@ -472,7 +472,7 @@
                                 "value": "My step"
                               }
                             ],
-                            "afterScenarioSteps": [
+                            "afterUserScenarioSteps": [
                               {
                                 "outcome": "successful",
                                 "value": "My step"
@@ -494,7 +494,7 @@
                 "value": "My step"
               }
             ],
-            "afterScenarioSteps": [
+            "afterUserScenarioSteps": [
               {
                 "outcome": "successful",
                 "value": "My step"
