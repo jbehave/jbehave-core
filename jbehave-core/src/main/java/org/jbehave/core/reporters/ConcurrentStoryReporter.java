@@ -18,7 +18,6 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.LifecycleStepsType;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -77,10 +76,10 @@ public class ConcurrentStoryReporter implements StoryReporter {
             afterStory = StoryReporter.class.getMethod("afterStory", Boolean.TYPE);
             narrative = StoryReporter.class.getMethod("narrative", Narrative.class);
             lifecycle = StoryReporter.class.getMethod("lifecycle", Lifecycle.class);
-            beforeStorySteps = StoryReporter.class.getMethod("beforeStorySteps", Stage.class, LifecycleStepsType.class);
-            afterStorySteps = StoryReporter.class.getMethod("afterStorySteps", Stage.class, LifecycleStepsType.class);
-            beforeScenarioSteps = StoryReporter.class.getMethod("beforeScenarioSteps", Stage.class, LifecycleStepsType.class);
-            afterScenarioSteps = StoryReporter.class.getMethod("afterScenarioSteps", Stage.class, LifecycleStepsType.class);
+            beforeStorySteps = StoryReporter.class.getMethod("beforeStorySteps", Stage.class, StepDefinitionLevel.class);
+            afterStorySteps = StoryReporter.class.getMethod("afterStorySteps", Stage.class, StepDefinitionLevel.class);
+            beforeScenarioSteps = StoryReporter.class.getMethod("beforeScenarioSteps", Stage.class, StepDefinitionLevel.class);
+            afterScenarioSteps = StoryReporter.class.getMethod("afterScenarioSteps", Stage.class, StepDefinitionLevel.class);
             beforeComposedSteps = StoryReporter.class.getMethod("beforeComposedSteps");
             afterComposedSteps = StoryReporter.class.getMethod("afterComposedSteps");
             scenarioExcluded = StoryReporter.class.getMethod("scenarioExcluded", Scenario.class, String.class);
@@ -161,13 +160,13 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeStorySteps(Stage stage, LifecycleStepsType type) {
-        perform(reporter ->  reporter.beforeStorySteps(stage, type), beforeStorySteps, stage, type);
+    public void beforeStorySteps(Stage stage, StepDefinitionLevel level) {
+        perform(reporter ->  reporter.beforeStorySteps(stage, level), beforeStorySteps, stage, level);
     }
 
     @Override
-    public void afterStorySteps(Stage stage, LifecycleStepsType type) {
-        perform(reporter ->  reporter.afterStorySteps(stage, type), afterStorySteps, stage, type);
+    public void afterStorySteps(Stage stage, StepDefinitionLevel level) {
+        perform(reporter ->  reporter.afterStorySteps(stage, level), afterStorySteps, stage, level);
     }
 
     @Override
@@ -181,13 +180,13 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeScenarioSteps(Stage stage, LifecycleStepsType type) {
-        perform(reporter ->  reporter.beforeScenarioSteps(stage, type), beforeScenarioSteps, stage, type);
+    public void beforeScenarioSteps(Stage stage, StepDefinitionLevel level) {
+        perform(reporter ->  reporter.beforeScenarioSteps(stage, level), beforeScenarioSteps, stage, level);
     }
 
     @Override
-    public void afterScenarioSteps(Stage stage, LifecycleStepsType type) {
-        perform(reporter ->  reporter.afterScenarioSteps(stage, type), afterScenarioSteps, stage, type);
+    public void afterScenarioSteps(Stage stage, StepDefinitionLevel level) {
+        perform(reporter ->  reporter.afterScenarioSteps(stage, level), afterScenarioSteps, stage, level);
     }
 
     @Override

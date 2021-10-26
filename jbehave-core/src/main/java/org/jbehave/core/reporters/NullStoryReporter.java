@@ -13,7 +13,6 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.LifecycleStepsType;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -98,19 +97,19 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeStorySteps(Stage stage, LifecycleStepsType type) {
+    public void beforeStorySteps(Stage stage, StepDefinitionLevel level) {
     }
 
     @Override
-    public void afterStorySteps(Stage stage, LifecycleStepsType type) {
+    public void afterStorySteps(Stage stage, StepDefinitionLevel level) {
     }
 
     @Override
-    public void beforeScenarioSteps(Stage stage, LifecycleStepsType type) {
+    public void beforeScenarioSteps(Stage stage, StepDefinitionLevel level) {
     }
 
     @Override
-    public void afterScenarioSteps(Stage stage, LifecycleStepsType type) {
+    public void afterScenarioSteps(Stage stage, StepDefinitionLevel level) {
     }
 
     @Override

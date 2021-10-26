@@ -43,10 +43,10 @@
     <li>Replace StoryReporter hooks:</li>
     <ul>
         <li>StoryReporter#beforeStep(String) with StoryReporter#beforeStep(Step)</li>
-        <li>StoryReporter#beforeStorySteps(Stage) with StoryReporter#beforeStorySteps(Stage, LifecycleStepsType)</li>
-        <li>StoryReporter#afterStorySteps(Stage) with StoryReporter#afterStorySteps(Stage, LifecycleStepsType)</li>
-        <li>StoryReporter#beforeScenarioSteps(Stage) with StoryReporter#beforeScenarioSteps(Stage, LifecycleStepsType)</li>
-        <li>StoryReporter#afterScenarioSteps(Stage) with StoryReporter#afterScenarioSteps(Stage, LifecycleStepsType)</li>
+        <li>StoryReporter#beforeStorySteps(Stage) with StoryReporter#beforeStorySteps(Stage, StepDefinitionLevel)</li>
+        <li>StoryReporter#afterStorySteps(Stage) with StoryReporter#afterStorySteps(Stage, StepDefinitionLevel)</li>
+        <li>StoryReporter#beforeScenarioSteps(Stage) with StoryReporter#beforeScenarioSteps(Stage, StepDefinitionLevel)</li>
+        <li>StoryReporter#afterScenarioSteps(Stage) with StoryReporter#afterScenarioSteps(Stage, StepDefinitionLevel)</li>
     </ul>
 </ul>
 

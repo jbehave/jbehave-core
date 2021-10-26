@@ -35,6 +35,7 @@ import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.DelegatingStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.reporters.StoryReporter.StepDefinitionLevel;
 import org.jbehave.core.steps.AbstractStepResult;
 import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.Step;
@@ -42,7 +43,6 @@ import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
-import org.jbehave.core.steps.LifecycleStepsType;
 import org.jbehave.core.steps.Timer;
 import org.jbehave.core.steps.Timing;
 import org.jbehave.core.steps.context.StepsContext;
@@ -94,8 +94,8 @@ public class PerformableTree {
             Map<Stage, PerformableSteps> lifecycleSteps = context.lifecycleSteps(story.getLifecycle(), storyMeta,
                     Scope.STORY);
 
-            performableStory.addBeforeSteps(LifecycleStepsType.SYSTEM, context.beforeStorySteps(storyMeta));
-            performableStory.addBeforeSteps(LifecycleStepsType.USER, lifecycleSteps.get(Stage.BEFORE));
+            performableStory.addBeforeSteps(StepDefinitionLevel.SYSTEM, context.beforeStorySteps(storyMeta));
+            performableStory.addBeforeSteps(StepDefinitionLevel.USER, lifecycleSteps.get(Stage.BEFORE));
             performableStory.addAll(performableScenarios(context, story, storyParameters, filteredStory));
 
             // Add Given stories only if story contains non-filtered scenarios
@@ -106,8 +106,8 @@ public class PerformableTree {
                         givenStoryParameters));
             }
 
-            performableStory.addAfterSteps(LifecycleStepsType.USER, lifecycleSteps.get(Stage.AFTER));
-            performableStory.addAfterSteps(LifecycleStepsType.SYSTEM, context.afterStorySteps(storyMeta));
+            performableStory.addAfterSteps(StepDefinitionLevel.USER, lifecycleSteps.get(Stage.AFTER));
+            performableStory.addAfterSteps(StepDefinitionLevel.SYSTEM, context.afterStorySteps(storyMeta));
 
         }
 
@@ -203,13 +203,13 @@ public class PerformableTree {
 
                 // run before scenario steps, if allowed
                 if (runBeforeAndAfterScenarioSteps) {
-                    normalScenario.addBeforeSteps(LifecycleStepsType.SYSTEM,
+                    normalScenario.addBeforeSteps(StepDefinitionLevel.SYSTEM,
                             context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.NORMAL));
                 }
                 performableScenario.useNormalScenario(normalScenario);
                 // after scenario steps, if allowed
                 if (runBeforeAndAfterScenarioSteps) {
-                    normalScenario.addAfterSteps(LifecycleStepsType.SYSTEM,
+                    normalScenario.addAfterSteps(StepDefinitionLevel.SYSTEM,
                             context.afterScenarioSteps(storyAndScenarioMeta, ScenarioType.NORMAL));
                 }
             }
@@ -242,11 +242,11 @@ public class PerformableTree {
         ExamplePerformableScenario exampleScenario = new ExamplePerformableScenario(story, scenario, parameters,
                 exampleIndex);
         exampleScenario.setStoryAndScenarioMeta(storyAndScenarioMeta);
-        exampleScenario.addBeforeSteps(LifecycleStepsType.SYSTEM,
+        exampleScenario.addBeforeSteps(StepDefinitionLevel.SYSTEM,
                 context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.EXAMPLE));
         addStepsWithLifecycle(exampleScenario, context, story.getLifecycle(), parameters, scenario,
                 storyAndScenarioMeta);
-        exampleScenario.addAfterSteps(LifecycleStepsType.SYSTEM,
+        exampleScenario.addAfterSteps(StepDefinitionLevel.SYSTEM,
                 context.afterScenarioSteps(storyAndScenarioMeta, ScenarioType.EXAMPLE));
         return exampleScenario;
     }
@@ -266,13 +266,13 @@ public class PerformableTree {
         Map<Stage, PerformableSteps> lifecycleSteps = context.lifecycleSteps(lifecycle, storyAndScenarioMeta,
                 Scope.SCENARIO);
 
-        performableScenario.addBeforeSteps(LifecycleStepsType.SYSTEM, context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
-        performableScenario.addBeforeSteps(LifecycleStepsType.USER, lifecycleSteps.get(Stage.BEFORE));
+        performableScenario.addBeforeSteps(StepDefinitionLevel.SYSTEM, context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
+        performableScenario.addBeforeSteps(StepDefinitionLevel.USER, lifecycleSteps.get(Stage.BEFORE));
         addMetaParameters(parameters, storyAndScenarioMeta);
         performableScenario.setGivenStories(performableGivenStories(context, scenario.getGivenStories(), parameters));
         performableScenario.addSteps(context.scenarioSteps(lifecycle, storyAndScenarioMeta, scenario, parameters));
-        performableScenario.addAfterSteps(LifecycleStepsType.USER, lifecycleSteps.get(Stage.AFTER));
-        performableScenario.addAfterSteps(LifecycleStepsType.SYSTEM, context.afterScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
+        performableScenario.addAfterSteps(StepDefinitionLevel.USER, lifecycleSteps.get(Stage.AFTER));
+        performableScenario.addAfterSteps(StepDefinitionLevel.SYSTEM, context.afterScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
     }
 
     private PerformableGivenStories performableGivenStories(RunContext context, GivenStories givenStories,
@@ -884,7 +884,7 @@ public class PerformableTree {
     public static abstract class PerformableEntity implements Performable {
 
         private PerformableGivenStories givenStories;
-        private final Map<Stage, Map<LifecycleStepsType, PerformableSteps>> stageSteps;
+        private final Map<Stage, Map<StepDefinitionLevel, PerformableSteps>> stageSteps;
         private final LifecycleStepsExecutionHook beforeHook;
         private final LifecycleStepsExecutionHook afterHook;
 
@@ -899,44 +899,44 @@ public class PerformableTree {
             this.givenStories = givenStories;
         }
 
-        public void addBeforeSteps(LifecycleStepsType type, PerformableSteps beforeSteps) {
-            getBeforeSteps(type).add(beforeSteps);
+        public void addBeforeSteps(StepDefinitionLevel level, PerformableSteps beforeSteps) {
+            getBeforeSteps(level).add(beforeSteps);
         }
 
-        public void addAfterSteps(LifecycleStepsType type, PerformableSteps afterSteps) {
-            getAfterSteps(type).add(afterSteps);
+        public void addAfterSteps(StepDefinitionLevel level, PerformableSteps afterSteps) {
+            getAfterSteps(level).add(afterSteps);
         }
 
         protected void performBeforeSteps(RunContext context) throws InterruptedException {
-            performSteps(context, Stage.BEFORE, LifecycleStepsType.SYSTEM);
-            performSteps(context, Stage.BEFORE, LifecycleStepsType.USER);
+            performSteps(context, Stage.BEFORE, StepDefinitionLevel.SYSTEM);
+            performSteps(context, Stage.BEFORE, StepDefinitionLevel.USER);
         }
 
         protected void performAfterSteps(RunContext context) throws InterruptedException {
-            performSteps(context, Stage.AFTER, LifecycleStepsType.USER);
-            performSteps(context, Stage.AFTER, LifecycleStepsType.SYSTEM);
+            performSteps(context, Stage.AFTER, StepDefinitionLevel.USER);
+            performSteps(context, Stage.AFTER, StepDefinitionLevel.SYSTEM);
         }
 
-        protected PerformableSteps getBeforeSteps(LifecycleStepsType type) {
-            return getPerformableSteps(Stage.BEFORE, type);
+        protected PerformableSteps getBeforeSteps(StepDefinitionLevel level) {
+            return getPerformableSteps(Stage.BEFORE, level);
         }
 
-        protected PerformableSteps getAfterSteps(LifecycleStepsType type) {
-            return getPerformableSteps(Stage.AFTER, type);
+        protected PerformableSteps getAfterSteps(StepDefinitionLevel level) {
+            return getPerformableSteps(Stage.AFTER, level);
         }
 
-        private PerformableSteps getPerformableSteps(Stage stage, LifecycleStepsType type) {
-            Map<LifecycleStepsType, PerformableSteps> steps = stageSteps.computeIfAbsent(stage,
-                    t -> new EnumMap<>(LifecycleStepsType.class));
-            return steps.computeIfAbsent(type, s -> new PerformableSteps());
+        private PerformableSteps getPerformableSteps(Stage stage, StepDefinitionLevel level) {
+            Map<StepDefinitionLevel, PerformableSteps> steps = stageSteps.computeIfAbsent(stage,
+                    t -> new EnumMap<>(StepDefinitionLevel.class));
+            return steps.computeIfAbsent(level, s -> new PerformableSteps());
         }
 
-        private void performSteps(RunContext context, Stage stage, LifecycleStepsType type)
+        private void performSteps(RunContext context, Stage stage, StepDefinitionLevel level)
                 throws InterruptedException {
             StoryReporter reporter = context.reporter();
-            this.beforeHook.perform(reporter, stage, type);
-            getPerformableSteps(stage, type).perform(context);
-            this.afterHook.perform(reporter, stage, type);
+            this.beforeHook.perform(reporter, stage, level);
+            getPerformableSteps(stage, level).perform(context);
+            this.afterHook.perform(reporter, stage, level);
         }
 
         public PerformableGivenStories getGivenStories() {
@@ -946,7 +946,7 @@ public class PerformableTree {
     }
 
     private interface LifecycleStepsExecutionHook {
-        void perform(StoryReporter reporter, Stage stage, LifecycleStepsType type);
+        void perform(StoryReporter reporter, Stage stage, StepDefinitionLevel level);
     }
 
     public static class PerformableStory extends PerformableEntity {
@@ -1234,11 +1234,11 @@ public class PerformableTree {
 
         @Override
         public void reportFailures(FailureContext context) {
-            getBeforeSteps(LifecycleStepsType.SYSTEM).reportFailures(context);
-            getBeforeSteps(LifecycleStepsType.USER).reportFailures(context);
+            getBeforeSteps(StepDefinitionLevel.SYSTEM).reportFailures(context);
+            getBeforeSteps(StepDefinitionLevel.USER).reportFailures(context);
             steps.reportFailures(context);
-            getAfterSteps(LifecycleStepsType.USER).reportFailures(context);
-            getAfterSteps(LifecycleStepsType.SYSTEM).reportFailures(context);
+            getAfterSteps(StepDefinitionLevel.USER).reportFailures(context);
+            getAfterSteps(StepDefinitionLevel.SYSTEM).reportFailures(context);
         }
 
         protected void resetStateIfConfigured(RunContext context) {
