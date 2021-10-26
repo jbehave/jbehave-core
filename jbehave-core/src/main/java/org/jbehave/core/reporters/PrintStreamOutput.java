@@ -45,7 +45,6 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.Verbatim;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.LifecycleStepsType;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -381,17 +380,17 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void beforeScenarioSteps(Stage stage, LifecycleStepsType type) {
-        printScenarioSteps("before", stage, type);
+    public void beforeScenarioSteps(Stage stage, StepDefinitionLevel level) {
+        printScenarioSteps("before", stage, level);
     }
 
     @Override
-    public void afterScenarioSteps(Stage stage, LifecycleStepsType type) {
-        printScenarioSteps("after", stage, type);
+    public void afterScenarioSteps(Stage stage, StepDefinitionLevel level) {
+        printScenarioSteps("after", stage, level);
     }
 
-    private void printScenarioSteps(String stepsStage, Stage stage, LifecycleStepsType type) {
-        printSteps(stepsStage, "Scenario", stage, type);
+    private void printScenarioSteps(String stepsStage, Stage stage, StepDefinitionLevel level) {
+        printSteps(stepsStage, "Scenario", stage, level);
     }
 
     @Override
@@ -419,23 +418,23 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void beforeStorySteps(Stage stage, LifecycleStepsType type) {
-        printStorySteps("before", stage, type);
+    public void beforeStorySteps(Stage stage, StepDefinitionLevel level) {
+        printStorySteps("before", stage, level);
     }
 
     @Override
-    public void afterStorySteps(Stage stage, LifecycleStepsType type) {
-        printStorySteps("after", stage, type);
+    public void afterStorySteps(Stage stage, StepDefinitionLevel level) {
+        printStorySteps("after", stage, level);
     }
 
-    private void printStorySteps(String stepsStage, Stage stage, LifecycleStepsType type) {
-        printSteps(stepsStage, "Story", stage, type);
+    private void printStorySteps(String stepsStage, Stage stage, StepDefinitionLevel level) {
+        printSteps(stepsStage, "Story", stage, level);
     }
 
-    private void printSteps(String stepsStage, String parent, Stage stage, LifecycleStepsType type) {
+    private void printSteps(String stepsStage, String parent, Stage stage, StepDefinitionLevel level) {
         String stageName = stage != null ? CaseUtils.toCamelCase(stage.name(), true) : EMPTY;
-        String stepsTypeName = type != null ? CaseUtils.toCamelCase(type.name(), true) : EMPTY;
-        print(format(stepsStage + stageName + stepsTypeName + parent + "Steps", ""));
+        String levelName = level != null ? CaseUtils.toCamelCase(level.name(), true) : EMPTY;
+        print(format(stepsStage + stageName + levelName + parent + "Steps", ""));
     }
 
     @Override

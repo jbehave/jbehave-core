@@ -34,10 +34,10 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.reporters.StoryReporter.StepDefinitionLevel;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
-import org.jbehave.core.steps.LifecycleStepsType;
 import org.jbehave.core.steps.Timing;
 
 class StoryNarrator {
@@ -66,13 +66,13 @@ class StoryNarrator {
         reporter.narrative(story.getNarrative());
         reporter.lifecycle(lifecycle);
 
-        reportStoryStep(reporter, beforeStoryStep, Stage.BEFORE, LifecycleStepsType.SYSTEM);
-        reportStoryStep(reporter, beforeStoryStep, Stage.BEFORE, LifecycleStepsType.USER);
+        reportStoryStep(reporter, beforeStoryStep, Stage.BEFORE, StepDefinitionLevel.SYSTEM);
+        reportStoryStep(reporter, beforeStoryStep, Stage.BEFORE, StepDefinitionLevel.USER);
 
         reporter.beforeScenarios();
         reporter.beforeScenario(spyScenarioUuid(new Scenario("I ask for a loan", Meta.EMPTY)));
-        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, LifecycleStepsType.SYSTEM);
-        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, LifecycleStepsType.USER);
+        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, StepDefinitionLevel.SYSTEM);
+        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, StepDefinitionLevel.USER);
         reporter.beforeGivenStories();
         reporter.givenStories(asList("/given/story1", "/given/story2"));
         reporter.afterGivenStories();
@@ -125,24 +125,24 @@ class StoryNarrator {
             reporter.failedOutcomes(failedOutcomes, ((OutcomesFailed) e.getCause()).outcomesTable());
         }
         reporter.afterScenarioSteps(null, null);
-        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, LifecycleStepsType.USER);
-        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, LifecycleStepsType.SYSTEM);
+        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, StepDefinitionLevel.USER);
+        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, StepDefinitionLevel.SYSTEM);
         reporter.afterScenario(getTiming());
         reporter.beforeScenario(spyScenarioUuid(new Scenario("Parametrised Scenario", Meta.EMPTY)));
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
         reporter.example(table.getRow(0), 0);
-        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, LifecycleStepsType.SYSTEM);
-        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, LifecycleStepsType.USER);
+        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, StepDefinitionLevel.SYSTEM);
+        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, StepDefinitionLevel.USER);
         reporter.beforeScenarioSteps(null, null);
         reportSuccessfulStep(reporter, "Given money $30");
         reportSuccessfulStep(reporter, "Then I give it to Mauro");
         reporter.afterScenarioSteps(null, null);
-        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, LifecycleStepsType.USER);
-        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, LifecycleStepsType.SYSTEM);
+        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, StepDefinitionLevel.USER);
+        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, StepDefinitionLevel.SYSTEM);
         reporter.example(table.getRow(1), 1);
-        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, LifecycleStepsType.SYSTEM);
-        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, LifecycleStepsType.USER);
+        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, StepDefinitionLevel.SYSTEM);
+        reportScenarioStep(reporter, scenarioStep, Stage.BEFORE, StepDefinitionLevel.USER);
         reporter.beforeScenarioSteps(null, null);
         reportSuccessfulStep(reporter, "Given money $50");
         reportSuccessfulStep(reporter, "Then I give it to Paul");
@@ -153,14 +153,14 @@ class StoryNarrator {
             reportPendingStep(reporter, "Then I should have a balance of $30");
         }
         reporter.afterScenarioSteps(null, null);
-        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, LifecycleStepsType.USER);
-        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, LifecycleStepsType.SYSTEM);
+        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, StepDefinitionLevel.USER);
+        reportScenarioStep(reporter, scenarioStep, Stage.AFTER, StepDefinitionLevel.SYSTEM);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
 
-        reportStoryStep(reporter, afterStoryStep, Stage.AFTER, LifecycleStepsType.USER);
-        reportStoryStep(reporter, afterStoryStep, Stage.AFTER, LifecycleStepsType.SYSTEM);
+        reportStoryStep(reporter, afterStoryStep, Stage.AFTER, StepDefinitionLevel.USER);
+        reportStoryStep(reporter, afterStoryStep, Stage.AFTER, StepDefinitionLevel.SYSTEM);
 
         String method1 = "@When(\"something \\\"$param\\\"\")\n"
                 + "@Pending\n"
@@ -182,16 +182,16 @@ class StoryNarrator {
         return map;
     }
 
-    private static void reportScenarioStep(StoryReporter reporter, String step, Stage stage, LifecycleStepsType type) {
-        reporter.beforeScenarioSteps(stage, type);
+    private static void reportScenarioStep(StoryReporter reporter, String step, Stage stage, StepDefinitionLevel level) {
+        reporter.beforeScenarioSteps(stage, level);
         reportSuccessfulStep(reporter, step);
-        reporter.afterScenarioSteps(stage, type);
+        reporter.afterScenarioSteps(stage, level);
     }
 
-    private static void reportStoryStep(StoryReporter reporter, String step, Stage stage, LifecycleStepsType type) {
-        reporter.beforeStorySteps(stage, type);
+    private static void reportStoryStep(StoryReporter reporter, String step, Stage stage, StepDefinitionLevel level) {
+        reporter.beforeStorySteps(stage, level);
         reportSuccessfulStep(reporter, step);
-        reporter.afterStorySteps(stage, type);
+        reporter.afterStorySteps(stage, level);
     }
 
     private static void reportPendingStep(StoryReporter reporter, String step) {

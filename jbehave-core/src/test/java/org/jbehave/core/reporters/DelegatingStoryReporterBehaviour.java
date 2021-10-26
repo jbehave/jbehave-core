@@ -14,8 +14,8 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.reporters.StoryReporter.StepDefinitionLevel;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.LifecycleStepsType;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -45,8 +45,8 @@ class DelegatingStoryReporterBehaviour {
         delegator.storyExcluded(story, filter);
         delegator.beforeScenarios();
         delegator.beforeScenario(scenario);
-        delegator.beforeScenarioSteps(Stage.BEFORE, LifecycleStepsType.USER);
-        delegator.afterScenarioSteps(Stage.BEFORE, LifecycleStepsType.USER);
+        delegator.beforeScenarioSteps(Stage.BEFORE, StepDefinitionLevel.USER);
+        delegator.afterScenarioSteps(Stage.BEFORE, StepDefinitionLevel.USER);
         delegator.scenarioExcluded(scenario, filter);
         delegator.givenStories(givenStoryPaths);
         delegator.givenStories(givenStories);
@@ -59,21 +59,21 @@ class DelegatingStoryReporterBehaviour {
         delegator.afterScenarioSteps(null, null);
         delegator.beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
         delegator.example(examplesTable.getRow(0), 0);
-        delegator.beforeScenarioSteps(Stage.AFTER, LifecycleStepsType.USER);
-        delegator.afterScenarioSteps(Stage.AFTER, LifecycleStepsType.USER);
+        delegator.beforeScenarioSteps(Stage.AFTER, StepDefinitionLevel.USER);
+        delegator.afterScenarioSteps(Stage.AFTER, StepDefinitionLevel.USER);
         delegator.afterExamples();
         delegator.afterScenario(timing);
        
         delegator.beforeScenario(scenario2);
-        delegator.beforeScenarioSteps(Stage.BEFORE, LifecycleStepsType.USER);
-        delegator.afterScenarioSteps(Stage.BEFORE, LifecycleStepsType.USER);
+        delegator.beforeScenarioSteps(Stage.BEFORE, StepDefinitionLevel.USER);
+        delegator.afterScenarioSteps(Stage.BEFORE, StepDefinitionLevel.USER);
         delegator.beforeScenarioSteps(null, null);
         delegator.successful("Given step 2.1");
         delegator.successful("When step 2.2");
         delegator.failed("Then step 2.3", anException);
         delegator.afterScenarioSteps(null, null);
-        delegator.beforeScenarioSteps(Stage.AFTER, LifecycleStepsType.USER);
-        delegator.afterScenarioSteps(Stage.AFTER, LifecycleStepsType.USER);
+        delegator.beforeScenarioSteps(Stage.AFTER, StepDefinitionLevel.USER);
+        delegator.afterScenarioSteps(Stage.AFTER, StepDefinitionLevel.USER);
         delegator.afterScenario(timing);
         delegator.afterScenarios();
         
@@ -91,8 +91,8 @@ class DelegatingStoryReporterBehaviour {
 
         inOrder.verify(delegate).beforeScenarios();
         inOrder.verify(delegate).beforeScenario(scenario);
-        inOrder.verify(delegate).beforeScenarioSteps(Stage.BEFORE, LifecycleStepsType.USER);
-        inOrder.verify(delegate).afterScenarioSteps(Stage.BEFORE, LifecycleStepsType.USER);
+        inOrder.verify(delegate).beforeScenarioSteps(Stage.BEFORE, StepDefinitionLevel.USER);
+        inOrder.verify(delegate).afterScenarioSteps(Stage.BEFORE, StepDefinitionLevel.USER);
         inOrder.verify(delegate).scenarioExcluded(scenario, filter);
         inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).givenStories(givenStories);
@@ -105,21 +105,21 @@ class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).afterScenarioSteps(null, null);
         inOrder.verify(delegate).beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
         inOrder.verify(delegate).example(examplesTable.getRow(0), 0);
-        inOrder.verify(delegate).beforeScenarioSteps(Stage.AFTER, LifecycleStepsType.USER);
-        inOrder.verify(delegate).afterScenarioSteps(Stage.AFTER, LifecycleStepsType.USER);
+        inOrder.verify(delegate).beforeScenarioSteps(Stage.AFTER, StepDefinitionLevel.USER);
+        inOrder.verify(delegate).afterScenarioSteps(Stage.AFTER, StepDefinitionLevel.USER);
         inOrder.verify(delegate).afterExamples();
         inOrder.verify(delegate).afterScenario(timing);
         
         inOrder.verify(delegate).beforeScenario(scenario2);
-        inOrder.verify(delegate).beforeScenarioSteps(Stage.BEFORE, LifecycleStepsType.USER);
-        inOrder.verify(delegate).afterScenarioSteps(Stage.BEFORE, LifecycleStepsType.USER);
+        inOrder.verify(delegate).beforeScenarioSteps(Stage.BEFORE, StepDefinitionLevel.USER);
+        inOrder.verify(delegate).afterScenarioSteps(Stage.BEFORE, StepDefinitionLevel.USER);
         inOrder.verify(delegate).beforeScenarioSteps(null, null);
         inOrder.verify(delegate).successful("Given step 2.1");
         inOrder.verify(delegate).successful("When step 2.2");
         inOrder.verify(delegate).failed("Then step 2.3", anException);        
         inOrder.verify(delegate).afterScenarioSteps(null, null);
-        inOrder.verify(delegate).beforeScenarioSteps(Stage.AFTER, LifecycleStepsType.USER);
-        inOrder.verify(delegate).afterScenarioSteps(Stage.AFTER, LifecycleStepsType.USER);
+        inOrder.verify(delegate).beforeScenarioSteps(Stage.AFTER, StepDefinitionLevel.USER);
+        inOrder.verify(delegate).afterScenarioSteps(Stage.AFTER, StepDefinitionLevel.USER);
         inOrder.verify(delegate).afterScenario(timing);
         inOrder.verify(delegate).afterScenarios();
         

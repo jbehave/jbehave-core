@@ -13,7 +13,6 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.LifecycleStepsType;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -44,13 +43,13 @@ public interface StoryReporter {
 
     void lifecycle(Lifecycle lifecycle);
 
-    void beforeStorySteps(Stage stage, LifecycleStepsType type);
+    void beforeStorySteps(Stage stage, StepDefinitionLevel level);
 
-    void afterStorySteps(Stage stage, LifecycleStepsType type);
+    void afterStorySteps(Stage stage, StepDefinitionLevel level);
 
-    void beforeScenarioSteps(Stage stage, LifecycleStepsType type);
+    void beforeScenarioSteps(Stage stage, StepDefinitionLevel level);
 
-    void afterScenarioSteps(Stage stage, LifecycleStepsType type);
+    void afterScenarioSteps(Stage stage, StepDefinitionLevel level);
 
     void beforeComposedSteps();
 
@@ -99,4 +98,17 @@ public interface StoryReporter {
     void dryRun();
 
     void pendingMethods(List<String> methods);
+
+    public enum StepDefinitionLevel {
+
+        /** 
+         * Represents steps declared in Lifecycle section: composite ones and steps annotated with @Given, @When, @Then
+         */
+        USER,
+
+        /** 
+         * Represents steps annotated with @BeforeScenario, @AfterScenario, @BeforeStory, @AfterStory
+         */
+        SYSTEM;
+    }
 }
