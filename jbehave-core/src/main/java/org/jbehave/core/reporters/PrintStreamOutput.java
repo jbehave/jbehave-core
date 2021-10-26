@@ -380,17 +380,17 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void beforeScenarioSteps(Stage stage, StepDefinitionLevel level) {
-        printScenarioSteps("before", stage, level);
+    public void beforeScenarioSteps(Stage stage, Lifecycle.ExecutionType type) {
+        printScenarioSteps("before", stage, type);
     }
 
     @Override
-    public void afterScenarioSteps(Stage stage, StepDefinitionLevel level) {
-        printScenarioSteps("after", stage, level);
+    public void afterScenarioSteps(Stage stage, Lifecycle.ExecutionType type) {
+        printScenarioSteps("after", stage, type);
     }
 
-    private void printScenarioSteps(String stepsStage, Stage stage, StepDefinitionLevel level) {
-        printSteps(stepsStage, "Scenario", stage, level);
+    private void printScenarioSteps(String stepsStage, Stage stage, Lifecycle.ExecutionType type) {
+        printSteps(stepsStage, "Scenario", stage, type);
     }
 
     @Override
@@ -418,23 +418,23 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void beforeStorySteps(Stage stage, StepDefinitionLevel level) {
-        printStorySteps("before", stage, level);
+    public void beforeStorySteps(Stage stage, Lifecycle.ExecutionType type) {
+        printStorySteps("before", stage, type);
     }
 
     @Override
-    public void afterStorySteps(Stage stage, StepDefinitionLevel level) {
-        printStorySteps("after", stage, level);
+    public void afterStorySteps(Stage stage, Lifecycle.ExecutionType type) {
+        printStorySteps("after", stage, type);
     }
 
-    private void printStorySteps(String stepsStage, Stage stage, StepDefinitionLevel level) {
-        printSteps(stepsStage, "Story", stage, level);
+    private void printStorySteps(String stepsStage, Stage stage, Lifecycle.ExecutionType type) {
+        printSteps(stepsStage, "Story", stage, type);
     }
 
-    private void printSteps(String stepsStage, String parent, Stage stage, StepDefinitionLevel level) {
+    private void printSteps(String stepsStage, String parent, Stage stage, Lifecycle.ExecutionType type) {
         String stageName = stage != null ? CaseUtils.toCamelCase(stage.name(), true) : EMPTY;
-        String levelName = level != null ? CaseUtils.toCamelCase(level.name(), true) : EMPTY;
-        print(format(stepsStage + stageName + levelName + parent + "Steps", ""));
+        String typeName = type != null ? CaseUtils.toCamelCase(type.name(), true) : EMPTY;
+        print(format(stepsStage + stageName + typeName + parent + "Steps", ""));
     }
 
     @Override

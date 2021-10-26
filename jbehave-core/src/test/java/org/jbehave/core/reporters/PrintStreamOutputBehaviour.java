@@ -44,6 +44,7 @@ import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Lifecycle.ExecutionType;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -52,7 +53,6 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
-import org.jbehave.core.reporters.StoryReporter.StepDefinitionLevel;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
@@ -247,7 +247,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
 
         reporter.beforeGivenStories();
         reporter.givenStories(scenario.getGivenStories().getPaths());
@@ -257,7 +257,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
 
         reporter.beforeGivenStories();
         reporter.givenStories(singletonList(givenStory.getPath()));
@@ -267,9 +267,9 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
         reportStep(reporter, step, null, null);
-        reportStep(reporter, step, Stage.AFTER, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.AFTER, ExecutionType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
@@ -277,7 +277,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.afterGivenStories();
 
         reportStep(reporter, step, null, null);
-        reportStep(reporter, step, Stage.AFTER, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.AFTER, ExecutionType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
@@ -285,13 +285,13 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.afterGivenStories();
 
         reportStep(reporter, step, null, null);
-        reportStep(reporter, step, Stage.AFTER, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.AFTER, ExecutionType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
         reporter.beforeGivenStories();
         reporter.givenStories(scenario.getGivenStories().getPaths());
         reporter.beforeStory(givenStory, true);
@@ -300,7 +300,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
         reporter.beforeGivenStories();
         reporter.givenStories(singletonList(givenStory.getPath()));
         reporter.beforeStory(givenStory, true);
@@ -309,23 +309,23 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(scenario);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
-        reportStep(reporter, step, Stage.BEFORE, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
         reportStep(reporter, step, null, null);
-        reportStep(reporter, step, Stage.AFTER, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.AFTER, ExecutionType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reportStep(reporter, step, null, null);
-        reportStep(reporter, step, Stage.AFTER, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.AFTER, ExecutionType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
         reporter.afterStory(true);
         reporter.afterGivenStories();
         reportStep(reporter, step, null, null);
-        reportStep(reporter, step, Stage.AFTER, StepDefinitionLevel.USER);
+        reportStep(reporter, step, Stage.AFTER, ExecutionType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
@@ -657,16 +657,16 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.beforeScenario(spyScenarioUuid(new Scenario("Normal scenario", Meta.EMPTY)));
         reporter.beforeExamples(singletonList("Then '<expected>' is equal to '<actual>'"), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
-        reportStep(reporter, scenarioStep, Stage.BEFORE, StepDefinitionLevel.USER);
+        reportStep(reporter, scenarioStep, Stage.BEFORE, ExecutionType.USER);
         reportStep(reporter, scenarioStep, null, null);
-        reportStep(reporter, scenarioStep, Stage.AFTER, StepDefinitionLevel.USER);
+        reportStep(reporter, scenarioStep, Stage.AFTER, ExecutionType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.beforeScenario(spyScenarioUuid(new Scenario("Some empty scenario", Meta.EMPTY)));
         reporter.beforeExamples(emptyList(), emptyExamplesTable);
         reporter.example(table.getRow(0), -1);
-        reportStep(reporter, scenarioStep, Stage.BEFORE, StepDefinitionLevel.USER);
-        reportStep(reporter, scenarioStep, Stage.AFTER, StepDefinitionLevel.USER);
+        reportStep(reporter, scenarioStep, Stage.BEFORE, ExecutionType.USER);
+        reportStep(reporter, scenarioStep, Stage.AFTER, ExecutionType.USER);
         reporter.afterExamples();
         reporter.afterScenario(getTiming());
         reporter.afterScenarios();
@@ -676,11 +676,11 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         assertJson("story-empty-scenario-with-lifecycle.json", out.toString());
     }
 
-    private void reportStep(StoryReporter reporter, String step, Stage stage, StepDefinitionLevel level) {
-        reporter.beforeScenarioSteps(stage, level);
+    private void reportStep(StoryReporter reporter, String step, Stage stage, Lifecycle.ExecutionType type) {
+        reporter.beforeScenarioSteps(stage, type);
         reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, step));
         reporter.successful(step);
-        reporter.afterScenarioSteps(stage, level);
+        reporter.afterScenarioSteps(stage, type);
     }
 
     private Timing getTiming() {

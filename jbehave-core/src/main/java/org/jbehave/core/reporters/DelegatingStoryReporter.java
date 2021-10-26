@@ -100,13 +100,13 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeScenarioSteps(Stage stage, StepDefinitionLevel level) {
-        delegate(reporter -> reporter.beforeScenarioSteps(stage, level));
+    public void beforeScenarioSteps(Stage stage, Lifecycle.ExecutionType type) {
+        delegate(reporter -> reporter.beforeScenarioSteps(stage, type));
     }
 
     @Override
-    public void afterScenarioSteps(Stage stage, StepDefinitionLevel level) {
-        delegate(reporter -> reporter.afterScenarioSteps(stage, level));
+    public void afterScenarioSteps(Stage stage, Lifecycle.ExecutionType type) {
+        delegate(reporter -> reporter.afterScenarioSteps(stage, type));
     }
 
     @Override
@@ -120,13 +120,13 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeStorySteps(Stage stage, StepDefinitionLevel level) {
-        delegate(reporter -> reporter.beforeStorySteps(stage, level));
+    public void beforeStorySteps(Stage stage, Lifecycle.ExecutionType type) {
+        delegate(reporter -> reporter.beforeStorySteps(stage, type));
     }
 
     @Override
-    public void afterStorySteps(Stage stage, StepDefinitionLevel level) {
-        delegate(reporter -> reporter.afterStorySteps(stage, level));
+    public void afterStorySteps(Stage stage, Lifecycle.ExecutionType type) {
+        delegate(reporter -> reporter.afterStorySteps(stage, type));
     }
 
     @Override
