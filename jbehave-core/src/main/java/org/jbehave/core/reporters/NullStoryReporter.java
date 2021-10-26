@@ -97,19 +97,19 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void beforeStorySteps(Stage stage, StepDefinitionLevel level) {
+    public void beforeStorySteps(Stage stage, Lifecycle.ExecutionType type) {
     }
 
     @Override
-    public void afterStorySteps(Stage stage, StepDefinitionLevel level) {
+    public void afterStorySteps(Stage stage, Lifecycle.ExecutionType type) {
     }
 
     @Override
-    public void beforeScenarioSteps(Stage stage, StepDefinitionLevel level) {
+    public void beforeScenarioSteps(Stage stage, Lifecycle.ExecutionType type) {
     }
 
     @Override
-    public void afterScenarioSteps(Stage stage, StepDefinitionLevel level) {
+    public void afterScenarioSteps(Stage stage, Lifecycle.ExecutionType type) {
     }
 
     @Override

@@ -43,13 +43,13 @@ public interface StoryReporter {
 
     void lifecycle(Lifecycle lifecycle);
 
-    void beforeStorySteps(Stage stage, StepDefinitionLevel level);
+    void beforeStorySteps(Stage stage, Lifecycle.ExecutionType type);
 
-    void afterStorySteps(Stage stage, StepDefinitionLevel level);
+    void afterStorySteps(Stage stage, Lifecycle.ExecutionType type);
 
-    void beforeScenarioSteps(Stage stage, StepDefinitionLevel level);
+    void beforeScenarioSteps(Stage stage, Lifecycle.ExecutionType type);
 
-    void afterScenarioSteps(Stage stage, StepDefinitionLevel level);
+    void afterScenarioSteps(Stage stage, Lifecycle.ExecutionType type);
 
     void beforeComposedSteps();
 
@@ -98,17 +98,4 @@ public interface StoryReporter {
     void dryRun();
 
     void pendingMethods(List<String> methods);
-
-    public enum StepDefinitionLevel {
-
-        /** 
-         * Represents steps declared in Lifecycle section: composite ones and steps annotated with @Given, @When, @Then
-         */
-        USER,
-
-        /** 
-         * Represents steps annotated with @BeforeScenario, @AfterScenario, @BeforeStory, @AfterStory
-         */
-        SYSTEM;
-    }
 }
