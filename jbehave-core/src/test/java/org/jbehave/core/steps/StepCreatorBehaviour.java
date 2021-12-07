@@ -599,6 +599,33 @@ class StepCreatorBehaviour {
         verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 
+    @Test
+    void shouldMatchParametersByDelimitedNameWithSpace() throws Exception {
+
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        parameterConverters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
+        StepMatcher stepMatcher = mock(StepMatcher.class);
+        ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
+        Map<String, String> params = Collections.singletonMap("pa ram", "value");
+        when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));
+        String stepWithoutStartingWord = "a parameter <pa ram> is set";
+        Matcher matcher = Pattern.compile("a parameter (.*) is set").matcher(stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
+        StoryReporter storyReporter = mock(StoryReporter.class);
+
+        // When
+        String stepAsString = "When a parameter <pa ram> is set";
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"),
+                stepAsString, stepWithoutStartingWord, params, Collections.emptyList());
+        step.perform(storyReporter, null);
+
+        // Then
+        assertThat((String) stepsInstance.args, equalTo("value"));
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     void shouldMatchParametersByDelimitedNameWithDistinctNamedAnnotations() throws Exception {
