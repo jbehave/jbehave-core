@@ -3,7 +3,7 @@ package org.jbehave.core.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +28,7 @@ class StoryBehaviour {
         Scenario cloneScenario = mock(Scenario.class);
         Story clone = story.cloneWithScenarios(Arrays.asList(cloneScenario));
         assertCloneStory(clone, meta, description, narrative, givenStories, lifecycle, Arrays.asList(cloneScenario));
-        verifyZeroInteractions(scenario, meta, description, narrative, givenStories, lifecycle, cloneScenario);
+        verifyNoInteractions(scenario, meta, description, narrative, givenStories, lifecycle, cloneScenario);
     }
 
     private void assertCloneStory(Story clone, Meta meta, Description description, Narrative narrative,
