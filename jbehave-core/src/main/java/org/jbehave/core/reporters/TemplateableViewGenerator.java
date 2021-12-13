@@ -25,10 +25,11 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jbehave.core.io.IOUtils;
 import org.jbehave.core.io.StoryNameResolver;
 import org.jbehave.core.model.StoryLanes;
 import org.jbehave.core.model.StoryMaps;
@@ -88,7 +89,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
 
     private String jbehaveVersion() {
         try {
-            return IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("jbehave.version"), true);
+            return IOUtils.resourceToString("jbehave.version", charset, getClass().getClassLoader());
         } catch (IOException e) {
             throw new RuntimeException("Failed to read JBehave version", e);
         }
@@ -224,7 +225,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
                     String format = FilenameUtils.getExtension(fileName);
                     Map<String, Object> dataModel = newDataModel();
                     dataModel.put("name", name);
-                    dataModel.put("body", IOUtils.toString(new FileReader(file), true));
+                    dataModel.put("body", FileUtils.readFileToString(file, charset));
                     dataModel.put("format", format);
                     File outputDirectory = file.getParentFile();
                     String outputName = viewDirectory + "/" + fileName;

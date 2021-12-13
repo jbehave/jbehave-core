@@ -3,16 +3,30 @@ package org.jbehave.core.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * Loads story resources from URL
  */
 public class LoadFromURL implements ResourceLoader, StoryLoader {
 
+    private final Charset charset;
+
+    public LoadFromURL() {
+        this(StandardCharsets.UTF_8);
+    }
+
+    public LoadFromURL(Charset charset) {
+        this.charset = charset;
+    }
+
     @Override
     public String loadResourceAsText(String resourcePath) {
-        try {
-            return IOUtils.toString(resourceAsStream(resourcePath), true);
+        try (InputStream resourceAsStream = resourceAsStream(resourcePath)) {
+            return IOUtils.toString(resourceAsStream, charset);
         } catch (Exception cause) {
             throw new InvalidStoryResource(resourcePath, cause);
         }

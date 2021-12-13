@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -35,7 +34,6 @@ import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
-import org.jbehave.core.io.IOUtils;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
@@ -528,7 +526,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         // Then
         assertThat(file.exists(), is(true));
-        assertThat(IOUtils.toString(new FileReader(file), true), equalTo("Hello World"));
+        assertThat(fileContent(file), equalTo("Hello World"));
     }
 
     @Test
@@ -601,7 +599,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
     private void ensureFileExists(File file) throws IOException {
         assertThat(file.exists(), is(true));
-        assertThat(IOUtils.toString(new FileReader(file), true).length(), greaterThan(0));
+        assertThat(fileContent(file).length(), greaterThan(0));
     }
 
     private String storyPath(Class<MyStory> storyClass) {

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -63,11 +64,10 @@ public class LoadFromClasspath implements StoryLoader {
 
     @Override
     public String loadResourceAsText(String resourcePath) {
-        InputStream stream = resourceAsStream(resourcePath);
-        try {
-            return IOUtils.toString(stream, charset, true);
+        try (InputStream stream = resourceAsStream(resourcePath)) {
+            return IOUtils.toString(stream, charset);
         } catch (IOException e) {
-            throw new InvalidStoryResource(resourcePath, stream, e);
+            throw new InvalidStoryResource(resourcePath, e);
         }
     }
 
@@ -88,5 +88,4 @@ public class LoadFromClasspath implements StoryLoader {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-
 }

@@ -5,9 +5,11 @@ import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
 import static org.hamcrest.Matchers.is;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,7 +19,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
-import org.jbehave.core.io.IOUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 
 import groovy.util.Node;
@@ -41,7 +44,7 @@ public abstract class AbstractOutputBehaviour {
     }
 
     protected String fileContent(File file) throws IOException {
-        return IOUtils.toString(new FileReader(file), true);
+        return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
     }
 
     protected void validateFileOutput(File file) throws IOException, SAXException, ParserConfigurationException {
@@ -82,6 +85,6 @@ public abstract class AbstractOutputBehaviour {
     }
 
     private String getResourceAsString(String resource) throws IOException {
-        return dos2unix(IOUtils.toString(getClass().getResourceAsStream('/' + resource), true));
+        return dos2unix(IOUtils.resourceToString('/' + resource, StandardCharsets.UTF_8));
     }
 }
