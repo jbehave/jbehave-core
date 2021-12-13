@@ -4,7 +4,7 @@
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
 # https://hub.docker.com/_/maven
-image: maven:3.6.3-adoptopenjdk-11
+image: maven:3.8.4-openjdk-11
 
 pipelines:
   default:
