@@ -18,13 +18,13 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se</artifactId>
-      <version>1.1.4.Final</version>
+      <artifactId>weld-se-core</artifactId>
+      <version>3.1.8.Final</version>
     </dependency>
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <version>1.0-SP1</version>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
     </dependency>
 
   </dependencies>

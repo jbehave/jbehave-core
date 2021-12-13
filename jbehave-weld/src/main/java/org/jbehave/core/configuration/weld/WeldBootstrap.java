@@ -11,22 +11,14 @@ import org.jbehave.core.annotations.weld.UsingWeld;
 import org.jbehave.core.annotations.weld.WeldConfiguration;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.weld.WeldStepsFactory;
-import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.resources.spi.ResourceLoader;
 
 @ApplicationScoped
 public class WeldBootstrap extends Weld {
     private WeldContainer weld;
 
     public WeldBootstrap() {
-    }
-
-    @Override
-    protected Deployment createDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap) {
-        return super.createDeployment(resourceLoader, bootstrap);
     }
 
     @Override
