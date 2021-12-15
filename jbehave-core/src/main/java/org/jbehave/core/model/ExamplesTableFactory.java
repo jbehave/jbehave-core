@@ -76,7 +76,7 @@ public class ExamplesTableFactory {
         TablePropertiesQueue tablePropertiesQueue = tableParsers.parseProperties(input);
 
         String tableAsString = tablePropertiesQueue.getTable().trim();
-        TableProperties properties = tablePropertiesQueue.getProperties().peekLast();
+        TableProperties properties = tablePropertiesQueue.getProperties().peekFirst();
 
         if (!isTable(tableAsString, properties) && !tableAsString.isEmpty()) {
             String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());

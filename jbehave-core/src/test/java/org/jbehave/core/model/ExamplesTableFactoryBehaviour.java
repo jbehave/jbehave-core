@@ -107,4 +107,19 @@ class ExamplesTableFactoryBehaviour {
         // Then
         assertThat(examplesTable.asString(), equalTo(FILTERED_TABLE_WITH_INLINED_SEPARATTORS));
     }
+
+    @Test
+    void shouldTestTransformersOrderForExamplesTableFromResourceInput() {
+        // Given
+        ResourceLoader resourceLoader = mock(ResourceLoader.class);
+        ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
+
+        // When
+        when(resourceLoader.loadResourceAsText(RESOURCE_PATH)).thenReturn(TABLE_AS_STRING);
+        ExamplesTable examplesTable = factory.createExamplesTable("{transformer=CUSTOM_TRANSFORMER1}\n" +
+                "{transformer=CUSTOM_TRANSFORMER2}\n" + RESOURCE_PATH);
+
+        // Then
+        assertThat(examplesTable.asString(), equalTo("{transformer=CUSTOM_TRANSFORMER1}\n" + TABLE_AS_STRING));
+    }
 }
