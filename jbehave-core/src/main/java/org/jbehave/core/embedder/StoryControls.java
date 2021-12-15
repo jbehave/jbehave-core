@@ -56,7 +56,7 @@ public class StoryControls {
     }
     
     public void resetCurrentStoryControls() {
-        currentStoryControls.set(new StoryControls(this));
+        currentStoryControls.remove();
     }
 
     public boolean skipScenariosAfterFailure() {

@@ -138,6 +138,28 @@ class PerformableTreeBehaviour {
     }
 
     @Test
+    void shouldResetCurrentStoryControls() {
+        Configuration configuration = new MostUsefulConfiguration();
+        configuration.storyControls().currentStoryControls().doResetStateBeforeStory(false);
+        configuration.storyControls().currentStoryControls().doResetStateBeforeScenario(false);
+        configuration.storyControls().currentStoryControls().doSkipStoryIfGivenStoryFailed(true);
+        configuration.storyControls().currentStoryControls().doIgnoreMetaFiltersIfGivenStory(true);
+        configuration.useStoryLoader(mock(StoryLoader.class));
+        PerformableTree performableTree = new PerformableTree();
+        AllStepCandidates allStepCandidates = new AllStepCandidates(emptyList());
+        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
+                mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class));
+        Story story = EMPTY_STORY;
+        performableTree.addStories(runContext, singletonList(story));
+        performableTree.perform(runContext, story);
+        StoryControls storyControls = configuration.storyControls();
+        assertThat(storyControls.resetStateBeforeStory(), is(true));
+        assertThat(storyControls.resetStateBeforeScenario(), is(true));
+        assertThat(storyControls.skipStoryIfGivenStoryFailed(), is(false));
+        assertThat(storyControls.skipScenariosAfterFailure(), is(false));
+    }
+
+    @Test
     void shouldReplaceParameters() {
         ParameterControls parameterControls = new ParameterControls();
         Configuration configuration = mock(Configuration.class);
