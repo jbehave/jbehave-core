@@ -2,10 +2,10 @@ package org.jbehave.core.failures;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("serial")
-public class BatchFailures extends HashMap<String, Throwable> {
+public class BatchFailures extends ConcurrentHashMap<String, Throwable> {
 
     private final boolean verbose;
 
