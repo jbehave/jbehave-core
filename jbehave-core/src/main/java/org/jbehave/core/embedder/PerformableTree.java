@@ -1023,6 +1023,7 @@ public class PerformableTree {
                     performScenarios(context);
                 }
                 performAfterSteps(context);
+                context.configuration().storyControls().resetCurrentStoryControls();
                 if (context.restartStory()) {
                     context.reporter().afterStory(true);
                 } else {
