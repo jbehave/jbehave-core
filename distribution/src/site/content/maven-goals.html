@@ -126,11 +126,11 @@ the stories will be looked up in the POM test source directory.</p>
 
 <p>JBehave uses FreeMarker to generate template-based reports.
 FreeMarker uses its own version of a logging facade framework which
-auto-discovers different logging frameworks, notably JDK Logging and
-Apache log4j. When using the JBehave Maven Plugin, and depending on the
-rest of your POM configuration, you may need to add Apache log4j as
-Plugin Dependency (as opposed to the Project Dependency) if you find
-that it's not able to load its classes, e.g.:</p>
+<a href="https://freemarker.apache.org/docs/pgui_misc_logging.html">auto-discovers</a>
+different logging frameworks, notably SLF4J, JDK Logging and Apache Log4J. When using
+the JBehave Maven Plugin, and depending on the rest of your POM configuration, you may
+need to add SLF4J Log4J bridge and Apache Log4J2 as Plugin Dependency (as opposed to
+the Project Dependency) if you find that it's not able to load its classes, e.g.:</p>
 
 <script type="syntaxhighlighter" class="brush: xml">
 <![CDATA[
@@ -143,10 +143,15 @@ that it's not able to load its classes, e.g.:</p>
         </executions>
         <dependencies>
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.16</version>
-            </dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.32</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.17.0</version>
+          </dependency>
         </dependencies>
     </plugin>
 ]]>
