@@ -74,6 +74,11 @@ public class JsonOutput extends PrintStreamOutput {
         if ("exampleScenariosEnd".equals(key) && !stepPublishing) {
             print("}");
         }
+
+        if (key.startsWith("afterBefore")) {
+            stepPublishing = false;
+        }
+
         if (stepPublishing) {
             if ("exampleScenariosEnd".equals(key) || "example".equals(key) && givenStoriesLevel == 0) {
                 // Closing previous "example"

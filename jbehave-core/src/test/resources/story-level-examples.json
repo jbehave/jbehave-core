@@ -21,6 +21,18 @@
       ]
     }
   },
+  "beforeSystemStorySteps": [
+    {
+      "outcome": "successful",
+      "value": "My step"
+    }
+  ],
+  "beforeUserStorySteps": [
+    {
+      "outcome": "successful",
+      "value": "My step"
+    }
+  ],
   "scenarios": [
     {
       "keyword": "Scenario:",
@@ -505,6 +517,18 @@
       },
       "start": 1,
       "end": 2
+    }
+  ],
+  "afterUserStorySteps": [
+    {
+      "outcome": "successful",
+      "value": "My step"
+    }
+  ],
+  "afterSystemStorySteps": [
+    {
+      "outcome": "successful",
+      "value": "My step"
     }
   ]
 }
