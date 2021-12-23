@@ -1,5 +1,6 @@
 package org.jbehave.core.junit;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableStory;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -26,11 +28,6 @@ import org.junit.runner.Description;
 
 public class JUnit4DescriptionGenerator {
 
-    public static final String BEFORE_STORY_STEP_NAME = "@BeforeStory";
-    public static final String AFTER_STORY_STEP_NAME = "@AfterStory";
-    public static final String BEFORE_SCENARIO_STEP_NAME = "@BeforeScenario";
-    public static final String AFTER_SCENARIO_STEP_NAME = "@AfterScenario";
-
     private final TextManipulator textManipulator = new TextManipulator();
 
     private final Configuration configuration;
@@ -38,9 +35,17 @@ public class JUnit4DescriptionGenerator {
     private String previousNonAndStep;
     private int testCases;
 
+    private final JUnit4Test junitTestMeta;
+
     public JUnit4DescriptionGenerator(AllStepCandidates allStepCandidates, Configuration configuration) {
         this.configuration = configuration;
         this.allStepCandidates = allStepCandidates;
+        this.junitTestMeta = new JUnit4Test() {
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return JUnit4Test.class;
+            }
+        };
     }
 
     public List<Description> createDescriptionsFrom(PerformableTree performableTree) {
@@ -51,15 +56,18 @@ public class JUnit4DescriptionGenerator {
                 Lifecycle lifecycle = story.getLifecycle();
                 Description storyDescription = createDescriptionForStory(story);
                 addBeforeOrAfterStep(allStepCandidates.getBeforeStorySteps(false), storyDescription,
-                        BEFORE_STORY_STEP_NAME);
+                        "@BeforeStory: ");
                 addSteps(storyDescription, lifecycle.getBeforeSteps(Scope.STORY));
+                if (story.hasGivenStories()) {
+                    insertGivenStories(story.getGivenStories(), storyDescription);
+                }
                 List<PerformableScenario> scenarios = performableStory.getScenarios();
                 for (Description scenarioDescription : getScenarioDescriptions(lifecycle, scenarios)) {
                     storyDescription.addChild(scenarioDescription);
                 }
                 addSteps(storyDescription, lifecycle.getAfterSteps(Scope.STORY, Outcome.ANY));
                 addBeforeOrAfterStep(allStepCandidates.getAfterStorySteps(false), storyDescription,
-                        AFTER_STORY_STEP_NAME);
+                        "@AfterStory: ");
                 storyDescriptions.add(storyDescription);
             }
         }
@@ -72,9 +80,6 @@ public class JUnit4DescriptionGenerator {
         if (performableScenario.hasExamples() && !scenario.getGivenStories().requireParameters()) {
             insertDescriptionForExamples(lifecycle, performableScenario, scenarioDescription);
         } else {
-            if (hasGivenStories(scenario)) {
-                insertGivenStories(scenario, scenarioDescription);
-            }
             addScenarioSteps(lifecycle, ScenarioType.NORMAL, scenario, scenarioDescription);
         }
         return scenarioDescription;
@@ -83,12 +88,15 @@ public class JUnit4DescriptionGenerator {
     private void addScenarioSteps(Lifecycle lifecycle, ScenarioType scenarioType, Scenario scenario,
             Description scenarioDescription) {
         addBeforeOrAfterScenarioStep(allStepCandidates::getBeforeScenarioSteps, scenarioType, scenarioDescription,
-                BEFORE_SCENARIO_STEP_NAME);
+                "@BeforeScenario: ");
         addSteps(scenarioDescription, lifecycle.getBeforeSteps(Scope.SCENARIO));
+        if (scenario.hasGivenStories()) {
+            insertGivenStories(scenario.getGivenStories(), scenarioDescription);
+        }
         addScenarioSteps(lifecycle, scenarioDescription, scenario);
         addSteps(scenarioDescription, lifecycle.getAfterSteps(Scope.SCENARIO, Outcome.ANY));
         addBeforeOrAfterScenarioStep(allStepCandidates::getAfterScenarioSteps, scenarioType, scenarioDescription,
-                AFTER_SCENARIO_STEP_NAME);
+                "@AfterScenario: ");
     }
 
     private void addScenarioSteps(Lifecycle lifecycle, Description scenarioDescription, Scenario scenario) {
@@ -114,18 +122,16 @@ public class JUnit4DescriptionGenerator {
     }
 
     private void addBeforeOrAfterStep(List<BeforeOrAfterStep> beforeOrAfterSteps, Description description,
-            String stepName) {
-        if (!beforeOrAfterSteps.isEmpty()) {
+            String stepPrefix) {
+        beforeOrAfterSteps.forEach(steps ->
+        {
             testCases++;
-            addBeforeOrAfterStep(beforeOrAfterSteps.get(0), description, stepName);
-        }
-    }
-
-    private void addBeforeOrAfterStep(BeforeOrAfterStep beforeOrAfterStep, Description description, String stepName) {
-        Method method = beforeOrAfterStep.getMethod();
-        Description testDescription = Description.createTestDescription(method.getDeclaringClass(),
-                uniquify(stepName), method.getAnnotations());
-        description.addChild(testDescription);
+            Method method = steps.getMethod();
+            String stepName = uniquify(stepPrefix + steps.getMethod().getName());
+            Description testDescription = Description.createTestDescription(method.getDeclaringClass(), stepName,
+                    junitTestMeta);
+            description.addChild(testDescription);
+        });
     }
 
     public String uniquify(String string) {
@@ -136,18 +142,14 @@ public class JUnit4DescriptionGenerator {
         return testCases;
     }
 
-    private boolean hasGivenStories(Scenario scenario) {
-        return !scenario.getGivenStories().getPaths().isEmpty();
-    }
-
-    private void insertGivenStories(Scenario scenario, Description scenarioDescription) {
-        for (String path : scenario.getGivenStories().getPaths()) {
-            addGivenStoryToScenario(scenarioDescription, path);
+    private void insertGivenStories(GivenStories givenStories, Description parentDescription) {
+        for (String path : givenStories.getPaths()) {
+            addGivenStory(parentDescription, path);
         }
     }
 
-    private void addGivenStoryToScenario(Description scenarioDescription, String path) {
-        scenarioDescription.addChild(Description.createSuiteDescription(uniquify(getFilename(path))));
+    private void addGivenStory(Description parentDescription, String path) {
+        parentDescription.addChild(Description.createSuiteDescription(uniquify(getFilename(path)), junitTestMeta));
         testCases++;
     }
 
@@ -162,18 +164,13 @@ public class JUnit4DescriptionGenerator {
             Description exampleRowDescription = Description.createSuiteDescription(
                     configuration.keywords().examplesTableRow() + " " + examplePerformableScenario.getParameters());
             scenarioDescription.addChild(exampleRowDescription);
-            if (hasGivenStories(scenario)) {
-                insertGivenStories(scenario, exampleRowDescription);
-            }
             addScenarioSteps(lifecycle, ScenarioType.EXAMPLE, scenario, exampleRowDescription);
         }
     }
 
     private void addSteps(Description description, List<String> steps) {
         previousNonAndStep = null;
-        for (String stringStep : steps) {
-            addStep(description, stringStep);
-        }
+        steps.forEach(step -> addStep(description, step));
     }
 
     private void addStep(Description description, String step) {
@@ -229,11 +226,12 @@ public class JUnit4DescriptionGenerator {
         testCases++;
         // JUnit and the Eclipse JUnit view needs to be touched/fixed in order to make the JUnit view jump to the
         // corresponding test method accordingly. For now we have to live, that we end up in the correct class.
-        description.addChild(Description.createTestDescription(step.getStepsType(), uniquify(stringStep)));
+        description.addChild(Description.createTestDescription(step.getStepsType(), uniquify(stringStep),
+                junitTestMeta));
     }
 
     private void addCompositeSteps(Description description, String stringStep, StepCandidate step) {
-        Description testDescription = Description.createSuiteDescription(uniquify(stringStep));
+        Description testDescription = Description.createSuiteDescription(uniquify(stringStep), junitTestMeta);
         addSteps(testDescription, Arrays.asList(step.composedSteps()));
         description.addChild(testDescription);
     }
@@ -275,5 +273,8 @@ public class JUnit4DescriptionGenerator {
     private Description createDescriptionForScenario(Scenario scenario) {
         return Description.createSuiteDescription(
                 configuration.keywords().scenario() + " " + uniquify(scenario.getTitle()));
+    }
+
+    public @interface JUnit4Test {
     }
 }

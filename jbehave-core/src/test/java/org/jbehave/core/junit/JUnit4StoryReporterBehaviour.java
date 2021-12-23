@@ -7,12 +7,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.junit.JUnit4DescriptionGenerator.JUnit4Test;
+import org.jbehave.core.model.Lifecycle.ExecutionType;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Step;
@@ -20,6 +24,7 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +46,12 @@ class JUnit4StoryReporterBehaviour {
 
     @Mock
     private RunNotifier notifier;
+    private final JUnit4Test junitTestMeta = new JUnit4Test() {
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return JUnit4Test.class;
+        }
+    };
     private Description rootDescription = Description.createSuiteDescription("root");
     private Description storyDescription = Description.createSuiteDescription(NAME_STORY);
     private final Description scenarioDescription = Description.createTestDescription(getClass(), NAME_SCENARIO);
@@ -227,10 +238,14 @@ class JUnit4StoryReporterBehaviour {
         reportBeforeStory(story, false);
         verifyStoryStarted();
 
-        reportStepSuccess(reporter);
-        verifyStepSuccess(beforeStoryStep1);
-        reportStepSuccess(reporter);
-        verifyStepSuccess(beforeStoryStep2);
+        performStorySteps(Stage.BEFORE, ExecutionType.SYSTEM, () -> { });
+
+        performStorySteps(Stage.BEFORE, ExecutionType.USER, () -> {
+            reportStepSuccess(reporter);
+            verifyStepSuccess(beforeStoryStep1);
+            reportStepSuccess(reporter);
+            verifyStepSuccess(beforeStoryStep2);
+        });
 
         reportBeforeScenario(NAME_SCENARIO);
         verifyScenarioStarted();
@@ -241,10 +256,14 @@ class JUnit4StoryReporterBehaviour {
         reportScenarioFinish(reporter);
         verifyScenarioFinished();
 
-        reportStepSuccess(reporter);
-        verifyStepSuccess(afterStoryStep1);
-        reportStepSuccess(reporter);
-        verifyStepSuccess(afterStoryStep2);
+        performStorySteps(Stage.AFTER, ExecutionType.USER, () -> {
+            reportStepSuccess(reporter);
+            verifyStepSuccess(afterStoryStep1);
+            reportStepSuccess(reporter);
+            verifyStepSuccess(afterStoryStep2);
+        });
+
+        performStorySteps(Stage.AFTER, ExecutionType.SYSTEM, () -> { });
 
         reportStoryFinish(reporter);
         verifyStoryFinished();
@@ -257,9 +276,11 @@ class JUnit4StoryReporterBehaviour {
         rootDescription = rootDescription.childlessCopy();
         rootDescription.addChild(storyDescription);
 
-        Description beforeStorySystemStep = createTest("@BeforeStory");
+        Description beforeStorySystemStep1 = createTest("@BeforeStory 1");
+        storyDescription.addChild(beforeStorySystemStep1);
+        Description beforeStorySystemStep2 = createTest("@BeforeStory 2");
+        storyDescription.addChild(beforeStorySystemStep2);
         Description beforeStoryStep = createTest("before story step");
-        storyDescription.addChild(beforeStorySystemStep);
         storyDescription.addChild(beforeStoryStep);
 
         Description composedBefore = createTest("composedBefore");
@@ -273,18 +294,27 @@ class JUnit4StoryReporterBehaviour {
         Description composedComposedAfter = createTest("composedComposedAfter");
         composedAfter.addChild(composedComposedAfter);
         afterStoryStep.addChild(composedAfter);
-        Description afterStorySystemStep = createTest("@AfterStory");
-        storyDescription.addChild(afterStorySystemStep);
+        Description afterStorySystemStep1 = createTest("@AfterStory 1");
+        storyDescription.addChild(afterStorySystemStep1);
+        Description afterStorySystemStep2 = createTest("@AfterStory 2");
+        storyDescription.addChild(afterStorySystemStep2);
 
         reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBeforeStory(story, false);
         verifyStoryStarted();
 
-        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, beforeStoryStep.getDisplayName()));
-        reportSuccessfulStep(composedBefore);
-        reporter.successful(beforeStoryStep.getDisplayName());
-        verifyStepSuccess(beforeStoryStep);
+        performStorySteps(Stage.BEFORE, ExecutionType.SYSTEM, () -> {
+            reportSuccessfulStep(beforeStorySystemStep1);
+            reportSuccessfulStep(beforeStorySystemStep2);
+        });
+
+        performStorySteps(Stage.BEFORE, ExecutionType.USER, () -> {
+            reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, beforeStoryStep.getDisplayName()));
+            reportSuccessfulStep(composedBefore);
+            reporter.successful(beforeStoryStep.getDisplayName());
+            verifyStepSuccess(beforeStoryStep);
+        });
 
         reportBeforeScenario(NAME_SCENARIO);
         verifyScenarioStarted();
@@ -294,16 +324,29 @@ class JUnit4StoryReporterBehaviour {
         reportScenarioFinish(reporter);
         verifyScenarioFinished();
 
-        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, afterStoryStep.getDisplayName()));
-        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, composedAfter.getDisplayName()));
-        reportSuccessfulStep(composedComposedAfter);
-        reporter.successful(composedAfter.getDisplayName());
-        verifyStepSuccess(composedAfter);
-        reporter.successful(afterStoryStep.getDisplayName());
-        verifyStepSuccess(afterStoryStep);
+        performStorySteps(Stage.AFTER, ExecutionType.USER, () -> {
+            reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, afterStoryStep.getDisplayName()));
+            reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, composedAfter.getDisplayName()));
+            reportSuccessfulStep(composedComposedAfter);
+            reporter.successful(composedAfter.getDisplayName());
+            verifyStepSuccess(composedAfter);
+            reporter.successful(afterStoryStep.getDisplayName());
+            verifyStepSuccess(afterStoryStep);
+        });
+
+        performStorySteps(Stage.AFTER, ExecutionType.SYSTEM, () -> {
+            reportSuccessfulStep(afterStorySystemStep1);
+            reportSuccessfulStep(afterStorySystemStep2);
+        });
 
         reportStoryFinish(reporter);
         verifyStoryFinished();
+    }
+
+    private void performStorySteps(Stage stage, Lifecycle.ExecutionType type, Runnable steps) {
+        reporter.beforeStorySteps(stage, type);
+        steps.run();
+        reporter.afterStorySteps(stage, type);
     }
 
     @Test
@@ -415,32 +458,32 @@ class JUnit4StoryReporterBehaviour {
     void shouldHandleExampleStepsInCombinationWithCompositeSteps() {
         // one story, one scenario, one example, one composite step of 2 steps
         Description example = addTestToScenario(keywords.examplesTableRow() + " " + "row");
-        Description step = createTest("Step");
-        example.addChild(step);
+        Description compositeStep = createTest("Step");
+        example.addChild(compositeStep);
 
         Description comp1 = createTest("comp1");
-        step.addChild(comp1);
+        compositeStep.addChild(comp1);
         Description comp2 = createTest("comp2");
-        step.addChild(comp2);
+        compositeStep.addChild(comp2);
 
         reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
         reporter.example(null, 0);
-        reportStepSuccess(reporter, "child");
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "child"));
         reportStepSuccess(reporter, "comp1");
         reportStepSuccess(reporter, "comp2");
-        reportStepSuccess(reporter);
+        reporter.successful("child");
         reportScenarioFinish(reporter);
         reportStoryFinish(reporter);
 
         verifyStoryStarted();
         verifyScenarioStarted();
         verifyTestStart();
-        verify(notifier).fireTestStarted(step);
+        verify(notifier).fireTestStarted(compositeStep);
         verifyStepSuccess(comp1);
         verifyStepSuccess(comp2);
-        verify(notifier).fireTestFinished(step);
+        verify(notifier).fireTestFinished(compositeStep);
         verifyTestFinish();
     }
 
@@ -576,6 +619,8 @@ class JUnit4StoryReporterBehaviour {
 
         // Begin Given Story
         reportBeforeStory(givenStory, true);
+        performStorySteps(Stage.BEFORE, ExecutionType.SYSTEM, () -> { });
+        performStorySteps(Stage.BEFORE, ExecutionType.USER, () -> { });
         reportBeforeScenario("givenScenario");
         reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "givenStep"));
         reporter.successful("givenStep");
@@ -585,6 +630,8 @@ class JUnit4StoryReporterBehaviour {
 
     private void reportAfter() {
         reporter.afterScenario(mock(Timing.class));
+        performStorySteps(Stage.AFTER, ExecutionType.USER, () -> { });
+        performStorySteps(Stage.AFTER, ExecutionType.SYSTEM, () -> { });
         reporter.afterStory(true);
     }
 
@@ -653,7 +700,7 @@ class JUnit4StoryReporterBehaviour {
     }
 
     private Description createTest(String childName) {
-        return Description.createTestDescription(this.getClass(), childName);
+        return Description.createTestDescription(this.getClass(), childName, junitTestMeta);
     }
 
     private void reportBefore() {

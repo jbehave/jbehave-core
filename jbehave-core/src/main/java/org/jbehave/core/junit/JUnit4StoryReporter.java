@@ -11,13 +11,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.junit.JUnit4DescriptionGenerator.JUnit4Test;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
@@ -25,10 +28,13 @@ import org.jbehave.core.reporters.NullStoryReporter;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+
+import com.google.common.collect.ImmutableList;
 
 public class JUnit4StoryReporter extends NullStoryReporter {
     private final RunNotifier notifier;
@@ -87,13 +93,77 @@ public class JUnit4StoryReporter extends NullStoryReporter {
             Description storyDescription = findStoryDescription(story.getName());
             testState.currentStoryDescription = storyDescription;
             notifier.fireTestStarted(storyDescription);
+
             if (storyDescription.isSuite()) {
-                testState.scenarioDescriptions = storyDescription.getChildren().iterator();
+                testState.scenarioDescriptions = filter(storyDescription.getChildren(), ImmutableList.of(
+                    Pair.of(ElementAction.DROP, isTest()),
+                    Pair.of(ElementAction.TAKE, isSuite())
+                )).iterator();
+
                 testState.moveToNextScenario();
-                processBeforeStory();
             }
+
             testState.currentStep = testState.currentStoryDescription;
         }
+    }
+
+    @Override
+    public void beforeStorySteps(Stage stage, Lifecycle.ExecutionType type)
+    {
+        TestState testState = this.testState.get();
+        if (!testState.isGivenStoryRunning()) {
+
+            if (stage == Stage.BEFORE && type == Lifecycle.ExecutionType.SYSTEM) {
+                loadStepDescriptions(filter(testState.getStoryChildren(), ImmutableList.of(
+                    Pair.of(ElementAction.TAKE, isTest())
+                )));
+            }
+
+            if (stage == Stage.AFTER && type == Lifecycle.ExecutionType.USER) {
+                loadStepDescriptions(filter(testState.getStoryChildren(), ImmutableList.of(
+                    Pair.of(ElementAction.DROP, isTest()),
+                    Pair.of(ElementAction.DROP, isSuite()),
+                    Pair.of(ElementAction.TAKE, isTest())
+                )));
+            }
+        }
+    }
+
+    private void loadStepDescriptions(List<Description> stepDescriptions) {
+        TestState testState = this.testState.get();
+        testState.loadStepDescriptions(stepDescriptions);
+
+        if (testState.stepDescriptions.hasNext()) {
+            testState.moveToNextStep();
+        }
+    }
+
+    private Predicate<Description> isTest() {
+        return description -> description.getAnnotation(JUnit4Test.class) != null;
+    }
+
+    private Predicate<Description> isSuite() {
+        return isTest().negate();
+    }
+
+    private List<Description> filter(List<Description> descriptions,
+            Collection<Pair<ElementAction, Predicate<Description>>> filters) {
+        Iterator<Pair<ElementAction, Predicate<Description>>> filtersIterator = filters.iterator();
+        Pair<ElementAction, Predicate<Description>> currentFilter = filtersIterator.next();
+
+        List<Description> resultDescriptions = new ArrayList<>();
+        for (Description description : descriptions) {
+            while (!currentFilter.getValue().test(description)) {
+                if (!filtersIterator.hasNext()) {
+                    return resultDescriptions;
+                }
+                currentFilter = filtersIterator.next();
+            }
+
+            currentFilter.getKey().compute(resultDescriptions, description);
+        }
+
+        return resultDescriptions;
     }
 
     private Description findStoryDescription(String storyName) {
@@ -122,7 +192,6 @@ public class JUnit4StoryReporter extends NullStoryReporter {
                 notifier.fireTestFinished(testState.currentStep);
             }
             prepareNextStep();
-            processBeforeScenario();
         } else {
             if (!testState.failedSteps.contains(testState.currentStoryDescription)) {
                 notifier.fireTestFinished(testState.currentStoryDescription);
@@ -130,7 +199,6 @@ public class JUnit4StoryReporter extends NullStoryReporter {
                     testCounter.incrementAndGet();
                 }
             }
-            processAfterStory();
             this.testState.remove();
         }
     }
@@ -154,7 +222,6 @@ public class JUnit4StoryReporter extends NullStoryReporter {
                 steps.removeAll(examples);
                 testState.loadStepDescriptions(steps);
                 testState.moveToNextStep();
-                processBeforeScenario();
             }
         }
     }
@@ -175,63 +242,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
         TestState testState = this.testState.get();
         if (!testState.isGivenStoryRunning()) {
             notifier.fireTestFinished(testState.currentScenario);
-            processAfterScenario();
             testState.moveToNextScenario();
-        }
-    }
-
-    private void processBeforeStory() {
-        TestState testState = this.testState.get();
-        Description currentScenario = testState.currentScenario;
-        if (currentScenario != null && currentScenario.getDisplayName().startsWith(
-                JUnit4DescriptionGenerator.BEFORE_STORY_STEP_NAME)) {
-            // @BeforeStory has been called already
-            notifier.fireTestStarted(currentScenario);
-            notifier.fireTestFinished(currentScenario);
-            testState.moveToNextScenario();
-        }
-    }
-
-    private void processAfterStory() {
-        TestState testState = this.testState.get();
-        Description currentScenario = testState.currentScenario;
-        if (currentScenario != null) {
-            if (currentScenario.getDisplayName().startsWith(JUnit4DescriptionGenerator.AFTER_STORY_STEP_NAME)) {
-                // @AfterStory has been called already
-                notifier.fireTestStarted(currentScenario);
-                notifier.fireTestFinished(currentScenario);
-                testState.moveToNextScenario();
-            } else {
-                testState.moveToNextScenario();
-                processAfterStory();
-            }
-        }
-    }
-
-    private void processBeforeScenario() {
-        Description currentStep = testState.get().currentStep;
-        if (currentStep != null && currentStep.getDisplayName().startsWith(
-                JUnit4DescriptionGenerator.BEFORE_SCENARIO_STEP_NAME)) {
-            // @BeforeScenario has been called already
-            notifier.fireTestStarted(currentStep);
-            notifier.fireTestFinished(currentStep);
-            prepareNextStep();
-        }
-    }
-
-    private void processAfterScenario() {
-        TestState testState = this.testState.get();
-        Description currentStep = testState.currentStep;
-        if (currentStep != null) {
-            if (currentStep.getDisplayName().startsWith(JUnit4DescriptionGenerator.AFTER_SCENARIO_STEP_NAME)) {
-                // @AfterScenario has been called already
-                notifier.fireTestStarted(currentStep);
-                notifier.fireTestFinished(currentStep);
-                prepareNextStep();
-            } else {
-                testState.moveToNextStep();
-                processAfterScenario();
-            }
         }
     }
 
@@ -239,13 +250,9 @@ public class JUnit4StoryReporter extends NullStoryReporter {
     public void example(Map<String, String> tableRow, int exampleIndex) {
         TestState testState = this.testState.get();
         if (!testState.isGivenStoryRunning()) {
-            if (testState.currentExample != null && testState.stepDescriptions != null) {
-                processAfterScenario();
-            }
             testState.moveToNextExample();
             testState.loadStepDescriptions(testState.currentExample.getChildren());
             testState.moveToNextStep();
-            processBeforeScenario();
         }
     }
 
@@ -262,10 +269,6 @@ public class JUnit4StoryReporter extends NullStoryReporter {
             }
             if (testState.currentStepStatus == StepStatus.STARTED) {
                 testState.parentSteps.push(testState.currentStep);
-                // Composite Lifecycle Before/After story steps
-                if (testState.stepDescriptions == null) {
-                    testState.loadStepDescriptions(testState.currentStep.getChildren());
-                }
                 testState.moveToNextStep();
             }
             notifier.fireTestStarted(testState.currentStep);
@@ -278,9 +281,6 @@ public class JUnit4StoryReporter extends NullStoryReporter {
         TestState testState = this.testState.get();
         if (!testState.isGivenStoryRunning()) {
             Throwable thrownException = e instanceof UUIDExceptionWrapper ? e.getCause() : e;
-            if (thrownException instanceof BeforeOrAfterFailed) {
-                notifier.fireTestStarted(testState.currentStep);
-            }
             notifier.fireTestFailure(new Failure(testState.currentStep, thrownException));
             testState.failedSteps.add(testState.currentStep);
             finishStep(testState);
@@ -301,18 +301,10 @@ public class JUnit4StoryReporter extends NullStoryReporter {
 
     private void prepareNextStep() {
         TestState testState = this.testState.get();
-        if (testState.currentStep != null) {
-            if (testState.currentStep.isTest()) {
-                testCounter.incrementAndGet();
-            }
-            // Lifecycle Before/After story steps
-            if (testState.currentStep == testState.currentScenario || !testState.parentSteps.isEmpty()
-                    && testState.parentSteps.peekLast() == testState.currentScenario) {
-                testState.moveToNextScenario();
-                return;
-            }
+        if (testState.currentStep != null && testState.currentStep.isTest()) {
+            testCounter.incrementAndGet();
         }
-        if (testState.stepDescriptions != null) {
+        if (testState.stepDescriptions != null && testState.stepDescriptions.hasNext()) {
             testState.moveToNextStep();
         }
     }
@@ -429,9 +421,29 @@ public class JUnit4StoryReporter extends NullStoryReporter {
             }
             return descendants;
         }
+
+        private List<Description> getStoryChildren() {
+            return currentStoryDescription.getChildren();
+        }
     }
 
     private enum StepStatus {
         STARTED, FINISHED
+    }
+
+    private enum ElementAction {
+        DROP {
+            @Override
+            public <T> void compute(Collection<T> collection, T element) {
+            }
+        },
+        TAKE {
+            @Override
+            public <T> void compute(Collection<T> collection, T element) {
+                collection.add(element);
+            }
+        };
+
+        public abstract <T> void compute(Collection<T> collection, T element);
     }
 }
