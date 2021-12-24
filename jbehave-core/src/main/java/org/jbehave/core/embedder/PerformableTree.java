@@ -1,6 +1,7 @@
 package org.jbehave.core.embedder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -889,7 +890,7 @@ public class PerformableTree {
         private final LifecycleStepsExecutionHook afterHook;
 
         public PerformableEntity(LifecycleStepsExecutionHook beforeHook, LifecycleStepsExecutionHook afterHook) {
-            this.givenStories = new PerformableGivenStories(List.of(), null);
+            this.givenStories = new PerformableGivenStories(Collections.emptyList(), null);
             this.stageSteps = new EnumMap<>(Stage.class);
             this.beforeHook = beforeHook;
             this.afterHook = afterHook;
