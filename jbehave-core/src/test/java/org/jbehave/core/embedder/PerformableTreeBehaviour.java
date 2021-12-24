@@ -61,6 +61,8 @@ import org.jbehave.core.steps.context.StepsContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
+import com.google.common.collect.ImmutableMap;
+
 class PerformableTreeBehaviour {
 
     private static final String GIVEN_SCENARIO_FAIL = "Scenario: given scenario title\nWhen I fail";
@@ -97,7 +99,7 @@ class PerformableTreeBehaviour {
         
         when(stepCollector.collectLifecycleSteps(eq(stepCandidates), eq(story.getLifecycle()), eq(storyMeta),
                 eq(Scope.STORY), any(MatchingStepMonitor.class)))
-                        .thenReturn(Map.of(Stage.BEFORE, List.of(), Stage.AFTER, List.of()));
+                        .thenReturn(ImmutableMap.of(Stage.BEFORE, emptyList(), Stage.AFTER, emptyList()));
 
         PerformableTree performableTree = new PerformableTree();
         PerformableTree.RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
