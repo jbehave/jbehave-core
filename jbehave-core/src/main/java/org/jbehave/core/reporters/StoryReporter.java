@@ -69,6 +69,8 @@ public interface StoryReporter {
 
     void afterGivenStories();
 
+    void lifecycleIndex(int index);
+
     void beforeExamples(List<String> steps, ExamplesTable table);
 
     void example(Map<String, String> tableRow, int exampleIndex);

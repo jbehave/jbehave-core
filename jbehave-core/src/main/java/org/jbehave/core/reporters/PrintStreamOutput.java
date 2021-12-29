@@ -497,6 +497,11 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
+    public void lifecycleIndex(int index) {
+        print(format("lifecycleIndex", EMPTY, index));
+    }
+
+    @Override
     public void beforeExamples(List<String> steps, ExamplesTable table) {
         print(format("beforeExamples", "{0}\n", keywords.examplesTable()));
         print(format("examplesStepsStart", EMPTY));

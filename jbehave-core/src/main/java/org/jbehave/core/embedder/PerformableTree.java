@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
@@ -142,7 +143,7 @@ public class PerformableTree {
                 Map<String, String> scenarioParameters = new HashMap<String, String>(storyParameters);
                 PerformableScenario performableScenario = performableScenario(context, story, scenarioParameters,
                         filterContext, runBeforeAndAfterScenarioSteps, scenario, storyExamplesTableRow,
-                        storyExamplesTable.isEmpty() ? -1 : i);
+                        storyExamplesTable.isEmpty() ? OptionalInt.empty() : OptionalInt.of(i));
                 if (performableScenario.isPerformable()) {
                     performableScenarios.add(performableScenario);
                 }
@@ -153,18 +154,14 @@ public class PerformableTree {
 
     private PerformableScenario performableScenario(RunContext context, Story story,
             Map<String, String> storyParameters, FilteredStory filterContext, boolean runBeforeAndAfterScenarioSteps,
-            Scenario originalScenario, Map<String, String> storyExamplesTableRow, int storyExamplesTableRowIndex) {
-        Scenario scenario = originalScenario;
-        if (storyExamplesTableRowIndex != -1) {
-            scenario = new Scenario(scenario.getTitle() + " [" + (storyExamplesTableRowIndex + 1) + "]",
-                scenario.getMeta(),  scenario.getGivenStories(), scenario.getExamplesTable(), scenario.getSteps());
-        }
-        PerformableScenario performableScenario = new PerformableScenario(scenario, story.getPath());
+            Scenario scenario, Map<String, String> storyExamplesTableRow, OptionalInt storyExamplesTableRowIndex) {
+
+        PerformableScenario performableScenario = new PerformableScenario(storyExamplesTableRowIndex, scenario, story.getPath());
         if (context.failureOccurred() && context.configuration().storyControls().skipScenariosAfterFailure()) {
             return performableScenario;
         }
 
-        boolean scenarioExcluded = filterContext.excluded(originalScenario);
+        boolean scenarioExcluded = filterContext.excluded(scenario);
 
         performableScenario.excluded(scenarioExcluded);
 
@@ -1062,6 +1059,7 @@ public class PerformableTree {
 
     public static class PerformableScenario implements Performable {
 
+        private final OptionalInt storyExamplesTableRowIndex;
         private final Scenario scenario;
         private final String storyPath;
         private boolean excluded;
@@ -1071,7 +1069,8 @@ public class PerformableTree {
         private NormalPerformableScenario normalScenario;
         private List<ExamplePerformableScenario> exampleScenarios;
 
-        public PerformableScenario(Scenario scenario, String storyPath) {
+        public PerformableScenario(OptionalInt storyExamplesTableRowIndex, Scenario scenario, String storyPath) {
+            this.storyExamplesTableRowIndex = storyExamplesTableRowIndex;
             this.scenario = scenario;
             this.storyPath = storyPath;
         }
@@ -1144,17 +1143,18 @@ public class PerformableTree {
                 return;
             }
             Timer timer = new Timer().start();
+            StoryReporter reporter = context.reporter();
             try {
                 context.stepsContext().resetScenario();
-                context.reporter().beforeScenario(scenario);
+                reporter.beforeScenario(scenario);
                 State state = context.state();
                 if (hasExamples()) {
-                    context.reporter().beforeExamples(scenario.getSteps(),
-                            scenario.getExamplesTable());
+                    storyExamplesTableRowIndex.ifPresent(reporter::lifecycleIndex);
+                    reporter.beforeExamples(scenario.getSteps(), scenario.getExamplesTable());
                     for (ExamplePerformableScenario exampleScenario : exampleScenarios) {
                         exampleScenario.perform(context);
                     }
-                    context.reporter().afterExamples();
+                    reporter.afterExamples();
                 } else {
                     context.stepsContext().resetExample();
                     normalScenario.perform(context);
@@ -1162,7 +1162,7 @@ public class PerformableTree {
                 this.status = context.status(state);
             } finally {
                 timing = new Timing(timer.stop());
-                context.reporter().afterScenario(timing);
+                reporter.afterScenario(timing);
             }
         }
 

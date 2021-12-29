@@ -149,6 +149,10 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void lifecycleIndex(int index) {
+    }
+
+    @Override
     public void beforeExamples(List<String> steps, ExamplesTable table) {
     }
 

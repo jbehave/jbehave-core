@@ -130,6 +130,11 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void lifecycleIndex(int index) {
+        delegate(reporter -> reporter.lifecycleIndex(index));
+    }
+
+    @Override
     public void beforeExamples(List<String> steps, ExamplesTable table) {
         delegate(reporter -> reporter.beforeExamples(steps, table));
     }

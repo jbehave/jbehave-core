@@ -38,6 +38,7 @@
       "keyword": "Scenario:",
       "id": "scenario-id",
       "title": "My scenario",
+      "index": 1,
       "examples": {
         "keyword": "Examples:",
         "steps": [

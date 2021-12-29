@@ -51,6 +51,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method givenStories;
     private static Method givenStoriesPaths;
     private static Method afterGivenStories;
+    private static Method lifecycleIndex;
     private static Method beforeExamples;
     private static Method example;
     private static Method afterExamples;
@@ -92,6 +93,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
             givenStories = StoryReporter.class.getMethod("givenStories", GivenStories.class);
             givenStoriesPaths = StoryReporter.class.getMethod("givenStories", List.class);
             afterGivenStories = StoryReporter.class.getMethod("afterGivenStories");
+            lifecycleIndex = StoryReporter.class.getMethod("lifecycleIndex", int.class);
             beforeExamples = StoryReporter.class.getMethod("beforeExamples", List.class, ExamplesTable.class);
             example = StoryReporter.class.getMethod("example", Map.class, int.class);
             afterExamples = StoryReporter.class.getMethod("afterExamples");
@@ -233,6 +235,11 @@ public class ConcurrentStoryReporter implements StoryReporter {
     @Override
     public void afterGivenStories() {
         perform(StoryReporter::afterGivenStories, afterGivenStories);
+    }
+
+    @Override
+    public void lifecycleIndex(int index) {
+        perform(reporter ->  reporter.lifecycleIndex(index), lifecycleIndex, index);
     }
 
     @Override

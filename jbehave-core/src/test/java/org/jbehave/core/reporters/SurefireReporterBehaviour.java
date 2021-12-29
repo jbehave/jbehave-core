@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalInt;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
@@ -88,7 +89,7 @@ class SurefireReporterBehaviour {
         PerformableStory performableStory = new PerformableStory(story, new LocalizedKeywords(), false);
         root.add(performableStory);
         Scenario scenario = new Scenario("title", Arrays.asList(""));
-        PerformableScenario performableScenario = new PerformableScenario(scenario, story.getPath());
+        PerformableScenario performableScenario = new PerformableScenario(OptionalInt.empty(), scenario, story.getPath());
         performableStory.add(performableScenario);
         List<StepMatch> stepMatches = new ArrayList<>();
         stepMatches.add(new StepMatch(new StepPattern(StepType.GIVEN, "(def)", "[abc]")));

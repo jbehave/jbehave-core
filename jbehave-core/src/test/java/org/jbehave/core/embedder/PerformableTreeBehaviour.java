@@ -7,6 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.jbehave.core.steps.StepCollector.Stage;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -36,6 +37,7 @@ import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryLoader;
@@ -220,8 +222,9 @@ class PerformableTreeBehaviour {
         List<PerformableTree.PerformableScenario> performableScenarios = performableTree.getRoot().getStories().get(0)
                 .getScenarios();
 
-        assertThat(performableScenarios.size(), is(scenarioExamplesRow1.size()));
-        assertThat(performableScenarios.get(0).getScenario().getTitle(), is(scenarioTitle + " [1]"));
+        assertThat(performableScenarios, hasSize(2));
+        PerformableScenario performableScenario = performableScenarios.get(0);
+        assertThat(performableScenario.getScenario().getTitle(), is(scenarioTitle + " [1]"));
         List<PerformableTree.ExamplePerformableScenario> examplePerformableScenarios = performableScenarios.get(0)
                 .getExamples();
         assertThat(examplePerformableScenarios.size(), is(scenarioExamplesRow1.size()));

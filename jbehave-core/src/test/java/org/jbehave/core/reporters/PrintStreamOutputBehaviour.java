@@ -245,6 +245,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reportStoryStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
         reporter.beforeScenarios();
         reporter.beforeScenario(scenario);
+        reporter.lifecycleIndex(1);
         reporter.beforeExamples(scenario.getSteps(), examplesTable);
         reporter.example(example, 0);
         reportScenarioStep(reporter, step, Stage.BEFORE, ExecutionType.USER);

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -469,7 +470,7 @@ class JUnit4DescriptionGeneratorBehaviour {
     }
 
     private PerformableScenario mockPerformableScenario(Scenario scenario, String storyPath, boolean excluded) {
-        PerformableScenario performableScenario = new PerformableScenario(scenario, storyPath);
+        PerformableScenario performableScenario = new PerformableScenario(OptionalInt.empty(), scenario, storyPath);
         performableScenario.excluded(excluded);
         if (scenario.hasExamplesTable()) {
             for (Map<String, String> row : scenario.getExamplesTable().getRows()) {
