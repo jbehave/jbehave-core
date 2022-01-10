@@ -9,6 +9,8 @@ import org.jbehave.core.model.ExamplesTable.TablePropertiesQueue;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 
+import java.util.Deque;
+
 /**
  * Factory that creates instances of ExamplesTable from different type of
  * inputs:
@@ -76,12 +78,12 @@ public class ExamplesTableFactory {
         TablePropertiesQueue tablePropertiesQueue = tableParsers.parseProperties(input);
 
         String tableAsString = tablePropertiesQueue.getTable().trim();
-        TableProperties properties = tablePropertiesQueue.getProperties().peekFirst();
+        Deque<TableProperties> properties = tablePropertiesQueue.getProperties();
 
-        if (!isTable(tableAsString, properties) && !tableAsString.isEmpty()) {
+        if (!isTable(tableAsString, properties.peekFirst()) && !tableAsString.isEmpty()) {
             String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());
             tablePropertiesQueue = tableParsers.parseProperties(loadedTable);
-            tablePropertiesQueue.getProperties().addFirst(properties);
+            tablePropertiesQueue.getProperties().addAll(properties);
         }
 
         return new ExamplesTable(tablePropertiesQueue, parameterConverters, parameterControls, tableParsers,

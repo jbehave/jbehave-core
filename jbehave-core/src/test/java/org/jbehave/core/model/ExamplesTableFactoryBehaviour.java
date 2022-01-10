@@ -61,13 +61,14 @@ class ExamplesTableFactoryBehaviour {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
         ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
+        String tableWithChangedSeparators = "!one!two!\n!11!22!\n";
 
         // When
-        when(resourceLoader.loadResourceAsText(RESOURCE_PATH)).thenReturn(TABLE_AS_STRING);
+        when(resourceLoader.loadResourceAsText(RESOURCE_PATH)).thenReturn(tableWithChangedSeparators);
         ExamplesTable examplesTable = factory.createExamplesTable(PROPERTIES + RESOURCE_PATH);
 
         // Then
-        assertThat(examplesTable.asString(), equalTo(PROPERTIES + TABLE_AS_STRING));
+        assertThat(examplesTable.asString(), equalTo(PROPERTIES + tableWithChangedSeparators));
     }
 
     @Test
@@ -113,13 +114,13 @@ class ExamplesTableFactoryBehaviour {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
         ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
+        String transformers = "{transformer=CUSTOM_TRANSFORMER1}\n{transformer=CUSTOM_TRANSFORMER2}\n";
 
         // When
         when(resourceLoader.loadResourceAsText(RESOURCE_PATH)).thenReturn(TABLE_AS_STRING);
-        ExamplesTable examplesTable = factory.createExamplesTable("{transformer=CUSTOM_TRANSFORMER1}\n" +
-                "{transformer=CUSTOM_TRANSFORMER2}\n" + RESOURCE_PATH);
+        ExamplesTable examplesTable = factory.createExamplesTable(transformers + RESOURCE_PATH);
 
         // Then
-        assertThat(examplesTable.asString(), equalTo("{transformer=CUSTOM_TRANSFORMER1}\n" + TABLE_AS_STRING));
+        assertThat(examplesTable.asString(), equalTo(transformers + TABLE_AS_STRING));
     }
 }
