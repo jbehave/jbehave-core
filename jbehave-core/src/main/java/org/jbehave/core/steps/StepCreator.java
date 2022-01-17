@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -308,8 +308,9 @@ public class StepCreator {
                     hasTable);
         }
         // mark parameter values that are named
-        for (String name : namedParameters.keySet()) {
-            parametrisedStep = markNamedParameterValue(parametrisedStep, namedParameters, name);
+        for (Entry<String, String> namedParameter : namedParameters.entrySet()) {
+            parametrisedStep = parameterControls.replaceAllDelimitedNames(parametrisedStep, namedParameter.getKey(),
+                    markedValue(namedParameter.getValue()));
         }
 
         return parametrisedStep;
@@ -322,14 +323,6 @@ public class StepCreator {
             }
         }
         return false;
-    }
-
-    private String markNamedParameterValue(String stepText, Map<String, String> namedParameters, String name) {
-        String value = namedParameter(namedParameters, name);
-        if (value != null) {
-            return parameterControls.replaceAllDelimitedNames(stepText, name, markedValue(value));
-        }
-        return stepText;
     }
 
     private String markParsedParameterValue(String stepText, Type type, String value, boolean hasTable) {
@@ -473,12 +466,9 @@ public class StepCreator {
             if (!delimitedNames.isEmpty()) {
                 parameter = replaceAllDelimitedNames(delimitedNames, position, annotated, parameter, namedParameters);
                 delimitedNames = delimitedNameFor(parameter);
-                if (!delimitedNames.isEmpty()) {
-                    parameter = replaceAllDelimitedNames(delimitedNames, position, annotated, parameter,
-                            namedParameters);
-                }
-            } else if (overrideWithTableParameters && isTableName(namedParameters, name)) {
-                parameter = namedParameter(namedParameters, name);
+                parameter = replaceAllDelimitedNames(delimitedNames, position, annotated, parameter, namedParameters);
+            } else if (overrideWithTableParameters && namedParameters.containsKey(name)) {
+                parameter = namedParameters.get(name);
                 if (parameter != null) {
                     monitorUsingTableNameForParameter(name, position, annotated); 
                 }
@@ -499,10 +489,7 @@ public class StepCreator {
             List<String> delimitedNames = delimitedNameFor(parameter);
 
             for (String delimitedName : delimitedNames) {
-                if (isTableName(namedParameters, delimitedName)) {
-                    parameter = parameterControls.replaceAllDelimitedNames(parameter, delimitedName,
-                            namedParameter(namedParameters, delimitedName));
-                }
+                parameter = replaceAllDelimitedNames(parameter, delimitedName, namedParameters);
             }
         }
 
@@ -516,8 +503,17 @@ public class StepCreator {
         String parameterWithDelimitedNames = parameter;
         for (String delimitedName : delimitedNames) {
             monitorUsingTableNameForParameter(delimitedName, position, annotated);
-            parameterWithDelimitedNames = parameterControls.replaceAllDelimitedNames(parameterWithDelimitedNames,
-                    delimitedName, namedParameter(namedParameters, delimitedName));
+            parameterWithDelimitedNames = replaceAllDelimitedNames(parameterWithDelimitedNames, delimitedName,
+                    namedParameters);
+        }
+        return parameterWithDelimitedNames;
+    }
+
+    private String replaceAllDelimitedNames(String parameterWithDelimitedNames, String delimitedName,
+            Map<String, String> namedParameters) {
+        if (namedParameters.containsKey(delimitedName)) {
+            return parameterControls.replaceAllDelimitedNames(parameterWithDelimitedNames, delimitedName,
+                    namedParameters.get(delimitedName));
         }
         return parameterWithDelimitedNames;
     }
@@ -603,14 +599,6 @@ public class StepCreator {
             }
         }
         return false;
-    }
-
-    private String namedParameter(Map<String, String> namedParameters, String name) {
-        return namedParameters.get(name);
-    }
-
-    private boolean isTableName(Map<String, String> namedParameters, String name) {
-        return namedParameter(namedParameters, name) != null;
     }
 
     public static Step createPendingStep(final String stepAsString, String previousNonAndStep) {

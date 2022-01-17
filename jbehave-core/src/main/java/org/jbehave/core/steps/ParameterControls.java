@@ -58,7 +58,14 @@ public class ParameterControls {
     }
 
     public String replaceAllDelimitedNames(String text, String name, String value) {
-        return StringUtils.replace(text, createDelimitedName(name), value);
+        String delimitedName = createDelimitedName(name);
+        if (value != null) {
+            return StringUtils.replace(text, delimitedName, value);
+        } else if (text.equals(delimitedName)) {
+            return null;
+        }
+        throw new IllegalArgumentException(
+                "Unable to replace \"" + delimitedName + "\" in text \"" + text + "\" with \"null\" value");
     }
 
     public String replaceAllDelimitedNames(String text, Map<String, String> namedParameters) {
