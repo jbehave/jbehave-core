@@ -83,7 +83,8 @@ public class ExamplesTableFactory {
         if (!isTable(tableAsString, properties.peekFirst()) && !tableAsString.isEmpty()) {
             String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());
             tablePropertiesQueue = tableParsers.parseProperties(loadedTable);
-            tablePropertiesQueue.getProperties().addAll(properties);
+            Deque<TableProperties> target = tablePropertiesQueue.getProperties();
+            properties.descendingIterator().forEachRemaining(target::addFirst);
         }
 
         return new ExamplesTable(tablePropertiesQueue, parameterConverters, parameterControls, tableParsers,

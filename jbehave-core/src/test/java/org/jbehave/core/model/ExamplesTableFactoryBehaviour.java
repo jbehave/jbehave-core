@@ -61,14 +61,14 @@ class ExamplesTableFactoryBehaviour {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
         ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
-        String tableWithChangedSeparators = "!one!two!\n!11!22!\n";
+        String tableWithChangedSeparators = PROPERTIES + "!one!two!\n!11!22!\n";
 
         // When
         when(resourceLoader.loadResourceAsText(RESOURCE_PATH)).thenReturn(tableWithChangedSeparators);
-        ExamplesTable examplesTable = factory.createExamplesTable(PROPERTIES + RESOURCE_PATH);
+        ExamplesTable examplesTable = factory.createExamplesTable(RESOURCE_PATH);
 
         // Then
-        assertThat(examplesTable.asString(), equalTo(PROPERTIES + tableWithChangedSeparators));
+        assertThat(examplesTable.asString(), equalTo(tableWithChangedSeparators));
     }
 
     @Test
