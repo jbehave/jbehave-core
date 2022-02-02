@@ -123,8 +123,7 @@ public class JUnit4DescriptionGenerator {
 
     private void addBeforeOrAfterStep(List<BeforeOrAfterStep> beforeOrAfterSteps, Description description,
             String stepPrefix) {
-        beforeOrAfterSteps.forEach(steps ->
-        {
+        beforeOrAfterSteps.forEach(steps -> {
             testCases++;
             Method method = steps.getMethod();
             String stepName = uniquify(stepPrefix + steps.getMethod().getName());

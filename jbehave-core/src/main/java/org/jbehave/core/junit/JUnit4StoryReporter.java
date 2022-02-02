@@ -108,8 +108,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
     }
 
     @Override
-    public void beforeStorySteps(Stage stage, Lifecycle.ExecutionType type)
-    {
+    public void beforeStorySteps(Stage stage, Lifecycle.ExecutionType type) {
         TestState testState = this.testState.get();
         if (!testState.isGivenStoryRunning()) {
 
