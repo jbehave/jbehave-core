@@ -38,15 +38,18 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.failures.IgnoringStepsFailure;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Lifecycle.ExecutionType;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.BeforeOrAfterStep;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
@@ -56,7 +59,9 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCandidate;
 import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.StepMonitor;
+import org.jbehave.core.steps.Timing;
 import org.jbehave.core.steps.context.StepsContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -366,6 +371,64 @@ class PerformableTreeBehaviour {
     }
 
     @Test
+    void shouldReportIgnorableSteps() {
+        String step1 = "When I ignore";
+        String step2 = "When I fail";
+        Scenario scenario = new Scenario("scenario with ignorable", Meta.EMPTY, null, null, asList(step1, step2));
+        Narrative narrative = mock(Narrative.class);
+        Lifecycle lifecycle = new Lifecycle();
+        Story story = new Story(STORY_PATH, null, null, narrative, null, lifecycle, singletonList(scenario));
+
+        StoryReporter storyReporter = mock(StoryReporter.class);
+        StoryReporterBuilder storyReporterBuilder = mock(StoryReporterBuilder.class);
+        when(storyReporterBuilder.build(STORY_PATH)).thenReturn(storyReporter);
+        Configuration configuration = new MostUsefulConfiguration().useStoryReporterBuilder(storyReporterBuilder);
+        List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
+                .createCandidateSteps();
+        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+
+        PerformableTree performableTree = new PerformableTree();
+        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
+                mock(EmbedderMonitor.class), new MetaFilter(), new BatchFailures());
+        performableTree.addStories(runContext, singletonList(story));
+        performableTree.perform(runContext, story);
+        InOrder ordered = inOrder(storyReporter);
+        ordered.verify(storyReporter).beforeStory(story, false);
+        ordered.verify(storyReporter).narrative(narrative);
+        ordered.verify(storyReporter).lifecycle(lifecycle);
+        ordered.verify(storyReporter).beforeStorySteps(Stage.BEFORE, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).afterStorySteps(Stage.BEFORE, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).beforeStorySteps(Stage.BEFORE, ExecutionType.USER);
+        ordered.verify(storyReporter).afterStorySteps(Stage.BEFORE, ExecutionType.USER);
+        ordered.verify(storyReporter).beforeScenarios();
+        ordered.verify(storyReporter).beforeScenario(scenario);
+        ordered.verify(storyReporter).beforeScenarioSteps(Stage.BEFORE, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).afterScenarioSteps(Stage.BEFORE, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).beforeScenarioSteps(Stage.BEFORE, ExecutionType.USER);
+        ordered.verify(storyReporter).afterScenarioSteps(Stage.BEFORE, ExecutionType.USER);
+        ordered.verify(storyReporter).beforeScenarioSteps(null, null);
+        ordered.verify(storyReporter).beforeStep(argThat(step -> step1.equals(step.getStepAsString())
+                && StepExecutionType.EXECUTABLE == step.getExecutionType()));
+        ordered.verify(storyReporter).ignorable(step1);
+        ordered.verify(storyReporter).beforeStep(argThat(step -> step2.equals(step.getStepAsString())
+                && StepExecutionType.IGNORABLE == step.getExecutionType()));
+        ordered.verify(storyReporter).ignorable(step2);
+        ordered.verify(storyReporter).afterScenarioSteps(null, null);
+        ordered.verify(storyReporter).beforeScenarioSteps(Stage.AFTER, ExecutionType.USER);
+        ordered.verify(storyReporter).afterScenarioSteps(Stage.AFTER, ExecutionType.USER);
+        ordered.verify(storyReporter).beforeScenarioSteps(Stage.AFTER, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).afterScenarioSteps(Stage.AFTER, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).afterScenario(any(Timing.class));
+        ordered.verify(storyReporter).afterScenarios();
+        ordered.verify(storyReporter).beforeStorySteps(Stage.AFTER, ExecutionType.USER);
+        ordered.verify(storyReporter).afterStorySteps(Stage.AFTER, ExecutionType.USER);
+        ordered.verify(storyReporter).beforeStorySteps(Stage.AFTER, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).afterStorySteps(Stage.AFTER, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).afterStory(false);
+        verifyNoMoreInteractions(storyReporter);
+    }
+
+    @Test
     void shouldNotShareStoryStateBetweenThreads() throws Throwable {
         RunContext context = runStoryInContext();
         assertThat(context.state().getClass().getSimpleName(), is("FineSoFar"));
@@ -417,6 +480,11 @@ class PerformableTreeBehaviour {
         @When("I fail")
         public void fail() {
             throw new RuntimeException();
+        }
+
+        @When("I ignore")
+        public void ignore() {
+            throw new IgnoringStepsFailure("next steps in the scenario should be ignored");
         }
     }
 }

@@ -43,6 +43,7 @@ import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.PendingStep;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.StepResult;
 import org.jbehave.core.steps.Timer;
 import org.jbehave.core.steps.Timing;
@@ -1380,7 +1381,9 @@ public class PerformableTree {
                 try {
                     context.interruptIfCancelled();
                     if (ignoring) {
-                        reporter.ignorable(step.asString(keywords));
+                        String stepAsString = step.asString(keywords);
+                        reporter.beforeStep(new org.jbehave.core.model.Step(StepExecutionType.IGNORABLE, stepAsString));
+                        reporter.ignorable(stepAsString);
                     } else {
                         state = state.run(step, results, reporter);
                     }
