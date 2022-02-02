@@ -31,6 +31,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
@@ -65,8 +67,6 @@ import org.jbehave.core.steps.Timing;
 import org.jbehave.core.steps.context.StepsContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
-
-import com.google.common.collect.ImmutableMap;
 
 class PerformableTreeBehaviour {
 

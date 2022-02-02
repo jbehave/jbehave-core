@@ -1,5 +1,7 @@
 package org.jbehave.core.model;
 
+import java.util.Deque;
+
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -8,8 +10,6 @@ import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.model.ExamplesTable.TablePropertiesQueue;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
-
-import java.util.Deque;
 
 /**
  * Factory that creates instances of ExamplesTable from different type of
