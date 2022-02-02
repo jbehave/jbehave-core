@@ -9,6 +9,14 @@
   <artifactId>jbehave-grid-example</artifactId>
   <name>JBehave Grid Example</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>${hamcrest.version}</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <resources>
       <resource>
