@@ -182,13 +182,15 @@ class StoryNarrator {
         return map;
     }
 
-    private static void reportScenarioStep(StoryReporter reporter, String step, Stage stage, Lifecycle.ExecutionType type) {
+    private static void reportScenarioStep(StoryReporter reporter, String step, Stage stage,
+            Lifecycle.ExecutionType type) {
         reporter.beforeScenarioSteps(stage, type);
         reportSuccessfulStep(reporter, step);
         reporter.afterScenarioSteps(stage, type);
     }
 
-    private static void reportStoryStep(StoryReporter reporter, String step, Stage stage, Lifecycle.ExecutionType type) {
+    private static void reportStoryStep(StoryReporter reporter, String step, Stage stage,
+            Lifecycle.ExecutionType type) {
         reporter.beforeStorySteps(stage, type);
         reportSuccessfulStep(reporter, step);
         reporter.afterStorySteps(stage, type);

@@ -268,13 +268,15 @@ public class PerformableTree {
         Map<Stage, PerformableSteps> lifecycleSteps = context.lifecycleSteps(lifecycle, storyAndScenarioMeta,
                 Scope.SCENARIO);
 
-        performableScenario.addBeforeSteps(ExecutionType.SYSTEM, context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
+        performableScenario.addBeforeSteps(ExecutionType.SYSTEM,
+                context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
         performableScenario.addBeforeSteps(ExecutionType.USER, lifecycleSteps.get(Stage.BEFORE));
         addMetaParameters(parameters, storyAndScenarioMeta);
         performableScenario.setGivenStories(performableGivenStories(context, scenario.getGivenStories(), parameters));
         performableScenario.addSteps(context.scenarioSteps(lifecycle, storyAndScenarioMeta, scenario, parameters));
         performableScenario.addAfterSteps(ExecutionType.USER, lifecycleSteps.get(Stage.AFTER));
-        performableScenario.addAfterSteps(ExecutionType.SYSTEM, context.afterScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
+        performableScenario.addAfterSteps(ExecutionType.SYSTEM,
+                context.afterScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
     }
 
     private PerformableGivenStories performableGivenStories(RunContext context, GivenStories givenStories,
@@ -1212,7 +1214,8 @@ public class PerformableTree {
             while (restart) {
                 restart = false;
                 try {
-                    perform(steps, context, r -> r.beforeScenarioSteps(null, null), r -> r.afterScenarioSteps(null, null));
+                    perform(steps, context, r -> r.beforeScenarioSteps(null, null),
+                            r -> r.afterScenarioSteps(null, null));
                 } catch (RestartingScenarioFailure e) {
                     restart = true;
                     continue;

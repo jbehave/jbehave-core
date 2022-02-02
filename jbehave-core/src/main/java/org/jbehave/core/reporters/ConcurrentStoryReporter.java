@@ -79,7 +79,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
             lifecycle = StoryReporter.class.getMethod("lifecycle", Lifecycle.class);
             beforeStorySteps = StoryReporter.class.getMethod("beforeStorySteps", Stage.class, ExecutionType.class);
             afterStorySteps = StoryReporter.class.getMethod("afterStorySteps", Stage.class, ExecutionType.class);
-            beforeScenarioSteps = StoryReporter.class.getMethod("beforeScenarioSteps", Stage.class, ExecutionType.class);
+            beforeScenarioSteps = StoryReporter.class.getMethod("beforeScenarioSteps", Stage.class,
+                    ExecutionType.class);
             afterScenarioSteps = StoryReporter.class.getMethod("afterScenarioSteps", Stage.class, ExecutionType.class);
             beforeComposedSteps = StoryReporter.class.getMethod("beforeComposedSteps");
             afterComposedSteps = StoryReporter.class.getMethod("afterComposedSteps");
