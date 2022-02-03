@@ -8,7 +8,7 @@ import static org.junit.Assert.assertNotNull
 class MySteps {
 
   @Given("a date of \$date")
-  def aDate(Date date) {
+  def date(Date date) {
     assertNotNull(date)
   }
 

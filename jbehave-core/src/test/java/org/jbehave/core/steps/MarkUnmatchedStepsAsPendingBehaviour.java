@@ -601,6 +601,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         return new Meta(properties);
     }
 
+    @SuppressWarnings("checkstyle:MethodName")
     public static class ClassWithMethodsAandB extends Steps {
 
         @BeforeScenario(uponType = ScenarioType.NORMAL)
@@ -612,6 +613,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         }
     }
 
+    @SuppressWarnings("checkstyle:MethodName")
     public static class ClassWithMethodsCandD extends Steps {
 
         @BeforeScenario(uponType = ScenarioType.NORMAL)

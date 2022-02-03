@@ -877,11 +877,11 @@ class RegexStoryParserBehaviour {
     }
 
     void shouldParseStoryWithVeryLongStep() {
-        String scenario = aScenarioWithAVeryLongGivenStep();
+        String scenario = scenarioWithAVeryLongGivenStep();
         ensureThatScenarioCanBeParsed(scenario);
     }
 
-    private String aScenarioWithAVeryLongGivenStep() {
+    private String scenarioWithAVeryLongGivenStep() {
         StringBuilder longScenarioBuilder = new StringBuilder()
                 .append("Given all these examples:" + NL)
                 .append("|one|two|three|" + NL);
@@ -1099,7 +1099,7 @@ class RegexStoryParserBehaviour {
     
     @Test
     void shouldParseStoryWithVeryLongTitle() {
-        ensureThatScenarioCanBeParsed(aScenarioWithAVeryLongTitle(2000));
+        ensureThatScenarioCanBeParsed(scenarioWithAVeryLongTitle(2000));
     }
 
     @Test
@@ -1187,7 +1187,7 @@ class RegexStoryParserBehaviour {
         assertThat(untrimmedSteps.get(2), equalTo("Then step"));
     }
 
-    private String aScenarioWithAVeryLongTitle(int numberOfLines) {
+    private String scenarioWithAVeryLongTitle(int numberOfLines) {
         StringBuilder builder = new StringBuilder();        
         builder.append("Scenario: First line of long title." + NL)
                .append("After that follows a long textual description. " + NL);
@@ -1201,21 +1201,21 @@ class RegexStoryParserBehaviour {
 
     @Test
     void shouldParseStoryWithVeryLongTables() {
-        ensureThatScenarioCanBeParsed(aScenarioWithVeryLongTables(2000));
+        ensureThatScenarioCanBeParsed(scenarioWithVeryLongTables(2000));
     }
 
-    private String aScenarioWithVeryLongTables(int numberOfLines) {
+    private String scenarioWithVeryLongTables(int numberOfLines) {
         StringBuilder builder = new StringBuilder();        
         builder.append("Scenario: A scenario with long tables" + NL)
                .append("GivenStories: path1,path2,path3" + NL);
         builder.append("Given a step with a long tabular argument: " + NL)  
-               .append(aTableWith(numberOfLines));        
+               .append(tableWith(numberOfLines));
         builder.append("Examples:" + NL)       
-               .append(aTableWith(numberOfLines));
+               .append(tableWith(numberOfLines));
         return builder.toString();
     }
 
-    private String aTableWith(int numberOfLines) {
+    private String tableWith(int numberOfLines) {
         StringBuilder builder = new StringBuilder();        
         builder.append("|h0|h1|h2|h3|h4|h5|h6|h7|h8|h9|" + NL);
         for (int i = 0; i < numberOfLines; i++) {

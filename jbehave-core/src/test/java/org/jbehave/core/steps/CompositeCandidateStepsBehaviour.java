@@ -67,12 +67,12 @@ class CompositeCandidateStepsBehaviour {
         private String added;
 
         @Given("<customer> is logged in")
-        public void aCustomerIsLoggedIn(@Named("customer") String customer) {
+        public void customerIsLoggedIn(@Named("customer") String customer) {
             loggedIn = customer;
         }
 
         @When("a <product> is added to the cart")
-        public void aProductIsAddedToCart(@Named("product") String product) {
+        public void productIsAddedToCart(@Named("product") String product) {
             added = product;
         }
 
@@ -85,7 +85,7 @@ class CompositeCandidateStepsBehaviour {
             "Given <customer> is logged in",
             "When a <product> is added to the cart"
         })
-        public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
+        public void compositeStep(@Named("customer") String customer, @Named("product") String product) {
         }
 
     }
@@ -122,16 +122,16 @@ class CompositeCandidateStepsBehaviour {
             "Given <customer> is logged in",
             "When a <product> is added to the cart"
         })
-        public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
+        public void compositeStep(@Named("customer") String customer, @Named("product") String product) {
         }
 
         @Given("<customer> is logged in")
-        public void aCustomerIsLoggedIn(@Named("customer") String customer) {
+        public void customerIsLoggedIn(@Named("customer") String customer) {
             loggedIn = customer;
         }
 
         @When("a <product> is added to the cart")
-        public void aProductIsAddedToCart(@Named("product") String product) {
+        public void productIsAddedToCart(@Named("product") String product) {
             added = product;
         }
 
@@ -169,16 +169,16 @@ class CompositeCandidateStepsBehaviour {
             "Given <customer> is logged in",
             "When a <product> is added to the cart"
         })
-        public void aCompositeStep(String customer, String product) {
+        public void compositeStep(String customer, String product) {
         }
 
         @Given("<customer> is logged in")
-        public void aCustomerIsLoggedIn(String customer) {
+        public void customerIsLoggedIn(String customer) {
             loggedIn = customer;
         }
 
         @When("a <product> is added to the cart")
-        public void aProductIsAddedToCart(String product) {
+        public void productIsAddedToCart(String product) {
             added = product;
         }
 

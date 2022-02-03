@@ -20,7 +20,7 @@ this point clear: the textual step</p>
 <p>would map to the Java method</p>
 <pre class="brush: java">
     @Given("a stock of symbol $symbol and a threshold of $threshold")
-    public void aStock(String symbol, double threshold) {
+    public void stock(String symbol, double threshold) {
         // ...
     }
 </pre>
@@ -37,7 +37,7 @@ the parameter was a <a
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     @Given("a stock of symbols $symbols and thresholds $thresholds")
-    public void aStock(List<String> symbols, List<Double> thresholds) {
+    public void stock(List<String> symbols, List<Double> thresholds) {
         // ...
     }
 ]]>
@@ -196,7 +196,7 @@ way of the step implementation. E.g. given the converter:</p>
 <p>would map to the method:</p>
 <pre class="brush: java">
     @Given("a trader of name $name")
-    public void aTrader(Trader trader) {
+    public void trader(Trader trader) {
         // Trader object is provided to the method as parameter
     }
 </pre>

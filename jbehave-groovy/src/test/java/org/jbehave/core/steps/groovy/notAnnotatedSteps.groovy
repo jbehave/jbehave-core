@@ -1,6 +1,6 @@
 class NotAnnotatedSteps {
 
-  def aDate(Date date) {
+  def date(Date date) {
     assertNotNull(date);
   }
 

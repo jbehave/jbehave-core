@@ -11,7 +11,7 @@ import org.jbehave.examples.core.converters.CalendarConverter;
 public class CalendarSteps {
 
     @Given("a plan with calendar date of <date>")
-    public void aPlanWithCalendar(@Named("date") Calendar calendar) {
+    public void planWithCalendar(@Named("date") Calendar calendar) {
         System.out.println(calendar);
     }
 

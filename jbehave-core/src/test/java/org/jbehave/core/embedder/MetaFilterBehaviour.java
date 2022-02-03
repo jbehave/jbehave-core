@@ -142,6 +142,7 @@ class MetaFilterBehaviour {
 
     }
 
+    @SuppressWarnings("checkstyle:MethodName")
     public static class MetaBuilder {
 
         Properties meta = new Properties();

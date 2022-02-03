@@ -5,7 +5,7 @@ import org.jbehave.core.annotations.When
 class GroovySteps {
 
   @Given("a date of \$date")
-  def aDate(Date date) {
+  def date(Date date) {
     org.junit.Assert.assertNotNull(date)
   }
 

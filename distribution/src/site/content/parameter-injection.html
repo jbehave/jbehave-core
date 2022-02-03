@@ -22,7 +22,7 @@ parameters in the annotated Java method. For example:</p>
 method parameters of the Java method:</p>
 <pre class="brush: java">
     @Given("a stock of symbol $symbol and a threshold of $threshold")
-    public void aStock(String symbol, double threshold) {
+    public void stock(String symbol, double threshold) {
         // ...
     }
 </pre>
@@ -36,14 +36,14 @@ although it is good practice to keep them matching.</p>
 <p>If we want to have named parameters, one mechanism is to use annotations:</p>
 <pre class="brush: java">
     @Given("a stock of symbol $symbol and a threshold of $threshold")
-    public void aStock(@Named("symbol") String aSymbol, @Named("threshold") double aThreshold) {
+    public void stock(@Named("symbol") String aSymbol, @Named("threshold") double aThreshold) {
         // ...
     }
 </pre>
 <p>One reason to use named parameters is that then we can have method parameter appearing in any order:</p>
 <pre class="brush: java">
     @Given("a stock of symbol $symbol and a threshold of $threshold")
-    public void aStock(@Named("threshold") double aThreshold, @Named("symbol") String aSymbol) {
+    public void stock(@Named("threshold") double aThreshold, @Named("symbol") String aSymbol) {
         // ...
     }
 </pre>

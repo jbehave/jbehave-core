@@ -20,7 +20,7 @@ public class DeSteps {
     // Actually it would be spelled "symbol" in German, but
     // we want to verify that umlauts work for parameter names.
     @Given("ich habe eine Aktion mit dem Symbol $sümbol und eine Schwelle von $threshold")
-    public void aStock(@Named("sümbol") String symbol, @Named("threshold") double threshold) {
+    public void stock(@Named("sümbol") String symbol, @Named("threshold") double threshold) {
         stock = new Stock(symbol, threshold);
     }
 
@@ -37,7 +37,7 @@ public class DeSteps {
     }
 
     @Given("ich habe die Tabelle $table")
-    public void aTable(ExamplesTable table) {
+    public void table(ExamplesTable table) {
         this.table = table;
     }
 

@@ -15,7 +15,7 @@ class BeforeOrAfterStepBehaviour {
     void shouldPassMetaToStepCreatorWhenCreatingStepWithMeta() throws Exception {
         StepCreator stepCreator = mock(StepCreator.class);
 
-        Method method = methodFor("aMethodWith");
+        Method method = methodFor("methodWith");
         BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(method, 0, stepCreator);
 
         Meta meta = mock(Meta.class);
@@ -28,7 +28,7 @@ class BeforeOrAfterStepBehaviour {
     void shouldPassMetaToStepCreatorWhenCreatingStepUponOutcomeWithMeta() throws Exception {
         StepCreator stepCreator = mock(StepCreator.class);
 
-        Method method = methodFor("aMethodWith");
+        Method method = methodFor("methodWith");
         BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(method, 0, stepCreator);
 
         Meta meta = mock(Meta.class);

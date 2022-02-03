@@ -38,6 +38,7 @@ public class Narrative {
         return asA;
     }
 
+    @SuppressWarnings("checkstyle:MethodName")
     public String iWantTo() {
         return iWantTo;
     }

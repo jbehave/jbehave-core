@@ -79,14 +79,14 @@ class StepCandidateBehaviour {
     
     @Test
     void shouldMatchStepWithoutParameters() throws Exception {
-        Method method = SomeSteps.class.getMethod("aMethod");
+        Method method = SomeSteps.class.getMethod("method");
         StepCandidate candidate = candidateWith("I laugh", GIVEN, method, new SomeSteps());
         assertThat(candidate.matches("Given I laugh"), is(true));
     }
 
     @Test
     void shouldMatchStepWithParameters() throws Exception {
-        Method method = SomeSteps.class.getMethod("aMethod");
+        Method method = SomeSteps.class.getMethod("method");
         StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, new SomeSteps());
         assertThat(candidate.matches("When windows on the 1st floor"), is(true));
         assertThat(candidate.matches("When windows on the 1st floor are open"), is(not(true)));
@@ -94,7 +94,7 @@ class StepCandidateBehaviour {
 
     @Test
     void shouldMatchAndStepOnlyWithPreviousStep() throws Exception {
-        Method method = SomeSteps.class.getMethod("aMethod");
+        Method method = SomeSteps.class.getMethod("method");
         StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, new SomeSteps());
         assertThat(candidate.matches("And windows on the 1st floor"), is(not(true)));
         assertThat(candidate.matches("And windows on the 1st floor", "When windows on the 1st floor"), is(true));
@@ -102,14 +102,14 @@ class StepCandidateBehaviour {
 
     @Test
     void shouldMatchMultilineStep() throws Exception {
-        Method method = SomeSteps.class.getMethod("aMethod");
+        Method method = SomeSteps.class.getMethod("method");
         StepCandidate candidate = candidateWith("the grid should look like $grid", THEN, method, new SomeSteps());
         assertThat(candidate.matches("Then the grid should look like \n....\n....\n"), is(true));
     }
 
     @Test
     void shouldMatchStepWithEmptyParameters() throws Exception {
-        Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
+        Method method = SomeSteps.class.getMethod("methodWith", String.class);
         SomeSteps someSteps = new SomeSteps();
         StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, someSteps);
         String stepAsString = "When windows on the  floor";
@@ -122,7 +122,7 @@ class StepCandidateBehaviour {
 
     @Test
     void shouldMatchStepWithEmptyExamplesTableParameter() throws Exception {
-        Method method = SomeSteps.class.getMethod("aMethodWithExamplesTable", ExamplesTable.class);
+        Method method = SomeSteps.class.getMethod("methodWithExamplesTable", ExamplesTable.class);
         SomeSteps someSteps = new SomeSteps();
         StepCandidate candidate = candidateWith("windows attributes:$attrs", WHEN, method, someSteps);
         String stepAsString = "When windows attributes:";
@@ -135,21 +135,21 @@ class StepCandidateBehaviour {
 
     @Test
     void shouldIgnoreStep() throws Exception {
-        Method method = SomeSteps.class.getMethod("aMethod");
+        Method method = SomeSteps.class.getMethod("method");
         StepCandidate candidate = candidateWith("", IGNORABLE, method, new SomeSteps());
         assertThat(candidate.ignore("!-- Then ignore me"), is(true));
     }
 
     @Test
     void shouldComment() throws Exception {
-        Method method = SomeSteps.class.getMethod("aMethod");
+        Method method = SomeSteps.class.getMethod("method");
         StepCandidate candidate = candidateWith("", IGNORABLE, method, new SomeSteps());
         assertThat(candidate.comment("!-- comment"), is(true));
     }
 
     @Test
     void shouldNotMatchOrIgnoreStepWhenStartingWordNotFound() throws Exception {
-        Method method = SomeSteps.class.getMethod("aMethod");
+        Method method = SomeSteps.class.getMethod("method");
         Keywords keywords = new LocalizedKeywords() {
             
             @Override
@@ -169,7 +169,7 @@ class StepCandidateBehaviour {
 
     @Test
     void shouldProvideStepPriority() throws Exception {
-        Method method = SomeSteps.class.getMethod("aMethod");
+        Method method = SomeSteps.class.getMethod("method");
         StepCandidate candidate = candidateWith("I laugh", GIVEN, method, new SomeSteps());
         assertThat(candidate.getPriority(), equalTo(0));
     }
@@ -177,7 +177,7 @@ class StepCandidateBehaviour {
     @Test
     void shouldCreatePerformableStepUsingTheMatchedString() throws Exception {
         SomeSteps someSteps = new SomeSteps();
-        Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
+        Method method = SomeSteps.class.getMethod("methodWith", String.class);
         StepCandidate candidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
         performStep(candidate, "Then I live on the 1st floor");
         assertThat((String) someSteps.args, equalTo("1st"));
@@ -186,7 +186,7 @@ class StepCandidateBehaviour {
     @Test
     void shouldCreatePerformableStepUsingTheMatchedStringAndNamedParameterWithPartialValue() throws Exception {
         SomeSteps someSteps = new SomeSteps();
-        Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
+        Method method = SomeSteps.class.getMethod("methodWith", String.class);
         StepCandidate candidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
         namedParameters.put("number", "1");
         performStep(candidate, "Then I live on the <number>st floor");
@@ -197,7 +197,7 @@ class StepCandidateBehaviour {
     void shouldCreatePerformableStepUsingTheMatchedStringAndMultilinedNamedParameterWithPartialValue()
             throws Exception {
         SomeSteps someSteps = new SomeSteps();
-        Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
+        Method method = SomeSteps.class.getMethod("methodWith", String.class);
         StepCandidate candidate = candidateWith("I live at$address", THEN, method, someSteps);
         namedParameters.put("houseNumber", "221b");
         namedParameters.put("zipCode", "NW1 6XE");
@@ -210,7 +210,7 @@ class StepCandidateBehaviour {
     @Test
     void shouldCreatePerformableStepWithResultThatDescribesTheStepPerformed() throws Exception {
         SomeSteps someSteps = new SomeSteps();
-        Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
+        Method method = SomeSteps.class.getMethod("methodWith", String.class);
         StepCandidate candidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
         String stepAsString = "Then I live on the 1st floor";
         StoryReporter reporter = mock(StoryReporter.class);
@@ -228,7 +228,7 @@ class StepCandidateBehaviour {
         String unixNewline = "\n";
         String systemNewline = System.getProperty("line.separator");
         SomeSteps someSteps = new SomeSteps();
-        Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
+        Method method = SomeSteps.class.getMethod("methodWith", String.class);
         StepCandidate candidate = candidateWith("the grid should look like $grid", THEN, method, someSteps);
         performStep(candidate,
                 "Then the grid should look like" + windowsNewline + ".." + unixNewline + ".." + windowsNewline);
@@ -245,7 +245,7 @@ class StepCandidateBehaviour {
 
     private <T> void assertThatNumberIsConverted(Class<T> type, T number) throws Exception {
         SomeSteps someSteps = new SomeSteps();
-        Method method = SomeSteps.class.getMethod("aMethodWith", type);
+        Method method = SomeSteps.class.getMethod("methodWith", type);
         StepCandidate candidate = candidateWith("I should live in no. $no", THEN, method, someSteps);
         performStep(candidate, "Then I should live in no. 14");
         assertThat((T) someSteps.args, equalTo(number));
@@ -253,11 +253,11 @@ class StepCandidateBehaviour {
 
     @Test
     void shouldConvertParameterToListOfNumbersOrStrings() throws Exception {
-        assertThatListIsConverted("aMethodWithListOfIntegers", "1,2,3", asList(1, 2, 3));
-        assertThatListIsConverted("aMethodWithListOfLongs", "1,2,3", asList(1L, 2L, 3L));
-        assertThatListIsConverted("aMethodWithListOfFloats", "1.1,2.2,3.3", asList(1.1f, 2.2f, 3.3f));
-        assertThatListIsConverted("aMethodWithListOfDoubles", "1.1,2.2,3.3", asList(1.1d, 2.2d, 3.3d));
-        assertThatListIsConverted("aMethodWithListOfStrings", "1,2,3", asList("1", "2", "3"));
+        assertThatListIsConverted("methodWithListOfIntegers", "1,2,3", asList(1, 2, 3));
+        assertThatListIsConverted("methodWithListOfLongs", "1,2,3", asList(1L, 2L, 3L));
+        assertThatListIsConverted("methodWithListOfFloats", "1.1,2.2,3.3", asList(1.1f, 2.2f, 3.3f));
+        assertThatListIsConverted("methodWithListOfDoubles", "1.1,2.2,3.3", asList(1.1d, 2.2d, 3.3d));
+        assertThatListIsConverted("methodWithListOfStrings", "1,2,3", asList("1", "2", "3"));
     }
 
     private void assertThatListIsConverted(String methodName, String csv, List<?> numbers) throws Exception {
@@ -592,11 +592,11 @@ class StepCandidateBehaviour {
 
         @Given("a pending step")
         @Pending
-        public void aPendingStep() {
+        public void pendingStep() {
         }
 
         @Given("a non pending step")
-        public void aNonPendingStep() {
+        public void nonPendingStep() {
         }
 
     }

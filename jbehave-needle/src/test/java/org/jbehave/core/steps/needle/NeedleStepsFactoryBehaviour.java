@@ -63,7 +63,7 @@ public class NeedleStepsFactoryBehaviour {
         private InjectionProvider<?> provider = new ValueGetterProvider();
 
         @Given("a step with a $param")
-        public void aStepWithAParam(String param) {
+        public void stepWithAParam(String param) {
         }
 
     }

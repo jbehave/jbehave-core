@@ -24,11 +24,11 @@ defined a few steps.</p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     @Given("<customer> has a cart")
-    public void aCustomerHasACart(@Named("customer") String customer) {
+    public void customerHasACart(@Named("customer") String customer) {
     }
 
     @When("a <product> is added to the cart")
-    public void aProductIsAddedToCart(@Named("product") String product) {
+    public void productIsAddedToCart(@Named("product") String product) {
     }
 ]]>
 </script>
@@ -57,7 +57,7 @@ and annotated as per usual, e.g. with the <b>@Given</b> annotation:</p>
     @Composite(steps = { "Given <customer> is logged in", 
                          "Given <customer> has a cart", 
                          "When a <product> is added to the cart" })  
-    public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters 
+    public void compositeStep(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters
     }
 ]]>
 </script>

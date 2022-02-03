@@ -66,6 +66,7 @@ class SpringStepsFactoryAOPBehaviour {
         }
 
         // JDK Proxy
+        @SuppressWarnings("checkstyle:MethodName")
         @Bean
         @Scope(proxyMode = ScopedProxyMode.INTERFACES)
         public SpringStepsFactoryAOPBehaviour.IFooSteps iFooSteps() {
@@ -99,13 +100,13 @@ class SpringStepsFactoryAOPBehaviour {
 
     public static interface IFooSteps {
         @Given("a step declared in an interface, with a $param")
-        void aStepWithAParam(String param);
+        void stepWithAParam(String param);
     }
 
     public static class FooStepsImpl implements IFooSteps {
 
         @Override
-        public void aStepWithAParam(String param) {
+        public void stepWithAParam(String param) {
 
         }
 

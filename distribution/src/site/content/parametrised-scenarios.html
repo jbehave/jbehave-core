@@ -100,7 +100,7 @@ pattern must hold the verbatim textual step</b>, e.g.:</p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     @Given("a stock of <symbol> and a <threshold>")
-    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+    public void stock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
         // ...
     }
 ]]>
@@ -121,7 +121,7 @@ the main pattern and one as an alias:</p>
 <![CDATA[
     @Given("a stock of symbol $symbol and a threshold of $threshold") // standalone
     @Alias("a stock of <symbol> and a <threshold>") // examples table
-    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+    public void stock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
         // ...
     }
 ]]>
@@ -135,7 +135,7 @@ other standalone aliases:</p>
     @Given("a stock of symbol $symbol and a threshold of $threshold") // standalone
     @Aliases(values={"a stock with a symbol of $symbol and a threshold of $threshold", // a standalone alias
                      "a stock of <symbol> and a <threshold>"}) // an examples table alias
-    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+    public void stock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
         // ...
     }
 ]]>
@@ -162,7 +162,7 @@ provided the patterns are updated accordingly:
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     @Given("a stock of [symbol] and a [threshold]")
-    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+    public void stock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
         // ...
     }
 ]]>
@@ -213,7 +213,7 @@ The default behaviour of parameter lookup is overridden via the  <a
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     @Given("a stock of $symbol and a $threshold")
-    public void aStock(String symbol, double threshold) {
+    public void stock(String symbol, double threshold) {
         // ...
     }
 ]]>
@@ -240,7 +240,7 @@ The default behaviour of parameter lookup is overridden via the  <a
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     @Given("a stock of symbol $symbol") 
-    public void aStock(String symbol) {
+    public void stock(String symbol) {
         // ...
     }
 ]]>

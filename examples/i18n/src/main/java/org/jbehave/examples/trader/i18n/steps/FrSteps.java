@@ -23,7 +23,7 @@ public class FrSteps {
     private ExamplesTable table;
 
     @Given("l'on a une action avec symbole $symbol et un seuil de $threshold")
-    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+    public void stock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
         stock = new Stock(symbol, threshold);
     }
 
@@ -38,7 +38,7 @@ public class FrSteps {
     }
 
     @Given("l'on a une table $table")
-    public void aTable(ExamplesTable table) {
+    public void table(ExamplesTable table) {
         this.table = table;
     }
 

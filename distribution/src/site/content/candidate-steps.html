@@ -25,7 +25,7 @@ public class TraderSteps { // Look, Ma', I'm just a POJO
     private Stock stock;
 
     @Given("a stock of symbol $symbol and a threshold of $threshold")
-    public void aStock(String symbol, double threshold) {
+    public void stock(String symbol, double threshold) {
         stock = new Stock(symbol, threshold);
     }
 

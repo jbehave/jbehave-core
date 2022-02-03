@@ -7,7 +7,7 @@ import static junit.framework.Assert.assertNotNull;
 class AnnotatedSteps {
 
   @Given("a date of \$date")
-  def aDate(Date date) {
+  def date(Date date) {
     assertNotNull(date);
   }
 

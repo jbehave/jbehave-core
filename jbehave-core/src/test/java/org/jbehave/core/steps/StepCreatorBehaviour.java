@@ -79,7 +79,7 @@ class StepCreatorBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
 
         // When
-        String name = "aFailingBeforeScenarioMethod";
+        String name = "failingBeforeScenarioMethod";
         Method method = SomeSteps.methodFor(name);
         StepResult stepResult = stepCreator.createBeforeOrAfterStep(method, Meta.EMPTY).perform(reporter, null);
 
@@ -89,7 +89,7 @@ class StepCreatorBehaviour {
         Throwable cause = stepResult.getFailure().getCause();
         assertThat(cause, instanceOf(BeforeOrAfterFailed.class));
         assertThat(cause.getMessage(),
-                equalTo("Method aFailingBeforeScenarioMethod (annotated with @BeforeScenario in class"
+                equalTo("Method failingBeforeScenarioMethod (annotated with @BeforeScenario in class"
                         + " org.jbehave.core.steps.SomeSteps) failed: java.lang.RuntimeException"));
         verifyBeforeStep(reporter, StepExecutionType.EXECUTABLE, name);
     }
@@ -101,7 +101,7 @@ class StepCreatorBehaviour {
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
-        Method method = SomeSteps.methodFor("aFailingMethod");
+        Method method = SomeSteps.methodFor("failingMethod");
         String stepAsString = "When I fail";
         StepResult stepResult = stepCreator.createParametrisedStep(method, stepAsString, "I fail", null,
                 Collections.emptyList()).perform(storyReporter, null);
@@ -219,7 +219,7 @@ class StepCreatorBehaviour {
 
         // When
         String stepAsString = "When I use parameters " + firstParameterValue + " and " + secondParameterValue;
-        StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"),
+        StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithANamedParameter"),
                 stepAsString, stepAsString, parameters, Collections.emptyList()).perform(storyReporter, null);
 
         // Then
@@ -254,7 +254,7 @@ class StepCreatorBehaviour {
         Matcher matcher = Pattern.compile("I use parameters (.*) and (.*)").matcher(stepWithoutStartingWord);
         when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
         String stepAsString = "When I use parameters <theme> and <variant>";
-        StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"),
+        StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithANamedParameter"),
                 stepAsString, stepWithoutStartingWord, parameters, Collections.emptyList()).perform(
                 storyReporter, null);
 
@@ -277,7 +277,7 @@ class StepCreatorBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
 
         // When
-        String name = "aMethodWithANamedParameter";
+        String name = "methodWithANamedParameter";
         Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor(name), new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(reporter, null);
 
@@ -303,7 +303,7 @@ class StepCreatorBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
 
         // When
-        String name = "aMethodWithoutNamedAnnotation";
+        String name = "methodWithoutNamedAnnotation";
         Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor(name), new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(reporter, null);
 
@@ -320,7 +320,7 @@ class StepCreatorBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
 
         // When
-        String name = "aFailingMethod";
+        String name = "failingMethod";
         Method method = SomeSteps.methodFor(name);
         StepResult stepResult = stepCreator.createBeforeOrAfterStep(method, Meta.EMPTY).perform(reporter, null);
 
@@ -342,7 +342,7 @@ class StepCreatorBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
 
         // When
-        String name = "aMethodWithANamedParameter";
+        String name = "methodWithANamedParameter";
         Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor(name),
                 AfterScenario.Outcome.ANY, new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(reporter, null);
@@ -364,7 +364,7 @@ class StepCreatorBehaviour {
         StepCreator stepCreator = stepCreatorUsing();
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aFailingMethod"),
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("failingMethod"),
                 AfterScenario.Outcome.SUCCESS, mock(Meta.class));
         StepResult stepResult = stepWithMeta.doNotPerform(null, null);
 
@@ -383,7 +383,7 @@ class StepCreatorBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
 
         // When
-        String name = "aMethodWithANamedParameter";
+        String name = "methodWithANamedParameter";
         Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor(name),
                 AfterScenario.Outcome.SUCCESS, new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(reporter, null);
@@ -405,7 +405,7 @@ class StepCreatorBehaviour {
         StepCreator stepCreator = stepCreatorUsing();
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aFailingMethod"),
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("failingMethod"),
                 AfterScenario.Outcome.FAILURE, mock(Meta.class));
         StepResult stepResult = stepWithMeta.perform(null, null);
 
@@ -424,7 +424,7 @@ class StepCreatorBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
 
         // When
-        String name = "aMethodWithANamedParameter";
+        String name = "methodWithANamedParameter";
         Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor(name),
                 AfterScenario.Outcome.FAILURE, new Meta(properties));
         StepResult stepResult = stepWithMeta.doNotPerform(reporter, null);
@@ -451,7 +451,7 @@ class StepCreatorBehaviour {
         // When
         Date date = new Date();
         when(parameterConverters.convert(anyString(), eq(Date.class))).thenReturn(date);
-        String name = "aMethodWithDate";
+        String name = "methodWithDate";
         Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor(name), new Meta());
         StepResult stepResult = stepWithMeta.perform(reporter, null);
 
@@ -524,7 +524,7 @@ class StepCreatorBehaviour {
 
         // When
         String stepAsString = "When a parameter <" + parameterName + "> is set";
-        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"),
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithoutNamedAnnotation"),
                 stepAsString, stepWithoutStartingWord, params, Collections.emptyList());
         step.perform(storyReporter, null);
 
@@ -550,7 +550,7 @@ class StepCreatorBehaviour {
 
         // When
         String stepAsString = "When a parameter <param> is set";
-        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"),
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithoutNamedAnnotation"),
                 stepAsString, stepWithoutStartingWord, params, Collections.emptyList());
         StepResult stepResult = step.perform(storyReporter, null);
 
@@ -607,7 +607,7 @@ class StepCreatorBehaviour {
 
         // When
         String stepAsString = "When I use parameters <t> and <v>";
-        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"), stepAsString,
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithANamedParameter"), stepAsString,
                 stepWithoutStartingWord, params, Collections.emptyList());
         step.perform(storyReporter, null);
 
@@ -638,7 +638,7 @@ class StepCreatorBehaviour {
 
         // When
         String stepAsString = "When I use parameters <t> and <v>";
-        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"), stepAsString,
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithANamedParameter"), stepAsString,
                 stepWithoutStartingWord, params, Collections.emptyList());
         step.perform(storyReporter, null);
 
@@ -668,7 +668,7 @@ class StepCreatorBehaviour {
 
         // When
         String stepAsString = "When I use parameters <t> and <v>";
-        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"), stepAsString,
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithANamedParameter"), stepAsString,
                 stepWithoutStartingWord, params, Collections.emptyList());
         step.perform(storyReporter, null);
 
@@ -681,9 +681,9 @@ class StepCreatorBehaviour {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "aMethodStoringAString",
-        "aMethodStoringAStringInScenario",
-        "aMethodStoringAStringInStory"
+        "methodStoringAString",
+        "methodStoringAStringInScenario",
+        "methodStoringAStringInStory"
     })
     void shouldStoreAndReadObjectsInContext(String methodName) throws IntrospectionException {
         Method methodStoring = SomeSteps.methodFor(methodName);
@@ -702,7 +702,7 @@ class StepCreatorBehaviour {
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
-        Method methodRead = SomeSteps.methodFor("aMethodReadingFromContext");
+        Method methodRead = SomeSteps.methodFor("methodReadingFromContext");
         String stepAsString = "When I store in context";
         StepResult stepResult = stepCreator.createParametrisedStep(methodStoring, stepAsString, "I store in context",
                 new HashMap<>(), Collections.emptyList()).perform(storyReporter, null);
@@ -729,7 +729,7 @@ class StepCreatorBehaviour {
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
-        Method method = SomeSteps.methodFor("aMethodReadingFromContext");
+        Method method = SomeSteps.methodFor("methodReadingFromContext");
         String stepAsString = "When I read from context";
         StepResult stepResult = stepCreator.createParametrisedStep(method, stepAsString, "I read from context",
                 new HashMap<>(), Collections.emptyList()).perform(storyReporter, null);
@@ -743,13 +743,13 @@ class StepCreatorBehaviour {
 
     @Test
     void shouldHandleObjectAlreadyStoredFailureInSameLevel() throws IntrospectionException {
-        Method method = SomeSteps.methodFor("aMethodStoringAString");
+        Method method = SomeSteps.methodFor("methodStoringAString");
         shouldHandleObjectAlreadyStoredFailure(method);
     }
 
     @Test
     void shouldHandleObjectAlreadyStoredFailureInDifferentLevel() throws IntrospectionException {
-        Method method = SomeSteps.methodFor("aMethodStoringAStringInStory");
+        Method method = SomeSteps.methodFor("methodStoringAStringInStory");
         shouldHandleObjectAlreadyStoredFailure(method);
     }
 
@@ -761,7 +761,7 @@ class StepCreatorBehaviour {
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
-        Method method = SomeSteps.methodFor("aMethodStoringAString");
+        Method method = SomeSteps.methodFor("methodStoringAString");
         String stepAsString = "When I store in context";
         String stepWithoutStartingWord = "I store in context";
         Matcher matcher = Pattern.compile(stepWithoutStartingWord).matcher(stepWithoutStartingWord);
@@ -785,7 +785,7 @@ class StepCreatorBehaviour {
     @Test
     void shouldResetKeysBetweenExamples() throws IntrospectionException {
         setupContext();
-        Method methodStoring = SomeSteps.methodFor("aMethodStoringAString");
+        Method methodStoring = SomeSteps.methodFor("methodStoringAString");
 
         // First Example
         shouldStoreAndReadObjects(methodStoring, false);

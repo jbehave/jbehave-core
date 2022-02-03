@@ -18,7 +18,7 @@ public class PtSteps {
     private ExamplesTable table;
 
     @Given("haja uma ação com símbolo $symbol e um limite de $threshold")
-    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+    public void stock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
         stock = new Stock(symbol, threshold);
     }
 
@@ -33,7 +33,7 @@ public class PtSteps {
     }
 
     @Given("eu tenha uma tabela $table")
-    public void aTable(ExamplesTable table) {
+    public void table(ExamplesTable table) {
         this.table = table;
     }
 

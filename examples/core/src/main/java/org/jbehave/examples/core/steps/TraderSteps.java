@@ -61,7 +61,7 @@ public class TraderSteps {
     }
 
     @Given("a date of $date")
-    public void aDate(Date date) {
+    public void date(Date date) {
         this.date = date;
     }
 
@@ -79,7 +79,7 @@ public class TraderSteps {
     }
 
     @Given("a trader of {name|id} $trader")
-    public void aTrader(Trader trader) {
+    public void trader(Trader trader) {
         this.trader = trader;
     }
 
@@ -147,7 +147,7 @@ public class TraderSteps {
     @Given("a stock of symbol $symbol and a threshold of $threshold")
     @Alias("a stock of <symbol> and a <threshold>")
     // alias used with examples table
-    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+    public void stock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
         stock.set(getService().newStock(symbol, threshold));
     }
 

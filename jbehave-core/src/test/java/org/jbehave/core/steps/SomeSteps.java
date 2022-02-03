@@ -26,71 +26,71 @@ public class SomeSteps extends Steps {
 
     public Object args;
 
-    public void aMethod() {
+    public void method() {
     }
 
-    public void aFailingMethod() {
+    public void failingMethod() {
         throw new RuntimeException();
     }
 
     @BeforeScenario
-    public void aFailingBeforeScenarioMethod() {
+    public void failingBeforeScenarioMethod() {
         throw new RuntimeException();
     }
 
-    public void aPendingMethod() {
+    public void pendingMethod() {
         throw new PendingStepFound("a step");
     }
 
-    public void aMethodWith(String args) {
+    public void methodWith(String args) {
         this.args = args;
     }
 
-    public void aMethodWith(double args) {
+    public void methodWith(double args) {
         this.args = args;
     }
 
-    public void aMethodWith(long args) {
+    public void methodWith(long args) {
         this.args = args;
     }
 
-    public void aMethodWith(int args) {
+    public void methodWith(int args) {
         this.args = args;
     }
 
-    public void aMethodWith(float args) {
+    public void methodWith(float args) {
         this.args = args;
     }
 
-    public void aMethodWithListOfStrings(List<String> args) {
+    public void methodWithListOfStrings(List<String> args) {
         this.args = args;
     }
 
-    public void aMethodWithListOfLongs(List<Long> args) {
+    public void methodWithListOfLongs(List<Long> args) {
         this.args = args;
     }
 
-    public void aMethodWithListOfIntegers(List<Integer> args) {
+    public void methodWithListOfIntegers(List<Integer> args) {
         this.args = args;
     }
 
-    public void aMethodWithListOfDoubles(List<Double> args) {
+    public void methodWithListOfDoubles(List<Double> args) {
         this.args = args;
     }
 
-    public void aMethodWithListOfFloats(List<Float> args) {
+    public void methodWithListOfFloats(List<Float> args) {
         this.args = args;
     }
 
-    public void aMethodWithDate(Date args) {
+    public void methodWithDate(Date args) {
         this.args = args;
     }
 
-    public void aMethodWithExamplesTable(ExamplesTable args) {
+    public void methodWithExamplesTable(ExamplesTable args) {
         this.args = args;
     }
 
-    public ExamplesTable aMethodReturningExamplesTable(String value) {
+    public ExamplesTable methodReturningExamplesTable(String value) {
         return new ExamplesTable(value);
     }
 
@@ -100,22 +100,22 @@ public class SomeSteps extends Steps {
         String col2;
     }
 
-    public ExamplesTable aFailingMethodReturningExamplesTable(String value) {
+    public ExamplesTable failingMethodReturningExamplesTable(String value) {
         throw new RuntimeException(value);
     }
     
-    public void aMethodWithANamedParameter(@Named("theme") String theme, @Named("variant") String variant) {
+    public void methodWithANamedParameter(@Named("theme") String theme, @Named("variant") String variant) {
         Map<String, Object> namedArgs = new HashMap<>();
         namedArgs.put("theme", theme);
         namedArgs.put("variant", variant);
         this.args = namedArgs;
     }
 
-    public void aMethodWithoutNamedAnnotation(String theme) {
+    public void methodWithoutNamedAnnotation(String theme) {
         this.args = theme;
     }
 
-    public void aMultipleParamMethodWithoutNamedAnnotation(String theme, String variant) {
+    public void multipleParamMethodWithoutNamedAnnotation(String theme, String variant) {
         HashMap<String, Object> multipleArgs = new HashMap<>();
         multipleArgs.put("theme", theme);
         multipleArgs.put("variant", variant);
@@ -127,21 +127,21 @@ public class SomeSteps extends Steps {
     }
 
     @ToContext("someKey")
-    public String aMethodStoringAString() {
+    public String methodStoringAString() {
         return "someValue";
     }
 
     @ToContext(value = "someKey", retentionLevel = ToContext.RetentionLevel.SCENARIO)
-    public String aMethodStoringAStringInScenario() {
+    public String methodStoringAStringInScenario() {
         return "someValue";
     }
 
     @ToContext(value = "someKey", retentionLevel = ToContext.RetentionLevel.STORY)
-    public String aMethodStoringAStringInStory() {
+    public String methodStoringAStringInStory() {
         return "someValue";
     }
 
-    public void aMethodReadingFromContext(@FromContext("someKey") String value) {
+    public void methodReadingFromContext(@FromContext("someKey") String value) {
         this.args = value;
     }
 

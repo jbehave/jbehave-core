@@ -1,7 +1,7 @@
 class ScalaSteps {
     
   @org.jbehave.core.annotations.Given("a date of $date")
-  def aDate(date: java.util.Date) {
+  def date(date: java.util.Date) {
      org.junit.Assert.assertNotNull(date)
   }
 

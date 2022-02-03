@@ -484,7 +484,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldConvertParameterFromMethodReturningValue() throws IntrospectionException {
-        Method method = SomeSteps.methodFor("aMethodReturningExamplesTable");
+        Method method = SomeSteps.methodFor("methodReturningExamplesTable");
         FromStringParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
         assertThatTypesAreAccepted(converter, method.getReturnType());
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
@@ -500,7 +500,7 @@ class ParameterConvertersBehaviour {
 
     @Test
     void shouldFailToConvertParameterFromFailingMethodReturningValue() throws IntrospectionException {
-        Method method = SomeSteps.methodFor("aFailingMethodReturningExamplesTable");
+        Method method = SomeSteps.methodFor("failingMethodReturningExamplesTable");
         FromStringParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
         assertThrows(ParameterConversionFailed.class, () -> converter.convertValue(value, ExamplesTable.class));

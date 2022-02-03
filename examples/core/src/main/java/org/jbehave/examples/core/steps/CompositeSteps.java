@@ -15,7 +15,7 @@ public class CompositeSteps {
         "Given <customer> has a cart",
         "When a <product> is added to the cart"
     })
-    public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
+    public void compositeStep(@Named("customer") String customer, @Named("product") String product) {
         // composed steps use the named parameters
     }
     
@@ -28,15 +28,15 @@ public class CompositeSteps {
     }
 
     @Given("<customer> is logged in")
-    public void aCustomerIsLoggedIn(@Named("customer") String customer) {
+    public void customerIsLoggedIn(@Named("customer") String customer) {
     }
 
     @Given("<customer> has a cart")
-    public void aCustomerHasACart(@Named("customer") String customer) {
+    public void customerHasACart(@Named("customer") String customer) {
     }
 
     @When("a <product> is added to the cart")
-    public void aProductIsAddedToCart(@Named("product") String product) {
+    public void productIsAddedToCart(@Named("product") String product) {
     }
 
 }

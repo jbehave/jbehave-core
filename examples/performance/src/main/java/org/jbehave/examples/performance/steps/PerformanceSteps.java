@@ -18,13 +18,13 @@ public class PerformanceSteps {
     
     @When("a scenario is generated to $path with a tabular argument of $tabularLines lines and an examples table of"
             + " $examplesLines lines")
-    public void aScenarioWithVeryLongTables(String path, int tabularLines, int examplesLines) {
+    public void scenarioWithVeryLongTables(String path, int tabularLines, int examplesLines) {
         StringBuilder builder = new StringBuilder();        
         builder.append("Scenario: A scenario with long tables\n");
         builder.append("Given a step with a long tabular argument:\n")  
-               .append(aTableWith(tabularLines));        
+               .append(tableWith(tabularLines));        
         builder.append("Examples:\n")       
-               .append(aTableWith(examplesLines));
+               .append(tableWith(examplesLines));
         try {
             FileWriter writer = new FileWriter(new File(path));
             writer.write(builder.toString());
@@ -34,7 +34,7 @@ public class PerformanceSteps {
         }
     }
 
-    private String aTableWith(int numberOfLines) {
+    private String tableWith(int numberOfLines) {
         StringBuilder builder = new StringBuilder();        
         builder.append("|h0|h1|h2|h3|h4|h5|h6|h7|h8|h9|\n");
         for (int i = 0; i < numberOfLines; i++) {

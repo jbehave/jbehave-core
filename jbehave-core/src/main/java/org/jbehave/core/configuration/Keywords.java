@@ -313,6 +313,7 @@ public class Keywords {
         return asA;
     }
 
+    @SuppressWarnings("checkstyle:MethodName")
     public String iWantTo() {
         return iWantTo;
     }

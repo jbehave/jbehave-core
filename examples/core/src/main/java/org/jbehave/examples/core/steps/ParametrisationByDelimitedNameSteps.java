@@ -28,7 +28,7 @@ public class ParametrisationByDelimitedNameSteps {
     }
 
     @Given("$customer has a cart")
-    public void aCustomerHasACart(String customer) {
+    public void customerHasACart(String customer) {
         DataWrapper currentData = getCurrentData();
         assertThat(currentData.user, notNullValue());
         assertThat(customer, equalTo(currentData.user));
@@ -43,7 +43,7 @@ public class ParametrisationByDelimitedNameSteps {
     }
 
     @When("a $product is added to the cart")
-    public void aProductIsAddedToCart(String product) {
+    public void productIsAddedToCart(String product) {
         Set<String> products = getCurrentData().products;
         assertThat(products, notNullValue());
         products.add(product);

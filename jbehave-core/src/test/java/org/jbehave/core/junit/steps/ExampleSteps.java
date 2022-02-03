@@ -84,7 +84,7 @@ public class ExampleSteps {
         "Given a variable x with value 1",
         "When I multiply x by 5"
     })
-    public void aComplexSituation() {
+    public void complexSituation() {
         // This is complex case with single method representing Composite step and Given step at the same time
     }
 

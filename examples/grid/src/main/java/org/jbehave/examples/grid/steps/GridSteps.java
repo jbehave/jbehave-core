@@ -24,7 +24,7 @@ public class GridSteps {
     }
     
     @When("I toggle the cell at ($column, $row)")
-    public void iToggleTheCellAt(int column, int row) {
+    public void toggleTheCellAt(int column, int row) {
         game.toggleCellAt(column, row);
     }
     
