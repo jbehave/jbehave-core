@@ -885,7 +885,7 @@ public class PerformableTree {
         SUCCESSFUL, FAILED, PENDING, NOT_PERFORMED, EXCLUDED;
     }
 
-    public static abstract class PerformableEntity implements Performable {
+    public abstract static class PerformableEntity implements Performable {
 
         private PerformableGivenStories givenStories;
         private final Map<Stage, Map<ExecutionType, PerformableSteps>> stageSteps;
