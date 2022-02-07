@@ -314,9 +314,7 @@ public class StoryReporterBuilder {
             delegates.put(format, reporterFor(storyPath, format));
         }
 
-        DelegatingStoryReporter delegate = new DelegatingStoryReporter(
-                delegates.values());
-        return new ConcurrentStoryReporter(new NullStoryReporter(), delegate,
+        return new ConcurrentStoryReporter(new NullStoryReporter(), new ArrayList<>(delegates.values()),
                 multiThreading());
     }
 
