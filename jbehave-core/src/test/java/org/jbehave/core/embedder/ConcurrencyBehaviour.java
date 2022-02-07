@@ -12,10 +12,15 @@ import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.JSON;
 import static org.jbehave.core.reporters.Format.XML;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.withSettings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -35,14 +40,18 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.DelegatingStoryReporter;
+import org.jbehave.core.reporters.FilePrintStreamFactory;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.ThreadSafeReporter;
 import org.jbehave.core.reporters.TxtOutput;
 import org.jbehave.core.reporters.XmlOutput;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 class ConcurrencyBehaviour {
 
@@ -70,6 +79,24 @@ class ConcurrencyBehaviour {
         assertThat(textOutput, equalTo("BeforeStories\n\nAfterStories\n\n"));
     }
 
+    @Test
+    void shouldFireThreadSafeReportersImmediately() {
+        Embedder embedder = new Embedder();
+        embedder.embedderControls().useStoryTimeouts("4");
+        embedder.embedderControls().useThreads(2);
+        embedder.configuration().useStoryLoader(new XmlFormat.MyStoryLoader());
+        StoryReporter threadSafe = mock(StoryReporter.class, withSettings().extraInterfaces(ThreadSafeReporter.class));
+        StoryReporter notThreadSafe = mock(StoryReporter.class);
+        embedder.configuration().storyReporterBuilder().withFormats(new TestFormat("threadSafe", threadSafe),
+                new TestFormat("notThreadSafe", notThreadSafe));
+        embedder.runStoriesAsPaths(Arrays.asList("my story"));
+        InOrder ordered = Mockito.inOrder(threadSafe, notThreadSafe);
+        ordered.verify(threadSafe).beforeStory(any(), anyBoolean());
+        ordered.verify(threadSafe).afterStory(anyBoolean());
+        ordered.verify(notThreadSafe).beforeStory(any(), anyBoolean());
+        ordered.verify(notThreadSafe).afterStory(anyBoolean());
+    }
+    
     @Test
     void shouldAllowStoriesToBeCancelled() {
         Embedder embedder = new Embedder();
@@ -349,6 +376,21 @@ class ConcurrencyBehaviour {
             public String loadResourceAsText(String resourcePath) {
                 return null;
             }
+        }
+    }
+
+    private static final class TestFormat extends Format {
+        private final StoryReporter testReporter;
+
+        public TestFormat(String name, StoryReporter storyReporter) {
+            super(name);
+            this.testReporter = storyReporter;
+        }
+
+        @Override
+        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+                StoryReporterBuilder storyReporterBuilder) {
+            return testReporter;
         }
     }
 }

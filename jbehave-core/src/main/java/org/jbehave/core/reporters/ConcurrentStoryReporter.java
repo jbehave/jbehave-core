@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -115,13 +116,21 @@ public class ConcurrentStoryReporter implements StoryReporter {
 
     private final StoryReporter crossReferencing;
     private final StoryReporter delegate;
+    private final StoryReporter threadSafeDelegate;
     private final boolean multiThreading;
     private final List<DelayedMethod> delayedMethods;
     private boolean invoked = false;
 
-    public ConcurrentStoryReporter(StoryReporter crossReferencing, StoryReporter delegate, boolean multiThreading) {
+    public ConcurrentStoryReporter(StoryReporter crossReferencing, List<StoryReporter> delegates,
+            boolean multiThreading) {
         this.crossReferencing = crossReferencing;
-        this.delegate = delegate;
+        List<StoryReporter> reporters = new ArrayList<>(delegates);
+        List<StoryReporter> threadSafeDelegates = reporters.stream()
+                                                           .filter(ThreadSafeReporter.class::isInstance)
+                                                           .collect(Collectors.toList());
+        this.threadSafeDelegate = new DelegatingStoryReporter(threadSafeDelegates);
+        reporters.removeAll(threadSafeDelegates);
+        this.delegate = new DelegatingStoryReporter(reporters);
         this.multiThreading = multiThreading;
         this.delayedMethods = multiThreading ? Collections.synchronizedList(new ArrayList<DelayedMethod>()) : null;
     }
@@ -319,6 +328,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private void perform(Consumer<StoryReporter> crossReferencingInvoker, Method delayedMethod,
             Object... delayedMethodArgs) {
         crossReferencingInvoker.accept(crossReferencing);
+        crossReferencingInvoker.accept(threadSafeDelegate);
         if (multiThreading) {
             delayedMethods.add(new DelayedMethod(delayedMethod, delayedMethodArgs));
         } else {
