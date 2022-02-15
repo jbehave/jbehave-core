@@ -28,7 +28,9 @@ import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
+import org.jbehave.core.parsers.AliasParser;
 import org.jbehave.core.parsers.CompositeParser;
+import org.jbehave.core.parsers.JsonAliasParser;
 import org.jbehave.core.parsers.RegexCompositeParser;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
@@ -97,6 +99,11 @@ public abstract class Configuration {
      * Loads story content from classpath
      */
     protected StoryLoader storyLoader;
+
+    /**
+     * Parse aliases from resources
+     */
+    protected AliasParser aliasParser;
 
     /**
      * Resolves story paths from class names using underscored camel case with
@@ -202,6 +209,11 @@ public abstract class Configuration {
     protected Set<String> compositePaths;
 
     /**
+     * Paths to resources containing ailas definitions
+     */
+    protected Set<String> aliasPaths;
+
+    /**
      * The examples table factory
      */
     protected ExamplesTableFactory examplesTableFactory;
@@ -256,6 +268,13 @@ public abstract class Configuration {
             storyLoader = new LoadFromClasspath();
         }
         return storyLoader;
+    }
+
+    public AliasParser aliasParser() {
+        if (aliasParser == null) {
+            aliasParser = new JsonAliasParser(keywords());
+        }
+        return aliasParser;
     }
 
     public Comparator<Story> storyExecutionComparator() {
@@ -411,6 +430,13 @@ public abstract class Configuration {
         return compositePaths;
     }
 
+    public Set<String> aliasPaths() {
+        if (aliasPaths == null) {
+            aliasPaths = Collections.emptySet();
+        }
+        return aliasPaths;
+    }
+
     public Configuration useKeywords(Keywords keywords) {
         this.keywords = keywords;
         return this;
@@ -448,6 +474,11 @@ public abstract class Configuration {
 
     public Configuration useStoryLoader(StoryLoader storyLoader) {
         this.storyLoader = storyLoader;
+        return this;
+    }
+
+    public Configuration useAliasParser(AliasParser aliasParser) {
+        this.aliasParser = aliasParser;
         return this;
     }
 
@@ -533,6 +564,11 @@ public abstract class Configuration {
 
     public Configuration useCompositePaths(Set<String> compositePaths) {
         this.compositePaths = compositePaths;
+        return this;
+    }
+
+    public Configuration useAliasPaths(Set<String> aliasPaths) {
+        this.aliasPaths = aliasPaths;
         return this;
     }
 

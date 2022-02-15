@@ -1,0 +1,53 @@
+[
+  {
+    "name": "Given a given",
+    "aliases": [
+      {
+        "name": "Given a given alias from resource 1"
+      },
+      {
+        "name": "Given a given alias from resource 2"
+      }
+    ]
+  },
+  {
+    "name": "When a when",
+    "aliases": [
+      {
+        "name": "When a when alias from resource"
+      }
+    ]
+  },
+  {
+    "name": "Then a then",
+    "aliases": [
+      {
+        "name": "Then a then alias from resource"
+      }
+    ]
+  },
+  {
+    "name": "Given some given",
+    "aliases": [
+      {
+        "name": "Given some given alias from resource 1"
+      }
+    ]
+  },
+  {
+    "name": "When some then",
+    "aliases": [
+      {
+        "name": "When some when alias from resource"
+      }
+    ]
+  },
+  {
+    "name": "Then some then",
+    "aliases": [
+      {
+        "name": "Then some then alias from resource"
+      }
+    ]
+  }
+]

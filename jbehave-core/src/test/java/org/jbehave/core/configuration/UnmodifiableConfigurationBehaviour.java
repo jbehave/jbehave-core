@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Comparator;
+import java.util.Set;
 
 import com.thoughtworks.paranamer.Paranamer;
 
@@ -16,6 +17,7 @@ import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.parsers.AliasParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
@@ -53,6 +55,8 @@ class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.viewGenerator(), is(delegate.viewGenerator()));
         assertThat(unmodifiable.examplesTableFactory(), is(delegate.examplesTableFactory()));
         assertThat(unmodifiable.storyExecutionComparator(), is(delegate.storyExecutionComparator()));
+        assertThat(unmodifiable.aliasParser(), is(delegate.aliasParser()));
+        assertThat(unmodifiable.aliasPaths(), is(delegate.aliasPaths()));
     }
 
     @Test
@@ -80,6 +84,8 @@ class UnmodifiableConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useStoryPathResolver", StoryPathResolver.class);
         assertThatNotAllowed(unmodifiable, "useExamplesTableFactory", ExamplesTableFactory.class);
         assertThatNotAllowed(unmodifiable, "useStoryExecutionComparator", Comparator.class);
+        assertThatNotAllowed(unmodifiable, "useAliasParser", AliasParser.class);
+        assertThatNotAllowed(unmodifiable, "useAliasPaths", Set.class);
     }
 
     private void assertThatNotAllowed(Configuration unmodifiable, String methodName, Class<?>... types)

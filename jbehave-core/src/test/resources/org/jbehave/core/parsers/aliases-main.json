@@ -1,0 +1,21 @@
+[
+  {
+    "name": "When I write hello world in JVM language",
+    "aliases": [
+      {
+        "name": "When I write hello world in Groovy"
+      },
+      {
+        "name": "When I write hello world in Java"
+      }
+    ]
+  },
+  {
+    "name": "Given java compiler",
+    "aliases": [
+      {
+        "name": "Given javac"
+      }
+    ]
+  }
+]

@@ -1,6 +1,7 @@
 package org.jbehave.core.configuration;
 
 import java.util.Comparator;
+import java.util.Set;
 
 import com.thoughtworks.paranamer.Paranamer;
 
@@ -13,6 +14,7 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.parsers.AliasParser;
 import org.jbehave.core.parsers.CompositeParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
@@ -44,6 +46,16 @@ public class UnmodifiableConfiguration extends Configuration {
     @Override
     public StoryParser storyParser() {
         return delegate.storyParser();
+    }
+
+    @Override
+    public AliasParser aliasParser() {
+        return delegate.aliasParser();
+    }
+
+    @Override
+    public Set<String> aliasPaths() {
+        return delegate.aliasPaths();
     }
 
     @Override
@@ -172,6 +184,16 @@ public class UnmodifiableConfiguration extends Configuration {
 
     @Override
     public Configuration useStoryParser(StoryParser storyParser) {
+        throw notAllowed();
+    }
+
+    @Override
+    public Configuration useAliasParser(AliasParser storyParser) {
+        throw notAllowed();
+    }
+
+    @Override
+    public Configuration useAliasPaths(Set<String> aliasPaths) {
         throw notAllowed();
     }
 
