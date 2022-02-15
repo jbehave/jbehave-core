@@ -1,0 +1,21 @@
+[
+  {
+    "name": "When I write hello world in JVM language",
+    "aliases": [
+      {
+        "name": "When I write hello world in Scala"
+      },
+      {
+        "name": "When I write hello world in Java"
+      }
+    ]
+  },
+  {
+    "name": "Given HotStop JVM",
+    "aliases": [
+      {
+        "name": "Given system with HotStop JVM"
+      }
+    ]
+  }
+]

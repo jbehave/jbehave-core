@@ -47,21 +47,27 @@ class StepsBehaviour {
     private final Map<String, String> tableRow = new HashMap<>();
 
     @Test
-    void shouldListCandidateStepsFromAnnotatedMethodsWithSingleAlias() {
+    void shouldListCandidateStepsFromAnnotatedMethodsWithSingleAliasAndResources() {
         SingleAliasSteps steps = new SingleAliasSteps();
+        steps.configuration().useAliasPaths(Collections.singleton("org/jbehave/core/steps/aliases.json"));
+
         List<StepCandidate> candidates = steps.listCandidates();
-        assertThat(candidates.size(), equalTo(6));
+        assertThat(candidates.size(), equalTo(10));
 
         performMatchedStep(candidates, "GIVEN a given", "Given a given");
         performMatchedStep(candidates, "GIVEN a given alias", "Given a given alias");
+        performMatchedStep(candidates, "GIVEN a given alias from resource 1", "Given a given alias from resource 1");
+        performMatchedStep(candidates, "GIVEN a given alias from resource 2", "Given a given alias from resource 2");
         performMatchedStep(candidates, "WHEN a when", "When a when");
         performMatchedStep(candidates, "WHEN a when alias", "When a when alias");
+        performMatchedStep(candidates, "WHEN a when alias from resource", "When a when alias from resource");
         performMatchedStep(candidates, "THEN a then", "Then a then");
         performMatchedStep(candidates, "THEN a then alias", "Then a then alias");
+        performMatchedStep(candidates, "THEN a then alias from resource", "Then a then alias from resource");
         
-        assertThat(steps.givens, equalTo(2));
-        assertThat(steps.whens, equalTo(2));
-        assertThat(steps.thens, equalTo(2));
+        assertThat(steps.givens, equalTo(4));
+        assertThat(steps.whens, equalTo(3));
+        assertThat(steps.thens, equalTo(3));
     }
 
     @Test

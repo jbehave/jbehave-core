@@ -1,0 +1,10 @@
+[
+  {
+    "name": "When I write hello world in JVM language",
+    "aliases": [
+      {
+        "name": "Then I write hello world in Java"
+      }
+    ]
+  }
+]

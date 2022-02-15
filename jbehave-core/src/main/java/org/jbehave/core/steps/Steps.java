@@ -1,5 +1,9 @@
 package org.jbehave.core.steps;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
 import static org.jbehave.core.annotations.AfterScenario.Outcome.FAILURE;
 import static org.jbehave.core.annotations.AfterScenario.Outcome.SUCCESS;
@@ -10,6 +14,8 @@ import static org.jbehave.core.steps.StepType.WHEN;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,6 +43,9 @@ import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.io.ResourceLoader;
+import org.jbehave.core.model.AliasVariant;
+import org.jbehave.core.parsers.AliasParser;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 
@@ -165,6 +174,9 @@ public class Steps extends AbstractCandidateSteps {
 
     @Override
     public List<StepCandidate> listCandidates() {
+
+        Map<StepType, List<org.jbehave.core.model.Alias>> aliases = findAliases();
+
         List<StepCandidate> candidates = new ArrayList<>();
         for (Method method : allMethods()) {
             if (method.isAnnotationPresent(Given.class)) {
@@ -173,6 +185,8 @@ public class Steps extends AbstractCandidateSteps {
                 int priority = annotation.priority();
                 addCandidatesFromVariants(candidates, method, GIVEN, value, priority);
                 addCandidatesFromAliases(candidates, method, GIVEN, priority);
+                findVariants(GIVEN, value, aliases).forEach(variant -> addCandidatesFromVariants(candidates, method,
+                        GIVEN, variant.getValue(), priority));
             }
             if (method.isAnnotationPresent(When.class)) {
                 When annotation = method.getAnnotation(When.class);
@@ -180,6 +194,8 @@ public class Steps extends AbstractCandidateSteps {
                 int priority = annotation.priority();
                 addCandidatesFromVariants(candidates, method, WHEN, value, priority);
                 addCandidatesFromAliases(candidates, method, WHEN, priority);
+                findVariants(WHEN, value, aliases).forEach(variant -> addCandidatesFromVariants(candidates, method,
+                        WHEN, variant.getValue(), priority));
             }
             if (method.isAnnotationPresent(Then.class)) {
                 Then annotation = method.getAnnotation(Then.class);
@@ -187,9 +203,33 @@ public class Steps extends AbstractCandidateSteps {
                 int priority = annotation.priority();
                 addCandidatesFromVariants(candidates, method, THEN, value, priority);
                 addCandidatesFromAliases(candidates, method, THEN, priority);
+                findVariants(THEN, value, aliases).forEach(variant -> addCandidatesFromVariants(candidates, method,
+                        THEN, variant.getValue(), priority));
             }
         }
+
         return candidates;
+    }
+
+    private static Collection<AliasVariant> findVariants(StepType stepType, String stepValue,
+            Map<StepType, List<org.jbehave.core.model.Alias>> aliases) {
+        return aliases.getOrDefault(stepType, Collections.emptyList())
+                      .stream()
+                      .filter(alias -> stepValue.equals(alias.getStepIdentifier()))
+                      .map(org.jbehave.core.model.Alias::getVariants)
+                      .flatMap(List::stream)
+                      .collect(toList());
+    }
+
+    private Map<StepType, List<org.jbehave.core.model.Alias>> findAliases() {
+        ResourceLoader resourceLoader = configuration().storyLoader();
+        AliasParser aliasParser = configuration().aliasParser();
+
+        Collection<org.jbehave.core.model.Alias> aliases = configuration().aliasPaths().stream()
+                                           .map(resourceLoader::loadResourceAsText)
+                                           .collect(collectingAndThen(toSet(), aliasParser::parse));
+
+        return aliases.stream().collect(groupingBy(org.jbehave.core.model.Alias::getType, toList()));
     }
 
     private void addCandidatesFromVariants(List<StepCandidate> candidates, Method method, StepType stepType,

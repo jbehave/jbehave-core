@@ -128,7 +128,8 @@ public class CoreStories extends JUnitStories {
                 .useParameterConverters(parameterConverters)
                 .useParameterControls(parameterControls)
                 .useTableTransformers(tableTransformers)
-                .useCompositePaths(new HashSet<>(findPaths("**/*.steps", null)));
+                .useCompositePaths(new HashSet<>(findPaths("**/*.steps", null)))
+                .useAliasPaths(new HashSet<>(findPaths("alias/*.json", null)));
     }
 
     @Override

@@ -1,0 +1,21 @@
+[
+  {
+    "name": "Given a plan with calendar date of <date>",
+    "aliases" : [
+      {
+        "name": "Given a plan with Google calendar date of <date>"
+      }
+    ]
+  },
+  {
+    "name": "Then the claimant should receive an amount of <amount>",
+    "aliases" : [
+      {
+        "name": "Then the complainant should receive an amount of <amount>"
+      },
+      {
+        "name": "Then the petitioner should receive an amount of <amount>"
+      }
+    ]
+  }
+]

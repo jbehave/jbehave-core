@@ -73,6 +73,29 @@ annotation:</p>
     }
 </pre>
 
+<p>Along with code approach with <a href="javadoc/core/org/jbehave/core/annotations/Alias.html">Alias</a> and
+<a href="javadoc/core/org/jbehave/core/annotations/Aliases.html">Aliases</a> it's also possible to load aliases from external resources
+by specifing resource paths using <a href="javadoc/core/org/jbehave/core/configuration/Configuration.html#useAliasPaths(java.util.Set)">useAliasPaths(Set)</a> method
+and alias parser using <a href="javadoc/core/org/jbehave/core/configuration/Configuration.html#useAliasParser(org.jbehave.core.parsers.AliasParser)">useAliasParser(AliasParser)</a>
+method. By default the <a href="javadoc/core/org/jbehave/core/parsers/JsonAliasParser.html">JsonAliasParser</a> is used.
+</p>
+
+<pre class="brush: json">
+    [
+        {
+            "name": "When the item price is $price",
+            "aliases":
+            [
+                {
+                    "name": "When the item price becomes $price"
+                },
+                {
+                    "name": "When the item price equals to $price"
+                }
+            ]
+        }
+    ]
+</pre>
 
 <span class="followup">If the variations defined in the aliases are small or localised in word alternatives, it may be simpler and more compact to use <a
     href="pattern-variants.html">pattern variants</a>.</span>
