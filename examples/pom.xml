@@ -12,7 +12,7 @@
 
   <properties>
     <jbehave.version>${project.version}</jbehave.version>
-    <jbehave.site.version>3.4</jbehave.site.version>
+    <jbehave.site.version>3.4.1</jbehave.site.version>
   </properties>
 
   <modules>
