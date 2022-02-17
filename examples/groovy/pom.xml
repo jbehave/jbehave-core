@@ -75,10 +75,9 @@
         <dependencies>
           <!-- Only needed if groovy-based MetaFilters are used -->
           <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>3.0.9</version>
-            <type>pom</type>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>4.0.0</version>
           </dependency>
         </dependencies>
       </plugin>

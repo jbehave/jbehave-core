@@ -20,9 +20,7 @@ import com.google.gson.stream.JsonReader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
-
-import groovy.util.Node;
-import groovy.xml.XmlParser;
+import org.xmlunit.matchers.CompareMatcher;
 
 public abstract class AbstractOutputBehaviour {
 
@@ -67,13 +65,10 @@ public abstract class AbstractOutputBehaviour {
         assertThat(expectedObject, is(actualObject));
     }
 
-    protected void assertXml(String expectedXmlFileName, String actualXml)
-            throws IOException, ParserConfigurationException, SAXException {
+    protected void assertXml(String expectedXmlFileName, File actualXmlFile) throws IOException {
         String expected = getResourceAsString(expectedXmlFileName);
-        XmlParser parser = new XmlParser(false, false);
-        Node expectedObject = parser.parseText(actualXml);
-        Node actualObject = parser.parseText(expected);
-        assertThat(expectedObject.toString(), is(actualObject.toString()));
+        String actual = fileContent(actualXmlFile);
+        assertThat(actual, CompareMatcher.isIdenticalTo(expected));
     }
 
     protected File newFile(String path) {

@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -55,7 +54,6 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
 
 class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
@@ -89,7 +87,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToTxtUsingCustomPatterns() throws IOException, ParserConfigurationException, SAXException {
+    void shouldOutputStoryToTxtUsingCustomPatterns() throws IOException {
         // Given
         String name = "stream-story-custom-patterns.txt";
         File file = newFile("target/" + name);
@@ -107,7 +105,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToHtml() throws IOException, ParserConfigurationException, SAXException {
+    void shouldOutputStoryToHtml() throws IOException {
         // Given
         String name = "stream-story.html";
         File file = newFile("target/" + name);
@@ -117,7 +115,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        assertXml(name, fileContent(file));
+        assertXml(name, file);
     }
 
     @Test
@@ -136,7 +134,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToHtmlUsingCustomPatterns() throws IOException, ParserConfigurationException, SAXException {
+    void shouldOutputStoryToHtmlUsingCustomPatterns() throws IOException {
         // Given
         String name = "stream-story-custom-patterns.html";
         File file = newFile("target/" + name);
@@ -150,11 +148,11 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        assertXml(name, fileContent(file));
+        assertXml(name, file);
     }
 
     @Test
-    void shouldOutputStoryToXml() throws IOException, SAXException, ParserConfigurationException {
+    void shouldOutputStoryToXml() throws IOException {
         // Given
         String name = "stream-story.xml";
         File file = newFile("target/" + name);
@@ -164,7 +162,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        assertXml(name, fileContent(file));
+        assertXml(name, file);
     }
 
     @Test
@@ -183,7 +181,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    void shouldOutputStoryToXmlUsingCustomPatterns() throws IOException, ParserConfigurationException, SAXException {
+    void shouldOutputStoryToXmlUsingCustomPatterns() throws IOException {
         // Given
         String name = "stream-story-custom-patterns.xml";
         File file = newFile("target/" + name);
@@ -197,7 +195,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        assertXml(name, fileContent(file));
+        assertXml(name, file);
     }
 
     @Test
