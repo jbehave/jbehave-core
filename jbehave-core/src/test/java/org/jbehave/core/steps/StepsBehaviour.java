@@ -2,19 +2,21 @@ package org.jbehave.core.steps;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.steps.JBehaveMatchers.step;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AfterScenario;
@@ -418,25 +420,20 @@ class StepsBehaviour {
     void shouldListBeforeStoriesAccordingToTheirOrder() {
         OrderedSteps steps = new OrderedSteps();
         List<BeforeOrAfterStep> beforeStories = steps.listBeforeStories();
-        assertThat(beforeStories.size(), equalTo(3));
-        assertStepName(beforeStories.get(0), "beforeStoriesOrderTwo");
-        assertStepName(beforeStories.get(1), "beforeStoriesOrderOne");
-        assertStepName(beforeStories.get(2), "beforeStoriesOrderDefault");
+        assertSteps(beforeStories, "beforeStoriesOrderTwo", "beforeStoriesOrderOne", "beforeStoriesOrderDefault");
     }
 
     @Test
     void shouldListAfterStoriesAccordingToTheirOrder() {
         OrderedSteps steps = new OrderedSteps();
         List<BeforeOrAfterStep> afterStories = steps.listAfterStories();
-        assertThat(afterStories.size(), equalTo(3));
-        assertStepName(afterStories.get(0), "afterStoriesOrderDefault");
-        assertStepName(afterStories.get(1), "afterStoriesOrderOne");
-        assertStepName(afterStories.get(2), "afterStoriesOrderTwo");
+        assertSteps(afterStories, "afterStoriesOrderDefault", "afterStoriesOrderOne", "afterStoriesOrderTwo");
     }
 
-    private void assertStepName(BeforeOrAfterStep step, String name) {
-        String method = step.getMethod().getName();
-        assertThat(method, equalTo(name));
+    private void assertSteps(List<BeforeOrAfterStep> steps,  String... expectedMethodsNames) {
+        List<String> stepMethodsNames = steps.stream().map(BeforeOrAfterStep::getMethod).map(Method::getName).collect(
+                Collectors.toList());
+        assertThat(stepMethodsNames, containsInAnyOrder(expectedMethodsNames));
     }
 
     static class MultipleAliasesSteps extends Steps {
