@@ -380,31 +380,44 @@ public class PerformableTree {
     }
 
     public interface State {
-        
-        State run(Step step, List<StepResult> results, StoryReporter reporter);
 
-        UUIDExceptionWrapper getFailure();
+        State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter);
+
+        RuntimeException getFailure();
     }
 
     private static final class FineSoFar implements State {
 
         @Override
-        public State run(Step step, List<StepResult> results, StoryReporter reporter) {
-            StepResult result = step.perform(reporter, getFailure());
-            results.add(result);
+        public State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter) {
+            State state;
+            StepResult result;
+            int indexOfResult;
+            try {
+                result = step.perform(reporter, getFailure());
 
-            UUIDExceptionWrapper stepFailure = result.getFailure();
-            State state = stepFailure == null ? this : new SomethingHappened(stepFailure);
+                UUIDExceptionWrapper stepFailure = result.getFailure();
+                state = stepFailure == null ? this : new SomethingHappened(stepFailure);
+            } catch (IgnoringStepsFailure e) {
+                result = AbstractStepResult.ignorable(step.asString(keywords));
+                state = new Ignoring(e);
+            }
+            indexOfResult = results.size();
+            results.add(result);
 
             List<Step> composedSteps = step.getComposedSteps();
             if (!composedSteps.isEmpty()) {
                 reporter.beforeComposedSteps();
                 for (Step composedStep : composedSteps) {
-                    state = state.run(composedStep, results, reporter);
+                    state = state.run(composedStep, results, keywords, reporter);
                 }
                 reporter.afterComposedSteps();
             }
 
+            if (state instanceof Ignoring) {
+                result = AbstractStepResult.ignorable(step.asString(keywords));
+                results.set(indexOfResult, result);
+            }
             result.describeTo(reporter);
             return state;
         }
@@ -424,7 +437,7 @@ public class PerformableTree {
         }
 
         @Override
-        public State run(Step step, List<StepResult> results, StoryReporter reporter) {
+        public State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter) {
             StepResult result = step.doNotPerform(reporter, getFailure());
             results.add(result);
             result.describeTo(reporter);
@@ -433,6 +446,30 @@ public class PerformableTree {
 
         @Override
         public UUIDExceptionWrapper getFailure() {
+            return failure;
+        }
+    }
+
+    private static final class Ignoring implements State {
+
+        private final IgnoringStepsFailure failure;
+
+        private Ignoring(IgnoringStepsFailure failure) {
+            this.failure = failure;
+        }
+
+        @Override
+        public State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter) {
+            String stepAsString = step.asString(keywords);
+            reporter.beforeStep(new org.jbehave.core.model.Step(StepExecutionType.IGNORABLE, stepAsString));
+            StepResult result = AbstractStepResult.ignorable(stepAsString);
+            results.add(result);
+            result.describeTo(reporter);
+            return this;
+        }
+
+        @Override
+        public IgnoringStepsFailure getFailure() {
             return failure;
         }
     }
@@ -1377,28 +1414,19 @@ public class PerformableTree {
             }
             Keywords keywords = context.configuration().keywords();
             State state = context.state();
+            State originalState = state;
             StoryReporter reporter = context.reporter();
             results = new ArrayList<>();
-            boolean ignoring = false;
             for (Step step : steps) {
                 try {
                     context.interruptIfCancelled();
-                    if (ignoring) {
-                        String stepAsString = step.asString(keywords);
-                        reporter.beforeStep(new org.jbehave.core.model.Step(StepExecutionType.IGNORABLE, stepAsString));
-                        reporter.ignorable(stepAsString);
-                    } else {
-                        state = state.run(step, results, reporter);
-                    }
-                } catch (IgnoringStepsFailure e) {
-                    reporter.ignorable(step.asString(keywords));
-                    ignoring = true;
+                    state = state.run(step, results, keywords, reporter);
                 } catch (RestartingScenarioFailure e) {
                     reporter.restarted(step.asString(keywords), e);
                     throw e;
                 }
             }
-            context.stateIs(state);
+            context.stateIs(state instanceof Ignoring ? originalState : state);
             context.pendingSteps(pendingSteps);
             generatePendingStepMethods(context, pendingSteps);
         }

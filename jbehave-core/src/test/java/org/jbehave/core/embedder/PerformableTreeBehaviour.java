@@ -29,10 +29,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
@@ -373,6 +375,29 @@ class PerformableTreeBehaviour {
     @Test
     void shouldReportIgnorableSteps() {
         String step1 = "When I ignore";
+        testIgnorableSteps(step1, (ordered, storyReporter) -> {
+            ordered.verify(storyReporter).beforeStep(argThat(step -> step1.equals(step.getStepAsString())
+                    && StepExecutionType.EXECUTABLE == step.getExecutionType()));
+            ordered.verify(storyReporter).ignorable(step1);
+        });
+    }
+
+    @Test
+    void shouldReportIgnorableStepsFromCompositeStep() {
+        String step1 = "When I ignore from composed step";
+        testIgnorableSteps(step1, (ordered, storyReporter) -> {
+            ordered.verify(storyReporter).beforeStep(argThat(step -> step1.equals(step.getStepAsString())
+                    && StepExecutionType.EXECUTABLE == step.getExecutionType()));
+            ordered.verify(storyReporter).beforeComposedSteps();
+            ordered.verify(storyReporter).beforeStep(argThat(step -> "When I ignore".equals(step.getStepAsString())
+                    && StepExecutionType.EXECUTABLE == step.getExecutionType()));
+            ordered.verify(storyReporter).ignorable("When I ignore");
+            ordered.verify(storyReporter).afterComposedSteps();
+            ordered.verify(storyReporter).ignorable(step1);
+        });
+    }
+
+    private void testIgnorableSteps(String step1, BiConsumer<InOrder, StoryReporter> ignorableStepVerifier) {
         String step2 = "When I fail";
         Scenario scenario = new Scenario("scenario with ignorable", Meta.EMPTY, null, null, asList(step1, step2));
         Narrative narrative = mock(Narrative.class);
@@ -407,9 +432,7 @@ class PerformableTreeBehaviour {
         ordered.verify(storyReporter).beforeScenarioSteps(Stage.BEFORE, ExecutionType.USER);
         ordered.verify(storyReporter).afterScenarioSteps(Stage.BEFORE, ExecutionType.USER);
         ordered.verify(storyReporter).beforeScenarioSteps(null, null);
-        ordered.verify(storyReporter).beforeStep(argThat(step -> step1.equals(step.getStepAsString())
-                && StepExecutionType.EXECUTABLE == step.getExecutionType()));
-        ordered.verify(storyReporter).ignorable(step1);
+        ignorableStepVerifier.accept(ordered, storyReporter);
         ordered.verify(storyReporter).beforeStep(argThat(step -> step2.equals(step.getStepAsString())
                 && StepExecutionType.IGNORABLE == step.getExecutionType()));
         ordered.verify(storyReporter).ignorable(step2);
@@ -485,6 +508,11 @@ class PerformableTreeBehaviour {
         @When("I ignore")
         public void ignore() {
             throw new IgnoringStepsFailure("next steps in the scenario should be ignored");
+        }
+
+        @When("I ignore from composed step")
+        @Composite(steps = { "When I ignore" })
+        public void ignoreFromComposite() {
         }
     }
 }
