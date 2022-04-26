@@ -29,11 +29,12 @@ jobs:
           java-version: ${{ matrix.java }}
           cache: 'maven'
 
-      - name: Install
+      - name: Build
+        if: matrix.java == 8
         shell: bash
         run: ./mvnw install -s settings.xml -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode -e --quiet
 
       - name: Build
         if: matrix.java != 8
         shell: bash
-        run: ./mvnw install -s settings.xml -P examples --batch-mode -e
+        run: ./mvnw checkstyle:check install -s settings.xml -P examples --batch-mode -e
