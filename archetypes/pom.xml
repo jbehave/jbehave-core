@@ -13,7 +13,7 @@
 
   <properties>
     <jbehave.core.version>${project.version}</jbehave.core.version>
-    <jbehave.site.version>3.4.1</jbehave.site.version>
+    <jbehave.site.version>3.5</jbehave.site.version>
     <maven.archetype.version>3.2.1</maven.archetype.version>
   </properties>
 
