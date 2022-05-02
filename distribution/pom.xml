@@ -396,7 +396,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <property name="code-coverage.directory" value="${project.build.directory}/site/code-coverage"/>
                 <mkdir dir="${code-coverage.directory}"/>
                 <copy todir="${code-coverage.directory}" overwrite="true" failonerror="false">
@@ -408,7 +408,7 @@
                     <replacestring from="target/site/jacoco" to="/"/>
                   </filtermapper>
                 </copy>
-              </tasks>
+              </target>
             </configuration>
           </execution>
           <execution>
@@ -418,14 +418,14 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <property name="archetypes.directory" value="${project.build.directory}/archetypes"/>
                 <property name="local.archetype.catalog" value="${user.home}/.m2/archetype-catalog.xml"/>
                 <mkdir dir="${archetypes.directory}"/>
                 <copy todir="${archetypes.directory}" file="${user.home}/.m2/archetype-catalog.xml" overwrite="true"
                       failonerror="false" verbose="true">
                 </copy>
-              </tasks>
+              </target>
             </configuration>
           </execution>
         </executions>
