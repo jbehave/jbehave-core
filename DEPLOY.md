@@ -29,7 +29,7 @@ $ ../site/shapshot.sh jbehave <version>
 
 where:
 
-- version is the snapshot version, e.g. 5.0-SNAPSHOT
+- version is the snapshot version, e.g. 5.1-SNAPSHOT
   
 
 
