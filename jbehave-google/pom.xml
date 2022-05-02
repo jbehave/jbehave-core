@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>5.0-SNAPSHOT</version>
+    <version>5.0</version>
   </parent>
   <artifactId>jbehave-google</artifactId>
   <name>JBehave Google</name>
