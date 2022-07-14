@@ -45,6 +45,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableSet;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
@@ -312,7 +316,18 @@ public class ParameterConverters {
             new FunctionalParameterConverter<>(String.class, YearMonth.class, YearMonth::parse),
             new FunctionalParameterConverter<>(String.class, ZonedDateTime.class, ZonedDateTime::parse),
             new FunctionalParameterConverter<>(String.class, ZoneId.class, ZoneId::of),
-            new FunctionalParameterConverter<>(String.class, ZoneOffset.class, ZoneOffset::of)
+            new FunctionalParameterConverter<>(String.class, ZoneOffset.class, ZoneOffset::of),
+
+            // Converters for Optional types
+            new FunctionalParameterConverter<>(String.class, OptionalDouble.class,
+                    value -> OptionalDouble.of((double) this.convert(value, double.class))
+            ),
+            new FunctionalParameterConverter<>(String.class, OptionalInt.class,
+                    value -> OptionalInt.of((int) this.convert(value, int.class))
+            ),
+            new FunctionalParameterConverter<>(String.class, OptionalLong.class,
+                    value -> OptionalLong.of((long) this.convert(value, long.class))
+            )
         };
     }
 
@@ -349,6 +364,11 @@ public class ParameterConverters {
                     .collect(Collectors.toCollection(LinkedList::new));
             monitor.convertedValueOfType(value, type, converted, classes);
             return converted;
+        }
+
+        if (isAssignableFromRawType(Optional.class, type)) {
+            Type elementType = argumentType(type);
+            return Optional.of(convert(value, elementType));
         }
 
         if (isAssignableFromRawType(Collection.class, type)) {

@@ -8,9 +8,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -52,6 +55,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableSet;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -59,6 +66,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 
@@ -93,12 +101,15 @@ import org.jbehave.core.steps.ParameterConverters.StringListConverter;
 import org.jbehave.core.steps.SomeSteps.MyParameters;
 import org.jbehave.core.steps.SomeSteps.SomeEnum;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class ParameterConvertersBehaviour {
 
-    private static String NAN = new DecimalFormatSymbols().getNaN();
-    private static String POSITIVE_INFINITY = new DecimalFormatSymbols().getInfinity();
-    private static String NEGATIVE_INFINITY = "-" + POSITIVE_INFINITY;
+    private static final String NAN = new DecimalFormatSymbols().getNaN();
+    private static final String POSITIVE_INFINITY = new DecimalFormatSymbols().getInfinity();
+    private static final String NEGATIVE_INFINITY = "-" + POSITIVE_INFINITY;
 
     private static final String JSON_AS_STRING = "{\"string\":\"String1\",\"integer\":2,\"stringList\":"
             + "[\"String2\",\"String3\"],\"integerList\":[3,4]}";
@@ -133,7 +144,7 @@ class ParameterConvertersBehaviour {
                 }
             }
             if (!found) {
-                new AssertionError("Converter " + type + " should be in the list of default converters");
+                fail("Converter " + type + " should be in the list of default converters");
             }
         }
     }
@@ -141,8 +152,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertValuesToNumbersWithDefaultNumberFormat() {
         NumberConverter converter = new NumberConverter();
-        assertThatAllNumberTypesAreAccepted(converter);
-        assertThatAllNumbersAreConverted(converter, ParameterConverters.DEFAULT_NUMBER_FORMAT_LOCAL);
+        assertConverterForLocale(converter, ParameterConverters.DEFAULT_NUMBER_FORMAT_LOCAL);
     }
 
     @Test
@@ -152,15 +162,31 @@ class ParameterConvertersBehaviour {
         assertConverterForLocale(converter, locale);
     }
 
-    private void assertConverterForLocale(FromStringParameterConverter<Number> converter, Locale locale) {
-        assertThatAllNumberTypesAreAccepted(converter);
+    @Test
+    void shouldConvertValuesToNumbersWithFrenchNumberFormat() {
+        Locale locale = Locale.FRENCH;
+        FromStringParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         assertThatAllNumbersAreConverted(converter, locale);
-        assertThat(converter.convertValue("100,000", Integer.class), is((Number) 100000));
-        assertThat(converter.convertValue("100,000", Long.class), is((Number) 100000L));
-        assertThat(converter.convertValue("100,000.01", Float.class), is((Number) 100000.01f));
-        assertThat(converter.convertValue("100,000.01", Double.class), is((Number) 100000.01d));
-        assertThat(converter.convertValue("1,00,000.01", Double.class), is((Number) 100000.01d));
-        assertThat(converter.convertValue("1,000,000.01", BigDecimal.class), is((Number) new BigDecimal("1000000.01")));
+        assertThat(converter.convertValue("100000,01", Float.class), is(100000.01f));
+        assertThat(converter.convertValue("100000,01", Double.class), is(100000.01d));
+    }
+
+    @Test
+    void shouldConvertValuesToNumbersWithGermanNumberFormat() {
+        Locale locale = Locale.GERMAN;
+        FromStringParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
+        assertThatAllNumbersAreConverted(converter, locale);
+        assertThat(converter.convertValue("1.000.000,01", BigDecimal.class), is(new BigDecimal("1000000.01")));
+    }
+
+    private void assertConverterForLocale(FromStringParameterConverter<Number> converter, Locale locale) {
+        assertThatAllNumbersAreConverted(converter, locale);
+        assertThat(converter.convertValue("100,000", Integer.class), is(100000));
+        assertThat(converter.convertValue("100,000", Long.class), is(100000L));
+        assertThat(converter.convertValue("100,000.01", Float.class), is(100000.01f));
+        assertThat(converter.convertValue("100,000.01", Double.class), is(100000.01d));
+        assertThat(converter.convertValue("1,00,000.01", Double.class), is(100000.01d));
+        assertThat(converter.convertValue("1,000,000.01", BigDecimal.class), is(new BigDecimal("1000000.01")));
     }
 
     @Test
@@ -199,79 +225,60 @@ class ParameterConvertersBehaviour {
             try {
                 System.out.println(queue.take() + " completed.");
             } catch (InterruptedException e) {
-                new AssertionError(e.getMessage());
+                fail(e);
             }
         }
 
     }
 
-    @Test
-    void shouldConvertValuesToNumbersWithFrenchNumberFormat() {
-        Locale locale = Locale.FRENCH;
-        FromStringParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
-        assertThatAllNumberTypesAreAccepted(converter);
-        assertThatAllNumbersAreConverted(converter, locale);
-        assertThat(converter.convertValue("100000,01", Float.class), is((Number) 100000.01f));
-        assertThat(converter.convertValue("100000,01", Double.class), is((Number) 100000.01d));
-    }
-
-    @Test
-    void shouldConvertValuesToNumbersWithGermanNumberFormat() {
-        Locale locale = Locale.GERMAN;
-        FromStringParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
-        assertThatAllNumberTypesAreAccepted(converter);
-        assertThatAllNumbersAreConverted(converter, locale);
-        assertThat(converter.convertValue("1.000.000,01", BigDecimal.class), is((Number) new BigDecimal("1000000.01")));
-    }
-
-    private void assertThatAllNumberTypesAreAccepted(FromStringParameterConverter<Number> converter) {
-        Type[] numberTypes = {
-            Byte.class,
-            byte.class,
-            Short.class,
-            short.class,
-            Integer.class,
-            int.class,
-            Float.class,
-            float.class,
-            Long.class,
-            long.class,
-            Double.class,
-            double.class,
-            BigInteger.class,
-            BigDecimal.class,
-            AtomicInteger.class,
-            AtomicLong.class,
-            Number.class
-        };
-        assertThatTypesAreAccepted(converter, numberTypes);
-    }
-
     private void assertThatAllNumbersAreConverted(FromStringParameterConverter<Number> converter, Locale locale) {
+        assertThatTypesAreAccepted(converter,
+                Byte.class, byte.class,
+                Short.class, short.class,
+                Integer.class, int.class,
+                Float.class, float.class,
+                Long.class, long.class,
+                Double.class, double.class,
+                BigInteger.class,
+                BigDecimal.class,
+                AtomicInteger.class,
+                AtomicLong.class,
+                Number.class
+        );
+
         DecimalFormatSymbols format = new DecimalFormatSymbols(locale);
         char dot = format.getDecimalSeparator();
         char minus = format.getMinusSign();
-        assertThat(converter.convertValue("127", Byte.class), is((Number) Byte.MAX_VALUE));
-        assertThat(converter.convertValue(minus + "128", byte.class), is((Number) Byte.MIN_VALUE));
-        assertThat(converter.convertValue("32767", Short.class), is((Number) Short.MAX_VALUE));
-        assertThat(converter.convertValue(minus + "32768", short.class), is((Number) Short.MIN_VALUE));
-        assertThat(converter.convertValue("3", Integer.class), is((Number) 3));
-        assertThat(converter.convertValue("3", int.class), is((Number) 3));
-        assertThat(converter.convertValue("3" + dot + "0", Float.class), is((Number) 3.0f));
-        assertThat(converter.convertValue("3" + dot + "0", float.class), is((Number) 3.0f));
-        assertThat(converter.convertValue("3", Long.class), is((Number) 3L));
-        assertThat(converter.convertValue("3", long.class), is((Number) 3L));
-        assertThat(converter.convertValue("3" + dot + "0", Double.class), is((Number) 3.0d));
-        assertThat(converter.convertValue("3" + dot + "0", double.class), is((Number) 3.0d));
-        assertThat(converter.convertValue("3", BigInteger.class), is((Number) new BigInteger("3")));
-        assertThat(converter.convertValue("3" + dot + "0", BigDecimal.class), is((Number) new BigDecimal("3.0")));
-        assertThat(converter.convertValue("3" + dot + "00", BigDecimal.class), is((Number) new BigDecimal("3.00")));
-        assertThat(converter.convertValue("30000000", BigDecimal.class), is((Number) new BigDecimal(30000000)));
-        assertThat(converter.convertValue("3" + dot + "000", BigDecimal.class), is((Number) new BigDecimal("3.000")));
-        assertThat(converter.convertValue("-3", BigDecimal.class), is((Number) new BigDecimal("-3")));
-        assertThat(converter.convertValue("3", AtomicInteger.class).intValue(), is((Number) 3));
-        assertThat(converter.convertValue("3", AtomicLong.class).longValue(), is((Number) 3L));
-        assertThat(converter.convertValue("3", Number.class), is((Number) 3L));
+        ParameterConverters converters = new ParameterConverters();
+        converters.addConverters(converter);
+        assertAll(
+                () -> assertThat(converters.convert("127", Byte.class), is(Byte.MAX_VALUE)),
+                () -> assertThat(converters.convert(minus + "128", byte.class), is(Byte.MIN_VALUE)),
+                () -> assertThat(converters.convert("32767", Short.class), is(Short.MAX_VALUE)),
+                () -> assertThat(converters.convert(minus + "32768", short.class), is(Short.MIN_VALUE)),
+                () -> assertThat(converters.convert("3", Integer.class), is(3)),
+                () -> assertThat(converters.convert("3", int.class), is(3)),
+                () -> assertThat(converters.convert("3", OptionalInt.class), is(OptionalInt.of(3))),
+                () -> assertThat(converters.convert("3" + dot + "0", Float.class), is(3.0f)),
+                () -> assertThat(converters.convert("3" + dot + "0", float.class), is(3.0f)),
+                () -> assertThat(converters.convert("3", Long.class), is(3L)),
+                () -> assertThat(converters.convert("3", long.class), is(3L)),
+                () -> assertThat(converters.convert("3", OptionalLong.class), is(OptionalLong.of(3L))),
+                () -> assertThat(converters.convert("3" + dot + "0", Double.class), is(3.0d)),
+                () -> assertThat(converters.convert("3" + dot + "0", double.class), is(3.0d)),
+                () -> assertThat(converters.convert("3" + dot + "0", OptionalDouble.class),
+                        is(OptionalDouble.of(3.0d))),
+                () -> assertThat(converters.convert("3", BigInteger.class), is(new BigInteger("3"))),
+                () -> assertThat(converters.convert("3" + dot + "0", BigDecimal.class), is(new BigDecimal("3.0"))),
+                () -> assertThat(converters.convert("3" + dot + "00", BigDecimal.class), is(new BigDecimal("3.00"))),
+                () -> assertThat(converters.convert("30000000", BigDecimal.class), is(new BigDecimal(30000000))),
+                () -> assertThat(converters.convert("3" + dot + "000", BigDecimal.class), is(new BigDecimal("3.000"))),
+                () -> assertThat(converters.convert("-3", BigDecimal.class), is(new BigDecimal("-3"))),
+                () -> assertThat(((AtomicInteger) converters.convert("3", AtomicInteger.class)).intValue(),
+                        is((Number) 3)),
+                () -> assertThat(((AtomicLong) converters.convert("3", AtomicLong.class)).longValue(), is((Number) 3L)),
+                () -> assertThat(converters.convert("3", Number.class), is(3L))
+        );
     }
 
     @Test
@@ -293,12 +300,12 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertNaNAndInfinityValuesToNumbers() {
         FromStringParameterConverter<Number> converter = new NumberConverter();
-        assertThat(converter.convertValue(NAN, Float.class), is((Number) Float.NaN));
-        assertThat(converter.convertValue(POSITIVE_INFINITY, Float.class), is((Number) Float.POSITIVE_INFINITY));
-        assertThat(converter.convertValue(NEGATIVE_INFINITY, Float.class), is((Number) Float.NEGATIVE_INFINITY));
-        assertThat(converter.convertValue(NAN, Double.class), is((Number) Double.NaN));
-        assertThat(converter.convertValue(POSITIVE_INFINITY, Double.class), is((Number) Double.POSITIVE_INFINITY));
-        assertThat(converter.convertValue(NEGATIVE_INFINITY, Double.class), is((Number) Double.NEGATIVE_INFINITY));
+        assertThat(converter.convertValue(NAN, Float.class), is(Float.NaN));
+        assertThat(converter.convertValue(POSITIVE_INFINITY, Float.class), is(Float.POSITIVE_INFINITY));
+        assertThat(converter.convertValue(NEGATIVE_INFINITY, Float.class), is(Float.NEGATIVE_INFINITY));
+        assertThat(converter.convertValue(NAN, Double.class), is(Double.NaN));
+        assertThat(converter.convertValue(POSITIVE_INFINITY, Double.class), is(Double.POSITIVE_INFINITY));
+        assertThat(converter.convertValue(NEGATIVE_INFINITY, Double.class), is(Double.NEGATIVE_INFINITY));
     }
 
     @Test
@@ -793,7 +800,7 @@ class ParameterConvertersBehaviour {
     }
 
     @Test
-    void shouldAceeptParameterizedTypesAutomatically() {
+    void shouldAcceptParameterizedTypesAutomatically() {
         FromStringParameterConverter<Set<Bar>> parameterizedTypeConverter =
                 new FromStringParameterConverter<Set<Bar>>() {
                     @Override
@@ -807,85 +814,36 @@ class ParameterConvertersBehaviour {
         assertThat(parameterizedTypeConverter.canConvertTo(new TypeLiteral<List<Bar>>() {}.getType()), is(false));
     }
 
-    @Test
-    void shouldConvertDuration() {
-        assertThat(new ParameterConverters().convert("PT1S", Duration.class), is(Duration.ofSeconds(1)));
+    static Stream<Arguments> dateTimeTypes() {
+        return Stream.of(
+                arguments("PT1S", Duration.class, Duration.ofSeconds(1)),
+                arguments("2019-07-04T21:50:35.00Z", Instant.class, Instant.ofEpochSecond(1562277035)),
+                arguments("2019-07-04T21:50:35.123", LocalDateTime.class,
+                        LocalDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000)
+                ),
+                arguments("2019-07-04", LocalDate.class, LocalDate.of(2019, 7, 4)),
+                arguments("21:50:35.123", LocalTime.class, LocalTime.of(21, 50, 35, 123_000_000)),
+                arguments("--07-04", MonthDay.class, MonthDay.of(7, 4)),
+                arguments("2019-07-04T21:50:35.123Z", OffsetDateTime.class,
+                        OffsetDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000, ZoneOffset.UTC)
+                ),
+                arguments("21:50:35.123Z", OffsetTime.class, OffsetTime.of(21, 50, 35, 123_000_000, ZoneOffset.UTC)),
+                arguments("P1Y2M3D", Period.class, Period.of(1, 2, 3)),
+                arguments("2019-07", YearMonth.class, YearMonth.of(2019, 7)),
+                arguments("2019", Year.class, Year.of(2019)),
+                arguments("2019-07-04T21:50:35.123Z", ZonedDateTime.class,
+                        ZonedDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000, ZoneOffset.UTC)
+                ),
+                arguments("Europe/Minsk", ZoneId.class, ZoneId.of("Europe/Minsk")),
+                arguments("+03:00", ZoneOffset.class, ZoneOffset.ofHours(3)),
+                arguments("path", Path.class, Paths.get("path"))
+        );
     }
 
-    @Test
-    void shouldConvertInstant() {
-        assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.00Z", Instant.class),
-                is(Instant.ofEpochSecond(1562277035)));
-    }
-
-    @Test
-    void shouldConvertLocalDateTime() {
-        assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.123", LocalDateTime.class),
-                is(LocalDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000)));
-    }
-
-    @Test
-    void shouldConvertLocalDate() {
-        assertThat(new ParameterConverters().convert("2019-07-04", LocalDate.class), is(LocalDate.of(2019, 7, 4)));
-    }
-
-    @Test
-    void shouldConvertLocalTime() {
-        assertThat(new ParameterConverters().convert("21:50:35.123", LocalTime.class),
-                is(LocalTime.of(21, 50, 35, 123_000_000)));
-    }
-
-    @Test
-    void shouldConvertMonthDay() {
-        assertThat(new ParameterConverters().convert("--07-04", MonthDay.class), is(MonthDay.of(7, 4)));
-    }
-
-    @Test
-    void shouldConvertOffsetDateTime() {
-        assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.123Z", OffsetDateTime.class),
-                is(OffsetDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000, ZoneOffset.UTC)));
-    }
-
-    @Test
-    void shouldConvertOffsetTime() {
-        assertThat(new ParameterConverters().convert("21:50:35.123Z", OffsetTime.class),
-                is(OffsetTime.of(21, 50, 35, 123_000_000, ZoneOffset.UTC)));
-    }
-
-    @Test
-    void shouldConvertPeriod() {
-        assertThat(new ParameterConverters().convert("P1Y2M3D", Period.class), is(Period.of(1, 2, 3)));
-    }
-
-    @Test
-    void shouldConvertYearMonth() {
-        assertThat(new ParameterConverters().convert("2019-07", YearMonth.class), is(YearMonth.of(2019, 7)));
-    }
-
-    @Test
-    void shouldConvertYear() {
-        assertThat(new ParameterConverters().convert("2019", Year.class), is(Year.of(2019)));
-    }
-
-    @Test
-    void shouldConvertZonedDateTime() {
-        assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.123Z", ZonedDateTime.class),
-                is(ZonedDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000, ZoneOffset.UTC)));
-    }
-
-    @Test
-    void shouldConvertZoneId() {
-        assertThat(new ParameterConverters().convert("Europe/Minsk", ZoneId.class), is(ZoneId.of("Europe/Minsk")));
-    }
-
-    @Test
-    void shouldConvertZoneOffset() {
-        assertThat(new ParameterConverters().convert("+03:00", ZoneOffset.class), is(ZoneOffset.ofHours(3)));
-    }
-
-    @Test
-    void shouldConvertPath() {
-        assertThat(new ParameterConverters().convert("path", Path.class), is(Paths.get("path")));
+    @ParameterizedTest
+    @MethodSource("dateTimeTypes")
+    void shouldConvertDataTimeValues(String value, Type type, Object expectedValue) {
+        assertThat(new ParameterConverters().convert(value, type), is(expectedValue));
     }
 
     @Test
@@ -901,6 +859,22 @@ class ParameterConvertersBehaviour {
                 new ThirdParameterConverter());
         String input = "|key|\n|value|";
         Object convertedValue = converters.convert(input, ThirdConverterOutput.class);
+        assertThat(convertedValue, instanceOf(ThirdConverterOutput.class));
+        ThirdConverterOutput output = (ThirdConverterOutput) convertedValue;
+        assertThat(output.getOutput(), is(input + "\nfirstsecondthird"));
+    }
+
+    @Test
+    void shouldConvertToOptionalViaChainOfConverters() {
+        ParameterConverters converters = new ParameterConverters();
+        converters.addConverters(new FirstParameterConverter(), new SecondParameterConverter(),
+                new ThirdParameterConverter());
+        String input = "|key|\n|value|";
+        Object value = converters.convert(input, new TypeLiteral<Optional<ThirdConverterOutput>>() {}.getType());
+        assertThat(value, instanceOf(Optional.class));
+        Optional<?> castedValue = (Optional<?>) value;
+        assertTrue(castedValue.isPresent());
+        Object convertedValue = castedValue.get();
         assertThat(convertedValue, instanceOf(ThirdConverterOutput.class));
         ThirdConverterOutput output = (ThirdConverterOutput) convertedValue;
         assertThat(output.getOutput(), is(input + "\nfirstsecondthird"));
@@ -932,6 +906,7 @@ class ParameterConvertersBehaviour {
         assertFalse(simpleConverter.canConvertFrom(Boolean.class));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void shouldUseSingleValueConverterForCollectionOfElements() {
         Type type = new TypeLiteral<List<byte[]>>() {}.getType();
@@ -950,10 +925,10 @@ class ParameterConvertersBehaviour {
     @AsJson
     public static class MyJsonDto {
 
-        private String string;
-        private Integer integer;
-        private List<String> stringList;
-        private List<Integer> integerList;
+        private final String string;
+        private final Integer integer;
+        private final List<String> stringList;
+        private final List<Integer> integerList;
 
         public String getString() {
             return string;
@@ -983,7 +958,7 @@ class ParameterConvertersBehaviour {
         if (expected.length > 0) {
             assertThat(collection, containsInAnyOrder(expected));
         } else {
-            assertThat(collection, Matchers.<T>empty());
+            assertThat(collection, empty());
         }
     }
 
@@ -1001,7 +976,7 @@ class ParameterConvertersBehaviour {
 
     static class Bar implements Comparable<Bar> {
 
-        private static Bar INSTANCE = new Bar();
+        private static final Bar INSTANCE = new Bar();
 
         @Override
         public boolean equals(Object obj) {
@@ -1014,7 +989,7 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private class FooToBarParameterConverter extends FromStringParameterConverter<Bar> {
+    private static class FooToBarParameterConverter extends FromStringParameterConverter<Bar> {
         @Override
         public Bar convertValue(String value, Type type) {
             return new Bar();
@@ -1062,7 +1037,7 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private class StringContainer {
+    private static class StringContainer {
         private final String output;
 
         private StringContainer(String output) {
@@ -1081,7 +1056,7 @@ class ParameterConvertersBehaviour {
         }
     }
 
-    private class ListToSetConverter extends AbstractParameterConverter<List<String>, Set<String>> {
+    private static class ListToSetConverter extends AbstractParameterConverter<List<String>, Set<String>> {
 
         @Override
         public Set<String> convertValue(List<String> value, Type type) {
@@ -1090,7 +1065,8 @@ class ParameterConvertersBehaviour {
 
     }
 
-    private class ParametersToStringContainerConverter extends AbstractParameterConverter<Parameters, StringContainer> {
+    private static class ParametersToStringContainerConverter
+            extends AbstractParameterConverter<Parameters, StringContainer> {
 
         @Override
         public StringContainer convertValue(Parameters parameters, Type type) {
@@ -1100,7 +1076,8 @@ class ParameterConvertersBehaviour {
 
     }
 
-    private class StringContainerToByteArrayConverter extends AbstractParameterConverter<StringContainer, byte[]> {
+    private static class StringContainerToByteArrayConverter
+            extends AbstractParameterConverter<StringContainer, byte[]> {
 
         @Override
         public byte[] convertValue(StringContainer value, Type type) {
