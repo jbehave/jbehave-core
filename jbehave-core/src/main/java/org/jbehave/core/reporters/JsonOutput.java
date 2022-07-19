@@ -80,7 +80,7 @@ public class JsonOutput extends PrintStreamOutput {
         }
 
         if (stepPublishing) {
-            if ("exampleScenariosEnd".equals(key) || "example".equals(key) && givenStoriesLevel == 0) {
+            if ("exampleScenariosEnd".equals(key) || "example".equals(key)) {
                 // Closing previous "example"
                 print("}");
             }

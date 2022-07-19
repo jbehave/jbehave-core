@@ -1,0 +1,191 @@
+{
+  "id": "story-id",
+  "path": "\/path\/to\/story",
+  "title": "Root story",
+  "beforeSystemStorySteps": [
+    {
+      "outcome": "successful",
+      "value": "My step"
+    }
+  ],
+  "beforeUserStorySteps": [
+    {
+      "outcome": "successful",
+      "value": "My step"
+    }
+  ],
+  "givenStories": {
+    "keyword": "GivenStories:",
+    "givenStories": [
+      {
+        "parameters": "",
+        "path": "/path/to/story"
+      }
+    ],
+    "stories": [
+      {
+        "id": "story-id",
+        "path": "/path/to/story",
+        "title": "Given story",
+        "scenarios": [
+          {
+            "keyword": "Scenario:",
+            "id": "scenario-id",
+            "title": "My scenario",
+            "examples": {
+              "keyword": "Examples:",
+              "steps": [
+                "My step"
+              ],
+              "parameters": {
+                "names": [
+                  "key",
+                  "row"
+                ],
+                "values": [
+                  [
+                    "key1",
+                    "row1"
+                  ],
+                  [
+                    "key2",
+                    "row2"
+                  ]
+                ]
+              },
+              "examples": [
+                {
+                  "keyword": "Example:",
+                  "parameters": {
+                    "key1": "value1",
+                    "key2": "value2"
+                  },
+                  "beforeSystemScenarioSteps": [
+                    {
+                      "outcome": "successful",
+                      "value": "My step"
+                    }
+                  ],
+                  "beforeUserScenarioSteps": [
+                    {
+                      "outcome": "successful",
+                      "value": "My step"
+                    }
+                  ],
+                  "steps": [
+                    {
+                      "outcome": "successful",
+                      "value": "My step"
+                    }
+                  ],
+                  "afterUserScenarioSteps": [
+                    {
+                      "outcome": "successful",
+                      "value": "My step"
+                    }
+                  ],
+                  "afterSystemScenarioSteps": [
+                    {
+                      "outcome": "successful",
+                      "value": "My step"
+                    }
+                  ]
+                },
+                {
+                  "keyword": "Example:",
+                  "parameters": {
+                    "key1": "value1",
+                    "key2": "value2"
+                  },
+                  "beforeSystemScenarioSteps": [
+                    {
+                      "outcome": "successful",
+                      "value": "My step"
+                    }
+                  ],
+                  "beforeUserScenarioSteps": [
+                    {
+                      "outcome": "successful",
+                      "value": "My step"
+                    }
+                  ],
+                  "steps": [
+                    {
+                      "outcome": "successful",
+                      "value": "My step"
+                    }
+                  ],
+                  "afterUserScenarioSteps": [
+                    {
+                      "outcome": "successful",
+                      "value": "My step"
+                    }
+                  ],
+                  "afterSystemScenarioSteps": [
+                    {
+                      "outcome": "successful",
+                      "value": "My step"
+                    }
+                  ]
+                }
+              ]
+            },
+            "start": 1,
+            "end": 2
+          }
+        ]
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "keyword": "Scenario:",
+      "id": "scenario-id",
+      "title": "My scenario",
+      "beforeSystemScenarioSteps": [
+        {
+          "outcome": "successful",
+          "value": "My step"
+        }
+      ],
+      "beforeUserScenarioSteps": [
+        {
+          "outcome": "successful",
+          "value": "My step"
+        }
+      ],
+      "steps": [
+        {
+          "outcome": "successful",
+          "value": "My step"
+        }
+      ],
+      "afterUserScenarioSteps": [
+        {
+          "outcome": "successful",
+          "value": "My step"
+        }
+      ],
+      "afterSystemScenarioSteps": [
+        {
+          "outcome": "successful",
+          "value": "My step"
+        }
+      ],
+      "start": 1,
+      "end": 2
+    }
+  ],
+  "afterUserStorySteps": [
+    {
+      "outcome": "successful",
+      "value": "My step"
+    }
+  ],
+  "afterSystemStorySteps": [
+    {
+      "outcome": "successful",
+      "value": "My step"
+    }
+  ]
+}
