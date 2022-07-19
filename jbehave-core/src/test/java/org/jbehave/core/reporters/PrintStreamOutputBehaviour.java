@@ -336,6 +336,78 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
+    void shouldReportEventsToJsonOutputScenarioNestedGivenStoryWithSeveralRowsInExampleTable()
+            throws IOException {
+        ExamplesTable examplesTable = new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|");
+        Map<String, String> example = new HashMap<>();
+        example.put("key1", "value1");
+        example.put("key2", "value2");
+
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new JsonOutput(new PrintStream(out), new Properties(), new LocalizedKeywords());
+
+        // When
+        String storyPath = "/path/to/story";
+        Story rootStory = spyStoryUuid(new Story(storyPath, new Description("Root story"),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<>()));
+        String step = "My step";
+        Story givenStory = spyStoryUuid(new Story(storyPath, new Description("Given story"),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<>()));
+
+        reporter.beforeStory(rootStory, false);
+        reportStoryStep(reporter, step, Stage.BEFORE, ExecutionType.SYSTEM);
+        reportStoryStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
+
+        Scenario scenarioWithExample = spyScenarioUuid(
+                new Scenario("My scenario", Meta.EMPTY, new GivenStories(givenStory.getPath()), examplesTable,
+                        singletonList(step)));
+        reporter.beforeGivenStories();
+        reporter.givenStories(singletonList(givenStory.getPath()));
+        reporter.beforeStory(givenStory, true);
+        reporter.beforeScenarios();
+        reporter.beforeScenario(scenarioWithExample);
+        reporter.beforeExamples(scenarioWithExample.getSteps(), examplesTable);
+        reporter.example(example, 0);
+        reportScenarioStep(reporter, step, Stage.BEFORE, ExecutionType.SYSTEM);
+        reportScenarioStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
+        reportScenarioStep(reporter, step, null, null);
+        reportScenarioStep(reporter, step, Stage.AFTER, ExecutionType.USER);
+        reportScenarioStep(reporter, step, Stage.AFTER, ExecutionType.SYSTEM);
+        reporter.example(example, 1);
+        reportScenarioStep(reporter, step, Stage.BEFORE, ExecutionType.SYSTEM);
+        reportScenarioStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
+        reportScenarioStep(reporter, step, null, null);
+        reportScenarioStep(reporter, step, Stage.AFTER, ExecutionType.USER);
+        reportScenarioStep(reporter, step, Stage.AFTER, ExecutionType.SYSTEM);
+        reporter.afterExamples();
+        reporter.afterScenario(getTiming());
+        reporter.afterScenarios();
+        reporter.afterStory(true);
+        reporter.afterGivenStories();
+
+        Scenario scenarioWithoutExample = spyScenarioUuid(
+                new Scenario("My scenario", Meta.EMPTY, new GivenStories(givenStory.getPath()), null,
+                        singletonList(step)));
+
+        reporter.beforeScenarios();
+        reporter.beforeScenario(scenarioWithoutExample);
+        reportScenarioStep(reporter, step, Stage.BEFORE, ExecutionType.SYSTEM);
+        reportScenarioStep(reporter, step, Stage.BEFORE, ExecutionType.USER);
+        reportScenarioStep(reporter, step, null, null);
+        reportScenarioStep(reporter, step, Stage.AFTER, ExecutionType.USER);
+        reportScenarioStep(reporter, step, Stage.AFTER, ExecutionType.SYSTEM);
+        reporter.afterScenario(getTiming());
+        reporter.afterScenarios();
+        reportStoryStep(reporter, step, Stage.AFTER, ExecutionType.USER);
+        reportStoryStep(reporter, step, Stage.AFTER, ExecutionType.SYSTEM);
+        reporter.afterStory(false);
+
+        // Then
+        assertJson("given-story-examples.json", out.toString());
+    }
+
+    @Test
     void shouldReportEventsToJsonOutputIfScenarioIsEmptyWithLifecycleExamplesTable() {
         ExamplesTable examplesTable = new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|");
         Lifecycle lifecycle = new Lifecycle(new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|"));
