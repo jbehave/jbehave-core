@@ -257,7 +257,6 @@ public class Steps extends AbstractCandidateSteps {
     private void addCandidate(List<StepCandidate> candidates, Method method, StepType stepType,
             String stepPatternAsString, int priority) {
         StepCandidate candidate = createCandidate(stepPatternAsString, priority, stepType, method, type, stepsFactory);
-        checkForDuplicateCandidates(candidates, candidate);
         if (method.isAnnotationPresent(Composite.class)) {
             candidate.composedOf(method.getAnnotation(Composite.class).steps());
         }

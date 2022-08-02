@@ -39,7 +39,6 @@ import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.AbstractCandidateSteps.DuplicateCandidateFound;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.junit.jupiter.api.Test;
@@ -376,18 +375,6 @@ class StepsBehaviour {
     }
 
     @Test
-    void shouldFailIfDuplicateStepsAreEncountered() {
-        DuplicateSteps steps = new DuplicateSteps();
-        assertThrows(DuplicateCandidateFound.class, steps::listCandidates);
-    }
-
-    @Test
-    void shouldFailIfDuplicateStepsWithDifferentParamsNamesAreEncountered() {
-        DuplicateStepsWithParameters steps = new DuplicateStepsWithParameters();
-        assertThrows(DuplicateCandidateFound.class, steps::listCandidates);
-    }
-
-    @Test
     void shouldNotFailWithDuplicateCandidateFoundExceptionIfStepsWordingsDoNotMatchEachOther() {
         StepsWithParameters steps = new StepsWithParameters();
         Configuration configuration = new MostUsefulConfiguration();
@@ -616,29 +603,6 @@ class StepsBehaviour {
             throw new RuntimeException("Damn, I failed!");
         }
 
-    }
-
-    static class DuplicateSteps extends Steps {
-        
-        @Given("a given")
-        public void given() {
-        }
-
-        @Given("a given")
-        public void duplicateGiven() {
-        }
-                
-    }
-
-    static class DuplicateStepsWithParameters extends Steps {
-        
-        @Given("a given param '$someParameterName'")
-        public void given(String someParameterName) {
-        }
-
-        @Given("a given param '$givenParameter'")
-        public void duplicateGiven(String givenParameter) {
-        }
     }
 
     static class StepsWithParameters extends Steps {

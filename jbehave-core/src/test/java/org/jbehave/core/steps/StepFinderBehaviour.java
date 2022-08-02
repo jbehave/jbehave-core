@@ -35,6 +35,17 @@ class StepFinderBehaviour {
                 mySteps);
     }
 
+    @Test
+    void shouldFindMatching() {
+        MySteps mySteps = new MySteps();
+        List<Stepdoc> stepdocs = finder.findMatching("When foo named $name",
+                new InstanceStepsFactory(new MostUsefulConfiguration(), mySteps).createCandidateSteps());
+        Collections.sort(stepdocs);
+        assertThat(stepdocs.size(), equalTo(1));
+        assertThatStepdocIs(stepdocs.get(0), "whenFoo", "whenFoo(java.lang.String)", "foo named $name", "When", WHEN,
+                mySteps);
+    }
+
     private void assertThatStepdocIs(Stepdoc stepdoc, String methodName, String methodSignature, String pattern,
             String startingWord, StepType stepType, Object stepsInstance) {
         assertThat(stepdoc.getMethod().getName(), equalTo(methodName));

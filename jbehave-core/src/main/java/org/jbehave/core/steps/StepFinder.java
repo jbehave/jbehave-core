@@ -3,12 +3,14 @@ package org.jbehave.core.steps;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
+import org.jbehave.core.embedder.AllStepCandidates;
 
 /**
  * <p>
@@ -55,11 +57,7 @@ public class StepFinder {
      * @return The List of Stepdocs, one for each {@link StepCandidate}.
      */
     public List<Stepdoc> stepdocs(List<CandidateSteps> candidateSteps) {
-        List<Stepdoc> stepdocs = new LinkedList<>();
-        for (StepCandidate candidate : collectCandidates(candidateSteps)) {
-            stepdocs.add(new Stepdoc(candidate));
-        }
-        return stepdocs;
+        return createStepdocs(candidate -> true, candidateSteps);
     }
 
     /**
@@ -73,13 +71,15 @@ public class StepFinder {
      * @return The list of Stepdocs, one for each matched {@link StepCandidate}.
      */
     public List<Stepdoc> findMatching(String stepAsText, List<CandidateSteps> candidateSteps) {
-        List<Stepdoc> matching = new ArrayList<>();
-        for (StepCandidate candidate : collectCandidates(candidateSteps)) {
-            if (candidate.matches(stepAsText)) {
-                matching.add(new Stepdoc(candidate));
-            }
-        }
-        return matching;
+        return createStepdocs(candidate -> candidate.matches(stepAsText), candidateSteps);
+    }
+
+    private List<Stepdoc> createStepdocs(Predicate<StepCandidate> candidateFilter,
+            List<CandidateSteps> candidateSteps) {
+        return new AllStepCandidates(candidateSteps).getRegularSteps().stream()
+                .filter(candidateFilter)
+                .map(Stepdoc::new)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -97,21 +97,6 @@ public class StepFinder {
             }
         }
         return instances;
-    }
-
-    /**
-     * Collects a list of step candidates from {@link CandidateSteps} instances.
-     * 
-     * @param candidateSteps
-     *            the list {@link CandidateSteps} instances
-     * @return A List of {@link StepCandidate}
-     */
-    private List<StepCandidate> collectCandidates(List<CandidateSteps> candidateSteps) {
-        List<StepCandidate> collected = new ArrayList<>();
-        for (CandidateSteps steps : candidateSteps) {
-            collected.addAll(steps.listCandidates());
-        }
-        return collected;
     }
 
     /**
