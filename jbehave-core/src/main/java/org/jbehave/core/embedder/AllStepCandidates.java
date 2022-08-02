@@ -5,7 +5,9 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.steps.BeforeOrAfterStep;
 import org.jbehave.core.steps.CandidateSteps;
@@ -46,7 +48,10 @@ public class AllStepCandidates {
             candidateStep.listAfterScenario().forEach(
                     (scenarioType, steps) -> afterScenarioSteps.get(scenarioType).addAll(steps));
 
-            regularSteps.addAll(candidateStep.listCandidates());
+            candidateStep.listCandidates().forEach(candidate -> {
+                checkForDuplicateCandidates(regularSteps, candidate);
+                regularSteps.add(candidate);
+            });
         }
 
         sortBeforeSteps(beforeStoriesSteps);
@@ -101,4 +106,20 @@ public class AllStepCandidates {
     public List<StepCandidate> getRegularSteps() {
         return regularSteps;
     }
+
+    private void checkForDuplicateCandidates(List<StepCandidate> candidates, StepCandidate candidate) {
+        String candidateName = candidate.getName();
+        String candidateParameterPrefix = candidate.getParameterPrefix();
+        if (candidates.stream().anyMatch(isDuplicate(candidate, candidateName, candidateParameterPrefix))) {
+            throw new DuplicateCandidateFound(candidate);
+        }
+    }
+
+    private Predicate<StepCandidate> isDuplicate(StepCandidate candidate, String candidateName,
+            String parameterPrefix) {
+        return c -> candidateName.startsWith(StringUtils.substringBefore(c.getName(), parameterPrefix))
+            && c.matches(candidateName)
+            && candidate.matches(c.getName());
+    }
+
 }

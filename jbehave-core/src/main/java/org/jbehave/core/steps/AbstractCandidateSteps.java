@@ -1,12 +1,7 @@
 package org.jbehave.core.steps;
 
-import static java.text.MessageFormat.format;
-
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.function.Predicate;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Configuration;
 
 public abstract class AbstractCandidateSteps implements CandidateSteps {
@@ -20,22 +15,6 @@ public abstract class AbstractCandidateSteps implements CandidateSteps {
         return configuration;
     }
 
-    protected void checkForDuplicateCandidates(List<StepCandidate> candidates, StepCandidate candidate) {
-        String candidateName = candidate.getName();
-        String parameterPrefix = configuration.stepPatternParser().getPrefix();
-        if (candidates.stream().anyMatch(isDuplicate(candidate, candidateName, parameterPrefix))) {
-            throw new DuplicateCandidateFound(candidate);
-        }
-    }
-
-    private Predicate<StepCandidate> isDuplicate(StepCandidate candidate, String candidateName,
-            String parameterPrefix) {
-        return c ->
-               candidateName.startsWith(StringUtils.substringBefore(c.getName(), parameterPrefix))
-            && c.matches(candidateName)
-            && candidate.matches(c.getName());
-    }
-
     protected StepCandidate createCandidate(String stepPatternAsString, int priority, StepType stepType, Method method,
             Class<?> type, InjectableStepsFactory stepsFactory) {
         StepCandidate candidate = new StepCandidate(stepPatternAsString, priority, stepType, method, type,
@@ -45,15 +24,5 @@ public abstract class AbstractCandidateSteps implements CandidateSteps {
         candidate.useParanamer(configuration.paranamer());
         candidate.doDryRun(configuration.storyControls().dryRun());
         return candidate;
-    }
-
-    @SuppressWarnings("serial")
-    public static class DuplicateCandidateFound extends RuntimeException {
-        public static final String DUPLICATE_FORMAT = "{0} {1}";
-
-        public DuplicateCandidateFound(StepCandidate candidate) {
-            super(format(DUPLICATE_FORMAT, candidate.getStepType(), candidate.getPatternAsString()));
-        }
-
     }
 }

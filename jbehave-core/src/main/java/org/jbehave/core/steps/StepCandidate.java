@@ -42,6 +42,7 @@ public class StepCandidate {
     private final Keywords keywords;
     private final StepMatcher stepMatcher;
     private final StepCreator stepCreator;
+    private final String parameterPrefix;
     private String[] composedSteps;
     private StepMonitor stepMonitor = new SilentStepMonitor();
 
@@ -59,6 +60,7 @@ public class StepCandidate {
         this.stepMatcher = stepPatternParser.parseStep(stepType, patternAsString);
         this.stepCreator = new StepCreator(stepsType, stepsFactory, stepsContext, parameterConverters,
                 parameterControls, stepMatcher, stepMonitor);
+        this.parameterPrefix = stepPatternParser.getPrefix();
     }
 
     public Method getMethod() {
@@ -91,6 +93,10 @@ public class StepCandidate {
 
     public String getStartingWord() {
         return keywords.startingWordFor(stepType);
+    }
+
+    public String getParameterPrefix() {
+        return parameterPrefix;
     }
 
     public void useStepMonitor(StepMonitor stepMonitor) {
