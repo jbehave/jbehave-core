@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
+import org.jbehave.core.condition.ReflectionBasedStepConditionMatcher;
+import org.jbehave.core.condition.StepConditionMatcher;
 import org.jbehave.core.embedder.AllStepCandidates;
 
 /**
@@ -29,7 +31,8 @@ import org.jbehave.core.embedder.AllStepCandidates;
  */
 public class StepFinder {
 
-    private PrioritisingStrategy prioritisingStrategy;
+    private final PrioritisingStrategy prioritisingStrategy;
+    private final StepConditionMatcher stepConditionMatcher;
 
     /**
      * Creates a StepFinder with a {@link ByPriorityField} strategy
@@ -46,6 +49,18 @@ public class StepFinder {
      */
     public StepFinder(PrioritisingStrategy prioritisingStrategy) {
         this.prioritisingStrategy = prioritisingStrategy;
+        this.stepConditionMatcher = new ReflectionBasedStepConditionMatcher();
+    }
+
+    /**
+     * Creates a StepFinder with a custom step condition matcher
+     * 
+     * @param stepConditionMatcher
+     *            the StepConditionMatcher
+     */
+    public StepFinder(StepConditionMatcher stepConditionMatcher) {
+        this.prioritisingStrategy = new ByPriorityField();
+        this.stepConditionMatcher = stepConditionMatcher;
     }
 
     /**
@@ -76,7 +91,7 @@ public class StepFinder {
 
     private List<Stepdoc> createStepdocs(Predicate<StepCandidate> candidateFilter,
             List<CandidateSteps> candidateSteps) {
-        return new AllStepCandidates(candidateSteps).getRegularSteps().stream()
+        return new AllStepCandidates(stepConditionMatcher, candidateSteps).getRegularSteps().stream()
                 .filter(candidateFilter)
                 .map(Stepdoc::new)
                 .collect(Collectors.toList());

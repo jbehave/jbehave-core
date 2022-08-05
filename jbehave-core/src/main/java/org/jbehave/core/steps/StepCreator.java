@@ -21,8 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -31,9 +34,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.AsParameters;
+import org.jbehave.core.annotations.Conditional;
 import org.jbehave.core.annotations.FromContext;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.ToContext;
+import org.jbehave.core.condition.StepConditionMatchException;
+import org.jbehave.core.condition.StepConditionMatcher;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.IgnoringStepsFailure;
@@ -269,6 +275,11 @@ public class StepCreator {
             types[i] = String.class;
         }
         return types;
+    }
+
+    public Step createConditionalStep(final StepConditionMatcher stepConditionMatcher,
+            final Map<Method, ParametrisedStep> parametrisedSteps) {
+        return new ConditionalStep(stepConditionMatcher, parametrisedSteps);
     }
 
     public Step createParametrisedStep(final Method method, final String stepAsString,
@@ -824,6 +835,84 @@ public class StepCreator {
         }
     }
 
+    public class ConditionalStep extends AbstractStep {
+
+        private final StepConditionMatcher stepConditionMatcher;
+        private final Map<Method, ParametrisedStep> parametrisedSteps;
+
+        public ConditionalStep(StepConditionMatcher stepConditionMatcher,
+                Map<Method, ParametrisedStep> parametrisedSteps) {
+            this.stepConditionMatcher = stepConditionMatcher;
+            this.parametrisedSteps = parametrisedSteps;
+        }
+
+        @Override
+        public StepResult perform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+            return performConditionalStep(storyReporter, step -> step.perform(storyReporter, storyFailureIfItHappened));
+        }
+
+        @Override
+        public StepResult doNotPerform(StoryReporter storyReporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+            return performConditionalStep(storyReporter,
+                    step -> step.doNotPerform(storyReporter, storyFailureIfItHappened));
+        }
+
+        private StepResult performConditionalStep(StoryReporter storyReporter,
+                Function<ParametrisedStep, StepResult> invoker) {
+
+            try {
+                Map<Method, Conditional> unmatchedSteps = new HashMap<>();
+                Map<Method, Conditional> matchedSteps = new HashMap<>();
+
+                for (Method method : parametrisedSteps.keySet()) {
+                    Conditional conditional = Optional.ofNullable(method.getAnnotation(Conditional.class))
+                            .orElseGet(() -> method.getDeclaringClass().getAnnotation(Conditional.class));
+
+                    Map<Method, Conditional> target = stepConditionMatcher.matches(conditional.condition(),
+                            conditional.value()) ? matchedSteps : unmatchedSteps;
+                    target.put(method, conditional);
+
+                }
+
+                if (matchedSteps.isEmpty()) {
+                    String message = getStepName() + System.lineSeparator()
+                            + "None of the following steps were matched any condition:" + System.lineSeparator()
+                            + formatSteps(unmatchedSteps);
+                    return reportPending(storyReporter, message);
+                } else if (matchedSteps.size() > 1) {
+                    String message = getStepName() + System.lineSeparator()
+                            + "More than one conditional step matched the condition:" + System.lineSeparator()
+                            + formatSteps(matchedSteps);
+                    return reportPending(storyReporter, message);
+                }
+
+                return invoker.apply(parametrisedSteps.get(matchedSteps.keySet().iterator().next()));
+            } catch (StepConditionMatchException e) {
+                return reportPending(storyReporter, getStepName() + System.lineSeparator() + e.getMessage());
+            }
+        }
+
+        private StepResult reportPending(StoryReporter storyReporter, String message) {
+            Step pendingStep = createPendingStep(message, null);
+            return pendingStep.perform(storyReporter, null);
+        }
+
+        private String formatSteps(Map<Method, Conditional> matchedSteps) {
+            return matchedSteps.entrySet().stream()
+                    .map(e -> formatStep(e.getKey(), e.getValue()))
+                    .collect(Collectors.joining(System.lineSeparator()));
+        }
+
+        private String formatStep(Method method, Conditional condition) {
+            return method.getDeclaringClass() + "." + method.getName() + " (condition: " + condition.condition() + " "
+                    + condition.value() + ")";
+        }
+
+        private String getStepName() {
+            return parametrisedSteps.values().iterator().next().asString(null);
+        }
+    }
+
     public class ParametrisedStep extends ReportingAbstractStep {
         private Object[] convertedParameters;
         private String parametrisedStep;
@@ -903,7 +992,7 @@ public class StepCreator {
             }
             return parametrisedStep;
         }
-        
+
         private void parametriseStep() {
             Matcher matcher = stepMatcher.matcher(stepWithoutStartingWord);
             matcher.find();

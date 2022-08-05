@@ -14,4 +14,8 @@ public class DuplicateCandidateFound extends RuntimeException {
         super(format(DUPLICATE_FORMAT, candidate.getStepType(), candidate.getPatternAsString()));
     }
 
+    public DuplicateCandidateFound(String step) {
+        super(step);
+    }
+
 }

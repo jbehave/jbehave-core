@@ -11,6 +11,7 @@ import java.util.Set;
 import com.thoughtworks.paranamer.Paranamer;
 
 import org.hamcrest.Matchers;
+import org.jbehave.core.condition.StepConditionMatcher;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -57,6 +58,7 @@ class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.storyExecutionComparator(), is(delegate.storyExecutionComparator()));
         assertThat(unmodifiable.aliasParser(), is(delegate.aliasParser()));
         assertThat(unmodifiable.aliasPaths(), is(delegate.aliasPaths()));
+        assertThat(unmodifiable.stepConditionMatcher(), is(delegate.stepConditionMatcher()));
     }
 
     @Test
@@ -86,6 +88,7 @@ class UnmodifiableConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useStoryExecutionComparator", Comparator.class);
         assertThatNotAllowed(unmodifiable, "useAliasParser", AliasParser.class);
         assertThatNotAllowed(unmodifiable, "useAliasPaths", Set.class);
+        assertThatNotAllowed(unmodifiable, "useStepConditionMatcher", StepConditionMatcher.class);
     }
 
     private void assertThatNotAllowed(Configuration unmodifiable, String methodName, Class<?>... types)
