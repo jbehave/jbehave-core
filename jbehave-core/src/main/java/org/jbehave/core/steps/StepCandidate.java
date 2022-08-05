@@ -50,6 +50,23 @@ public class StepCandidate {
             InjectableStepsFactory stepsFactory, StepsContext stepsContext, Keywords keywords,
             StepPatternParser stepPatternParser, ParameterConverters parameterConverters,
             ParameterControls parameterControls) {
+        this(patternAsString, priority, stepType, method, stepsType, stepsFactory, stepsContext, keywords,
+                stepPatternParser.parseStep(stepType, patternAsString), stepPatternParser.getPrefix(),
+                parameterConverters, parameterControls);
+    }
+
+    private StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Class<?> stepsType,
+            InjectableStepsFactory stepsFactory, StepsContext stepsContext, Keywords keywords,
+            StepMatcher stepMatcher, String parameterPrefixString, ParameterConverters parameterConverters,
+            ParameterControls parameterControls) {
+        this(patternAsString, priority, stepType, method, stepsType, stepsFactory, keywords, stepMatcher,
+                parameterPrefixString, new StepCreator(stepsType, stepsFactory, stepsContext, parameterConverters,
+                        parameterControls, stepMatcher, new SilentStepMonitor()));
+    }
+
+    public StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Class<?> stepsType,
+            InjectableStepsFactory stepsFactory, Keywords keywords, StepMatcher stepMatcher,
+            String parameterPrefixString, StepCreator stepCreator) {
         this.patternAsString = patternAsString;
         this.priority = priority;
         this.stepType = stepType;
@@ -57,10 +74,9 @@ public class StepCandidate {
         this.stepsType = stepsType;
         this.stepsFactory = stepsFactory;
         this.keywords = keywords;
-        this.stepMatcher = stepPatternParser.parseStep(stepType, patternAsString);
-        this.stepCreator = new StepCreator(stepsType, stepsFactory, stepsContext, parameterConverters,
-                parameterControls, stepMatcher, stepMonitor);
-        this.parameterPrefix = stepPatternParser.getPrefix();
+        this.stepMatcher = stepMatcher;
+        this.stepCreator = stepCreator;
+        this.parameterPrefix = parameterPrefixString;
     }
 
     public Method getMethod() {
@@ -257,8 +273,24 @@ public class StepCandidate {
         return null;
     }
 
-    private String stripStartingWord(String stepAsString) {
+    protected String stripStartingWord(String stepAsString) {
         return keywords.stepWithoutStartingWord(stepAsString, stepType);
+    }
+
+    protected StepCreator getStepCreator() {
+        return stepCreator;
+    }
+
+    protected Keywords getKeywords() {
+        return keywords;
+    }
+
+    protected StepMatcher getStepMatcher() {
+        return stepMatcher;
+    }
+
+    protected StepMonitor getStepMonitor() {
+        return stepMonitor;
     }
 
     @Override

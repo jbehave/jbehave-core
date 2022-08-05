@@ -8,11 +8,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.jbehave.core.steps.StepCollector.Stage;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -63,6 +62,7 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCandidate;
 import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.Timing;
@@ -95,7 +95,8 @@ class PerformableTreeBehaviour {
         List<StepCandidate> stepCandidates = singletonList(mock(StepCandidate.class));
         when(candidate.listCandidates()).thenReturn(stepCandidates);
         List<CandidateSteps> candidateSteps = singletonList(candidate);
-        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
+                candidateSteps);
         EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
         MetaFilter filter = new MetaFilter("-skip", embedderMonitor);
         BatchFailures failures = mock(BatchFailures.class);
@@ -155,7 +156,7 @@ class PerformableTreeBehaviour {
         configuration.storyControls().currentStoryControls().doIgnoreMetaFiltersIfGivenStory(true);
         configuration.useStoryLoader(mock(StoryLoader.class));
         PerformableTree performableTree = new PerformableTree();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(emptyList());
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(), emptyList());
         RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
                 mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class));
         Story story = EMPTY_STORY;
@@ -218,7 +219,8 @@ class PerformableTreeBehaviour {
                 any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
 
         List<CandidateSteps> candidateSteps = emptyList();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
+                candidateSteps);
 
         PerformableTree performableTree = new PerformableTree();
         PerformableTree.RunContext context = spy(performableTree.newRunContext(configuration, allStepCandidates,
@@ -271,7 +273,8 @@ class PerformableTreeBehaviour {
         configuration.useStoryLoader(storyLoader);
         when(storyLoader.loadStoryAsText(givenStoryPath)).thenReturn(givenStoryAsString);
         List<CandidateSteps> candidateSteps = emptyList();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
+                candidateSteps);
 
         PerformableTree performableTree = new PerformableTree();
         RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
@@ -307,7 +310,8 @@ class PerformableTreeBehaviour {
         StoryReporter storyReporter = mock(StoryReporter.class);
         when(configuration.storyReporter(STORY_PATH)).thenReturn(storyReporter);
         List<CandidateSteps> candidateSteps = emptyList();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
+                candidateSteps);
 
         PerformableTree performableTree = new PerformableTree();
         RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
@@ -333,7 +337,8 @@ class PerformableTreeBehaviour {
         when(storyLoader.loadStoryAsText(anyString())).thenReturn(GIVEN_SCENARIO_FAIL);
         List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
                 .createCandidateSteps();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
+                candidateSteps);
         BatchFailures failures = new BatchFailures();
 
         PerformableTree performableTree = new PerformableTree();
@@ -359,7 +364,8 @@ class PerformableTreeBehaviour {
         when(storyLoader.loadStoryAsText(anyString())).thenReturn(GIVEN_SCENARIO_FAIL);
         List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
                 .createCandidateSteps();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
+                candidateSteps);
         BatchFailures failures = new BatchFailures();
 
         PerformableTree performableTree = new PerformableTree();
@@ -410,7 +416,8 @@ class PerformableTreeBehaviour {
         Configuration configuration = new MostUsefulConfiguration().useStoryReporterBuilder(storyReporterBuilder);
         List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
                 .createCandidateSteps();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
+                candidateSteps);
 
         PerformableTree performableTree = new PerformableTree();
         RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
@@ -476,7 +483,7 @@ class PerformableTreeBehaviour {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useStoryLoader(mock(StoryLoader.class));
         PerformableTree performableTree = new PerformableTree();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(emptyList());
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(), emptyList());
         RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
                 mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class));
         Story story = EMPTY_STORY;

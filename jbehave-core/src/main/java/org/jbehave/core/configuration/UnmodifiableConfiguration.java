@@ -7,6 +7,7 @@ import com.thoughtworks.paranamer.Paranamer;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jbehave.core.condition.StepConditionMatcher;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -135,6 +136,16 @@ public class UnmodifiableConfiguration extends Configuration {
     @Override
     public StoryPathResolver storyPathResolver() {
         return delegate.storyPathResolver();
+    }
+
+    @Override
+    public StepConditionMatcher stepConditionMatcher() {
+        return delegate.stepConditionMatcher();
+    }
+
+    @Override
+    public Configuration useStepConditionMatcher(StepConditionMatcher stepConditionMatcher) {
+        throw notAllowed();
     }
 
     @Override

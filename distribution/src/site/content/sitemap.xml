@@ -54,6 +54,7 @@
     <page>parameter-injection.html</page>
     <page>parameter-converters.html</page>
     <page>composite-steps.html</page>
+    <page>conditional-steps.html</page>
     <page>parametrised-scenarios.html</page>
     <page>given-stories.html</page>
     <page>tabular-parameters.html</page>

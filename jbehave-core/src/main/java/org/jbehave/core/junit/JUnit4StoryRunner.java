@@ -112,7 +112,8 @@ public class JUnit4StoryRunner extends BlockJUnit4ClassRunner {
 
     private List<Description> buildDescriptionsFromStories(List<String> storyPaths) {
         List<CandidateSteps> candidateSteps = getCandidateSteps();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
+                candidateSteps);
         JUnit4DescriptionGenerator descriptionGenerator = new JUnit4DescriptionGenerator(allStepCandidates,
                 configuration);
         List<Description> storyDescriptions = new ArrayList<>();

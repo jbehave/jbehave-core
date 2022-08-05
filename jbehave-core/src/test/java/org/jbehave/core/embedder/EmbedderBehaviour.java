@@ -1121,7 +1121,8 @@ class EmbedderBehaviour {
     private RunContext mockRunContext(PerformableTree performableTree, EmbedderMonitor monitor,
             Configuration configuration, InjectableStepsFactory stepsFactory, MetaFilter filter) {
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(candidateSteps);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
+                candidateSteps);
         RunContext runContext = new RunContext(configuration, allStepCandidates, monitor, filter, new BatchFailures());
         when(performableTree
                 .newRunContext(eq(configuration), isA(AllStepCandidates.class), eq(monitor), isA(MetaFilter.class),

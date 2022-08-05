@@ -57,7 +57,7 @@ public class MostUsefulConfiguration extends Configuration {
         useParameterControls(new ParameterControls());
         useFailureStrategy(new RethrowingFailure());
         usePendingStepStrategy(new PassingUponPendingStep());
-        useStepFinder(new StepFinder());
+        useStepFinder(new StepFinder(stepConditionMatcher()));
         useStepCollector(new MarkUnmatchedStepsAsPending(stepFinder(), keywords()));
         useStepPatternParser(new RegexPrefixCapturingPatternParser());
         useStepMonitor(new SilentStepMonitor());

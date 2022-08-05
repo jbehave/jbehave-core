@@ -9,6 +9,8 @@ import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
 import org.jbehave.core.Embeddable;
+import org.jbehave.core.condition.ReflectionBasedStepConditionMatcher;
+import org.jbehave.core.condition.StepConditionMatcher;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailingUponPendingStep;
@@ -228,6 +230,11 @@ public abstract class Configuration {
      */
     private boolean parallelStoryExamplesEnabled;
 
+    /**
+     * The step condition matcher to match conditional steps
+     */
+    protected StepConditionMatcher stepConditionMatcher;
+
     public Configuration() {
     }
 
@@ -347,7 +354,7 @@ public abstract class Configuration {
 
     public StepFinder stepFinder() {
         if (stepFinder == null) {
-            stepFinder = new StepFinder();
+            stepFinder = new StepFinder(stepConditionMatcher());
         }
         return stepFinder;
     }
@@ -435,6 +442,18 @@ public abstract class Configuration {
             aliasPaths = Collections.emptySet();
         }
         return aliasPaths;
+    }
+
+    public StepConditionMatcher stepConditionMatcher() {
+        if (stepConditionMatcher == null) {
+            stepConditionMatcher = new ReflectionBasedStepConditionMatcher();
+        }
+        return stepConditionMatcher;
+    }
+
+    public Configuration useStepConditionMatcher(StepConditionMatcher stepConditionMatcher) {
+        this.stepConditionMatcher = stepConditionMatcher;
+        return this;
     }
 
     public Configuration useKeywords(Keywords keywords) {

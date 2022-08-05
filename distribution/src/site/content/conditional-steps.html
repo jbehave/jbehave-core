@@ -1,0 +1,112 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+    <title>Conditional Steps</title>
+</head>
+
+<body>
+
+    <h2>Conditional Steps</h2>
+
+    <p>The conditional steps mechanism allows the user to choose a step to execute based on the result
+        of predicate evaluation. This mechanism can be used instead of conditional statements
+        like if-else/switch in case of grow of number of steps with the same naming but different internal logic.</p>
+
+    <p>Let's consider the following switch operator with a bunch of conditions:</p>
+
+    <pre class="brush: java">
+    @Given("food for my pet")
+    public void prepareFoodForMyPet() {
+        String partOfDay = ...;
+        switch (partOfDay) {
+            case "morning":
+                // logic for morning
+                break;
+            case "evening":
+                // logic for evening
+                break;
+            case "afternoon":
+                // logic for evening
+                break;
+        }
+    }
+    </pre>
+
+    <p>With conditional steps the logic can be rewritten in the following way:</p>
+
+    <pre class="brush: java">
+    @Conditional(condition = PartOfDayCondition.class, value = "morning")
+    @Given("food for my pet")
+    public void prepareMorningFood() {
+        // logic for morning
+    }
+
+    @Conditional(condition = PartOfDayCondition.class, value = "evening")
+    @Given("food for my pet")
+    public void prepareEveningFood() {
+        // logic for evening
+    }
+
+    @Conditional(condition = PartOfDayCondition.class, value = "afternoon")
+    @Given("food for my pet")
+    public void prepareAfternoonFood() {
+        // logic for afternoon
+    }
+    </pre>
+
+    <p>To make this work we need the following condition implementation:</p>
+
+    <pre class="brush: java">
+    public class PartOfDayCondition implements Predicate\<Object\>
+    {
+        @Override
+        public boolean test(Object value)
+        {
+            String partOfDay = ...;
+            return partOfDay.equals(value);
+        }
+    }
+    </pre>
+
+    <p>By default conditions are checked by <a href="javadoc/core/org/jbehave/core/condition/DefaultStepConditionMatcher.html">DefaultStepConditionMatcher</a>
+        that requires conditions to have public non-args constructor, custom step condition matcher can be created by implementing the
+        <a href="javadoc/core/org/jbehave/core/condition/StepConditionMatcher.html">StepConditionMatcher</a>
+        interface and then registering the new implementation in a
+        <a href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a>
+        instance.
+    </p>
+
+    <script type="syntaxhighlighter" class="brush: java">
+    <![CDATA[
+
+    public class MyStepConditionMatcher implements StepConditionMatcher {
+        @Override
+        public boolean check(Class<? extends Predicate<Object>> type, Object value) {
+            return ...;
+        }
+    }
+
+    public class Stories extends JUnitStories {
+
+        public Stories() {
+            Configuration configuration = new MostUsefulConfiguration()
+                    .useStepConditionMatcher(new MyStepConditionMatcher())
+                    ...;
+        }
+    }
+    ]]>
+    </script>
+
+    <p>Notes:</p>
+    <ul>
+        <li>a condition at the method level has higher priority than a condition at the class level</li>
+        <li>if a step is annotated as conditional, then all the steps with the same wording must be conditional,
+            otherwise, an exception is thrown</li>
+        <li>step is marked as pending if there are no steps matched condition or there is more than one matched step</li>
+    </ul>
+
+</body>
+
+</html>

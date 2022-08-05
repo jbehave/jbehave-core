@@ -16,7 +16,12 @@ import static org.jbehave.core.steps.StepType.GIVEN;
 import static org.jbehave.core.steps.StepType.IGNORABLE;
 import static org.jbehave.core.steps.StepType.THEN;
 import static org.jbehave.core.steps.StepType.WHEN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -30,18 +35,23 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
+import org.jbehave.core.annotations.Conditional;
 import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Pending;
 import org.jbehave.core.annotations.When;
+import org.jbehave.core.condition.ReflectionBasedStepConditionMatcher;
+import org.jbehave.core.condition.StepConditionMatchException;
+import org.jbehave.core.condition.StepConditionMatcher;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.AllStepCandidates;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -53,9 +63,12 @@ import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
+import org.jbehave.core.steps.AbstractStepResult.Pending;
+import org.jbehave.core.steps.AbstractStepResult.Successful;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.context.StepsContext;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatcher;
 
 class StepCandidateBehaviour {
 
@@ -540,6 +553,162 @@ class StepCandidateBehaviour {
                 () -> step.createMatchedStep("Then foo named xyz", namedParameters, emptyList()));
     }
 
+    @Test
+    void shouldCreateConditionalMatchedStep() {
+        ConditionalSteps instance = new ConditionalSteps();
+        ConditionalStepCandidate candidate = createConditionalCandidate(instance);
+        StepMonitor monitor = mock(StepMonitor.class);
+        candidate.getStepCreator().useStepMonitor(monitor);
+        Step step = candidate.createMatchedStep("Given conditional step", Collections.emptyMap(),
+                Collections.emptyList());
+        StoryReporter reporter = mock(StoryReporter.class);
+        TestConditionWithState.state = "strange";
+        StepResult result = step.perform(reporter, null);
+        assertThat(result, instanceOf(Successful.class));
+        TestConditionWithState.state = "things";
+        result = step.perform(reporter, null);
+        assertThat(result, instanceOf(Successful.class));
+        assertEquals("strange things", instance.getPhrase());
+        result = step.doNotPerform(reporter, null);
+        assertThat(result, instanceOf(NotPerformed.class));
+        verify(monitor).beforePerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addStrange")));
+        verify(monitor).beforePerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addThings")));
+        verify(monitor).afterPerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addStrange")));
+        verify(monitor).afterPerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addThings")));
+        verifyNoMoreInteractions(monitor);
+    }
+
+    private ArgumentMatcher<Method> matchMethod(String name) {
+        return m -> m.getName().contains(name);
+    }
+
+    @Test
+    void shouldNotAllowInvokeGetMethodOnConditionalStep() {
+        ConditionalStepCandidate candidate = createConditionalCandidate();
+        assertThrows(UnsupportedOperationException.class, candidate::getMethod);
+    }
+
+    @Test
+    void shouldReturnPendingIfNoStepsWereMatchedCondition() {
+        ConditionalStepCandidate candidate = createConditionalCandidate();
+        TestConditionWithState.state = "disable matching of any condition";
+        StoryReporter reporter = mock(StoryReporter.class);
+        Step step = candidate.createMatchedStep("Given conditional step", Collections.emptyMap(),
+                Collections.emptyList());
+        String expectedMessage = "Given conditional step" + System.lineSeparator()
+                + "None of the following steps were matched any condition:" + System.lineSeparator()
+                + "class org.jbehave.core.steps.StepCandidateBehaviour$ConditionalSteps.addThings (condition: class"
+                + " org.jbehave.core.steps.StepCandidateBehaviour$TestConditionWithState things)"
+                + System.lineSeparator() + "class org.jbehave.core.steps.StepCandidateBehaviour$ConditionalSteps"
+                + ".addStrange (condition: class org.jbehave.core.steps.StepCandidateBehaviour$TestConditionWithState"
+                + " strange)";
+        verifyPending(step, expectedMessage, reporter);
+    }
+
+    @Test
+    void shouldReturnPendingIfMoreThanOneStepWasMatchedCondition() {
+        ConditionalStepCandidate candidate = createConditionalCandidate();
+        TestConditionWithState.state = "s";
+        StoryReporter reporter = mock(StoryReporter.class);
+        Step step = candidate.createMatchedStep("Given conditional step", Collections.emptyMap(),
+                Collections.emptyList());
+        String expectedMessage = "Given conditional step" + System.lineSeparator()
+                + "More than one conditional step matched the condition:" + System.lineSeparator()
+                + "class org.jbehave.core.steps.StepCandidateBehaviour$ConditionalSteps.addThings (condition: class"
+                + " org.jbehave.core.steps.StepCandidateBehaviour$TestConditionWithState things)"
+                + System.lineSeparator() + "class org.jbehave.core.steps.StepCandidateBehaviour$ConditionalSteps"
+                + ".addStrange (condition: class org.jbehave.core.steps.StepCandidateBehaviour$TestConditionWithState"
+                + " strange)";
+        verifyPending(step, expectedMessage, reporter);
+    }
+
+    @Test
+    void shouldReturnPendingInCaseOfStepConditionMatchException() throws StepConditionMatchException {
+        ConditionalSteps instance = new ConditionalSteps();
+        StepConditionMatcher matcher = mock(StepConditionMatcher.class);
+        StepConditionMatchException matchException = new StepConditionMatchException("match exception message");
+        doThrow(matchException).when(matcher).matches(any(), any());
+        ConditionalStepCandidate candidate = createConditionalCandidate(instance, matcher);
+        StoryReporter reporter = mock(StoryReporter.class);
+        Step step = candidate.createMatchedStep("Given conditional step", Collections.emptyMap(),
+                Collections.emptyList());
+        verifyPending(step, "Given conditional step" + System.lineSeparator() + matchException.getMessage(), reporter);
+    }
+
+    @Test
+    void shouldReturnPendingInCaseOfStepConditionMatchExceptionOnDoNotPerform() throws StepConditionMatchException {
+        ConditionalSteps instance = new ConditionalSteps();
+        StepConditionMatcher matcher = mock(StepConditionMatcher.class);
+        StepConditionMatchException matchException = new StepConditionMatchException("match exception message");
+        doThrow(matchException).when(matcher).matches(any(), any());
+        ConditionalStepCandidate candidate = createConditionalCandidate(instance, matcher);
+        StoryReporter reporter = mock(StoryReporter.class);
+        Step step = candidate.createMatchedStep("Given conditional step", Collections.emptyMap(),
+                Collections.emptyList());
+        Pending pending = asPending(step.doNotPerform(reporter, null));
+        assertEquals("Given conditional step" + System.lineSeparator() + matchException.getMessage(),
+                pending.getFailure().getMessage());
+    }
+
+    private void verifyPending(Step step, String message, StoryReporter reporter) {
+        Pending pending = asPending(step.perform(reporter, null));
+        verify(reporter).beforeStep(argThat(s -> message.equals(s.getStepAsString())
+                && StepExecutionType.PENDING.equals(s.getExecutionType())));
+        assertEquals(message, pending.getFailure().getMessage());
+    }
+
+    private Pending asPending(StepResult result) {
+        assertThat(result, instanceOf(Pending.class));
+        return (Pending) result;
+    }
+
+    private ConditionalStepCandidate createConditionalCandidate() {
+        return createConditionalCandidate(new ConditionalSteps());
+    }
+
+    private ConditionalStepCandidate createConditionalCandidate(Steps instance) {
+        return createConditionalCandidate(instance, new ReflectionBasedStepConditionMatcher());
+    }
+
+    private ConditionalStepCandidate createConditionalCandidate(Steps instance, StepConditionMatcher matcher) {
+        AllStepCandidates allCandidates = new AllStepCandidates(matcher, Collections.singletonList(instance));
+        return (ConditionalStepCandidate) allCandidates.getRegularSteps().get(0);
+    }
+
+    static class ConditionalSteps extends Steps {
+
+        private String phrase = "";
+
+        @Conditional(condition = TestConditionWithState.class, value = "strange")
+        @Given("conditional step")
+        public void addStrange() {
+            this.phrase += "strange";
+            this.phrase += " ";
+        }
+
+        @Conditional(condition = TestConditionWithState.class, value = "things")
+        @Given("conditional step")
+        public void addThings() {
+            this.phrase += "things";
+        }
+
+        String getPhrase() {
+            return this.phrase;
+        }
+
+    }
+
+    public static class TestConditionWithState implements Predicate<Object> {
+
+        static String state;
+
+        @Override
+        public boolean test(Object t) {
+            return t.toString().contains(state);
+        }
+
+    }
+
     static class NamedTypeSteps extends Steps {
         String givenName;
         String whenName;
@@ -591,7 +760,7 @@ class StepCandidateBehaviour {
     static class PendingSteps extends Steps {
 
         @Given("a pending step")
-        @Pending
+        @org.jbehave.core.annotations.Pending
         public void pendingStep() {
         }
 
