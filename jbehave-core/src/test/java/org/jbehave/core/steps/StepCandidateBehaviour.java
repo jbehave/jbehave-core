@@ -31,6 +31,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.MethodDescriptor;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -555,9 +556,10 @@ class StepCandidateBehaviour {
 
     @Test
     void shouldCreateConditionalMatchedStep() {
-        ConditionalSteps instance = new ConditionalSteps();
-        ConditionalStepCandidate candidate = createConditionalCandidate(instance);
         StepMonitor monitor = mock(StepMonitor.class);
+        ConditionalSteps instance = new ConditionalSteps(monitor);
+        ConditionalStepsTwo instance2 = new ConditionalStepsTwo(monitor);
+        ConditionalStepCandidate candidate = createConditionalCandidate(instance, instance2);
         candidate.getStepCreator().useStepMonitor(monitor);
         Step step = candidate.createMatchedStep("Given conditional step", Collections.emptyMap(),
                 Collections.emptyList());
@@ -565,17 +567,19 @@ class StepCandidateBehaviour {
         TestConditionWithState.state = "strange";
         StepResult result = step.perform(reporter, null);
         assertThat(result, instanceOf(Successful.class));
+        verify(monitor).beforePerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addStrange")));
+        verify(monitor).afterPerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addStrange")));
         TestConditionWithState.state = "things";
         result = step.perform(reporter, null);
         assertThat(result, instanceOf(Successful.class));
-        assertEquals("strange things", instance.getPhrase());
+        verify(monitor).beforePerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addThings")));
+        verify(monitor).afterPerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addThings")));
+        TestConditionWithState.state = "4";
+        result = step.perform(reporter, null);
+        assertThat(result, instanceOf(Successful.class));
         result = step.doNotPerform(reporter, null);
         assertThat(result, instanceOf(NotPerformed.class));
-        verify(monitor).beforePerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addStrange")));
-        verify(monitor).beforePerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addThings")));
-        verify(monitor).afterPerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addStrange")));
-        verify(monitor).afterPerforming(eq("Given conditional step"), eq(false), argThat(matchMethod("addThings")));
-        verifyNoMoreInteractions(monitor);
+        assertEquals("strange things 4", instance.getPhrase() + instance2.getPhrase());
     }
 
     private ArgumentMatcher<Method> matchMethod(String name) {
@@ -628,7 +632,7 @@ class StepCandidateBehaviour {
         StepConditionMatcher matcher = mock(StepConditionMatcher.class);
         StepConditionMatchException matchException = new StepConditionMatchException("match exception message");
         doThrow(matchException).when(matcher).matches(any(), any());
-        ConditionalStepCandidate candidate = createConditionalCandidate(instance, matcher);
+        ConditionalStepCandidate candidate = createConditionalCandidate(matcher, instance);
         StoryReporter reporter = mock(StoryReporter.class);
         Step step = candidate.createMatchedStep("Given conditional step", Collections.emptyMap(),
                 Collections.emptyList());
@@ -641,7 +645,7 @@ class StepCandidateBehaviour {
         StepConditionMatcher matcher = mock(StepConditionMatcher.class);
         StepConditionMatchException matchException = new StepConditionMatchException("match exception message");
         doThrow(matchException).when(matcher).matches(any(), any());
-        ConditionalStepCandidate candidate = createConditionalCandidate(instance, matcher);
+        ConditionalStepCandidate candidate = createConditionalCandidate(matcher, instance);
         StoryReporter reporter = mock(StoryReporter.class);
         Step step = candidate.createMatchedStep("Given conditional step", Collections.emptyMap(),
                 Collections.emptyList());
@@ -666,16 +670,24 @@ class StepCandidateBehaviour {
         return createConditionalCandidate(new ConditionalSteps());
     }
 
-    private ConditionalStepCandidate createConditionalCandidate(Steps instance) {
-        return createConditionalCandidate(instance, new ReflectionBasedStepConditionMatcher());
+    private ConditionalStepCandidate createConditionalCandidate(Steps... instances) {
+        return createConditionalCandidate(new ReflectionBasedStepConditionMatcher(), instances);
     }
 
-    private ConditionalStepCandidate createConditionalCandidate(Steps instance, StepConditionMatcher matcher) {
-        AllStepCandidates allCandidates = new AllStepCandidates(matcher, Collections.singletonList(instance));
+    private ConditionalStepCandidate createConditionalCandidate(StepConditionMatcher matcher, Steps... instances) {
+        AllStepCandidates allCandidates = new AllStepCandidates(matcher, Arrays.asList(instances));
         return (ConditionalStepCandidate) allCandidates.getRegularSteps().get(0);
     }
 
     static class ConditionalSteps extends Steps {
+
+        public ConditionalSteps(StepMonitor monitor) {
+            super(new MostUsefulConfiguration().useStepMonitor(monitor));
+        }
+
+        public ConditionalSteps() {
+            super(new MostUsefulConfiguration());
+        }
 
         private String phrase = "";
 
@@ -690,6 +702,26 @@ class StepCandidateBehaviour {
         @Given("conditional step")
         public void addThings() {
             this.phrase += "things";
+        }
+
+        String getPhrase() {
+            return this.phrase;
+        }
+
+    }
+
+    static class ConditionalStepsTwo extends Steps {
+
+        public ConditionalStepsTwo(StepMonitor monitor) {
+            super(new MostUsefulConfiguration().useStepMonitor(monitor));
+        }
+
+        private String phrase = "";
+
+        @Conditional(condition = TestConditionWithState.class, value = "4")
+        @Given("conditional step")
+        public void addFour() {
+            this.phrase += " 4";
         }
 
         String getPhrase() {
