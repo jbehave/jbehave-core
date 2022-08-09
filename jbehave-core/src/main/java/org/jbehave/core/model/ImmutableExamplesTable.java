@@ -16,8 +16,8 @@ public final class ImmutableExamplesTable extends ExamplesTable {
     }
 
     @Override
-    public Map<String, String> getRow(int row) {
-        return Collections.unmodifiableMap(super.getRow(row));
+    public Map<String, String> getRow(int rowIndex) {
+        return Collections.unmodifiableMap(super.getRow(rowIndex));
     }
 
     @Override
@@ -26,12 +26,12 @@ public final class ImmutableExamplesTable extends ExamplesTable {
     }
 
     @Override
-    public ExamplesTable withRowValues(int row, Map<String, String> values) {
+    public ExamplesTable withRowValues(int rowIndex, Map<String, String> values) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ExamplesTable withRows(List<Map<String, String>> values) {
+    public ExamplesTable withRows(List<Map<String, String>> rows) {
         throw new UnsupportedOperationException();
     }
 

@@ -11,17 +11,16 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -141,7 +140,7 @@ public class ExamplesTable {
     private final TableRows tableRows;
     private final Deque<TableProperties> tablePropertiesQueue = new LinkedList<>();
 
-    private Map<String, String> namedParameters = new HashMap<>();
+    private Map<String, String> namedParameters = Collections.emptyMap();
     private ParameterControls parameterControls;
 
     public ExamplesTable(String tableAsString) {
@@ -212,22 +211,31 @@ public class ExamplesTable {
         return this;
     }
 
-    public ExamplesTable withRowValues(int row, Map<String, String> values) {
-        getRow(row).putAll(values);
+    public ExamplesTable withRowValues(int rowIndex, Map<String, String> values) {
         for (String header : values.keySet()) {
             if (!getHeaders().contains(header)) {
                 getHeaders().add(header);
             }
         }
+        List<String> row = getRowValues(rowIndex);
+        List<String> headers = getHeaders();
+        for (int i = 0, headersSize = headers.size(); i < headersSize; i++) {
+            String value = values.get(headers.get(i));
+
+            if (i >= row.size()) {
+                row.add(Optional.ofNullable(value).orElse(EMPTY_VALUE));
+            } else if (value != null) {
+                row.set(i, value);
+            }
+        }
         return this;
     }
 
-    public ExamplesTable withRows(List<Map<String, String>> values) {
-        getHeaders().clear();
-        tableRows.getRows().clear();
-        if (!values.isEmpty()) {
-            getHeaders().addAll(values.get(0).keySet());
-            tableRows.getRows().addAll(values);
+    public ExamplesTable withRows(List<Map<String, String>> rows) {
+        tableRows.clear();
+        if (!rows.isEmpty()) {
+            getHeaders().addAll(rows.get(0).keySet());
+            rows.stream().map(Map::values).map(ArrayList::new).forEach(tableRows.rows::add);
         }
         return this;
     }
@@ -240,44 +248,53 @@ public class ExamplesTable {
         return lastTableProperties().getPropertiesAsString();
     }
 
+    private String replaceNamedParameters(String text) {
+        return parameterControls.replaceAllDelimitedNames(text, namedParameters);
+    }
+
+    private List<String> replaceNamedParameters(List<String> values, boolean replaceNamedParameters) {
+        return replaceNamedParameters ? values.stream().map(this::replaceNamedParameters).collect(toList()) : values;
+    }
+
     public List<String> getHeaders() {
         return tableRows.getHeaders();
     }
 
-    public Map<String, String> getRow(int row) {
-        if (row > tableRows.getRows().size() - 1) {
-            throw new RowNotFound(row);
+    public Map<String, String> getRow(int rowIndex) {
+        return getRow(rowIndex, false);
+    }
+
+    public Map<String, String> getRow(int rowIndex, boolean replaceNamedParameters) {
+        List<String> values = getRowValues(rowIndex, replaceNamedParameters);
+
+        if (!tableRows.areAllColumnsDistinct()) {
+            throw new NonDistinctColumnFound("ExamplesTable contains non-distinct columns");
         }
-        Map<String, String> values = tableRows.getRows().get(row);
-        if (getHeaders().size() != values.keySet().size()) {
-            for (String header : getHeaders()) {
-                if (!values.containsKey(header)) {
-                    values.put(header, EMPTY_VALUE);
-                }
-            }
+
+        Map<String, String> result = new LinkedHashMap<>();
+        List<String> headers = getHeaders();
+        for (int i = 0, headersSize = headers.size(); i < headersSize; i++) {
+            result.put(headers.get(i), i < values.size() ? values.get(i) : EMPTY_VALUE);
         }
-        return values;
+        return result;
     }
 
-    public Parameters getRowAsParameters(int row) {
-        return getRowAsParameters(row, false);
+    public List<String> getRowValues(int rowIndex) {
+        return getRowValues(rowIndex, false);
     }
 
-    public Parameters getRowAsParameters(int row, boolean replaceNamedParameters) {
-        Map<String, String> rowValues = getRow(row);
-        return createParameters(replaceNamedParameters ? replaceNamedParameters(rowValues) : rowValues);
+    public List<String> getRowValues(int rowIndex, boolean replaceNamedParameters) {
+        return replaceNamedParameters(tableRows.getRow(rowIndex), replaceNamedParameters);
     }
 
-    private Map<String, String> replaceNamedParameters(Map<String, String> row) {
-        Map<String, String> replaced = new LinkedHashMap<>();
-        for (Entry<String, String> cell : row.entrySet()) {
-            replaced.put(cell.getKey(), replaceNamedParameters(cell.getValue()));
-        }
-        return replaced;
+    public Parameters getRowAsParameters(int rowIndex) {
+        return getRowAsParameters(rowIndex, false);
     }
 
-    private String replaceNamedParameters(String text) {
-        return parameterControls.replaceAllDelimitedNames(text, namedParameters);
+    public Parameters getRowAsParameters(int rowIndex, boolean replaceNamedParameters) {
+        Map<String, String> row = getRow(rowIndex, replaceNamedParameters);
+        return new ConvertedParameters(new ChainedRow(new ConvertedParameters(row, parameterConverters), defaults),
+                parameterConverters);
     }
 
     public int getRowCount() {
@@ -311,13 +328,13 @@ public class ExamplesTable {
     }
 
     public <T> List<T> getRowsAs(Class<T> type) {
-        return getRowsAs(type, new HashMap<String, String>());
+        return getRowsAs(type, Collections.emptyMap());
     }
 
     public <T> List<T> getRowsAs(Class<T> type, Map<String, String> fieldNameMapping) {
         return getRowsAsParameters().stream()
                                     .map(p -> p.mapTo(type, fieldNameMapping))
-                                    .collect(Collectors.toList());
+                                    .collect(toList());
     }
 
     public List<String> getColumn(String columnName) {
@@ -325,18 +342,7 @@ public class ExamplesTable {
     }
 
     public List<String> getColumn(String columnName, boolean replaceNamedParameters) {
-        if (!getHeaders().contains(columnName)) {
-            throw new ColumnNotFound(columnName);
-        }
-        List<String> column = tableRows.getRows().stream()
-                .map(row -> row.get(columnName))
-                .collect(toList());
-        return replaceNamedParameters ? column.stream().map(this::replaceNamedParameters).collect(toList()) : column;
-    }
-
-    private Parameters createParameters(Map<String, String> values) {
-        return new ConvertedParameters(new ChainedRow(new ConvertedParameters(values, parameterConverters), defaults),
-                parameterConverters);
+        return replaceNamedParameters(tableRows.getColumn(columnName), replaceNamedParameters);
     }
 
     public String getHeaderSeparator() {
@@ -351,7 +357,25 @@ public class ExamplesTable {
         if (tableRows.getRows().isEmpty()) {
             return EMPTY_VALUE;
         }
-        return format();
+        StringBuilder sb = new StringBuilder();
+        for (TableProperties properties : tablePropertiesQueue) {
+            String propertiesAsString = properties.getPropertiesAsString();
+            if (!propertiesAsString.isEmpty()) {
+                sb.append("{").append(propertiesAsString).append("}").append(lastTableProperties().getRowSeparator());
+            }
+        }
+        List<String> headers = getHeaders();
+
+        headers.forEach(header -> sb.append(getHeaderSeparator()).append(header));
+
+        sb.append(getHeaderSeparator()).append(lastTableProperties().getRowSeparator());
+        for (List<String> row : tableRows.getRows()) {
+            for (int i = 0, headersSize = headers.size(); i < headersSize; i++) {
+                sb.append(getValueSeparator()).append(i < row.size() ? row.get(i) : EMPTY_VALUE);
+            }
+            sb.append(getValueSeparator()).append(lastTableProperties().getRowSeparator());
+        }
+        return sb.toString();
     }
 
     public boolean isEmpty() {
@@ -362,27 +386,6 @@ public class ExamplesTable {
         output.print(asString());
     }
 
-    private String format() {
-        StringBuilder sb = new StringBuilder();
-        for (TableProperties properties : tablePropertiesQueue) {
-            String propertiesAsString = properties.getPropertiesAsString();
-            if (!propertiesAsString.isEmpty()) {
-                sb.append("{").append(propertiesAsString).append("}").append(lastTableProperties().getRowSeparator());
-            }
-        }
-        for (String header : getHeaders()) {
-            sb.append(getHeaderSeparator()).append(header);
-        }
-        sb.append(getHeaderSeparator()).append(lastTableProperties().getRowSeparator());
-        for (Map<String, String> row : getRows()) {
-            for (String header : getHeaders()) {
-                sb.append(getValueSeparator()).append(row.get(header));
-            }
-            sb.append(getValueSeparator()).append(lastTableProperties().getRowSeparator());
-        }
-        return sb.toString();
-    }
-
     public static ExamplesTable empty() {
         return new ExamplesTable("");
     }
@@ -390,20 +393,6 @@ public class ExamplesTable {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-    @SuppressWarnings("serial")
-    public static class RowNotFound extends RuntimeException {
-        public RowNotFound(int row) {
-            super(Integer.toString(row));
-        }
-    }
-
-    @SuppressWarnings("serial")
-    public static class ColumnNotFound extends RuntimeException {
-        public ColumnNotFound(String columnName) {
-            super(String.format("The '%s' column does not exist", columnName));
-        }
     }
 
     public static final class TableProperties {
@@ -566,20 +555,81 @@ public class ExamplesTable {
 
     public static final class TableRows {
         private final List<String> headers;
-        private final List<Map<String, String>> rows;
+        private final List<List<String>> rows;
+        private final boolean allColumnsDistinct;
 
-        public TableRows(List<String> headers, List<Map<String, String>> rows) {
+        public TableRows(List<String> headers, List<List<String>> rows) {
             this.headers = headers;
             this.rows = rows;
+            this.allColumnsDistinct = headers.stream().distinct().count() == headers.size();
         }
 
         public List<String> getHeaders() {
             return headers;
         }
 
-        public List<Map<String, String>> getRows() {
+        public List<List<String>> getRows() {
             return rows;
+        }
+
+        private boolean areAllColumnsDistinct() {
+            return allColumnsDistinct;
+        }
+
+        private void clear() {
+            headers.clear();
+            rows.clear();
+        }
+
+        private List<String> getRow(int rowIndex) {
+            if (rowIndex > rows.size() - 1) {
+                throw new RowNotFound(rowIndex);
+            }
+            return rows.get(rowIndex);
+        }
+
+        private List<String> getColumn(int columnIndex) {
+            return rows.stream().map(row -> row.get(columnIndex)).collect(toList());
+        }
+
+        private List<String> getColumn(String columnName) {
+            int[] headerIndexes = IntStream.range(0, headers.size()).filter(i -> headers.get(i).equals(columnName))
+                    .toArray();
+            long headerCount = headerIndexes.length;
+            if (headerCount == 0) {
+                throw new ColumnNotFound(columnName);
+            } else if (headerCount > 1) {
+                throw new NonDistinctColumnFound(columnName, headerCount);
+            }
+            return getColumn(headerIndexes[0]);
         }
     }
 
+    public static class RowNotFound extends RuntimeException {
+        static final long serialVersionUID = 6577709350720827070L;
+
+        public RowNotFound(int rowIndex) {
+            super(Integer.toString(rowIndex));
+        }
+    }
+
+    public static class ColumnNotFound extends RuntimeException {
+        static final long serialVersionUID = -6008855238823273059L;
+
+        public ColumnNotFound(String columnName) {
+            super(String.format("The '%s' column does not exist", columnName));
+        }
+    }
+
+    public static class NonDistinctColumnFound extends RuntimeException {
+        static final long serialVersionUID = -6898791308443992005L;
+
+        public NonDistinctColumnFound(String columnName, long totalColumnCount) {
+            super(String.format("There are %d columns with the name '%s'", totalColumnCount, columnName));
+        }
+
+        public NonDistinctColumnFound(String message) {
+            super(message);
+        }
+    }
 }

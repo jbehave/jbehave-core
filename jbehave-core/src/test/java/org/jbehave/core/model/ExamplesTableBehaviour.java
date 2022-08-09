@@ -8,7 +8,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -58,41 +60,62 @@ public class ExamplesTableBehaviour {
     private static final String HEADER_SEPARATOR_KEY = "headerSeparator";
     private static final String IGNORABLE_SEPARATOR_KEY = "ignorableSeparator";
 
-    private String tableAsString = "|one|two|\n" + "|11|12|\n" + "|21|22|\n";
+    private static final String SIMPLE_TABLE =
+            "|one|two|\n"
+            + "|11|12|\n"
+            + "|21|22|\n";
 
-    private String tableWithSpacesAsString = "|one |two | |\n" + "|11 |12 | |\n" + "| 21| 22| |\n";
+    private static final String TABLE_WITH_SPACES =
+            "|one |two | |\n"
+            + "|11 |12 | |\n"
+            + "| 21| 22| |\n";
 
-    private String landscapeTableAsString = "|one|11|21|\n" + "|two|12|22|\n";
+    private static final String LANDSCAPE_TABLE =
+            "|one|11|21|\n"
+            + "|two|12|22|\n";
 
-    private String wikiTableAsString = "||one||two||\n" + "|11|12|\n" + "|21|22|\n";
+    private static final String WIKI_TABLE =
+            "||one||two||\n"
+            + "|11|12|\n"
+            + "|21|22|\n";
 
-    private String tableWithCommentsAsString = "|---------|\n" + "|one|two|\n" + "|-- A comment --|\n" + "|11|12|\n"
-            + "|-- Another comment --|\n" + "|21|22|\n";
+    private static final String TABLE_WITH_COMMENTS =
+            "|---------|\n"
+            + "|one|two|\n"
+            + "|-- A comment --|\n"
+            + "|11|12|\n"
+            + "|-- Another comment --|\n"
+            + "|21|22|\n";
+
+    private static final String TABLE_WITH_DUPLICATE_COLUMNS =
+            "|one|two|one|\n"
+            + "|11|12|13|\n"
+            + "|21|22|23|\n";
 
     @Test
     void shouldParseTableWithDefaultSeparators() {
-        ExamplesTable table = new ExamplesTable(tableAsString);
+        ExamplesTable table = new ExamplesTable(SIMPLE_TABLE);
         ensureColumnOrderIsPreserved(table);
-        assertThat(table.asString(), equalTo(tableAsString));
+        assertThat(table.asString(), equalTo(SIMPLE_TABLE));
     }
 
     @Test
     void shouldCreateEmptyTable() {
         ExamplesTable table = ExamplesTable.empty();
         assertThat(table.asString(), equalTo(""));
-        assertFalse(table == ExamplesTable.empty());
+        assertNotSame(table, ExamplesTable.empty());
     }
 
     @Test
     void shouldGetColumn() {
-        ExamplesTable table = new ExamplesTable(tableAsString);
+        ExamplesTable table = new ExamplesTable(SIMPLE_TABLE);
         assertThat(table.getColumn("one"), equalTo(asList("11", "21")));
         assertThat(table.getColumn("two"), equalTo(asList("12", "22")));
     }
 
     @Test
     void shouldFailIfColumnDoesNotExist() {
-        ExamplesTable table = new ExamplesTable(tableAsString);
+        ExamplesTable table = new ExamplesTable(SIMPLE_TABLE);
         ColumnNotFound exception = assertThrows(ColumnNotFound.class, () -> table.getColumn("three"));
         assertThat(exception.getMessage(), equalTo("The 'three' column does not exist"));
     }
@@ -104,7 +127,7 @@ public class ExamplesTableBehaviour {
         String ignorableSeparator = "!--";
         String properties = String.format("{headerSeparator=%s,valueSeparator=%s,ignorableSeparator=%s}%n",
                 headerSeparator, valueSeparator, ignorableSeparator);
-        String tableWithCustomSeparator = properties + wikiTableAsString;
+        String tableWithCustomSeparator = properties + WIKI_TABLE;
         ExamplesTable table = new ExamplesTable(tableWithCustomSeparator);
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
@@ -120,7 +143,7 @@ public class ExamplesTableBehaviour {
         String ignorableSeparator = "!--";
         String properties = String.format("{headerSeparator=%s,valueSeparator=%s,ignorableSeparator=%s}%n",
                 headerSeparator, valueSeparator, ignorableSeparator);
-        String tableWithCustomSeparator = properties + wikiTableAsString.replace("|", "!");
+        String tableWithCustomSeparator = properties + WIKI_TABLE.replace("|", "!");
         ExamplesTable table = new ExamplesTable(tableWithCustomSeparator);
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
@@ -130,7 +153,7 @@ public class ExamplesTableBehaviour {
 
     @Test
     void shouldTrimTableBeforeParsing() {
-        String untrimmedTableAsString = "\n    \n" + tableAsString + "\n    \n";
+        String untrimmedTableAsString = "\n    \n" + SIMPLE_TABLE + "\n    \n";
         ExamplesTable table = new ExamplesTable(untrimmedTableAsString);
         ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo("|one|two|\n|11|12|\n|21|22|\n"));
@@ -219,7 +242,7 @@ public class ExamplesTableBehaviour {
 
     @Test
     void shouldParseTablePreservingWhitespace() {
-        String tableWithProperties = "{trim=false}\n" + tableWithSpacesAsString;
+        String tableWithProperties = "{trim=false}\n" + TABLE_WITH_SPACES;
         ExamplesTable table = new ExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
         assertThat(properties.getProperty("trim"), equalTo("false"));
@@ -230,7 +253,7 @@ public class ExamplesTableBehaviour {
     @Test
     void shouldParseTableWithSeparatorsSpecifiedViaProperties() {
         String tableWithProperties = "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!}\n"
-                + tableWithCommentsAsString.replace("|", "!");
+                + TABLE_WITH_COMMENTS.replace("|", "!");
         ExamplesTable table = new ExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
         assertThat(properties.getProperty(IGNORABLE_SEPARATOR_KEY), equalTo("!--"));
@@ -241,7 +264,7 @@ public class ExamplesTableBehaviour {
 
     @Test
     void shouldParseTableAsLandscape() {
-        String tableWithProperties = "{transformer=FROM_LANDSCAPE}\n" + landscapeTableAsString;
+        String tableWithProperties = "{transformer=FROM_LANDSCAPE}\n" + LANDSCAPE_TABLE;
         ExamplesTableFactory factory = createFactory();
         ExamplesTable table = factory.createExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
@@ -251,13 +274,13 @@ public class ExamplesTableBehaviour {
 
     @Test
     void shouldParseTableWithCustomTransformerSpecifiedViaProperties() {
-        String tableWithProperties = "{transformer=myTransformer, trim=false}\n" + tableWithCommentsAsString;
+        String tableWithProperties = "{transformer=myTransformer, trim=false}\n" + TABLE_WITH_COMMENTS;
         TableTransformers tableTransformers = new TableTransformers();
         tableTransformers.useTransformer("myTransformer", new TableTransformer() {
 
             @Override
             public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
-                return tableWithSpacesAsString;
+                return TABLE_WITH_SPACES;
             }
 
         });
@@ -271,13 +294,13 @@ public class ExamplesTableBehaviour {
     @Test
     void shouldParseTableWithCustomNestedTransformers() {
         String tableWithProperties = "{transformer=myTransformer, trim=false, "
-                + "table=\\{transformer=NESTED_TRANSFORMER\\, parameter=value\\}}\n" + tableWithCommentsAsString;
+                + "table=\\{transformer=NESTED_TRANSFORMER\\, parameter=value\\}}\n" + TABLE_WITH_COMMENTS;
         TableTransformers tableTransformers = new TableTransformers();
         tableTransformers.useTransformer("myTransformer", new TableTransformer() {
 
             @Override
             public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
-                return tableWithSpacesAsString;
+                return TABLE_WITH_SPACES;
             }
 
         });
@@ -295,7 +318,7 @@ public class ExamplesTableBehaviour {
                         "{transformer=REPLACING, replacing=33, replacement=22}\n"
                       + "{transformer=MODIFYING_PROPERTIES}\n"
                       + "{transformer=FROM_LANDSCAPE}\n"
-                    + landscapeTableAsString.replace("22", "33");
+                    + LANDSCAPE_TABLE.replace("22", "33");
         TableTransformers tableTransformers = new TableTransformers();
         tableTransformers.useTransformer("MODIFYING_PROPERTIES", (tableAsString, tableParsers, properties) -> {
             properties.getProperties().setProperty("headerSeparator", "!");
@@ -622,9 +645,9 @@ public class ExamplesTableBehaviour {
     @Test
     void shouldIgnoreAllCommentLines() {
         // ignore comment lines
-        ExamplesTable table = new ExamplesTable(tableWithCommentsAsString);
+        ExamplesTable table = new ExamplesTable(TABLE_WITH_COMMENTS);
         ensureColumnOrderIsPreserved(table);
-        assertThat(table.asString(), equalTo(tableAsString));
+        assertThat(table.asString(), equalTo(SIMPLE_TABLE));
     }
 
     @Test
@@ -638,6 +661,43 @@ public class ExamplesTableBehaviour {
         ExamplesTable table = ExamplesTable.EMPTY;
         assertThat(table.asString(), equalTo(""));
         assertThat(table, instanceOf(ImmutableExamplesTable.class));
+    }
+
+    @Test
+    void shouldAllowToHaveTableWithDuplicateColumns() {
+        ExamplesTable table = new ExamplesTable(TABLE_WITH_DUPLICATE_COLUMNS);
+        assertThat(table.asString(), equalTo(TABLE_WITH_DUPLICATE_COLUMNS));
+    }
+
+    @Test
+    void shouldFailToGetNamedRowFromTableWithDuplicateColumns() {
+        ExamplesTable table = new ExamplesTable(TABLE_WITH_DUPLICATE_COLUMNS);
+        ExamplesTable.NonDistinctColumnFound ex = assertThrows(ExamplesTable.NonDistinctColumnFound.class,
+                () -> table.getRow(0));
+        assertEquals("ExamplesTable contains non-distinct columns", ex.getMessage());
+    }
+
+    @Test
+    void shouldFailToGetNonUniqueColumnFromTableWithDuplicateColumns() {
+        ExamplesTable table = new ExamplesTable(TABLE_WITH_DUPLICATE_COLUMNS);
+        ExamplesTable.NonDistinctColumnFound ex = assertThrows(ExamplesTable.NonDistinctColumnFound.class,
+                () -> table.getColumn("one"));
+        assertEquals("There are 2 columns with the name 'one'", ex.getMessage());
+    }
+
+    @Test
+    void shouldGetUniqueColumnFromTableWithDuplicateColumns() {
+        ExamplesTable table = new ExamplesTable(TABLE_WITH_DUPLICATE_COLUMNS);
+        assertEquals(asList("12", "22"), table.getColumn("two"));
+    }
+
+    @Test
+    void shouldReturnNamedRowFromJaggedTable() {
+        ExamplesTable table = new ExamplesTable("|one|two|\n|11|12|\n|21|");
+        Map<String, String> expected = new LinkedHashMap<>();
+        expected.put("one", "21");
+        expected.put("two", "");
+        assertEquals(expected, table.getRow(1));
     }
 
     private ExamplesTableFactory createFactory(ParameterConverter... converters) {

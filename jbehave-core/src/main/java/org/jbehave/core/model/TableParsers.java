@@ -2,10 +2,8 @@ package org.jbehave.core.model;
 
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
@@ -61,29 +59,25 @@ public class TableParsers {
 
     public TableRows parseRows(String tableAsString, TableProperties properties) {
         List<String> headers = new ArrayList<>();
-        List<Map<String, String>> data = new ArrayList<>();
+        List<List<String>> rows = new ArrayList<>();
 
-        String[] rows = tableAsString.split(ROW_SEPARATOR_PATTERN);
-        for (String row : rows) {
-            String trimmedRow = row.trim();
-            if (trimmedRow.startsWith(properties.getIgnorableSeparator()) || trimmedRow.isEmpty()) {
-                // skip ignorable or empty lines
-                continue;
-            } else if (headers.isEmpty()) {
-                headers.addAll(parseRow(trimmedRow, true, properties));
-            } else {
-                List<String> columns = parseRow(trimmedRow, false, properties);
-                Map<String, String> map = new LinkedHashMap<>();
-                for (int column = 0; column < columns.size(); column++) {
-                    if (column < headers.size()) {
-                        map.put(headers.get(column), columns.get(column));
+        for (String rowLine : tableAsString.split(ROW_SEPARATOR_PATTERN)) {
+            String trimmedRowLine = rowLine.trim();
+            // skip ignorable or empty lines
+            if (!trimmedRowLine.startsWith(properties.getIgnorableSeparator()) && !trimmedRowLine.isEmpty()) {
+                if (headers.isEmpty()) {
+                    headers.addAll(parseRow(trimmedRowLine, true, properties));
+                } else {
+                    List<String> cells = parseRow(trimmedRowLine, false, properties);
+                    if (cells.size() > headers.size()) {
+                        cells = cells.subList(0, headers.size());
                     }
+                    rows.add(cells);
                 }
-                data.add(map);
             }
         }
 
-        return new TableRows(headers, data);
+        return new TableRows(headers, rows);
     }
 
     public List<String> parseRow(String rowAsString, boolean header, TableProperties properties) {

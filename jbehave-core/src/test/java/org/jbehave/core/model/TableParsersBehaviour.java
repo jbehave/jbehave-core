@@ -6,9 +6,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -42,7 +40,7 @@ class TableParsersBehaviour {
         TableRows tableRows = new TableParsers(null, null).parseRows(table, tableProperties);
 
         // Then
-        List<Map<String, String>> rows = tableRows.getRows();
+        List<List<String>> rows = tableRows.getRows();
         assertThat(tableRows.getHeaders(), equalTo(Arrays.asList(KEY_1, KEY_2)));
         assertThat(rows, hasSize(6));
         assertAll(
@@ -68,7 +66,7 @@ class TableParsersBehaviour {
         TableRows tableRows = new TableParsers(null, null, Optional.of("NULL")).parseRows(table, tableProperties);
 
         // Then
-        List<Map<String, String>> rows = tableRows.getRows();
+        List<List<String>> rows = tableRows.getRows();
         assertThat(tableRows.getHeaders(), equalTo(Arrays.asList(KEY_1, KEY_2)));
         assertThat(rows, hasSize(2));
         assertAll(
@@ -77,10 +75,7 @@ class TableParsersBehaviour {
         );
     }
 
-    private void assertRow(Map<String, String> row, String cell1, String cell2) {
-        Map<String, String> expected = new HashMap<>();
-        expected.put(KEY_1, cell1);
-        expected.put(KEY_2, cell2);
-        assertThat(row, equalTo(expected));
+    private void assertRow(List<String> row, String cell1, String cell2) {
+        assertThat(row, equalTo(Arrays.asList(cell1, cell2)));
     }
 }
