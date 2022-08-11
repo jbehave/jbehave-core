@@ -22,6 +22,7 @@ import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.BeforeOrAfterStep;
+import org.jbehave.core.steps.ConditionalStepCandidate;
 import org.jbehave.core.steps.StepCandidate;
 import org.jbehave.core.steps.StepType;
 import org.junit.runner.Description;
@@ -185,6 +186,8 @@ public class JUnit4DescriptionGenerator {
     private void addExistingStep(Description description, String stringStepOneLine, StepCandidate matchingStep) {
         if (matchingStep.isComposite()) {
             addCompositeSteps(description, stringStepOneLine, matchingStep);
+        } else if (matchingStep instanceof ConditionalStepCandidate) {
+            addConditionalStep(description, stringStepOneLine);
         } else {
             addRegularStep(description, stringStepOneLine, matchingStep);
         }
@@ -219,6 +222,11 @@ public class JUnit4DescriptionGenerator {
     private void addPendingStep(Description description, String stringStep) {
         testCases++;
         description.addChild(Description.createSuiteDescription(uniquify("[PENDING] " + stringStep)));
+    }
+
+    private void addConditionalStep(Description description, String stringStep) {
+        testCases++;
+        description.addChild(Description.createSuiteDescription(uniquify(stringStep)));
     }
 
     private void addRegularStep(Description description, String stringStep, StepCandidate step) {
