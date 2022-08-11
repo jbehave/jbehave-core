@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -52,6 +53,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.BeforeOrAfterStep;
+import org.jbehave.core.steps.ConditionalStepCandidate;
 import org.jbehave.core.steps.StepCandidate;
 import org.jbehave.core.steps.StepType;
 import org.junit.jupiter.api.BeforeEach;
@@ -325,6 +327,23 @@ class JUnit4DescriptionGeneratorBehaviour {
         assertEquals(1, description.getChildren().size());
         assertThat(description.getChildren(),
                 everyItem(hasProperty("displayName", containsString("PENDING"))));
+        assertEquals(1, generator.getTestCases());
+    }
+
+    @Test
+    void shouldGenerateDescriptionForConditionalSteps() {
+        ConditionalStepCandidate stepCandidate = mock(ConditionalStepCandidate.class);
+        when(allStepCandidates.getRegularSteps()).thenReturn(singletonList(stepCandidate));
+        when(scenarioGivenStories.getPaths()).thenReturn(emptyList());
+        when(configuration.keywords()).thenReturn(new Keywords());
+        when(stepCandidate.matches(anyString(), ArgumentMatchers.isNull())).thenReturn(true);
+        Scenario scenario = createScenario(GIVEN_STEP);
+        Description description = createDescriptionFrom(scenario);
+        assertEquals(1, description.getChildren().size());
+        Description conditionalDescription = description.getChildren().get(0);
+        assertEquals(GIVEN_STEP, conditionalDescription.getDisplayName());
+        assertNull(conditionalDescription.getMethodName());
+        assertNull(conditionalDescription.getTestClass());
         assertEquals(1, generator.getTestCases());
     }
 
