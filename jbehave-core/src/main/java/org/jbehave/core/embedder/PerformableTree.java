@@ -133,8 +133,10 @@ public class PerformableTree {
         boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
         for (Map<String, String> storyExamplesTableRow : storyExamplesTableRows) {
             for (Map.Entry<String, String> entry : storyExamplesTableRow.entrySet()) {
+                String value = context.configuration().parameterControls().replaceAllDelimitedNames(
+                        entry.getValue(), storyExamplesTableRow);
                 entry.setValue((String)
-                        context.configuration().parameterConverters().convert(entry.getValue(), String.class));
+                        context.configuration().parameterConverters().convert(value, String.class));
             }
         }
         for (int i = 0; i < storyExamplesTableRows.size(); i++) {

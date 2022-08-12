@@ -206,7 +206,7 @@ class PerformableTreeBehaviour {
 
         ExamplesTable storyExamplesTable = ExamplesTable.empty().withRows(asList(
                 createExamplesRow("var1", "a", "var2", "b"),
-                createExamplesRow("var1", "c", "var2", "d")
+                createExamplesRow("var1", "c", "var2", "<var1>d<var1>")
         ));
         when(lifecycle.getExamplesTable()).thenReturn(storyExamplesTable);
 
@@ -246,12 +246,12 @@ class PerformableTreeBehaviour {
         examplePerformableScenarios = performableScenarios.get(1).getExamples();
         assertThat(examplePerformableScenarios.size(), is(scenarioExamplesRow1.size()));
         assertThat(examplePerformableScenarios.get(0).getParameters().get("var1"), is("E"));
-        assertThat(examplePerformableScenarios.get(0).getParameters().get("var2"), is("d"));
-        assertThat(examplePerformableScenarios.get(0).getParameters().get("var3"), is("dF"));
+        assertThat(examplePerformableScenarios.get(0).getParameters().get("var2"), is("cdc"));
+        assertThat(examplePerformableScenarios.get(0).getParameters().get("var3"), is("cdcF"));
 
-        assertThat(examplePerformableScenarios.get(1).getParameters().get("var1"), is("Gd"));
-        assertThat(examplePerformableScenarios.get(1).getParameters().get("var2"), is("d"));
-        assertThat(examplePerformableScenarios.get(1).getParameters().get("var3"), is("d"));
+        assertThat(examplePerformableScenarios.get(1).getParameters().get("var1"), is("Gcdc"));
+        assertThat(examplePerformableScenarios.get(1).getParameters().get("var2"), is("cdc"));
+        assertThat(examplePerformableScenarios.get(1).getParameters().get("var3"), is("cdc"));
     }
 
     private Map<String, String> createExamplesRow(String key1, String value1, String key2, String value2) {
