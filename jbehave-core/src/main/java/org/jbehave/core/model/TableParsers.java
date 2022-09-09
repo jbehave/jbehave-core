@@ -2,13 +2,17 @@ package org.jbehave.core.model;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.translate.CharSequenceTranslator;
+import org.apache.commons.text.translate.LookupTranslator;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
@@ -19,6 +23,17 @@ import org.jbehave.core.steps.ParameterConverters;
 public class TableParsers {
 
     private static final String ROW_SEPARATOR_PATTERN = "\r?\n";
+
+    private static final CharSequenceTranslator UNESCAPE_TRANSLATOR;
+
+    static {
+        final Map<CharSequence, CharSequence> unescapeMapping = new HashMap<>();
+        unescapeMapping.put("\\\\", "\\");
+        unescapeMapping.put("\\", StringUtils.EMPTY);
+        unescapeMapping.put("\\n", "\n");
+        unescapeMapping.put("\\r", "\r");
+        UNESCAPE_TRANSLATOR = new LookupTranslator(unescapeMapping);
+    }
 
     private final Keywords keywords;
     private final ParameterConverters parameterConverters;
@@ -86,6 +101,7 @@ public class TableParsers {
         Optional<String> nullPlaceholder = properties.getNullPlaceholder().map(Optional::of).orElse(
                 defaultNullPlaceholder);
         UnaryOperator<String> trimmer = properties.isTrim() ? String::trim : UnaryOperator.identity();
+        boolean processEscapeSequences = properties.isProcessEscapeSequences();
         String[] cells = StringUtils.splitByWholeSeparatorPreserveAllTokens(rowAsString.trim(), separator);
         List<String> row = new ArrayList<>(cells.length);
         for (int i = 0; i < cells.length; i++) {
@@ -95,6 +111,9 @@ public class TableParsers {
                 continue;
             }
             String trimmedCell = trimmer.apply(cell);
+            if (processEscapeSequences) {
+                trimmedCell = UNESCAPE_TRANSLATOR.translate(trimmedCell);
+            }
             row.add(nullPlaceholder.filter(trimmedCell::equals).isPresent() ? null : trimmedCell);
         }
         return row;

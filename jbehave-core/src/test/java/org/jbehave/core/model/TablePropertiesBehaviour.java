@@ -4,15 +4,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Optional;
 
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.steps.ParameterConverters;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class TablePropertiesBehaviour {
 
@@ -76,19 +81,41 @@ class TablePropertiesBehaviour {
     @Test
     void canGetDefaultProperties() {
         TableProperties properties = new TableProperties("", keywords, null);
-        assertThat(properties.getHeaderSeparator(), equalTo("|"));
-        assertThat(properties.getValueSeparator(), equalTo("|"));
-        assertThat(properties.getIgnorableSeparator(), equalTo("|--"));
-        assertThat(properties.getCommentSeparator(), equalTo(null));
-        assertThat(properties.isTrim(), is(true));
-        assertThat(properties.isMetaByRow(), is(false));
-        assertThat(properties.getTransformer(), is(nullValue()));
+        assertAll(
+                () -> assertThat(properties.getHeaderSeparator(), equalTo("|")),
+                () -> assertThat(properties.getValueSeparator(), equalTo("|")),
+                () -> assertThat(properties.getIgnorableSeparator(), equalTo("|--")),
+                () -> assertThat(properties.getCommentSeparator(), equalTo(null)),
+                () -> assertThat(properties.isTrim(), is(true)),
+                () -> assertThat(properties.getNullPlaceholder(), is(Optional.empty())),
+                () -> assertThat(properties.isProcessEscapeSequences(), is(false)),
+                () -> assertThat(properties.isMetaByRow(), is(false)),
+                () -> assertThat(properties.getTransformer(), is(nullValue()))
+        );
     }
 
     @Test
     void canGetAllProperties() {
         TableProperties tableProperties = new TableProperties("key=value", keywords, null);
         assertThat(tableProperties.getProperties().containsKey("key"), is(true));
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = { true, false })
+    void canGetProcessEscapeSequences(boolean value) {
+        TableProperties properties = new TableProperties("processEscapeSequences=" + value, keywords, null);
+        assertThat(properties.isProcessEscapeSequences(), is(value));
+    }
+
+    @Test
+    void shouldThrowAnErrorOnInvalidProcessEscapeSequences() {
+        TableProperties properties = new TableProperties("processEscapeSequences=tru", keywords, null);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                properties::isProcessEscapeSequences);
+        assertEquals(
+                "ExamplesTable property 'processEscapeSequences' contains invalid value: 'tru', but allowed values "
+                        + "are 'true' and 'false'",
+                exception.getMessage());
     }
 
     @Test
