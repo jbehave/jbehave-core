@@ -37,4 +37,4 @@ jobs:
       - name: Build
         if: matrix.java != 8
         shell: bash
-        run: ./mvnw checkstyle:check install -s settings.xml -P examples --batch-mode -e
+        run: ./mvnw install -s settings.xml -P examples --batch-mode -e
