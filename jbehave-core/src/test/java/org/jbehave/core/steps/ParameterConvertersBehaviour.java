@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -71,7 +72,6 @@ import java.util.stream.Stream;
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.reflect.TypeLiteral;
-import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AsJson;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -319,11 +319,12 @@ class ParameterConvertersBehaviour {
         assertThatCollectionIs(list, 3L, 0.5, 6.1, 8L);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void shouldConvertCommaSeparatedValuesToSetOfNumbersWithDefaultFormat() {
         ParameterConverters parameterConverters = new ParameterConverters();
         Type setOfNumbers = new TypeLiteral<Set<Number>>() {}.getType();
-        Set<Number> set = (Set<Number>)parameterConverters.convert("3, 0.5, 6.1, 8.00", setOfNumbers);
+        Set<Number> set = (Set<Number>) parameterConverters.convert("3, 0.5, 6.1, 8.00", setOfNumbers);
         assertThatCollectionIs(set, 3L, 0.5, 6.1d, 8L);
     }
 
@@ -339,7 +340,7 @@ class ParameterConvertersBehaviour {
     @SuppressWarnings("unchecked")
     @Test
     void shouldConvertCommaSeparatedValuesOfSpecificNumberTypes() {
-        FromStringParameterConverter converter = new NumberListConverter();
+        FromStringParameterConverter<?> converter = new NumberListConverter();
 
         Type doubleType = new TypeLiteral<List<Double>>() {}.getType();
         List<Double> doubles = (List<Double>) converter.convertValue(
@@ -460,8 +461,8 @@ class ParameterConvertersBehaviour {
     }
 
     @Test
-    void shouldConvertMultilineTableToParameters() {
-        FromStringParameterConverter converter = new ExamplesTableParametersConverter(
+    void shouldConvertMultilineTableToListOfParameters() {
+        FromStringParameterConverter<?> converter = new ExamplesTableParametersConverter(
                 new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
         Type type = new TypeLiteral<List<MyParameters>>() {}.getType();
         assertThatTypesAreAccepted(converter, type);
@@ -478,8 +479,25 @@ class ParameterConvertersBehaviour {
     }
 
     @Test
-    void shouldConvertSinglelineTableToParameters() {
-        FromStringParameterConverter converter = new ExamplesTableParametersConverter(
+    void shouldThrowAnErrorAtConversionOfMultilineTableToParameters() {
+        FromStringParameterConverter<?> converter = new ExamplesTableParametersConverter(
+                new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
+        Type type = MyParameters.class;
+        assertThatTypesAreAccepted(converter, type);
+        String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> {
+                    converter.convertValue(value, type);
+                });
+        assertEquals(
+                "Exactly one row is expected in ExamplesTable in order to convert it to class org.jbehave.core.steps"
+                        + ".SomeSteps$MyParameters, but found 2 row(s)",
+                exception.getMessage());
+    }
+
+    @Test
+    void shouldConvertSingleLineTableToParameters() {
+        FromStringParameterConverter<?> converter = new ExamplesTableParametersConverter(
                 new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
         Type type = MyParameters.class;
         assertThatTypesAreAccepted(converter, type);
@@ -492,7 +510,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldConvertParameterFromMethodReturningValue() throws IntrospectionException {
         Method method = SomeSteps.methodFor("methodReturningExamplesTable");
-        FromStringParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
+        FromStringParameterConverter<?> converter = new MethodReturningConverter(method, new SomeSteps());
         assertThatTypesAreAccepted(converter, method.getReturnType());
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
         ExamplesTable table = (ExamplesTable) converter.convertValue(value, ExamplesTable.class);
@@ -508,7 +526,7 @@ class ParameterConvertersBehaviour {
     @Test
     void shouldFailToConvertParameterFromFailingMethodReturningValue() throws IntrospectionException {
         Method method = SomeSteps.methodFor("failingMethodReturningExamplesTable");
-        FromStringParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
+        FromStringParameterConverter<?> converter = new MethodReturningConverter(method, new SomeSteps());
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
         assertThrows(ParameterConversionFailed.class, () -> converter.convertValue(value, ExamplesTable.class));
     }
@@ -524,7 +542,7 @@ class ParameterConvertersBehaviour {
         FromStringParameterConverter<Enum<?>> converter = new EnumConverter();
         Type type = SomeEnum.class;
         assertThatTypesAreAccepted(converter, type);
-        assertThat(converter.convertValue("ONE", type), is((Enum)SomeEnum.ONE));
+        assertThat(converter.convertValue("ONE", type), is(SomeEnum.ONE));
     }
 
     @Test
@@ -533,7 +551,7 @@ class ParameterConvertersBehaviour {
         Type type = SomeEnum.class;
         assertThat(converter.canConvertTo(type), is(true));
         assertThat(converter.convertValue("multiple words and 1 number", type),
-                is((Enum) SomeEnum.MULTIPLE_WORDS_AND_1_NUMBER));
+                is(SomeEnum.MULTIPLE_WORDS_AND_1_NUMBER));
     }
 
     @Test
@@ -542,13 +560,14 @@ class ParameterConvertersBehaviour {
         assertThrows(ParameterConversionFailed.class, () -> enumConverter.convertValue("FOUR", SomeEnum.class));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void shouldConvertEnumList() {
-        FromStringParameterConverter converter = new EnumListConverter();
+        FromStringParameterConverter<?> converter = new EnumListConverter();
         Type type = new TypeLiteral<List<SomeEnum>>() {}.getType();
 
         assertThat(converter.canConvertTo(type), is(true));
-        List<Enum> list = (List<Enum>)converter.convertValue("ONE,TWO,THREE", type);
+        List<SomeEnum> list = (List<SomeEnum>) converter.convertValue("ONE,TWO,THREE", type);
         assertThatCollectionIs(list, SomeEnum.ONE, SomeEnum.TWO, SomeEnum.THREE);
     }
 
@@ -595,12 +614,13 @@ class ParameterConvertersBehaviour {
         assertThat((Bar)parameterConverters.convert("foo", Bar.class), is(Bar.INSTANCE));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void shouldConvertToListOfCustomObjectsUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<List<Bar>>() {}.getType();
-        List<Bar> list = (List<Bar>)parameterConverters.convert("foo", type);
+        List<Bar> list = (List<Bar>) parameterConverters.convert("foo", type);
         assertThatCollectionIs(list, Bar.INSTANCE);
     }
 

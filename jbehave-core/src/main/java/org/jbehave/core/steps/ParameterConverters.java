@@ -2,8 +2,10 @@ package org.jbehave.core.steps;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.Validate.isTrue;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -88,17 +90,14 @@ import org.jbehave.core.model.Verbatim;
  * Converters for several Java types are provided out-of-the-box:
  * <ul>
  * <li>{@link ParameterConverters.NumberConverter NumberConverter}</li>
+ * <li>{@link ParameterConverters.NumberListConverter NumberListConverter}</li>
  * <li>{@link ParameterConverters.StringConverter StringConverter}</li>
  * <li>{@link ParameterConverters.StringListConverter StringListConverter}</li>
  * <li>{@link ParameterConverters.DateConverter DateConverter}</li>
- * <li>{@link ParameterConverters.ExamplesTableConverter ExamplesTableConverter}
- * </li>
- * <li>{@link ParameterConverters.ExamplesTableParametersConverter
- * ExamplesTableParametersConverter}</li>
- * <li>{@link ParameterConverters.MethodReturningConverter
- * MethodReturningConverter}</li>
- * <li>{@link ParameterConverters.VerbatimConverter
- * VerbatimConverter}</li>
+ * <li>{@link ParameterConverters.ExamplesTableConverter ExamplesTableConverter}</li>
+ * <li>{@link ParameterConverters.ExamplesTableParametersConverter ExamplesTableParametersConverter}</li>
+ * <li>{@link ParameterConverters.MethodReturningConverter MethodReturningConverter}</li>
+ * <li>{@link ParameterConverters.JsonConverter JsonConverter}</li>
  * </ul>
  * </p>
  */
@@ -467,6 +466,14 @@ public class ParameterConverters {
 
     private static Type argumentType(Type type) {
         return ((ParameterizedType) type).getActualTypeArguments()[0];
+    }
+
+    private static boolean isAnnotationPresent(Type type, Class<? extends Annotation> annotationClass) {
+        if (type instanceof ParameterizedType) {
+            return rawClass(type).isAnnotationPresent(annotationClass) || argumentClass(type).isAnnotationPresent(
+                    annotationClass);
+        }
+        return type instanceof Class && ((Class<?>) type).isAnnotationPresent(annotationClass);
     }
 
     private static String[] parseElements(String value, String elementSeparator) {
@@ -1040,20 +1047,24 @@ public class ParameterConverters {
 
         @Override
         public boolean canConvertTo(Type type) {
-            if (type instanceof ParameterizedType) {
-                return rawClass(type).isAnnotationPresent(AsParameters.class) || argumentClass(type)
-                        .isAnnotationPresent(AsParameters.class);
-            }
-            return type instanceof Class && ((Class<?>) type).isAnnotationPresent(AsParameters.class);
+            return isExamplesTableParameters(type);
         }
 
         @Override
         public Object convertValue(String value, Type type) {
             List<?> rows = factory.createExamplesTable(value).getRowsAs(argumentClass(type));
-            if (type instanceof ParameterizedType) {
+            if (isAssignableFromRawType(List.class, type)) {
                 return rows;
             }
-            return rows.iterator().next();
+            int rowCount = rows.size();
+            isTrue(rowCount == 1,
+                    "Exactly one row is expected in ExamplesTable in order to convert it to %s, but found %d row(s)",
+                    type, rowCount);
+            return rows.get(0);
+        }
+
+        public static boolean isExamplesTableParameters(Type type) {
+            return isAnnotationPresent(type, AsParameters.class);
         }
 
     }
@@ -1072,11 +1083,7 @@ public class ParameterConverters {
 
         @Override
         public boolean canConvertTo(final Type type) {
-            if (type instanceof ParameterizedType) {
-                return rawClass(type).isAnnotationPresent(AsJson.class) || argumentClass(type).isAnnotationPresent(
-                        AsJson.class);
-            }
-            return type instanceof Class && ((Class<?>) type).isAnnotationPresent(AsJson.class);
+            return isAnnotationPresent(type, AsJson.class);
         }
 
         @Override
