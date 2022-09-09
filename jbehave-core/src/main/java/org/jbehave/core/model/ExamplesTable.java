@@ -268,7 +268,9 @@ public class ExamplesTable {
         List<String> values = getRowValues(rowIndex, replaceNamedParameters);
 
         if (!tableRows.areAllColumnsDistinct()) {
-            throw new NonDistinctColumnFound("ExamplesTable contains non-distinct columns");
+            String exceptionMessage = "ExamplesTable contains non-distinct columns, all columns are: "
+                    + String.join(", ", getHeaders());
+            throw new NonDistinctColumnFound(exceptionMessage);
         }
 
         Map<String, String> result = new LinkedHashMap<>();

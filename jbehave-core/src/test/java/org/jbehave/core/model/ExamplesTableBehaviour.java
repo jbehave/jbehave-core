@@ -672,9 +672,10 @@ public class ExamplesTableBehaviour {
     @Test
     void shouldFailToGetNamedRowFromTableWithDuplicateColumns() {
         ExamplesTable table = new ExamplesTable(TABLE_WITH_DUPLICATE_COLUMNS);
+        String exceptionMessage = "ExamplesTable contains non-distinct columns, all columns are: one, two, one";
         ExamplesTable.NonDistinctColumnFound ex = assertThrows(ExamplesTable.NonDistinctColumnFound.class,
                 () -> table.getRow(0));
-        assertEquals("ExamplesTable contains non-distinct columns", ex.getMessage());
+        assertEquals(exceptionMessage, ex.getMessage());
     }
 
     @Test
