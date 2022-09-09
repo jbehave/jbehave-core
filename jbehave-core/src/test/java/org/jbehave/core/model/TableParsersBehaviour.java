@@ -75,6 +75,29 @@ class TableParsersBehaviour {
         );
     }
 
+    @Test
+    void shouldParseTableWithEscapeSequences() {
+        // Given
+        String table = "|key-1            |key-2                 |\n"
+                + "|line 1\\nline 2  |line 1\\r\\nline 2    |\n"
+                + "|line 1\\\\nline 2|line 1\\\\r\\\\nline 2|\n";
+
+        TableProperties tableProperties = new TableProperties("processEscapeSequences=true", new LocalizedKeywords(),
+                null);
+
+        // When
+        TableRows tableRows = new TableParsers(null, null).parseRows(table, tableProperties);
+
+        // Then
+        List<List<String>> rows = tableRows.getRows();
+        assertThat(tableRows.getHeaders(), equalTo(Arrays.asList(KEY_1, KEY_2)));
+        assertThat(rows, hasSize(2));
+        assertAll(
+                () -> assertRow(rows.get(0), "line 1\nline 2", "line 1\r\nline 2"),
+                () -> assertRow(rows.get(1), "line 1\\nline 2", "line 1\\r\\nline 2")
+        );
+    }
+
     private void assertRow(List<String> row, String cell1, String cell2) {
         assertThat(row, equalTo(Arrays.asList(cell1, cell2)));
     }
