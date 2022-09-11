@@ -68,6 +68,11 @@ public class StackTraceFormatter {
     @SuppressWarnings("checkstyle:LineLength")
     private static Replacement[] REPLACEMENTS = new Replacement[] {
         new Replacement(
+                // JDK 18+
+                Pattern.compile("\\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke\\(DirectMethodHandleAccessor.java:\\d+\\)\\n"
+                        + "\\tat java.base/java.lang.reflect.Method.invoke\\(Method.java:\\d+\\)"),
+                "\t(reflection-invoke)"),
+        new Replacement(
                 // JDK 9+
                 Pattern.compile("\\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0\\(Native Method\\)\\n"
                         + "\\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke\\(NativeMethodAccessorImpl.java:\\d+\\)\\n"
