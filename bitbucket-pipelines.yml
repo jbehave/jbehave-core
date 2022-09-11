@@ -14,3 +14,7 @@ pipelines:
         image: maven:3.8.6-eclipse-temurin-17
         script:
           - mvn clean install -s settings.xml -Pexamples
+    - step:
+        image: maven:3.8.6-eclipse-temurin-18
+        script:
+          - mvn clean install -s settings.xml -Pexamples
