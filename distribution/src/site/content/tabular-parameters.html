@@ -385,6 +385,32 @@ structure as a parameter, and how this structure is interpreted is up to
 the scenario writer. The difference is in the <b>Examples:</b> keyword,
 which is only present for parametrised scenarios.</span>
 
+<h2>Working with self-referencing rows in example table</h2>
+
+<p>By default, JBehave does not support self-referencing relationship in example table rows (when a column value in a row relates to another column in the same row).
+ To resolve such mechanism can be used the transformer for resolving self references which must first be registered in your <a
+         href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a>: </p>
+<pre class="brush: java">
+    TableTransformers.ResolvingSelfReferences resolvingSelfReferencesTransformer = new TableTransformers.ResolvingSelfReferences(parameterControls);
+    TableTransformers transformers = tableTransformers();
+    transformers.useTransformer("RESOLVING_SELF_REFERENCES", resolvingSelfReferencesTransformer);
+</pre>
+
+<p>Usage example:</p>
+<pre class="brush: plain">
+{transformer=RESOLVING_SELF_REFERENCES}
+|header1 |header2          |header3          |
+|value1  |&lt;header1&gt;-value2 |&lt;header2&gt;-value3 |
+</pre>
+
+<p>The transformer enables resolution of references to one column from another column within the one row of the example table.
+Circular references will result in error.<br>
+The table from the example above will be transformed into the following:</p>
+<pre class="brush: plain">
+|header1 |header2       |header3              |
+|value1  |value1-value2 |value1-value2-value3 |
+</pre>
+
 <div class="clear">
 <hr />
 </div>

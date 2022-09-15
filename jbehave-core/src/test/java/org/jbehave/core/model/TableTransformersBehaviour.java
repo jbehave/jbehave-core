@@ -2,11 +2,16 @@ package org.jbehave.core.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
+import org.jbehave.core.model.TableTransformers.ResolvingSelfReferences;
+import org.jbehave.core.steps.ParameterControls;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class TableTransformersBehaviour {
 
@@ -19,6 +24,8 @@ class TableTransformersBehaviour {
 
 
     private final TableTransformers tableTransformers = new TableTransformers();
+    private final ResolvingSelfReferences resolvingSelfReferencesTransformer = new ResolvingSelfReferences(
+            new ParameterControls());
 
     private static TableProperties createExamplesTableProperties() {
         return new TableProperties("", new LocalizedKeywords(), null);
@@ -91,5 +98,43 @@ class TableTransformersBehaviour {
                 (tableAsString, tableParsers, properties) -> myTransformedTableAsString);
         String transformed = tableTransformers.transform("myTransformer", TABLE_AS_STRING, TABLE_PARSERS, PROPERTIES);
         assertThat(transformed, equalTo(myTransformedTableAsString));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "'|A|B|C|\n|a|<A>|c|',                     '|A|B|C|\n|a|a|c|\n'",
+        "'|A|B|C|\n|a1|<A>|c1|\n|a2|<A>|c2|',      '|A|B|C|\n|a1|a1|c1|\n|a2|a2|c2|\n'",
+        "'|A|B|C|D|E|F|\n|<C>|<A>|c|<F>|<D>|<B>|', '|A|B|C|D|E|F|\n|c|c|c|c|c|c|\n'",
+        "'|A|B|C|\n|a|<A><C>|c|',                  '|A|B|C|\n|a|ac|c|\n'",
+        "'|A|B|C|\n|a<p>|<p><A>|c|',               '|A|B|C|\n|a<p>|<p>a<p>|c|\n'",
+        "'|A|B|C|\n|a|<A>|',                       '|A|B|C|\n|a|a||\n'",
+        "'|A|B|\n|a|<A>|c|',                       '|A|B|\n|a|a|\n'",
+        "'|A|B|C|\n|a|<<A>>|c|',                   '|A|B|C|\n|a|<<A>>|c|\n'"
+    })
+    void shouldTransform(String beforeTransform, String expectedResult) {
+        String transformed = resolvingSelfReferencesTransformer.transform(beforeTransform, TABLE_PARSERS, PROPERTIES);
+        assertEquals(expectedResult, transformed);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "'|A|B|C|\n|<B>|<C>|<A>|', A -> B -> C -> A",
+        "'|A|B|C|\n|<B>|<C>|<B>|', B -> C -> B"
+    })
+    void shouldFailWhenSelfReferenceIsDetected(String input, String chain) {
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+                resolvingSelfReferencesTransformer.transform(input, TABLE_PARSERS, PROPERTIES));
+        assertEquals("Circular chain of references is found: " + chain, exception.getMessage());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "'|A|\n|<A>|'",
+        "'|A|\n|a<A>b|'"
+    })
+    void shouldFailWhenChainOfReferencesIsDetected(String input) {
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+                resolvingSelfReferencesTransformer.transform(input, TABLE_PARSERS, PROPERTIES));
+        assertEquals("Circular self reference is found in column 'A'", exception.getMessage());
     }
 }
