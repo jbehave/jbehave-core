@@ -87,4 +87,12 @@ public class SpringStoryControls extends StoryControls {
     public void setSkipStoryIfGivenStoryFailed(boolean skipStoryIfGivenStoryFailed) {
         doSkipStoryIfGivenStoryFailed(skipStoryIfGivenStoryFailed);
     }
+
+    public String getStoryIndexFormat() {
+        return storyIndexFormat();
+    }
+
+    public void setStoryIndexFormat(String storyIndexFormat) {
+        useStoryIndexFormat(storyIndexFormat);
+    }
 }

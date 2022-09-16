@@ -23,6 +23,7 @@ class StoryControlsBehaviour {
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
     private static final String NEW_VALUE = "newValue";
     private static final String EMPTY = "";
+    private static final String STORY_INDEX_FORMAT_DEFAULT = "[0]";
 
     @SuppressWarnings("checkstyle:LineLength")
     public static Stream<Arguments> data() {
@@ -36,6 +37,7 @@ class StoryControlsBehaviour {
                 arguments((Function<StoryControls, Object>) StoryControls::ignoreMetaFiltersIfGivenStory,               (BiFunction<StoryControls, Object, Object>) (c, v) -> c.doIgnoreMetaFiltersIfGivenStory((boolean) v),               asList(false, true)),
                 arguments((Function<StoryControls, Object>) StoryControls::metaByRow,                                   (BiFunction<StoryControls, Object, Object>) (c, v) -> c.doMetaByRow((boolean) v),                                   asList(false, true)),
                 arguments((Function<StoryControls, Object>) StoryControls::skipStoryIfGivenStoryFailed,                 (BiFunction<StoryControls, Object, Object>) (c, v) -> c.doSkipStoryIfGivenStoryFailed((boolean) v),                 asList(false, true)),
+                arguments((Function<StoryControls, Object>) StoryControls::storyIndexFormat,                            (BiFunction<StoryControls, Object, Object>) (c, v) -> c.useStoryIndexFormat((String) v),                            asList(STORY_INDEX_FORMAT_DEFAULT, NEW_VALUE)),
                 arguments((Function<StoryControls, Object>) StoryControls::storyMetaPrefix,                             (BiFunction<StoryControls, Object, Object>) (c, v) -> c.useStoryMetaPrefix((String) v),                             asList(EMPTY, NEW_VALUE)),
                 arguments((Function<StoryControls, Object>) StoryControls::scenarioMetaPrefix,                          (BiFunction<StoryControls, Object, Object>) (c, v) -> c.useScenarioMetaPrefix((String) v),                          asList(EMPTY, NEW_VALUE))
         );
