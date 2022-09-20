@@ -228,28 +228,14 @@ public class TableTransformers {
 
         @Override
         public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
-            String headerSeparator = properties.getHeaderSeparator();
-            String valueSeparator = properties.getValueSeparator();
-            String rowSeparator = properties.getRowSeparator();
             TableRows rows = tableParsers.parseRows(tableAsString, properties);
             List<String> headers = rows.getHeaders();
 
-            StringBuilder tableBuilder = new StringBuilder();
-            headers.forEach(header -> tableBuilder.append(headerSeparator).append(header));
-            tableBuilder.append(headerSeparator).append(rowSeparator);
+            List<List<String>> resolvedRows = getNamedRows(rows.getRows(), headers).stream()
+                    .map(this::resolveRow)
+                    .collect(Collectors.toList());
 
-            for (List<String> row : resolveRows(getNamedRows(rows.getRows(), headers))) {
-                for (int i = 0, headersSize = headers.size(); i < headersSize; i++) {
-                    tableBuilder.append(valueSeparator).append(i < row.size() ? row.get(i) : StringUtils.EMPTY);
-                }
-                tableBuilder.append(valueSeparator).append(rowSeparator);
-            }
-
-            return tableBuilder.toString();
-        }
-
-        private List<List<String>> resolveRows(List<Map<String, String>> rows) {
-            return rows.stream().map(this::resolveRow).collect(Collectors.toList());
+            return ExamplesTableStringBuilder.buildExamplesTableString(properties, headers, resolvedRows);
         }
 
         private List<String> resolveRow(Map<String, String> unresolvedRow) {

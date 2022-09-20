@@ -390,17 +390,9 @@ public class ExamplesTable {
                 sb.append("{").append(propertiesAsString).append("}").append(lastTableProperties().getRowSeparator());
             }
         }
-        List<String> headers = getHeaders();
+        sb.append(ExamplesTableStringBuilder.buildExamplesTableString(lastTableProperties(), getHeaders(),
+                tableRows.getRows()));
 
-        headers.forEach(header -> sb.append(getHeaderSeparator()).append(header));
-
-        sb.append(getHeaderSeparator()).append(lastTableProperties().getRowSeparator());
-        for (List<String> row : tableRows.getRows()) {
-            for (int i = 0, headersSize = headers.size(); i < headersSize; i++) {
-                sb.append(getValueSeparator()).append(i < row.size() ? row.get(i) : EMPTY_VALUE);
-            }
-            sb.append(getValueSeparator()).append(lastTableProperties().getRowSeparator());
-        }
         return sb.toString();
     }
 
