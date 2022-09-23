@@ -1,5 +1,7 @@
 package org.jbehave.core.configuration.spring;
 
+import java.text.NumberFormat;
+
 import org.jbehave.core.embedder.StoryControls;
 
 /**
@@ -88,11 +90,11 @@ public class SpringStoryControls extends StoryControls {
         doSkipStoryIfGivenStoryFailed(skipStoryIfGivenStoryFailed);
     }
 
-    public String getStoryIndexFormat() {
+    public NumberFormat getStoryIndexFormat() {
         return storyIndexFormat();
     }
 
-    public void setStoryIndexFormat(String storyIndexFormat) {
+    public void setStoryIndexFormat(NumberFormat storyIndexFormat) {
         useStoryIndexFormat(storyIndexFormat);
     }
 }

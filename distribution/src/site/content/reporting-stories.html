@@ -242,19 +242,19 @@ changed via the builder:</p>
 
 <h2>Story naming</h2>
 
-<p>All reported stories have the name equivalent to the name of the original story without ".story" extension.
-    The exception is stories using example tables at the lifecycle level. Such stories have the postfix indicating the
-    index of the current row of the example table. The index <a
-            href="https://docs.oracle.com/javase/7/docs/api/java/text/DecimalFormat.html">format</a> can be configured via <a
-            href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a> in <a
-            href="javadoc/core/org/jbehave/core/embedder/StoryControls.html">StoryControls</a>: </p>
+<p>All reported stories have the name equivalent to the name of the original story without ".story" extension. The
+exception is stories using ExamplesTable at the lifecycle level. Such stories have the postfix indicating the index of
+the current row of the example table. The index
+<a href="https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html">format</a> can be configured via
+<a href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a> in
+<a href="javadoc/core/org/jbehave/core/embedder/StoryControls.html">StoryControls</a>:</p>
 <pre class="brush: java">
-storyControls.useStoryIndexFormat(&lt;index format&gt;); //default value - "[0]" (minimum one integer digit in square brackets)
+storyControls.useStoryIndexFormat(new DecimalFormat(&lt;index format&gt;)); //default value - " [0]" (minimum one integer digit in square brackets)
 </pre>
 
-<p>For example, if specify the format "[000]" (minimum three integer digits in square brackets) stories will have names
-    like "Story [000]", "Story [001]", "Story [010]", "Story [100]" etc. This can be useful in cases when a reporting
-    tool uses the lexicographic order for sorting and cannot correctly display the order of current example table.</p>
+<p>For example, if the format is " [000]" (minimum three integer digits in square brackets), stories will have names
+like "Story [000]", "Story [001]", "Story [010]", "Story [100]", etc. This can be useful when a reporting framework uses
+the lexicographic order for sorting and cannot correctly display the order of current ExamplesTable row.</p>
 
 <h2>Next?</h2>
 

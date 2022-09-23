@@ -66,8 +66,11 @@ public class StoryManager {
         for (String storyPath : storyPaths) {
             stories.add(storyOfPath(storyPath));
         }
-        return configuration.isParallelStoryExamplesEnabled() ? StorySplitter.splitStories(stories,
-                configuration.storyControls().storyIndexFormat()) : stories;
+        if (configuration.isParallelStoryExamplesEnabled()) {
+            StorySplitter storySplitter = new StorySplitter(configuration.storyControls().storyIndexFormat());
+            return storySplitter.splitStories(stories);
+        }
+        return stories;
     }
 
     public Story storyOfText(String storyAsText, String storyId) {

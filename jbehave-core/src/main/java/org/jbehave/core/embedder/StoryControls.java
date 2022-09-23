@@ -1,6 +1,8 @@
 package org.jbehave.core.embedder;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Optional;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -9,7 +11,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * Holds flags used to control story execution flow.
  * <ul>
  * <li>{@link StoryControls#storyIndexFormat} story index format using {@link DecimalFormat}.
- * Default value: "[0]" (minimum one integer digit in square brackets)</li>
+ * Default value: " [0]" (minimum one integer digit in square brackets)</li>
  * </ul>
  */
 public class StoryControls {
@@ -24,7 +26,7 @@ public class StoryControls {
     private String storyMetaPrefix = "";
     private String scenarioMetaPrefix = "";
     private boolean skipStoryIfGivenStoryFailed = false;
-    private String storyIndexFormat = "[0]";
+    private NumberFormat storyIndexFormat;
     private final ThreadLocal<StoryControls> currentStoryControls = ThreadLocal
             .withInitial(() -> new StoryControls(this));
 
@@ -95,8 +97,8 @@ public class StoryControls {
         return currentStoryControls().skipStoryIfGivenStoryFailed;
     }
 
-    public String storyIndexFormat() {
-        return currentStoryControls().storyIndexFormat;
+    public NumberFormat storyIndexFormat() {
+        return Optional.ofNullable(currentStoryControls().storyIndexFormat).orElseGet(() -> new DecimalFormat(" [0]"));
     } 
 
     public StoryControls doDryRun(boolean dryRun) {
@@ -151,7 +153,7 @@ public class StoryControls {
         return this;
     }
 
-    public StoryControls useStoryIndexFormat(String storyIndexFormat) {
+    public StoryControls useStoryIndexFormat(NumberFormat storyIndexFormat) {
         this.storyIndexFormat = storyIndexFormat;
         return this;
     }

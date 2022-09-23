@@ -3,6 +3,7 @@ package org.jbehave.core.model;
 import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -59,6 +60,9 @@ public class Story {
     public Story(String path, Description description, Meta meta, Narrative narrative, GivenStories givenStories,
             Lifecycle lifecycle, List<Scenario> scenarios) {
         this.path = path;
+        if (path != null) {
+            this.name = new File(path).getName();
+        }
         this.description = description;
         this.narrative = narrative;
         this.meta = meta;
@@ -68,13 +72,7 @@ public class Story {
     }
 
     public Story(Story story, String path, Lifecycle lifecycle) {
-        this.path = path;
-        this.description = story.description;
-        this.narrative = story.narrative;
-        this.meta = story.meta;
-        this.givenStories = story.givenStories;
-        this.lifecycle = lifecycle;
-        this.scenarios = story.scenarios;
+        this(path, story.description, story.meta, story.narrative, story.givenStories, lifecycle, story.scenarios);
     }
 
     public String getPath() {
