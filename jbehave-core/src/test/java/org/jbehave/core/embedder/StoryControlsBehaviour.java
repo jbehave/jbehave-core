@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -23,6 +24,8 @@ class StoryControlsBehaviour {
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
     private static final String NEW_VALUE = "newValue";
     private static final String EMPTY = "";
+    private static final DecimalFormat STORY_INDEX_FORMAT = new DecimalFormat(" [0]");
+    private static final DecimalFormat NEW_STORY_INDEX_FORMAT = new DecimalFormat(" [#]");
 
     @SuppressWarnings("checkstyle:LineLength")
     public static Stream<Arguments> data() {
@@ -36,6 +39,7 @@ class StoryControlsBehaviour {
                 arguments((Function<StoryControls, Object>) StoryControls::ignoreMetaFiltersIfGivenStory,               (BiFunction<StoryControls, Object, Object>) (c, v) -> c.doIgnoreMetaFiltersIfGivenStory((boolean) v),               asList(false, true)),
                 arguments((Function<StoryControls, Object>) StoryControls::metaByRow,                                   (BiFunction<StoryControls, Object, Object>) (c, v) -> c.doMetaByRow((boolean) v),                                   asList(false, true)),
                 arguments((Function<StoryControls, Object>) StoryControls::skipStoryIfGivenStoryFailed,                 (BiFunction<StoryControls, Object, Object>) (c, v) -> c.doSkipStoryIfGivenStoryFailed((boolean) v),                 asList(false, true)),
+                arguments((Function<StoryControls, Object>) StoryControls::storyIndexFormat,                            (BiFunction<StoryControls, Object, Object>) (c, v) -> c.useStoryIndexFormat((DecimalFormat) v),                     asList(STORY_INDEX_FORMAT, NEW_STORY_INDEX_FORMAT)),
                 arguments((Function<StoryControls, Object>) StoryControls::storyMetaPrefix,                             (BiFunction<StoryControls, Object, Object>) (c, v) -> c.useStoryMetaPrefix((String) v),                             asList(EMPTY, NEW_VALUE)),
                 arguments((Function<StoryControls, Object>) StoryControls::scenarioMetaPrefix,                          (BiFunction<StoryControls, Object, Object>) (c, v) -> c.useScenarioMetaPrefix((String) v),                          asList(EMPTY, NEW_VALUE))
         );
