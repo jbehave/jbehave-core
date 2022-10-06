@@ -449,15 +449,19 @@ public class StepCreator {
         }
 
         if (parameter == null) {
-            // This allow parameters to be in different order.
+            // This allows parameters to be in a different order.
             position = position - numberOfPreviousFromContext(names, position);
             stepMonitor.usingNaturalOrderForParameter(position);
             parameter = matchedParameter(matcher, position);
-            List<String> delimitedNames = delimitedNameFor(parameter);
 
-            for (String delimitedName : delimitedNames) {
-                parameter = replaceAllDelimitedNames(parameter, delimitedName, namedParameters);
-            }
+            String previousParameterValue;
+            do {
+                previousParameterValue = parameter;
+
+                for (String delimitedName : delimitedNameFor(parameter)) {
+                    parameter = replaceAllDelimitedNames(parameter, delimitedName, namedParameters);
+                }
+            } while (!previousParameterValue.equals(parameter));
         }
 
         stepMonitor.foundParameter(parameter, position);

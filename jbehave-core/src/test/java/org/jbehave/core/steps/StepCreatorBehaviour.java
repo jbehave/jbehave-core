@@ -534,6 +534,33 @@ class StepCreatorBehaviour {
     }
 
     @Test
+    void shouldMatchParametersByDelimitedNameWithNoNamedAnnotationsAndWithStoryExampleVariable()
+            throws IntrospectionException {
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        StepMatcher stepMatcher = mock(StepMatcher.class);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, true);
+        Map<String, String> params = new HashMap<>();
+        params.put("story-table-reference", "scenario");
+        params.put("scenario-table-reference", "hello");
+        when(stepMatcher.parameterNames()).thenReturn(new String[] { "param" });
+        String stepWithoutStartingWord =  "a parameter <<story-table-reference>-table-reference> is set";
+        Matcher matcher = Pattern.compile("a parameter (.*) is set").matcher(stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
+        StoryReporter storyReporter = mock(StoryReporter.class);
+
+        // When
+        String stepAsString = "When " + stepWithoutStartingWord;
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithoutNamedAnnotation"),
+                stepAsString, stepWithoutStartingWord, params, Collections.emptyList());
+        step.perform(storyReporter, null);
+
+        // Then
+        assertThat((String) stepsInstance.args, equalTo("hello"));
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
+    }
+
+    @Test
     void shouldFailToMatchParametersByDelimitedNameWhenNullParameterReplacedPartially() throws IntrospectionException {
 
         // Given
