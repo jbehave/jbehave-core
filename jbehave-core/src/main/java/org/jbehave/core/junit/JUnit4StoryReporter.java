@@ -1,6 +1,7 @@
 package org.jbehave.core.junit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -12,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
-
-import com.google.common.collect.ImmutableList;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jbehave.core.configuration.Keywords;
@@ -95,7 +94,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
             notifier.fireTestStarted(storyDescription);
 
             if (storyDescription.isSuite()) {
-                testState.scenarioDescriptions = filter(storyDescription.getChildren(), ImmutableList.of(
+                testState.scenarioDescriptions = filter(storyDescription.getChildren(), Arrays.asList(
                     Pair.of(ElementAction.DROP, isTest()),
                     Pair.of(ElementAction.TAKE, isSuite())
                 )).iterator();
@@ -113,13 +112,13 @@ public class JUnit4StoryReporter extends NullStoryReporter {
         if (!testState.isGivenStoryRunning()) {
 
             if (stage == Stage.BEFORE && type == Lifecycle.ExecutionType.SYSTEM) {
-                loadStepDescriptions(filter(testState.getStoryChildren(), ImmutableList.of(
+                loadStepDescriptions(filter(testState.getStoryChildren(), Collections.singletonList(
                     Pair.of(ElementAction.TAKE, isTest())
                 )));
             }
 
             if (stage == Stage.AFTER && type == Lifecycle.ExecutionType.USER) {
-                loadStepDescriptions(filter(testState.getStoryChildren(), ImmutableList.of(
+                loadStepDescriptions(filter(testState.getStoryChildren(), Arrays.asList(
                     Pair.of(ElementAction.DROP, isTest()),
                     Pair.of(ElementAction.DROP, isSuite()),
                     Pair.of(ElementAction.TAKE, isTest())
