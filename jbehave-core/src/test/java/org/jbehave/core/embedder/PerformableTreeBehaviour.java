@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -33,8 +34,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
-
-import com.google.common.collect.ImmutableMap;
 
 import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Scope;
@@ -109,9 +108,11 @@ class PerformableTreeBehaviour {
         Meta storyMeta = new Meta();
         Story story = new Story(STORY_PATH, null, storyMeta, null, singletonList(scenario));
 
+        Map<Stage, List<Step>> lifecycleSteps = new LinkedHashMap<>();
+        lifecycleSteps.put(Stage.BEFORE, emptyList());
+        lifecycleSteps.put(Stage.AFTER, emptyList());
         when(stepCollector.collectLifecycleSteps(eq(stepCandidates), eq(story.getLifecycle()), eq(storyMeta),
-                eq(Scope.STORY), any(MatchingStepMonitor.class)))
-                        .thenReturn(ImmutableMap.of(Stage.BEFORE, emptyList(), Stage.AFTER, emptyList()));
+                eq(Scope.STORY), any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
 
         PerformableTree performableTree = new PerformableTree();
         PerformableTree.RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
