@@ -8,11 +8,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.commons.lang3.function.FailableRunnable;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
@@ -232,7 +232,7 @@ public class PerformableTree {
 
     private NormalPerformableScenario normalScenario(RunContext context, Story story, Scenario scenario,
             Meta storyAndScenarioMeta, Map<String, String> storyParameters) {
-        NormalPerformableScenario normalScenario = new NormalPerformableScenario(story, scenario);
+        NormalPerformableScenario normalScenario = new NormalPerformableScenario(story);
         normalScenario.setStoryAndScenarioMeta(storyAndScenarioMeta);
         addStepsWithLifecycle(normalScenario, context, story.getLifecycle(), storyParameters,
                 scenario, storyAndScenarioMeta);
@@ -241,8 +241,7 @@ public class PerformableTree {
 
     private ExamplePerformableScenario exampleScenario(RunContext context, Story story, Scenario scenario,
             Meta storyAndScenarioMeta, Map<String, String> parameters, int exampleIndex) {
-        ExamplePerformableScenario exampleScenario = new ExamplePerformableScenario(story, scenario, parameters,
-                exampleIndex);
+        ExamplePerformableScenario exampleScenario = new ExamplePerformableScenario(story, parameters, exampleIndex);
         exampleScenario.setStoryAndScenarioMeta(storyAndScenarioMeta);
         exampleScenario.addBeforeSteps(ExecutionType.SYSTEM,
                 context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.EXAMPLE));
@@ -522,7 +521,7 @@ public class PerformableTree {
         context.currentPath(storyPath);
         context.reporter().beforeStoriesSteps(stage);
         try {
-            (stage == Stage.BEFORE ? root.beforeSteps : root.afterSteps).perform(context);
+            (stage == Stage.BEFORE ? root.beforeSteps : root.afterSteps).perform(context, false);
         } catch (InterruptedException e) {
             throw new UUIDExceptionWrapper(e);
         } finally {
@@ -877,12 +876,16 @@ public class PerformableTree {
         }
 
     }
-    
-    public static interface Performable {
 
-        void perform(RunContext context) throws InterruptedException;
+    public interface ReportingFailures {
 
         void reportFailures(FailureContext context);
+
+    }
+
+    public interface Performable extends ReportingFailures {
+
+        void perform(RunContext context) throws InterruptedException;
 
     }
 
@@ -948,14 +951,23 @@ public class PerformableTree {
             getAfterSteps(type).add(afterSteps);
         }
 
+        protected void performWithStopExecutionExceptionHandling(FailableRunnable<InterruptedException> action,
+                FailableRunnable<InterruptedException> afterHook) throws InterruptedException {
+            try {
+                action.run();
+            } finally {
+                afterHook.run();
+            }
+        }
+
         protected void performBeforeSteps(RunContext context) throws InterruptedException {
-            performSteps(context, Stage.BEFORE, ExecutionType.SYSTEM);
-            performSteps(context, Stage.BEFORE, ExecutionType.USER);
+            performHookSteps(context, Stage.BEFORE, ExecutionType.SYSTEM);
+            performHookSteps(context, Stage.BEFORE, ExecutionType.USER);
         }
 
         protected void performAfterSteps(RunContext context) throws InterruptedException {
-            performSteps(context, Stage.AFTER, ExecutionType.USER);
-            performSteps(context, Stage.AFTER, ExecutionType.SYSTEM);
+            performHookSteps(context, Stage.AFTER, ExecutionType.USER);
+            performHookSteps(context, Stage.AFTER, ExecutionType.SYSTEM);
         }
 
         protected PerformableSteps getBeforeSteps(Lifecycle.ExecutionType type) {
@@ -972,11 +984,11 @@ public class PerformableTree {
             return steps.computeIfAbsent(type, s -> new PerformableSteps());
         }
 
-        private void performSteps(RunContext context, Stage stage, Lifecycle.ExecutionType type)
+        private void performHookSteps(RunContext context, Stage stage, Lifecycle.ExecutionType type)
                 throws InterruptedException {
             StoryReporter reporter = context.reporter();
             this.beforeHook.perform(reporter, stage, type);
-            getPerformableSteps(stage, type).perform(context);
+            getPerformableSteps(stage, type).perform(context, false);
             this.afterHook.perform(reporter, stage, type);
         }
 
@@ -1001,8 +1013,7 @@ public class PerformableTree {
         private List<PerformableScenario> scenarios = new ArrayList<>();
 
         public PerformableStory(Story story, Keywords keywords, boolean givenStory) {
-            super((reporter, type, stage) -> reporter.beforeStorySteps(type, stage),
-                    (reporter, type, stage) -> reporter.afterStorySteps(type, stage));
+            super(StoryReporter::beforeStorySteps, StoryReporter::afterStorySteps);
             this.story = story;
             this.keywords = keywords;
             this.givenStory = givenStory;
@@ -1059,11 +1070,25 @@ public class PerformableTree {
                 State state = context.state();
                 performBeforeSteps(context);
                 getGivenStories().perform(context);
-                if (!context.failureOccurred() || !context.configuration().storyControls()
-                        .skipStoryIfGivenStoryFailed()) {
-                    performScenarios(context);
-                }
-                performAfterSteps(context);
+
+                performWithStopExecutionExceptionHandling(
+                    () -> {
+                        if (!context.failureOccurred() || !context.configuration().storyControls()
+                                .skipStoryIfGivenStoryFailed()) {
+
+                            context.reporter().beforeScenarios();
+
+                            for (PerformableScenario scenario : scenarios) {
+                                scenario.perform(context);
+                            }
+                        }
+                    },
+                    () -> {
+                        context.reporter().afterScenarios();
+                        performAfterSteps(context);
+                    }
+                );
+
                 context.configuration().storyControls().resetCurrentStoryControls();
                 if (context.restartStory()) {
                     context.reporter().afterStory(true);
@@ -1081,14 +1106,6 @@ public class PerformableTree {
             for (PerformableScenario scenario : scenarios) {
                 scenario.reportFailures(context);
             }
-        }
-
-        private void performScenarios(RunContext context) throws InterruptedException {
-            context.reporter().beforeScenarios();
-            for (PerformableScenario scenario : scenarios) {
-                scenario.perform(context);
-            }
-            context.reporter().afterScenarios();
         }
 
         public List<PerformableScenario> getScenarios() {
@@ -1226,13 +1243,12 @@ public class PerformableTree {
         protected final PerformableSteps steps = new PerformableSteps();
         private Meta storyAndScenarioMeta = new Meta();
 
-        public AbstractPerformableScenario(Story story, Scenario scenario) {
-            this(story, scenario, new HashMap<>());
+        protected AbstractPerformableScenario(Story story) {
+            this(story, new HashMap<>());
         }
 
-        public AbstractPerformableScenario(Story story, Scenario scenario, Map<String, String> parameters) {
-            super((reporter, type, stage) -> reporter.beforeScenarioSteps(type, stage),
-                    (reporter, type, stage) -> reporter.afterScenarioSteps(type, stage));
+        protected AbstractPerformableScenario(Story story, Map<String, String> parameters) {
+            super(StoryReporter::beforeScenarioSteps, StoryReporter::afterScenarioSteps);
             this.story = story;
             this.parameters = parameters;
         }
@@ -1245,34 +1261,28 @@ public class PerformableTree {
             return parameters;
         }
 
-        protected void performRestartableSteps(RunContext context)
-                throws InterruptedException {
-            boolean restart = true;
-            while (restart) {
-                restart = false;
-                try {
-                    perform(steps, context, r -> r.beforeScenarioSteps(null, null),
-                            r -> r.afterScenarioSteps(null, null));
-                } catch (RestartingScenarioFailure e) {
-                    restart = true;
-                    continue;
-                }
-            }
-        }
-
         protected void performScenario(RunContext context) throws InterruptedException {
             performBeforeSteps(context);
             getGivenStories().perform(context);
-            performRestartableSteps(context);
-            performAfterSteps(context);
-        }
 
-        protected void perform(PerformableSteps performableSteps, RunContext context, Consumer<StoryReporter> before,
-                Consumer<StoryReporter> after) throws InterruptedException {
-            StoryReporter reporter = context.reporter();
-            before.accept(reporter);
-            performableSteps.perform(context);
-            after.accept(reporter);
+            performWithStopExecutionExceptionHandling(
+                () -> {
+                    boolean restart = true;
+                    while (restart) {
+                        restart = false;
+                        try {
+                            context.reporter().beforeScenarioSteps(null, null);
+                            steps.perform(context, true);
+                        } catch (RestartingScenarioFailure e) {
+                            restart = true;
+                        }
+                    }
+                },
+                () -> {
+                    context.reporter().afterScenarioSteps(null, null);
+                    performAfterSteps(context);
+                }
+            );
         }
 
         @Override
@@ -1304,8 +1314,8 @@ public class PerformableTree {
 
     public static class NormalPerformableScenario extends AbstractPerformableScenario {
 
-        public NormalPerformableScenario(Story story, Scenario scenario) {
-            super(story, scenario);
+        public NormalPerformableScenario(Story story) {
+            super(story);
         }
 
         @Override
@@ -1319,9 +1329,8 @@ public class PerformableTree {
 
         private final int exampleIndex;
 
-        public ExamplePerformableScenario(Story story, Scenario scenario, Map<String, String> exampleParameters,
-                int exampleIndex) {
-            super(story, scenario, exampleParameters);
+        public ExamplePerformableScenario(Story story, Map<String, String> exampleParameters, int exampleIndex) {
+            super(story, exampleParameters);
             this.exampleIndex = exampleIndex;
         }
 
@@ -1375,7 +1384,7 @@ public class PerformableTree {
         }
     }
 
-    public static class PerformableSteps implements Performable {
+    public static class PerformableSteps implements ReportingFailures {
 
         private final transient List<Step> steps;
         private final transient List<PendingStep> pendingSteps;
@@ -1407,8 +1416,7 @@ public class PerformableTree {
             }
         }
         
-        @Override
-        public void perform(RunContext context) throws InterruptedException {
+        public void perform(RunContext context, boolean interruptIfCancelled) throws InterruptedException {
             if (steps.size() == 0) {
                 return;
             }
@@ -1419,7 +1427,9 @@ public class PerformableTree {
             results = new ArrayList<>();
             for (Step step : steps) {
                 try {
-                    context.interruptIfCancelled();
+                    if (interruptIfCancelled) {
+                        context.interruptIfCancelled();
+                    }
                     state = state.run(step, results, keywords, reporter);
                 } catch (RestartingScenarioFailure e) {
                     reporter.restarted(step.asString(keywords), e);

@@ -8,13 +8,16 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -42,6 +45,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.IgnoringStepsFailure;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -51,6 +55,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.BeforeOrAfterStep;
@@ -94,9 +99,8 @@ class PerformableTreeBehaviour {
         when(candidate.listAfterStories()).thenReturn(afterStories);
         List<StepCandidate> stepCandidates = singletonList(mock(StepCandidate.class));
         when(candidate.listCandidates()).thenReturn(stepCandidates);
-        List<CandidateSteps> candidateSteps = singletonList(candidate);
         AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
-                candidateSteps);
+                singletonList(candidate));
         EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
         MetaFilter filter = new MetaFilter("-skip", embedderMonitor);
         BatchFailures failures = mock(BatchFailures.class);
@@ -104,7 +108,7 @@ class PerformableTreeBehaviour {
         Scenario scenario = new Scenario("scenario title", Meta.createMeta("@skip", new Keywords()));
         Meta storyMeta = new Meta();
         Story story = new Story(STORY_PATH, null, storyMeta, null, singletonList(scenario));
-        
+
         when(stepCollector.collectLifecycleSteps(eq(stepCandidates), eq(story.getLifecycle()), eq(storyMeta),
                 eq(Scope.STORY), any(MatchingStepMonitor.class)))
                         .thenReturn(ImmutableMap.of(Stage.BEFORE, emptyList(), Stage.AFTER, emptyList()));
@@ -156,11 +160,9 @@ class PerformableTreeBehaviour {
         configuration.storyControls().currentStoryControls().doIgnoreMetaFiltersIfGivenStory(true);
         configuration.useStoryLoader(mock(StoryLoader.class));
         PerformableTree performableTree = new PerformableTree();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(), emptyList());
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
-                mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class));
         Story story = EMPTY_STORY;
-        performableTree.addStories(runContext, singletonList(story));
+        RunContext runContext = createRunContext(configuration, performableTree, mock(BatchFailures.class),
+                singletonList(story));
         performableTree.perform(runContext, story);
         StoryControls storyControls = configuration.storyControls();
         assertThat(storyControls.resetStateBeforeStory(), is(true));
@@ -218,14 +220,9 @@ class PerformableTreeBehaviour {
         when(stepCollector.collectLifecycleSteps(eq(emptyList()), eq(lifecycle), isEmptyMeta(), eq(Scope.SCENARIO),
                 any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
 
-        List<CandidateSteps> candidateSteps = emptyList();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
-                candidateSteps);
-
         PerformableTree performableTree = new PerformableTree();
-        PerformableTree.RunContext context = spy(performableTree.newRunContext(configuration, allStepCandidates,
-                mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class)));
-        performableTree.addStories(context, singletonList(story));
+        RunContext context = createRunContext(configuration, performableTree, mock(BatchFailures.class),
+                singletonList(story));
         List<PerformableTree.PerformableScenario> performableScenarios = performableTree.getRoot().getStories().get(0)
                 .getScenarios();
 
@@ -272,13 +269,10 @@ class PerformableTreeBehaviour {
         StoryLoader storyLoader = mock(StoryLoader.class);
         configuration.useStoryLoader(storyLoader);
         when(storyLoader.loadStoryAsText(givenStoryPath)).thenReturn(givenStoryAsString);
-        List<CandidateSteps> candidateSteps = emptyList();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
-                candidateSteps);
 
         PerformableTree performableTree = new PerformableTree();
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
-                mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class));
+        RunContext runContext = createRunContext(configuration, performableTree, mock(BatchFailures.class),
+                singletonList(story));
         performableTree.addStories(runContext, singletonList(story));
         performableTree.perform(runContext, story);
         return runContext;
@@ -309,14 +303,10 @@ class PerformableTreeBehaviour {
         configuration.useStoryLoader(storyLoader);
         StoryReporter storyReporter = mock(StoryReporter.class);
         when(configuration.storyReporter(STORY_PATH)).thenReturn(storyReporter);
-        List<CandidateSteps> candidateSteps = emptyList();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
-                candidateSteps);
 
         PerformableTree performableTree = new PerformableTree();
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
-                mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class));
-        performableTree.addStories(runContext, singletonList(story));
+        RunContext runContext = createRunContext(configuration, performableTree, mock(BatchFailures.class),
+                singletonList(story));
         performableTree.perform(runContext, story);
 
         verify(storyReporter).dryRun();
@@ -335,16 +325,11 @@ class PerformableTreeBehaviour {
         StoryLoader storyLoader = mock(StoryLoader.class);
         configuration.useStoryLoader(storyLoader);
         when(storyLoader.loadStoryAsText(anyString())).thenReturn(GIVEN_SCENARIO_FAIL);
-        List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
-                .createCandidateSteps();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
-                candidateSteps);
         BatchFailures failures = new BatchFailures();
 
         PerformableTree performableTree = new PerformableTree();
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
-                mock(EmbedderMonitor.class), new MetaFilter(), failures);
-        performableTree.addStories(runContext, asList(story1, story2));
+        RunContext runContext = createRunContext(configuration, performableTree, failures, asList(story1, story2),
+                new Steps());
         performableTree.perform(runContext, story1);
         performableTree.perform(runContext, story2);
 
@@ -362,16 +347,11 @@ class PerformableTreeBehaviour {
         StoryLoader storyLoader = mock(StoryLoader.class);
         configuration.useStoryLoader(storyLoader);
         when(storyLoader.loadStoryAsText(anyString())).thenReturn(GIVEN_SCENARIO_FAIL);
-        List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
-                .createCandidateSteps();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
-                candidateSteps);
         BatchFailures failures = new BatchFailures();
 
         PerformableTree performableTree = new PerformableTree();
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
-                mock(EmbedderMonitor.class), new MetaFilter(), failures);
-        performableTree.addStories(runContext, singletonList(story));
+        RunContext runContext = createRunContext(configuration, performableTree, failures, singletonList(story),
+                new Steps());
         performableTree.perform(runContext, story);
         performableTree.perform(runContext, story);
 
@@ -414,46 +394,27 @@ class PerformableTreeBehaviour {
         StoryReporterBuilder storyReporterBuilder = mock(StoryReporterBuilder.class);
         when(storyReporterBuilder.build(STORY_PATH)).thenReturn(storyReporter);
         Configuration configuration = new MostUsefulConfiguration().useStoryReporterBuilder(storyReporterBuilder);
-        List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
-                .createCandidateSteps();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
-                candidateSteps);
 
         PerformableTree performableTree = new PerformableTree();
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
-                mock(EmbedderMonitor.class), new MetaFilter(), new BatchFailures());
-        performableTree.addStories(runContext, singletonList(story));
+        RunContext runContext = createRunContext(configuration, performableTree, mock(BatchFailures.class),
+                singletonList(story), new Steps());
         performableTree.perform(runContext, story);
         InOrder ordered = inOrder(storyReporter);
         ordered.verify(storyReporter).beforeStory(story, false);
         ordered.verify(storyReporter).narrative(narrative);
         ordered.verify(storyReporter).lifecycle(lifecycle);
-        ordered.verify(storyReporter).beforeStorySteps(Stage.BEFORE, ExecutionType.SYSTEM);
-        ordered.verify(storyReporter).afterStorySteps(Stage.BEFORE, ExecutionType.SYSTEM);
-        ordered.verify(storyReporter).beforeStorySteps(Stage.BEFORE, ExecutionType.USER);
-        ordered.verify(storyReporter).afterStorySteps(Stage.BEFORE, ExecutionType.USER);
-        ordered.verify(storyReporter).beforeScenarios();
+        verifyBeforeStoryStepsHooks(ordered, storyReporter);
         ordered.verify(storyReporter).beforeScenario(scenario);
-        ordered.verify(storyReporter).beforeScenarioSteps(Stage.BEFORE, ExecutionType.SYSTEM);
-        ordered.verify(storyReporter).afterScenarioSteps(Stage.BEFORE, ExecutionType.SYSTEM);
-        ordered.verify(storyReporter).beforeScenarioSteps(Stage.BEFORE, ExecutionType.USER);
-        ordered.verify(storyReporter).afterScenarioSteps(Stage.BEFORE, ExecutionType.USER);
+        verifyBeforeScenarioStepsHooks(ordered, storyReporter);
         ordered.verify(storyReporter).beforeScenarioSteps(null, null);
         ignorableStepVerifier.accept(ordered, storyReporter);
         ordered.verify(storyReporter).beforeStep(argThat(step -> step2.equals(step.getStepAsString())
                 && StepExecutionType.IGNORABLE == step.getExecutionType()));
         ordered.verify(storyReporter).ignorable(step2);
         ordered.verify(storyReporter).afterScenarioSteps(null, null);
-        ordered.verify(storyReporter).beforeScenarioSteps(Stage.AFTER, ExecutionType.USER);
-        ordered.verify(storyReporter).afterScenarioSteps(Stage.AFTER, ExecutionType.USER);
-        ordered.verify(storyReporter).beforeScenarioSteps(Stage.AFTER, ExecutionType.SYSTEM);
-        ordered.verify(storyReporter).afterScenarioSteps(Stage.AFTER, ExecutionType.SYSTEM);
+        verifyAfterScenarioStepsHooks(ordered, storyReporter);
         ordered.verify(storyReporter).afterScenario(any(Timing.class));
-        ordered.verify(storyReporter).afterScenarios();
-        ordered.verify(storyReporter).beforeStorySteps(Stage.AFTER, ExecutionType.USER);
-        ordered.verify(storyReporter).afterStorySteps(Stage.AFTER, ExecutionType.USER);
-        ordered.verify(storyReporter).beforeStorySteps(Stage.AFTER, ExecutionType.SYSTEM);
-        ordered.verify(storyReporter).afterStorySteps(Stage.AFTER, ExecutionType.SYSTEM);
+        verifyAfterStoryStepsHooks(ordered, storyReporter);
         ordered.verify(storyReporter).afterStory(false);
         verifyNoMoreInteractions(storyReporter);
     }
@@ -479,17 +440,115 @@ class PerformableTreeBehaviour {
         assertReturnsNullInAnotherThread(context::reporter);
     }
 
+    @Test
+    void shouldPerformAfterHooksUponStoryExecutionTimeout() {
+        String step1 = "When I execute step 1";
+        String step2 = "When I execute step 2";
+        String step3 = "When I execute step 3";
+        Scenario scenario = new Scenario("Scenario to be timed out", Meta.EMPTY, null, null,
+                asList(step1, step2, step3));
+        Narrative narrative = mock(Narrative.class);
+        Lifecycle lifecycle = new Lifecycle();
+        Story story = new Story(STORY_PATH, null, null, narrative, null, lifecycle, singletonList(scenario));
+
+        StoryReporter storyReporter = mock(StoryReporter.class);
+        StoryReporterBuilder storyReporterBuilder = mock(StoryReporterBuilder.class);
+        when(storyReporterBuilder.build(STORY_PATH)).thenReturn(storyReporter);
+        Configuration configuration = new MostUsefulConfiguration().useStoryReporterBuilder(storyReporterBuilder);
+
+        Steps steps = new Steps();
+
+        PerformableTree performableTree = new PerformableTree();
+        RunContext runContext = createRunContext(configuration, performableTree, mock(BatchFailures.class),
+                singletonList(story), steps);
+
+        steps.runContext = runContext;
+        steps.story = story;
+
+        UUIDExceptionWrapper uuidExceptionWrapper = assertThrows(UUIDExceptionWrapper.class,
+                () -> performableTree.perform(runContext, story));
+        Throwable cause = uuidExceptionWrapper.getCause();
+        assertEquals(InterruptedException.class, cause.getClass());
+        assertEquals(STORY_PATH, cause.getMessage());
+
+        assertTrue(steps.step1Invoked);
+        assertTrue(steps.step2Invoked);
+        assertFalse(steps.step3Invoked);
+
+        InOrder ordered = inOrder(storyReporter);
+        ordered.verify(storyReporter).beforeStory(story, false);
+        ordered.verify(storyReporter).narrative(narrative);
+        ordered.verify(storyReporter).lifecycle(lifecycle);
+        verifyBeforeStoryStepsHooks(ordered, storyReporter);
+        ordered.verify(storyReporter).beforeScenario(scenario);
+        verifyBeforeScenarioStepsHooks(ordered, storyReporter);
+        ordered.verify(storyReporter).beforeScenarioSteps(null, null);
+
+        ordered.verify(storyReporter).beforeStep(argThat(step -> step1.equals(step.getStepAsString())
+                && StepExecutionType.EXECUTABLE == step.getExecutionType()));
+        ordered.verify(storyReporter).successful(step1);
+        ordered.verify(storyReporter).beforeStep(argThat(step -> step2.equals(step.getStepAsString())
+                && StepExecutionType.EXECUTABLE == step.getExecutionType()));
+        ordered.verify(storyReporter).successful(step2);
+        ordered.verify(storyReporter).afterScenarioSteps(null, null);
+        verifyAfterScenarioStepsHooks(ordered, storyReporter);
+        ordered.verify(storyReporter).afterScenario(any(Timing.class));
+        verifyAfterStoryStepsHooks(ordered, storyReporter);
+        ordered.verify(storyReporter).storyCancelled(story, steps.storyDuration);
+        ordered.verify(storyReporter).afterStory(false);
+        verifyNoMoreInteractions(storyReporter);
+    }
+
     private RunContext runStoryInContext() {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useStoryLoader(mock(StoryLoader.class));
         PerformableTree performableTree = new PerformableTree();
-        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(), emptyList());
-        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
-                mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class));
         Story story = EMPTY_STORY;
-        performableTree.addStories(runContext, singletonList(story));
+        RunContext runContext = createRunContext(configuration, performableTree, mock(BatchFailures.class),
+                singletonList(story));
         performableTree.perform(runContext, story);
         return runContext;
+    }
+
+    private static RunContext createRunContext(Configuration configuration, PerformableTree performableTree,
+            BatchFailures batchFailures, List<Story> stories, Object... steps) {
+        InstanceStepsFactory stepsFactory = new InstanceStepsFactory(configuration, steps);
+        AllStepCandidates allStepCandidates = new AllStepCandidates(configuration.stepConditionMatcher(),
+                stepsFactory.createCandidateSteps());
+        RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
+                mock(EmbedderMonitor.class), new MetaFilter(), batchFailures);
+        performableTree.addStories(runContext, stories);
+        return runContext;
+    }
+
+    private static void verifyBeforeStoryStepsHooks(InOrder ordered, StoryReporter storyReporter) {
+        ordered.verify(storyReporter).beforeStorySteps(Stage.BEFORE, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).afterStorySteps(Stage.BEFORE, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).beforeStorySteps(Stage.BEFORE, ExecutionType.USER);
+        ordered.verify(storyReporter).afterStorySteps(Stage.BEFORE, ExecutionType.USER);
+        ordered.verify(storyReporter).beforeScenarios();
+    }
+
+    private static void verifyBeforeScenarioStepsHooks(InOrder ordered, StoryReporter storyReporter) {
+        ordered.verify(storyReporter).beforeScenarioSteps(Stage.BEFORE, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).afterScenarioSteps(Stage.BEFORE, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).beforeScenarioSteps(Stage.BEFORE, ExecutionType.USER);
+        ordered.verify(storyReporter).afterScenarioSteps(Stage.BEFORE, ExecutionType.USER);
+    }
+
+    private static void verifyAfterScenarioStepsHooks(InOrder ordered, StoryReporter storyReporter) {
+        ordered.verify(storyReporter).beforeScenarioSteps(Stage.AFTER, ExecutionType.USER);
+        ordered.verify(storyReporter).afterScenarioSteps(Stage.AFTER, ExecutionType.USER);
+        ordered.verify(storyReporter).beforeScenarioSteps(Stage.AFTER, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).afterScenarioSteps(Stage.AFTER, ExecutionType.SYSTEM);
+    }
+
+    private static void verifyAfterStoryStepsHooks(InOrder ordered, StoryReporter storyReporter) {
+        ordered.verify(storyReporter).afterScenarios();
+        ordered.verify(storyReporter).beforeStorySteps(Stage.AFTER, ExecutionType.USER);
+        ordered.verify(storyReporter).afterStorySteps(Stage.AFTER, ExecutionType.USER);
+        ordered.verify(storyReporter).beforeStorySteps(Stage.AFTER, ExecutionType.SYSTEM);
+        ordered.verify(storyReporter).afterStorySteps(Stage.AFTER, ExecutionType.SYSTEM);
     }
 
     private void assertReturnsNullInAnotherThread(Supplier<Object> supplier) throws Throwable {
@@ -507,6 +566,14 @@ class PerformableTreeBehaviour {
 
     public static class Steps {
 
+        private boolean step1Invoked;
+        private boolean step2Invoked;
+        private boolean step3Invoked;
+
+        private RunContext runContext;
+        private Story story;
+        private StoryDuration storyDuration;
+
         @When("I fail")
         public void fail() {
             throw new RuntimeException();
@@ -520,6 +587,25 @@ class PerformableTreeBehaviour {
         @When("I ignore from composed step")
         @Composite(steps = { "When I ignore" })
         public void ignoreFromComposite() {
+        }
+
+        @When("I execute step 1")
+        public void executeStep1() {
+            this.step1Invoked = true;
+        }
+
+        @When("I execute step 2")
+        public void executeStep2() {
+            this.step2Invoked = true;
+
+            // Emulating story execution timeout
+            this.storyDuration = mock(StoryDuration.class);
+            this.runContext.cancelStory(this.story, storyDuration);
+        }
+
+        @When("I execute step 3")
+        public void executeStep3() {
+            this.step3Invoked = true;
         }
     }
 }

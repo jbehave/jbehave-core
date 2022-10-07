@@ -92,7 +92,7 @@ class SurefireReporterBehaviour {
         performableStory.add(performableScenario);
         List<StepMatch> stepMatches = new ArrayList<>();
         stepMatches.add(new StepMatch(new StepPattern(StepType.GIVEN, "(def)", "[abc]")));
-        NormalPerformableScenario normalScenario = new NormalPerformableScenario(story, scenario);
+        NormalPerformableScenario normalScenario = new NormalPerformableScenario(story);
         normalScenario.addSteps(new PerformableSteps(null, stepMatches));
         performableScenario.useNormalScenario(normalScenario);
         return root;
