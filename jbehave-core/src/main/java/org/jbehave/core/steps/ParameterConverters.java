@@ -851,7 +851,7 @@ public class ParameterConverters {
 
         @Override
         public String convertValue(String value, Type type) {
-            return value.replaceAll(NEWLINES_PATTERN, SYSTEM_NEWLINE);
+            return value != null ? value.replaceAll(NEWLINES_PATTERN, SYSTEM_NEWLINE) : null;
         }
     }
 
