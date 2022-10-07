@@ -461,7 +461,7 @@ public class StepCreator {
                 for (String delimitedName : delimitedNameFor(parameter)) {
                     parameter = replaceAllDelimitedNames(parameter, delimitedName, namedParameters);
                 }
-            } while (!previousParameterValue.equals(parameter));
+            } while (parameter != null && !previousParameterValue.equals(parameter));
         }
 
         stepMonitor.foundParameter(parameter, position);

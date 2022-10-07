@@ -97,13 +97,17 @@ import org.jbehave.core.steps.ParameterConverters.NumberConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConversionFailed;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.StringConverter;
 import org.jbehave.core.steps.ParameterConverters.StringListConverter;
 import org.jbehave.core.steps.SomeSteps.MyParameters;
 import org.jbehave.core.steps.SomeSteps.SomeEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ParameterConvertersBehaviour {
 
@@ -569,6 +573,15 @@ class ParameterConvertersBehaviour {
         assertThat(converter.canConvertTo(type), is(true));
         List<SomeEnum> list = (List<SomeEnum>) converter.convertValue("ONE,TWO,THREE", type);
         assertThatCollectionIs(list, SomeEnum.ONE, SomeEnum.TWO, SomeEnum.THREE);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = "string")
+    void shouldConvertString(String value) {
+        ParameterConverters converters = new ParameterConverters();
+        Type type = String.class;
+        assertThat(converters.convert(value, type), is(value));
     }
 
     @Test
