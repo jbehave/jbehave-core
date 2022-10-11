@@ -507,6 +507,7 @@ class StepCreatorBehaviour {
     @CsvSource({
         "param,  value",
         "pa-ram, value",
+        "pa.ram, value",
         "pa ram, value",
         "param,  ",
         "param,  ''"
