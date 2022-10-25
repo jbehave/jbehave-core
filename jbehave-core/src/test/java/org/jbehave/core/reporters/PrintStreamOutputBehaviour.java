@@ -51,6 +51,8 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
@@ -508,7 +510,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.successful("Given I have a balance of $50");
         reporter.successful("When I request $20");
         reporter.failed("When I ask Liz for a loan of $100", exception);
-        reporter.pending("Then I should have a balance of $30");
+        reporter.pending((PendingStep) StepCreator.createPendingStep("Then I should have a balance of $30", null));
         reporter.notPerformed("Then I should have $20");
         reporter.afterScenario(getTiming());
 
@@ -519,6 +521,10 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 + "When I ask Liz for a loan of $100 (FAILED)\n"
                 + "(java.lang.RuntimeException: Leave my money alone!)\n"
                 + "Then I should have a balance of $30 (PENDING)\n"
+                + "(@Then(\"I should have a balance of $30\")\n"
+                + "@Pending\n"
+                + "public void thenIShouldHaveABalanceOf30() {\n"
+                + "  // PENDING\n}\n)\n"
                 + "Then I should have $20 (NOT PERFORMED)\n" 
                 + "\n";
         String actual = dos2unix(out.toString());
@@ -536,7 +542,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.successful("Given I have a balance of $50");
         reporter.successful("When I request $20");
         reporter.failed("When I ask Liz for a loan of $100", exception);
-        reporter.pending("Then I should have a balance of $30");
+        reporter.pending((PendingStep) StepCreator.createPendingStep("Then I should have a balance of $30",  null));
         reporter.notPerformed("Then I should have $20");
         reporter.afterScenario(getTiming());
 
@@ -567,7 +573,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.successful("Dato che ho un saldo di $50");
         reporter.successful("Quando richiedo $20");
         reporter.failed("Quando chiedo a Liz un prestito di $100", exception);
-        reporter.pending("Allora dovrei avere un saldo di $30");
+        reporter.pending((PendingStep) StepCreator.createPendingStep("Allora dovrei avere un saldo di $30", null));
         reporter.notPerformed("Allora dovrei avere $20");
 
         // Then
@@ -576,6 +582,10 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 + "Quando chiedo a Liz un prestito di $100 (FALLITO)\n"
                 + "(java.lang.RuntimeException: Lasciate in pace i miei soldi!)\n"
                 + "Allora dovrei avere un saldo di $30 (IN SOSPESO)\n"
+                + "(@Then(\"dovrei avere un saldo di $30\")\n"
+                + "@Pending\n"
+                + "public void thenDovreiAvereUnSaldoDi30() {\n"
+                + "  // IN SOSPESO\n}\n)\n"
                 + "Allora dovrei avere $20 (NON ESEGUITO)\n";
 
         assertThat(dos2unix(out.toString()), equalTo(expected));

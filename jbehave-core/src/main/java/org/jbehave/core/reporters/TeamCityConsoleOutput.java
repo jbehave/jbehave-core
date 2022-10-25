@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Scenario;
+import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -51,9 +53,14 @@ public class TeamCityConsoleOutput extends ConsoleOutput {
     }
 
     @Override
-    public void pending(String step) {
+    public void pending(PendingStep step) {
         super.pending(step);
         print(format("testIgnored", eventName));
+    }
+
+    @Override
+    public void pending(String step) {
+        pending((PendingStep) StepCreator.createPendingStep(step, null));
     }
 
     @Override

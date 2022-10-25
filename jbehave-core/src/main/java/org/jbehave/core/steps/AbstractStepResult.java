@@ -55,17 +55,21 @@ public abstract class AbstractStepResult implements StepResult {
     }
 
     public static class Pending extends AbstractStepResult {
-        public Pending(String step) {
-            this(step, new PendingStepFound(step));
+        private StepCreator.PendingStep pendingStep;
+
+        public Pending(StepCreator.PendingStep step) {
+            this(step, new PendingStepFound(step.stepAsString()));
+            pendingStep = step;
         }
 
-        public Pending(String step, PendingStepFound e) {
-            super(step, Type.PENDING, e);
+        public Pending(StepCreator.PendingStep step, PendingStepFound e) {
+            super(step.getStepAsString(), Type.PENDING, e);
+            pendingStep = step;
         }
 
         @Override
         public void describeTo(StoryReporter reporter) {
-            reporter.pending(parametrisedStep());
+            reporter.pending(pendingStep);
         }
     }
 
@@ -184,11 +188,11 @@ public abstract class AbstractStepResult implements StepResult {
         return new Comment(step);
     }
 
-    public static StepResult pending(String step) {
+    public static StepResult pending(StepCreator.PendingStep step) {
         return new Pending(step);
     }
 
-    public static StepResult pending(String step, PendingStepFound e) {
+    public static StepResult pending(StepCreator.PendingStep step, PendingStepFound e) {
         return new Pending(step, e);
     }
 

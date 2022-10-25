@@ -212,7 +212,8 @@
         {
           "outcome": "pending",
           "keyword": "PENDING",
-          "value": "Then I should have a balance of $30"
+          "value": "Then I should have a balance of $30",
+          "pendingMethod": "@Then(\"I should have a balance of $30\")\n@Pending\npublic void thenIShouldHaveABalanceOf30() {\n  // PENDING\n}\n"
         },
         {
           "outcome": "notPerformed",
@@ -363,7 +364,8 @@
               {
                 "outcome": "pending",
                 "keyword": "PENDING",
-                "value": "Then I should have a balance of $30"
+                "value": "Then I should have a balance of $30",
+                "pendingMethod": "@Then(\"I should have a balance of $30\")\n@Pending\npublic void thenIShouldHaveABalanceOf30() {\n  // PENDING\n}\n"
               }
             ],
             "afterUserScenarioSteps": [
@@ -396,9 +398,5 @@
       "outcome": "successful",
       "value": "Given an after story step"
     }
-  ],
-  "pendingMethods": [
-    "@When(\"something \\\"$param\\\"\")\n@Pending\npublic void whenSomething() {\n  \/\/ PENDING\n}\n",
-    "@Then(\"something is <param1>\")\n@Pending\npublic void thenSomethingIsParam1() {\n  \/\/ PENDING\n}\n"
   ]
 }

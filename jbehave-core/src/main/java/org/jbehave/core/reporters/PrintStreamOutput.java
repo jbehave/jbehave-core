@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -29,7 +30,9 @@ import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MetaFilter;
+import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.KnownFailure;
+import org.jbehave.core.failures.PendingStepsFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -44,7 +47,9 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.Verbatim;
+import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -185,6 +190,13 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     @Override
     public void comment(String step) {
         print(format("comment", "{0}\n", step));
+    }
+
+    @Override
+    public void pending(PendingStep step) {
+        PendingStepMethodGenerator generator = new PendingStepMethodGenerator(keywords);
+        String pendingMethod = generator.generateMethod(step);
+        print(format("pending", "{0} ({1})\n({2})\n", step.stepAsString(), keywords.pending(), pendingMethod));
     }
 
     @Override
@@ -530,11 +542,6 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
 
     @Override
     public void pendingMethods(List<String> methods) {
-        print(format("pendingMethodsStart", EMPTY));
-        for (String method : methods) {
-            print(format("pendingMethod", "{0}\n", method));
-        }
-        print(format("pendingMethodsEnd", EMPTY));
     }
 
     @Override

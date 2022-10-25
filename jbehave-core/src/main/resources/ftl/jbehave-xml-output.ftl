@@ -115,7 +115,7 @@
 <#assign formattedStep = step.getFormattedStep(EscapeMode.XML, "<parameter>{0}</parameter>")>
 <step outcome="${step.outcome}">
 ${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()/></parameter></#if><#if step.getVerbatim()??> <parameter><@renderVerbatim step.getVerbatim()/></parameter></#if>
-<#if step.getFailure()??> <failure>${step.failureCause?xml}</failure></#if><#if step.getOutcomes()??><@renderOutcomes step.getOutcomes()/></#if></step>
+<#if step.getFailure()??> <failure>${step.failureCause?xml}</failure></#if><#if step.getPendingMethod()??> <pendingMethod>${step.pendingMethod?xml}</pendingMethod></#if><#if step.getOutcomes()??><@renderOutcomes step.getOutcomes()/></#if></step>
 </#macro>
 
 <story path="${story.path}" title="${story.description?xml}">
@@ -167,11 +167,6 @@ ${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()
 </#if>
 <#if story.isCancelled()?string == 'true'>
 <cancelled keyword="${keywords.storyCancelled}" durationKeyword="${keywords.duration}" durationInSecs="${story.storyDuration.durationInSecs}"/>
-</#if>
-<#if story.getPendingMethods()??>
-<#list story.getPendingMethods() as method>
-<pendingMethod>${method?xml}</pendingMethod>
-</#list>
 </#if>
 </story>
 

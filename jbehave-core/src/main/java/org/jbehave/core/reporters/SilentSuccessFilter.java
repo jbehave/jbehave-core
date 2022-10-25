@@ -11,6 +11,8 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -39,8 +41,6 @@ public class SilentSuccessFilter extends NullStoryReporter {
     
     @Override
     public void pendingMethods(final List<String> methods) {
-        runState = createState(() -> delegate.pendingMethods(methods));
-        runState.report();
     }
 
     @Override
@@ -104,9 +104,14 @@ public class SilentSuccessFilter extends NullStoryReporter {
     }
 
     @Override
-    public void pending(final String step) {
+    public void pending(PendingStep step) {
         addScenarioTodo(() -> delegate.pending(step));
         setStateToNoisy();
+    }
+
+    @Override
+    public void pending(final String step) {
+        pending((PendingStep) StepCreator.createPendingStep(step, null));
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.jbehave.core.reporters;
 import static org.jbehave.core.reporters.PrintStreamOutput.Format.JSON;
 
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -41,6 +42,10 @@ public class JsonOutput extends PrintStreamOutput {
 
     public JsonOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
         super(JSON, output, defaultXmlPatterns(), outputPatterns, keywords);
+    }
+
+    @Override
+    public void pendingMethods(List<String> methods) {
     }
 
     @Override
@@ -108,9 +113,6 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("beforeScenarios", "\"scenarios\": [");
         patterns.setProperty("afterScenarios", "]");
         patterns.setProperty("afterStory", "}");
-        patterns.setProperty("pendingMethodsStart", "\"pendingMethods\": [");
-        patterns.setProperty("pendingMethod", "\"{0}\"");
-        patterns.setProperty("pendingMethodsEnd", "]");
         patterns.setProperty("metaStart", "\"meta\": '['");
         patterns.setProperty("metaProperty", "'{'\"keyword\": \"{0}\", \"name\": \"{1}\", \"value\": \"{2}\"}");
         patterns.setProperty("metaEnd", "']'");
@@ -166,7 +168,7 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("successful", "\"outcome\": \"successful\", \"value\": \"{0}\"}");
         patterns.setProperty("ignorable", "\"outcome\": \"ignorable\", \"value\": \"{0}\"}");
         patterns.setProperty("comment", "\"outcome\": \"comment\", \"value\": \"{0}\"}");
-        patterns.setProperty("pending", "\"outcome\": \"pending\", \"keyword\": \"{1}\", \"value\": \"{0}\"}");
+        patterns.setProperty("pending", "\"outcome\": \"pending\", \"keyword\": \"{1}\", \"value\": \"{0}\", \"pendingMethod\": \"{2}\"}");
         patterns.setProperty("notPerformed", "\"outcome\": \"notPerformed\", \"keyword\": \"{1}\", \"value\": \"{0}\"}");
         patterns.setProperty("failed", "\"outcome\": \"failed\", \"keyword\": \"{1}\", \"value\": \"{0}\", \"failure\": \"{2}\"}");
         patterns.setProperty("restarted", "\"outcome\": \"restarted\", \"value\": \"{0}\", \"reason\": \"{1}\"}");

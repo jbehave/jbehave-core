@@ -29,6 +29,8 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.NullStoryReporter;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 import org.junit.runner.Description;
@@ -319,7 +321,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
     }
 
     @Override
-    public void pending(String step) {
+    public void pending(PendingStep step) {
         TestState testState = this.testState.get();
         if (!testState.isGivenStoryRunning()) {
             if (pendingStepStrategy instanceof FailingUponPendingStep) {
@@ -334,6 +336,11 @@ public class JUnit4StoryReporter extends NullStoryReporter {
                 prepareNextStep();
             }
         }
+    }
+
+    @Override
+    public void pending(String step) {
+        pending((PendingStep) StepCreator.createPendingStep(step, null));
     }
 
     @Override

@@ -19,9 +19,8 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
 import org.jbehave.core.failures.BatchFailures;
-import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.IgnoringStepsFailure;
-import org.jbehave.core.failures.PendingStepsFound;
+import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.RestartingStoryFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -38,7 +37,6 @@ import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.DelegatingStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult;
-import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
@@ -361,24 +359,6 @@ public class PerformableTree {
         return !scenario.getExamplesTable().isEmpty() && !scenario.getGivenStories().requireParameters();
     }
 
-    static void generatePendingStepMethods(RunContext context, List<Step> steps) {
-        List<PendingStep> pendingSteps = new ArrayList<>();
-        for (Step step : steps) {
-            if (step instanceof PendingStep) {
-                pendingSteps.add((PendingStep) step);
-            }
-        }
-        if (!pendingSteps.isEmpty()) {
-            PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration().keywords());
-            List<String> methods = new ArrayList<>();
-            for (PendingStep pendingStep : pendingSteps) {
-                if (!pendingStep.annotated()) {
-                    methods.add(generator.generateMethod(pendingStep));
-                }
-            }
-        }
-    }
-
     public interface State {
 
         State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter);
@@ -401,6 +381,10 @@ public class PerformableTree {
             } catch (IgnoringStepsFailure e) {
                 result = AbstractStepResult.ignorable(step.asString(keywords));
                 state = new Ignoring(e);
+            }
+            catch (PendingStepFound e) {
+                result = AbstractStepResult.pending((PendingStep) step);
+                state = new Pending(e);
             }
             indexOfResult = results.size();
             results.add(result);
@@ -470,6 +454,29 @@ public class PerformableTree {
 
         @Override
         public IgnoringStepsFailure getFailure() {
+            return failure;
+        }
+    }
+
+    private static final class Pending implements State {
+
+        private final PendingStepFound failure;
+
+        private Pending(PendingStepFound failure) {
+            this.failure = failure;
+        }
+
+        @Override
+        public State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter) {
+            reporter.pending((PendingStep) step);
+            StepResult result = AbstractStepResult.pending((PendingStep) step);
+            results.add(result);
+            result.describeTo(reporter);
+            return this;
+        }
+
+        @Override
+        public PendingStepFound getFailure() {
             return failure;
         }
     }
@@ -1428,7 +1435,6 @@ public class PerformableTree {
             }
             context.stateIs(state instanceof Ignoring ? originalState : state);
             context.pendingSteps(pendingSteps);
-            generatePendingStepMethods(context, pendingSteps);
         }
 
         @Override
@@ -1454,22 +1460,6 @@ public class PerformableTree {
             return pending;
         }
 
-        private void generatePendingStepMethods(RunContext context, List<PendingStep> pendingSteps) {
-            if (!pendingSteps.isEmpty()) {
-                PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration()
-                        .keywords());
-                List<String> methods = new ArrayList<>();
-                for (PendingStep pendingStep : pendingSteps) {
-                    if (!pendingStep.annotated()) {
-                        methods.add(generator.generateMethod(pendingStep));
-                    }
-                }
-                context.reporter().pendingMethods(methods);
-                if (context.configuration().pendingStepStrategy() instanceof FailingUponPendingStep) {
-                    throw new PendingStepsFound(pendingSteps);
-                }
-            }
-        }
 
         @Override
         public String toString() {

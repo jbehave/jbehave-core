@@ -30,6 +30,20 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
+    void shouldOutputStoryToHtmlPendingMethod() throws IOException {
+        // Given
+        String name = "template-story-pending-method.html";
+        File file = newFile("target/" + name);
+        StoryReporter reporter = new HtmlTemplateOutput(file, new LocalizedKeywords());
+
+        // When
+        StoryNarrator.narrateAnInterestingStory(reporter, false);
+
+        // Then
+        assertXml(name, file);
+    }
+
+    @Test
     void shouldOutputStoryToJson() throws IOException, SAXException, ParserConfigurationException {
         // Given
         String name = "template-story.json";
@@ -38,6 +52,21 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
 
         // When
         StoryNarrator.narrateAnInterestingStory(reporter, true);
+
+        // Then
+        assertJson(name, fileContent(file));
+        validateFileOutput(file);
+    }
+
+    @Test
+    void shouldOutputStoryToJsonWithPendingMethod() throws IOException, SAXException, ParserConfigurationException {
+        // Given
+        String name = "template-story-pending-method.json";
+        File file = newFile("target/" + name);
+        StoryReporter reporter = new JsonTemplateOutput(file, new LocalizedKeywords());
+
+        // When
+        StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
         assertJson(name, fileContent(file));
@@ -59,6 +88,20 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
         validateFileOutput(file);
     }
 
+    @Test
+    void shouldOutputStoryToXmlPendingMethod() throws IOException, SAXException, ParserConfigurationException {
+        // Given
+        String name = "template-story-pending-method.xml";
+        File file = newFile("target/" + name);
+        StoryReporter reporter = new XmlTemplateOutput(file, new LocalizedKeywords());
+
+        // When
+        StoryNarrator.narrateAnInterestingStory(reporter, false);
+
+        // Then
+        assertXml(name, file);
+        validateFileOutput(file);
+    }
 
     @Test
     void shouldNotGenerateViewWithInexistentTemplates() {

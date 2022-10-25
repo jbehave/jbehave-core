@@ -34,7 +34,10 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.Verbatim;
+import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 import freemarker.ext.beans.BeansWrapper;
@@ -55,6 +58,7 @@ public class TemplateableOutput extends NullStoryReporter {
     private OutputStory outputStory = new OutputStory();
     private OutputScenario outputScenario = new OutputScenario();
     private OutputStep failedStep;
+    private OutputStep pendingStep;
     private Scope scope;
     private StepCollector.Stage stage;
 
@@ -145,8 +149,16 @@ public class TemplateableOutput extends NullStoryReporter {
     }
 
     @Override
+    public void pending(PendingStep step) {
+        this.pendingStep = new OutputStep(step.stepAsString(), "pending");
+        PendingStepMethodGenerator generator = new PendingStepMethodGenerator(keywords);
+        pendingStep.pendingMethod = generator.generateMethod(step);
+        addStep(pendingStep);
+    }
+
+    @Override
     public void pending(String step) {
-        addStep(new OutputStep(step, "pending"));
+        pending((PendingStep) StepCreator.createPendingStep(step, null));
     }
 
     @Override
@@ -207,7 +219,6 @@ public class TemplateableOutput extends NullStoryReporter {
 
     @Override
     public void pendingMethods(List<String> methods) {
-        this.outputStory.pendingMethods = methods;
     }
 
     @Override
@@ -419,7 +430,6 @@ public class TemplateableOutput extends NullStoryReporter {
         private OutputNarrative narrative;
         private OutputLifecycle lifecycle;
         private String excludedBy;
-        private List<String> pendingMethods;
         private List<OutputStep> beforeSteps = new ArrayList<>();
         private List<OutputStep> afterSteps = new ArrayList<>();
         private List<OutputScenario> scenarios = new ArrayList<>();
@@ -464,10 +474,6 @@ public class TemplateableOutput extends NullStoryReporter {
 
         public List<OutputStep> getAfterSteps() {
             return afterSteps;
-        }
-
-        public List<String> getPendingMethods() {
-            return pendingMethods;
         }
 
         public List<OutputScenario> getScenarios() {
@@ -672,6 +678,7 @@ public class TemplateableOutput extends NullStoryReporter {
         private ExamplesTable table;
         private String verbatimAsString;
         private Verbatim verbatim;
+        private String pendingMethod;
 
         public OutputStep(String step, String outcome) {
             this.step = step;
@@ -700,6 +707,10 @@ public class TemplateableOutput extends NullStoryReporter {
 
         public Throwable getFailure() {
             return failure;
+        }
+
+        public String getPendingMethod() {
+            return pendingMethod;
         }
 
         public String getFailureCause() {

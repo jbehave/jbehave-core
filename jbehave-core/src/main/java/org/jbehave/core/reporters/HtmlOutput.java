@@ -55,7 +55,6 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("beforeStory", "<div id=\"{0}\" class=\"story\">\n<h1>{1}</h1>\n<div class=\"path\">{2}</div>\n");
         patterns.setProperty("storyCancelled", "<div class=\"cancelled\">{0} ({1} {2} s)</div>\n");
         patterns.setProperty("afterStory", "</div>\n");
-        patterns.setProperty("pendingMethod", "<div><pre class=\"pending\">{0}</pre></div>\n");        
         patterns.setProperty("metaStart", "<div class=\"meta\">\n<div class=\"keyword\">{0}</div>\n");
         patterns.setProperty("metaProperty", "<div class=\"property\">{0}{1} {2}</div>\n");
         patterns.setProperty("metaEnd", "</div>\n");
@@ -107,7 +106,7 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
         patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
         patterns.setProperty("comment", "<div class=\"comment\">{0}</div>\n");
-        patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span></div>\n");
+        patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span><pre class=\"pending\">{2}</pre></div>\n");
         patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
         patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
         patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");

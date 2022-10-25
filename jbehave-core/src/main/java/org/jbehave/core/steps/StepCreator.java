@@ -950,7 +950,7 @@ public class StepCreator {
                         .setTimings(timer.stop());
             } catch (ParameterNotFound e) {
                 // step parametrisation failed, return pending StepResult
-                return pending(stepAsString).withParameterValues(parametrisedStep);
+                return pending(new PendingStep(stepAsString, null)).withParameterValues(parametrisedStep);
             } catch (InvocationTargetException e) {
                 if (e.getCause() instanceof RestartingScenarioFailure) {
                     throw (RestartingScenarioFailure) e.getCause();
@@ -1025,7 +1025,7 @@ public class StepCreator {
 
         @Override
         protected StepResult perform(UUIDExceptionWrapper storyFailure) {
-            return pending(getStepAsString());
+            return pending(this);
         }
 
         @Override

@@ -1,7 +1,8 @@
-<div id="story-id" class="story">
-<h1>An interesting story &amp; special chars</h1>
+
+<html>
+<body>
+<div class="story"><h1>An interesting story &amp; special chars</h1>
 <div class="path">/path/to/story</div>
-<div class="dryRun">DRY RUN</div>
 <div class="meta">
 <div class="keyword">Meta:</div>
 <div class="property">@author Mauro</div>
@@ -16,164 +17,201 @@
 <div class="before"><h3>Before:</h3>
 <div class="scope"><h3>Scope: SCENARIO</h3>
 <div class="step">Given a scenario step</div>
-</div>
+ <!-- step -->
+</div> <!-- scope -->
 <div class="scope"><h3>Scope: STORY</h3>
 <div class="step">Given a before story step</div>
-</div>
-</div>
+ <!-- step -->
+</div> <!-- scope -->
+ <!-- scope -->
+</div> <!-- before -->
 <div class="after"><h3>After:</h3>
 <div class="scope"><h3>Scope: SCENARIO</h3>
-<div class="outcome"><h3>Outcome: ANY</h3>
+<div class="outcome">
+Outcome: ANY
+
 <div class="step">Given a scenario step</div>
+ <!-- step -->
 </div>
+ <!-- outcome -->
 </div>
 <div class="scope"><h3>Scope: STORY</h3>
-<div class="outcome"><h3>Outcome: ANY</h3>
+<div class="outcome">
+Outcome: ANY
+
 <div class="step">Given an after story step</div>
+ <!-- step -->
 </div>
+ <!-- outcome -->
 </div>
+ <!-- scope -->
+</div> <!-- after -->
 </div>
-</div>
-<div class="beforeSystemStorySteps">
+<div class="before">
+<h3>Before:</h3>
 <div class="step successful">Given a before story step</div>
-</div>
-<div class="beforeUserStorySteps">
+
 <div class="step successful">Given a before story step</div>
+
+</div> <!-- before -->
+<div class="scenario"><h2>Scenario: I ask for a loan</h2>
+<div class="givenStories">
+<div class="keyword">GivenStories:</div>
+<div class="givenStory">/given/story1</div>
+<div class="givenStory">/given/story2</div>
 </div>
-<div id="scenario-id" class="scenario">
-<h2>Scenario: I ask for a loan</h2>
-<div class="beforeSystemScenarioSteps">
+ <!-- normal scenario steps -->
 <div class="step successful">Given a scenario step</div>
-</div>
-<div class="beforeUserScenarioSteps">
+
 <div class="step successful">Given a scenario step</div>
-</div>
-<div class="givenStories">GivenStories:
-<div class="givenStory">/given/story1 </div>
-<div class="givenStory">/given/story2 </div>
-</div>
-<div class="steps">
+
 <div class="step successful">Given I have a balance of $50</div>
+
 <div class="step ignorable">!-- Then ignore me</div>
-<div class="comment">!-- A comment</div>
-<div class="steps">
+
+<div class="step comment">!-- A comment</div>
+
 <div class="step successful">When I perform inner step</div>
-<div class="steps">
+
 <div class="step successful">When I perform inner step</div>
+
 <div class="step successful">When I perform inner step</div>
-</div>
+
 <div class="step successful">When I perform composite step</div>
+
 <div class="step successful">When I perform inner step</div>
-</div>
+
 <div class="step successful">When I perform composite step</div>
+
 <div class="step successful">When I request $20</div>
+
 <div class="step successful">When I ask Liz for a loan of $100</div>
+
 <div class="step successful">When I ask Liz for a loan of $<span class="step parameter">99</span></div>
+
 <div class="step successful">When I write special chars &lt;&gt;&amp;&quot;</div>
+
 <div class="step successful">When I write special chars in parameter <span class="step parameter">&lt;&gt;&amp;&quot;</span></div>
+
 <div class="step successful">When I write two parameters <span class="step parameter">,,,</span> and <span class="step parameter">&amp;&amp;&amp;</span></div>
-<div class="step restarted">Then I should... - try again <span class="message restarted">hi</span></div>
-<div class="story restarted">/path/to/story <span class="message restarted">Restarted Story</span></div>
-<div class="cancelled">STORY CANCELLED (DURATION 2 s)</div>
-<div class="step pending">Then I should have a balance of $30 <span class="keyword pending">(PENDING)</span><pre class="pending">@Then("I should have a balance of $30")
+
+<div class="step hi">Then I should... - try again</div>
+
+<div class="step Restarted Story">/path/to/story</div>
+
+<div class="step pending">Then I should have a balance of $30<span class="keyword pending">(PENDING)</span></div>
+<pre class="pendingMethod">@Then(&quot;I should have a balance of $30&quot;)
 @Pending
 public void thenIShouldHaveABalanceOf30() {
   // PENDING
 }
-</pre></div>
-<div class="step notPerformed">Then I should have $20 <span class="keyword notPerformed">(NOT PERFORMED)</span></div>
-<div class="step failed">Then I don't return loan <span class="keyword failed">(FAILED)</span><br/><span class="message failed">org.jbehave.core.model.OutcomesTable$OutcomesFailed</span></div>
+</pre>
+<div class="step notPerformed">Then I should have $20<span class="keyword notPerformed">(NOT PERFORMED)</span></div>
+
+<div class="step failed">Then I don't return loan<span class="keyword failed">(FAILED)</span></div>
+<pre class="failure">org.jbehave.core.model.OutcomesTable$OutcomesFailed
+	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:85)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:121)
+	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToHtmlPendingMethod(TemplateOutputBehaviour.java:40)
+	(reflection-invoke)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)
+...</pre>
 <div class="outcomes"><table>
-<thead>
-<tr>
-<th>Description</th><th>Value</th><th>Matcher</th><th>Verified</th></tr>
-</thead>
+<thead><tr>
+<th>Description</th>
+<th>Value</th>
+<th>Matcher</th>
+<th>Verified</th>
+</tr></thead>
 <tbody>
+
 <tr class="notVerified">
-<td>I don't return all</td><td>100.0</td><td>&lt;50.0&gt;</td><td>No</td></tr>
+<td>I don't return all</td><td>100</td><td>&lt;50.0&gt;</td><td>No</td>
+</tr>
+
 <tr class="notVerified">
-<td>A wrong date</td><td>01/01/2011</td><td>&quot;02/01/2011&quot;</td><td>No</td></tr>
-</tbody>
-</table></div>
-</div>
-<div class="afterUserScenarioSteps">
-<div class="step successful">Given a scenario step</div>
-</div>
-<div class="afterSystemScenarioSteps">
-<div class="step successful">Given a scenario step</div>
-</div>
-<h3>start 1</h3>
-<h3>end 2</h3>
-</div><!-- after scenario -->
-<div id="scenario-id" class="scenario">
-<h2>Scenario: Parametrised Scenario</h2>
-<div class="examples">
-<h3>Examples:</h3>
-<div class="step">Given money &lt;money&gt;</div>
-<div class="step">Then I give it to &lt;to&gt;</div>
-<table>
-<thead>
-<tr>
-<th>money</th><th>to</th></tr>
-</thead>
-<tbody>
-<tr>
-<td>$30</td><td>Mauro</td></tr>
-<tr>
-<td>$50</td><td>Paul</td></tr>
+<td>A wrong date</td><td>01/01/2011</td><td>&quot;02/01/2011&quot;</td><td>No</td>
+</tr>
 </tbody>
 </table>
 
+<pre class="failure">org.jbehave.core.model.OutcomesTable$OutcomesFailed
+	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:85)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:121)
+	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToHtmlPendingMethod(TemplateOutputBehaviour.java:40)
+	(reflection-invoke)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)
+...</pre>
+</div>
+<div class="step successful">Given a scenario step</div>
+
+<div class="step successful">Given a scenario step</div>
+
+</div> <!-- end scenario -->
+<div class="scenario"><h2>Scenario: Parametrised Scenario</h2>
+<div class="examples"><h3>Examples:</h3>
+<div class="step">Given money &lt;money&gt;</div>
+<div class="step">Then I give it to &lt;to&gt;</div>
+<table>
+<thead><tr>
+<th>money</th>
+<th>to</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>$30</td>
+<td>Mauro</td>
+</tr>
+<tr>
+<td>$50</td>
+<td>Paul</td>
+</tr>
+</tbody>
+</table>
+</div>  <!-- end examples -->
 <h3 class="example">Example: {money=$30, to=Mauro}</h3>
-<div class="beforeSystemScenarioSteps">
 <div class="step successful">Given a scenario step</div>
-</div>
-<div class="beforeUserScenarioSteps">
+
 <div class="step successful">Given a scenario step</div>
-</div>
-<div class="steps">
+
 <div class="step successful">Given money $30</div>
+
 <div class="step successful">Then I give it to Mauro</div>
-</div>
-<div class="afterUserScenarioSteps">
+
 <div class="step successful">Given a scenario step</div>
-</div>
-<div class="afterSystemScenarioSteps">
+
 <div class="step successful">Given a scenario step</div>
-</div>
 
 <h3 class="example">Example: {money=$50, to=Paul}</h3>
-<div class="beforeSystemScenarioSteps">
 <div class="step successful">Given a scenario step</div>
-</div>
-<div class="beforeUserScenarioSteps">
+
 <div class="step successful">Given a scenario step</div>
-</div>
-<div class="steps">
+
 <div class="step successful">Given money $50</div>
+
 <div class="step successful">Then I give it to Paul</div>
-<div class="step pending">Then I should have a balance of $30 <span class="keyword pending">(PENDING)</span><pre class="pending">@Then("I should have a balance of $30")
+
+<div class="step pending">Then I should have a balance of $30<span class="keyword pending">(PENDING)</span></div>
+<pre class="pendingMethod">@Then(&quot;I should have a balance of $30&quot;)
 @Pending
 public void thenIShouldHaveABalanceOf30() {
   // PENDING
 }
-</pre></div>
-</div>
-<div class="afterUserScenarioSteps">
+</pre>
 <div class="step successful">Given a scenario step</div>
-</div>
-<div class="afterSystemScenarioSteps">
+
 <div class="step successful">Given a scenario step</div>
-</div>
-</div><!-- after examples -->
-<h3>start 1</h3>
-<h3>end 2</h3>
-</div><!-- after scenario -->
-<div class="afterUserStorySteps">
+
+</div> <!-- end scenario -->
+<div class="after">
+<h3>After:</h3>
 <div class="step successful">Given an after story step</div>
-</div>
-<div class="afterSystemStorySteps">
+
 <div class="step successful">Given an after story step</div>
-</div>
-</div><!-- after story -->
+
+</div> <!-- after -->
+<div class="cancelled">STORY CANCELLED (DURATION 2 s)</div>
+</div> <!-- end story -->
+</body>
+</html>
 

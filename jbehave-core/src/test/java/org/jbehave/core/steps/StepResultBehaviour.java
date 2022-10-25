@@ -31,10 +31,10 @@ class StepResultBehaviour {
         // When
         String successful = "Given that a step is pending or failing";
         successful(successful).describeTo(reporter);
-        String pending = "When a step is performed";
-        pending(pending).describeTo(reporter);
-        PendingStepFound pendingStepFound = new PendingStepFound(pending);
-        pending(pending, pendingStepFound).describeTo(reporter);
+        StepCreator.PendingStep pendingStep = (StepCreator.PendingStep) StepCreator.createPendingStep("When a step is performed", null);
+        pending(pendingStep).describeTo(reporter);
+        PendingStepFound pendingStepFound = new PendingStepFound(pendingStep.stepAsString());
+        pending(pendingStep, pendingStepFound).describeTo(reporter);
         String notPerformed = "Then the step should describe itself properly to reporters";
         notPerformed(notPerformed).describeTo(reporter);
         String ignorable = "!-- Then ignore me";
@@ -51,7 +51,7 @@ class StepResultBehaviour {
 
         // Then
         verify(reporter).successful(successful);
-        verify(reporter, times(2)).pending(pending);
+        verify(reporter, times(2)).pending(pendingStep);
         verify(reporter).notPerformed(notPerformed);
         verify(reporter).ignorable(ignorable);
         verify(reporter).comment(comment);
@@ -68,7 +68,8 @@ class StepResultBehaviour {
         String successful = "Given that a step is pending or failing";
         successful("Given that a step is $pending or $failing").withParameterValues(successful).describeTo(reporter);
         String pending = "When a step is performed";
-        pending("When a step is $performed").withParameterValues(pending).describeTo(reporter);
+        StepCreator.PendingStep pendingStep = (StepCreator.PendingStep) StepCreator.createPendingStep("When a step is $performed", null);
+        pending(pendingStep).withParameterValues(pending).describeTo(reporter);
         String notPerformed = "Then the step should describe itself properly to reporters";
         notPerformed("Then the step should $describe itself properly to reporters").withParameterValues(notPerformed)
                 .describeTo(reporter);
@@ -79,7 +80,7 @@ class StepResultBehaviour {
 
         // Then
         verify(reporter).successful(successful);
-        verify(reporter).pending(pending);
+        verify(reporter).pending(pendingStep);
         verify(reporter).notPerformed(notPerformed);
         verify(reporter).failed(failed, cause);
     }

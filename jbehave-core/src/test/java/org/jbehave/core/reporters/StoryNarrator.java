@@ -161,18 +161,6 @@ class StoryNarrator {
 
         reportStoryStep(reporter, afterStoryStep, Stage.AFTER, ExecutionType.USER);
         reportStoryStep(reporter, afterStoryStep, Stage.AFTER, ExecutionType.SYSTEM);
-
-        String method1 = "@When(\"something \\\"$param\\\"\")\n"
-                + "@Pending\n"
-                + "public void whenSomething() {\n"
-                + "  // PENDING\n"
-                + "}\n";
-        String method2 = "@Then(\"something is <param1>\")\n"
-                + "@Pending\n"
-                + "public void thenSomethingIsParam1() {\n"
-                + "  // PENDING\n"
-                + "}\n";
-        reporter.pendingMethods(asList(method1, method2));
         reporter.afterStory(givenStory);
     }
 
@@ -198,7 +186,7 @@ class StoryNarrator {
 
     private static void reportPendingStep(StoryReporter reporter, String step) {
         reporter.beforeStep(new Step(StepExecutionType.PENDING, step));
-        reporter.pending(step);
+        reporter.pending((StepCreator.PendingStep) StepCreator.createPendingStep(step, null));
     }
 
     private static void reportSuccessfulStep(StoryReporter reporter, String step) {

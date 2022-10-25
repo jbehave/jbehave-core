@@ -71,7 +71,12 @@
 <step outcome="restarted">Then I should... - try again<reason>hi</reason></step>
 <story outcome="restartedStory">/path/to/story<reason>Restarted Story</reason></story>
 <cancelled keyword="STORY CANCELLED" durationKeyword="DURATION" durationInSecs="2"/>
-<step outcome="pending" keyword="PENDING">Then I should have a balance of $30</step>
+<step outcome="pending" keyword="PENDING">Then I should have a balance of $30<pendingMethod>@Then(&quot;I should have a balance of $30&quot;)
+@Pending
+public void thenIShouldHaveABalanceOf30() {
+  // PENDING
+}
+</pendingMethod></step>
 <step outcome="notPerformed" keyword="NOT PERFORMED">Then I should have $20</step>
 <step outcome="failed" keyword="FAILED">Then I don&apos;t return loan<failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed</failure></step>
 <outcomes>
@@ -127,7 +132,12 @@
 <steps>
 <step outcome="successful">Given money $50</step>
 <step outcome="successful">Then I give it to Paul</step>
-<step outcome="pending" keyword="PENDING">Then I should have a balance of $30</step>
+<step outcome="pending" keyword="PENDING">Then I should have a balance of $30<pendingMethod>@Then(&quot;I should have a balance of $30&quot;)
+@Pending
+public void thenIShouldHaveABalanceOf30() {
+  // PENDING
+}
+</pendingMethod></step>
 </steps>
 <afterUserScenarioSteps>
 <step outcome="successful">Given a scenario step</step>
@@ -145,16 +155,4 @@
 <afterSystemStorySteps>
 <step outcome="successful">Given an after story step</step>
 </afterSystemStorySteps>
-<pendingMethod>@When(&quot;something \&quot;$param\&quot;&quot;)
-@Pending
-public void whenSomething() {
-  // PENDING
-}
-</pendingMethod>
-<pendingMethod>@Then(&quot;something is &lt;param1&gt;&quot;)
-@Pending
-public void thenSomethingIsParam1() {
-  // PENDING
-}
-</pendingMethod>
 </story>
