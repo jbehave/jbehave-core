@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.steps.JBehaveMatchers.step;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -57,6 +59,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class StepCreatorBehaviour {
@@ -503,6 +507,7 @@ class StepCreatorBehaviour {
     @CsvSource({
         "param,  value",
         "pa-ram, value",
+        "pa.ram, value",
         "pa ram, value",
         "param,  ",
         "param,  ''"
@@ -531,6 +536,36 @@ class StepCreatorBehaviour {
         // Then
         assertThat((String) stepsInstance.args, equalTo(parameterValue));
         verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = "hello")
+    void shouldMatchParametersByDelimitedNameWithNoNamedAnnotationsAndWithStoryExampleVariable(String inputValue)
+            throws IntrospectionException {
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        StepMatcher stepMatcher = mock(StepMatcher.class);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, true);
+        Map<String, String> params = new HashMap<>();
+        params.put("story-table-reference", "scenario");
+        params.put("scenario-table-reference", inputValue);
+        when(stepMatcher.parameterNames()).thenReturn(new String[] { "param" });
+        String stepWithoutStartingWord =  "a parameter <<story-table-reference>-table-reference> is set";
+        Matcher matcher = Pattern.compile("a parameter (.*) is set").matcher(stepWithoutStartingWord);
+        when(stepMatcher.matcher(stepWithoutStartingWord)).thenReturn(matcher);
+        StoryReporter storyReporter = mock(StoryReporter.class);
+
+        // When
+        String stepAsString = "When " + stepWithoutStartingWord;
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithoutNamedAnnotation"),
+                stepAsString, stepWithoutStartingWord, params, Collections.emptyList());
+        StepResult stepResult = step.perform(storyReporter, null);
+
+        // Then
+        assertThat((String) stepsInstance.args, equalTo(inputValue));
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
+        assertNull(stepResult.getFailure());
     }
 
     @Test

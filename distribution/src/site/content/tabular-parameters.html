@@ -236,6 +236,33 @@ at the step implementation level or by applying the generic approach at the tabl
 </pre>
 </p>
 
+<h2>Using values with line breaks</h2>
+
+<p>
+Line break is a default separator for rows in
+<a href="javadoc/core/org/jbehave/core/model/ExamplesTable.html">ExamplesTable</a>, that's why they can't be added as is
+to the data. In order to put the value with line breaks to ExamplesTable escape sequences (a character preceded by a
+backslash (\) is an escape sequence) must be used.
+<table>
+ <thead><tr><th>Escape Sequence</th><th>Description</th></tr></thead>
+ <tbody>
+  <tr><td>\n</td><td>Insert a newline in the value at this point.</td></tr>
+  <tr><td>\r</td><td>Insert a carriage return in the text at this point.</td></tr>
+  <tr><td>\\</td><td>Insert a backslash character in the text at this point.</td></tr>
+ </tbody>
+</table>
+Inlined property <code>processEscapeSequences</code> defines whether escape sequences should be replaced in the data.
+It’s <code>false</code> by default (no property is declared explicitly). The allowed values are <code>true</code> and
+<code>false</code>, any other values are considered invalid and will lead to exception thrown at parsing.
+<pre class="brush: plain">
+{processEscapeSequences=true, commentSeparator=#}
+|header          |
+|line 1\nline 2  |# The value with a newline
+|line 1\r\nline 2|# The value with a carriage return and a newline
+|line 1\\nline 2 |# The value with an escaped escape sequence, the result will be "line 1\nline 2"
+</pre>
+</p>
+
 <h2>Using table transformers</h2>
 
 <p>
@@ -357,6 +384,32 @@ row), while in using tabular parameters we are simply using the tabular
 structure as a parameter, and how this structure is interpreted is up to
 the scenario writer. The difference is in the <b>Examples:</b> keyword,
 which is only present for parametrised scenarios.</span>
+
+<h2>Working with self-referencing rows in example table</h2>
+
+<p>By default, JBehave does not support self-referencing relationship in example table rows (when a column value in a row relates to another column in the same row).
+ To resolve such mechanism can be used the transformer for resolving self references which must first be registered in your <a
+         href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a>: </p>
+<pre class="brush: java">
+    TableTransformers.ResolvingSelfReferences resolvingSelfReferencesTransformer = new TableTransformers.ResolvingSelfReferences(parameterControls);
+    TableTransformers transformers = tableTransformers();
+    transformers.useTransformer("RESOLVING_SELF_REFERENCES", resolvingSelfReferencesTransformer);
+</pre>
+
+<p>Usage example:</p>
+<pre class="brush: plain">
+{transformer=RESOLVING_SELF_REFERENCES}
+|header1 |header2          |header3          |
+|value1  |&lt;header1&gt;-value2 |&lt;header2&gt;-value3 |
+</pre>
+
+<p>The transformer enables resolution of references to one column from another column within the one row of the example table.
+Circular references will result in error.<br>
+The table from the example above will be transformed into the following:</p>
+<pre class="brush: plain">
+|header1 |header2       |header3              |
+|value1  |value1-value2 |value1-value2-value3 |
+</pre>
 
 <div class="clear">
 <hr />

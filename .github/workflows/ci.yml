@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         platform: [ ubuntu-latest, macos-latest ]
-        java: [ 8, 11, 17 ]
+        java: [ 8, 11, 17, 18 ]
       fail-fast: false
 
     runs-on: ${{ matrix.platform }}
@@ -37,4 +37,4 @@ jobs:
       - name: Build
         if: matrix.java != 8
         shell: bash
-        run: ./mvnw checkstyle:check install -s settings.xml -P examples --batch-mode -e
+        run: ./mvnw install -s settings.xml -P examples --batch-mode -e

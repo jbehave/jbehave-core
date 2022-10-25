@@ -112,7 +112,7 @@ Then I should have a balance of $30
 	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:106)
 	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:84)
 	(reflection-invoke)
-	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
 ...</failure></step>
 <step outcome="notPerformed">
 Then I should have $20
@@ -124,7 +124,7 @@ Then I don&apos;t return loan
 	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:121)
 	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:84)
 	(reflection-invoke)
-	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
 ...</failure><outcomes>
 <fields>
 <field>Description</field>
@@ -206,7 +206,7 @@ Then I should have a balance of $30
 	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:150)
 	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:84)
 	(reflection-invoke)
-	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
 ...</failure></step>
 <step outcome="successful">
 Given a scenario step

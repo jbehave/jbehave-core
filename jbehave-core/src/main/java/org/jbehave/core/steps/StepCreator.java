@@ -8,12 +8,12 @@ import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
 import static org.jbehave.core.steps.AbstractStepResult.pending;
 import static org.jbehave.core.steps.AbstractStepResult.skipped;
 import static org.jbehave.core.steps.AbstractStepResult.successful;
+import static org.jbehave.core.steps.ParameterConverters.ExamplesTableParametersConverter.isExamplesTableParameters;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +33,6 @@ import com.thoughtworks.paranamer.Paranamer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
-import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.Conditional;
 import org.jbehave.core.annotations.FromContext;
 import org.jbehave.core.annotations.Named;
@@ -88,7 +87,7 @@ public class StepCreator {
         this.parameterControls = parameterControls;
         this.stepMatcher = stepMatcher;
         this.stepMonitor = stepMonitor;
-        this.delimitedNamePattern = Pattern.compile(parameterControls.nameDelimiterLeft() + "([\\w\\-\\h]+?)"
+        this.delimitedNamePattern = Pattern.compile(parameterControls.nameDelimiterLeft() + "([\\w\\-\\h.]+?)"
                 + parameterControls.nameDelimiterRight(), Pattern.DOTALL);
     }
 
@@ -388,49 +387,6 @@ public class StepCreator {
         return type instanceof Class && ExamplesTable.class.isAssignableFrom((Class<?>) type);
     }
 
-    private boolean isExamplesTableParameters(Type type) {
-        boolean result = false;
-
-        if (type instanceof Class) {
-            ((Class) type).isAnnotationPresent(AsParameters.class);
-        } else if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            result = isExamplesTableParameters(rawClass(parameterizedType)) || isExamplesTableParameters(
-                    argumentClass(parameterizedType));
-        }
-
-        return result;
-    }
-
-    private boolean isExamplesTableParameters(Class type) {
-        return type != null && type.isAnnotationPresent(AsParameters.class);
-    }
-
-    private Class<?> rawClass(ParameterizedType type) {
-        Class result = null;
-
-        Type rawType = type.getRawType();
-        if (rawType instanceof Class) {
-            result = (Class) rawType;
-        }
-
-        return result;
-    }
-
-    private Class<?> argumentClass(ParameterizedType type) {
-        Class result = null;
-
-        Type[] typeArguments = type.getActualTypeArguments();
-        if (typeArguments.length > 0) {
-            Type argument = typeArguments[0];
-            if (argument instanceof Class) {
-                result = (Class) argument;
-            }
-        }
-
-        return result;
-    }
-
     private String[] parameterValuesForStep(Matcher matcher, Map<String, String> namedParameters, Type[] types,
             ParameterName[] names, boolean overrideWithTableParameters) {
         final String[] parameters = new String[types.length];
@@ -493,15 +449,19 @@ public class StepCreator {
         }
 
         if (parameter == null) {
-            // This allow parameters to be in different order.
+            // This allows parameters to be in a different order.
             position = position - numberOfPreviousFromContext(names, position);
             stepMonitor.usingNaturalOrderForParameter(position);
             parameter = matchedParameter(matcher, position);
-            List<String> delimitedNames = delimitedNameFor(parameter);
 
-            for (String delimitedName : delimitedNames) {
-                parameter = replaceAllDelimitedNames(parameter, delimitedName, namedParameters);
-            }
+            String previousParameterValue;
+            do {
+                previousParameterValue = parameter;
+
+                for (String delimitedName : delimitedNameFor(parameter)) {
+                    parameter = replaceAllDelimitedNames(parameter, delimitedName, namedParameters);
+                }
+            } while (parameter != null && !previousParameterValue.equals(parameter));
         }
 
         stepMonitor.foundParameter(parameter, position);

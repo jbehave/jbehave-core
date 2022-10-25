@@ -7,10 +7,14 @@
 pipelines:
   default:
     - step:
-        image: maven:3.8.4-openjdk-11
+        image: maven:3.8.6-eclipse-temurin-11
         script:
           - mvn clean install -s settings.xml -Pexamples
     - step:
-        image: maven:3.8.4-openjdk-17
+        image: maven:3.8.6-eclipse-temurin-17
+        script:
+          - mvn clean install -s settings.xml -Pexamples
+    - step:
+        image: maven:3.8.6-eclipse-temurin-18
         script:
           - mvn clean install -s settings.xml -Pexamples

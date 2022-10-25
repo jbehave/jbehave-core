@@ -18,12 +18,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
-      <version>5.3.19</version>
+      <version>5.3.22</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>5.6.3</version>
+      <version>5.7.3</version>
     </dependency>
     <dependency>
       <groupId>javax.annotation</groupId>
@@ -43,7 +43,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>5.6.8.Final</version>
+      <version>5.6.11.Final</version>
       <exclusions>
         <exclusion>
           <groupId>net.sf.ehcache</groupId>
@@ -58,7 +58,7 @@
     <dependency>
       <groupId>org.hibernate.common</groupId>
       <artifactId>hibernate-commons-annotations</artifactId>
-      <version>6.0.0.Final</version>
+      <version>6.0.4.Final</version>
     </dependency>
     <dependency>
       <groupId>commons-dbcp</groupId>
@@ -68,7 +68,7 @@
     <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
-      <version>2.6.1</version>
+      <version>2.7.0</version>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>

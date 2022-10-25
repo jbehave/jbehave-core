@@ -8,10 +8,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
+import org.jbehave.core.model.ExamplesTable.TableRows;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
+import org.jbehave.core.steps.ParameterControls;
 
 /**
  * <p>
@@ -27,6 +34,10 @@ import org.jbehave.core.model.TableTransformers.TableTransformer;
  * {@link TableTransformers#FORMATTING}</li>
  * <li>{@link TableTransformers.Replacing Replacing}: registered under name
  * {@link TableTransformers#REPLACING}</li>
+ * </ul>
+ * Out-of-the-box transformers that must be registered:
+ * <ul>
+ * <li>{@link ResolvingSelfReferences ResolvingSelfReferences}
  * </ul>
  * </p>
  */
@@ -202,6 +213,83 @@ public class TableTransformers {
                 return tableAsString;
             }
             return tableAsString.replace(replacing, replacement);
+        }
+    }
+
+    public static class ResolvingSelfReferences implements TableTransformer {
+        private final ParameterControls parameterControls;
+        private final Pattern placeholderPattern;
+
+        public ResolvingSelfReferences(ParameterControls parameterControls) {
+            this.parameterControls = parameterControls;
+            placeholderPattern = Pattern.compile(
+                    parameterControls.nameDelimiterLeft() + "(.*?)" + parameterControls.nameDelimiterRight());
+        }
+
+        @Override
+        public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
+            TableRows rows = tableParsers.parseRows(tableAsString, properties);
+            List<String> headers = rows.getHeaders();
+
+            List<List<String>> resolvedRows = getNamedRows(rows.getRows(), headers).stream()
+                    .map(this::resolveRow)
+                    .collect(Collectors.toList());
+
+            return ExamplesTableStringBuilder.buildExamplesTableString(properties, headers, resolvedRows);
+        }
+
+        private List<String> resolveRow(Map<String, String> unresolvedRow) {
+            Map<String, String> resolvedRow = new HashMap<>(unresolvedRow.size(), 1);
+            return unresolvedRow.keySet().stream()
+                    .map(name -> resolveCell(name, resolvedRow, unresolvedRow))
+                    .collect(Collectors.toList());
+        }
+
+        private String resolveCell(String name, Map<String, String> resolvedRow, Map<String, String> unresolvedRow) {
+            return resolveCell(name, new ArrayList<>(), resolvedRow, unresolvedRow);
+        }
+
+        private String resolveCell(String name, List<String> resolutionChain, Map<String, String> resolvedRow,
+                                   Map<String, String> unresolvedRow) {
+            if (resolvedRow.containsKey(name)) {
+                return resolvedRow.get(name);
+            }
+            resolutionChain.add(name);
+            String result = unresolvedRow.get(name);
+            Matcher matcher = placeholderPattern.matcher(result);
+            while (matcher.find()) {
+                String nestedName = matcher.group(1);
+                Validate.validState(!name.equals(nestedName), "Circular self reference is found in column '%s'", name);
+                checkForCircularChainOfReferences(resolutionChain, nestedName);
+                if (unresolvedRow.containsKey(nestedName)) {
+                    resolveCell(nestedName, resolutionChain, resolvedRow, unresolvedRow);
+                }
+                result = StringUtils.replace(result,
+                        parameterControls.nameDelimiterLeft() + nestedName + parameterControls.nameDelimiterRight(),
+                        resolvedRow.get(nestedName));
+            }
+            resolvedRow.put(name, result);
+            return result;
+        }
+
+        private void checkForCircularChainOfReferences(List<String> resolutionChain, String name) {
+            int index = resolutionChain.indexOf(name);
+            if (index >= 0) {
+                String delimiter = " -> ";
+                String truncatedChain = resolutionChain.stream().skip(index).collect(Collectors.joining(delimiter));
+                throw new IllegalStateException(
+                        "Circular chain of references is found: " + truncatedChain + delimiter + name);
+            }
+        }
+
+        private List<Map<String, String>> getNamedRows(List<List<String>> tableRows, List<String> tableHeaders) {
+            List<Map<String, String>> namedRows = new ArrayList<>();
+            for (List<String> row : tableRows) {
+                Map<String, String> namedRow = new LinkedHashMap<>();
+                IntStream.range(0, row.size()).forEach(i -> namedRow.put(tableHeaders.get(i), row.get(i)));
+                namedRows.add(namedRow);
+            }
+            return namedRows;
         }
     }
 }

@@ -271,6 +271,7 @@ class StoryNarrator {
     private static Story spyStoryUuid(Story story) {
         Story spy = spy(story);
         when(spy.getId()).thenReturn("story-id");
+        when(spy.getName()).thenReturn(story.getPath());
         return spy;
     }
 

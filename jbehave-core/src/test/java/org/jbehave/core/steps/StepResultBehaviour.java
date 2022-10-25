@@ -31,7 +31,8 @@ class StepResultBehaviour {
         // When
         String successful = "Given that a step is pending or failing";
         successful(successful).describeTo(reporter);
-        StepCreator.PendingStep pendingStep = (StepCreator.PendingStep) StepCreator.createPendingStep("When a step is performed", null);
+        StepCreator.PendingStep pendingStep = (StepCreator.PendingStep) StepCreator
+                .createPendingStep("When a step is performed", null);
         pending(pendingStep).describeTo(reporter);
         PendingStepFound pendingStepFound = new PendingStepFound(pendingStep.stepAsString());
         pending(pendingStep, pendingStepFound).describeTo(reporter);
@@ -68,7 +69,8 @@ class StepResultBehaviour {
         String successful = "Given that a step is pending or failing";
         successful("Given that a step is $pending or $failing").withParameterValues(successful).describeTo(reporter);
         String pending = "When a step is performed";
-        StepCreator.PendingStep pendingStep = (StepCreator.PendingStep) StepCreator.createPendingStep("When a step is $performed", null);
+        StepCreator.PendingStep pendingStep = (StepCreator.PendingStep) StepCreator
+                .createPendingStep("When a step is $performed", null);
         pending(pendingStep).withParameterValues(pending).describeTo(reporter);
         String notPerformed = "Then the step should describe itself properly to reporters";
         notPerformed("Then the step should $describe itself properly to reporters").withParameterValues(notPerformed)

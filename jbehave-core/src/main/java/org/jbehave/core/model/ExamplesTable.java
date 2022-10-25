@@ -14,6 +14,7 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -94,6 +95,29 @@ import org.jbehave.core.steps.Row;
  * | value 11#comment | value 12 | .... | value 1n |
  * </pre>
  * Comments including the separator are stripped.</p>
+ *
+ * <p>Line break is a default separator for rows in ExamplesTable, that's why they can't be added as is
+ * to the data. In order to put the value with line breaks to ExamplesTable escape sequences (a character preceded by a
+ * backslash (\) is an escape sequence) must be used.
+ * <table>
+ *  <thead><tr><th>Escape Sequence</th><th>Description</th></tr></thead>
+ *  <tbody>
+ *   <tr><td>\n</td><td>Insert a newline in the value at this point.</td></tr>
+ *   <tr><td>\r</td><td>Insert a carriage return in the text at this point.</td></tr>
+ *   <tr><td>\\</td><td>Insert a backslash character in the text at this point.</td></tr>
+ *  </tbody>
+ * </table>
+ * Inlined property <code>processEscapeSequences</code> defines whether escape sequences should be replaced in the data.
+ * It’s <code>false</code> by default (no property is declared explicitly). The allowed values are <code>true</code> and
+ * <code>false</code>, any other values are considered invalid and will lead to exception thrown at parsing.
+ * <pre>
+ * {processEscapeSequences=true, commentSeparator=#}
+ * |header          |
+ * |line 1\nline 2  |# The value with a newline
+ * |line 1\r\nline 2|# The value with a carriage return and a newline
+ * |line 1\\nline 2 |# The value with an escaped escape sequence, the result will be "line 1\nline 2"
+ * </pre>
+ * </p>
  * 
  * <p>The table allows the retrieval of row values as converted parameters. Use {@link #getRowAsParameters(int)} and
  * invoke {@link Parameters#valueAs(String, Type)} specifying the header and the class type of the parameter.</p>
@@ -268,7 +292,9 @@ public class ExamplesTable {
         List<String> values = getRowValues(rowIndex, replaceNamedParameters);
 
         if (!tableRows.areAllColumnsDistinct()) {
-            throw new NonDistinctColumnFound("ExamplesTable contains non-distinct columns");
+            String exceptionMessage = "ExamplesTable contains non-distinct columns, all columns are: "
+                    + String.join(", ", getHeaders());
+            throw new NonDistinctColumnFound(exceptionMessage);
         }
 
         Map<String, String> result = new LinkedHashMap<>();
@@ -364,17 +390,9 @@ public class ExamplesTable {
                 sb.append("{").append(propertiesAsString).append("}").append(lastTableProperties().getRowSeparator());
             }
         }
-        List<String> headers = getHeaders();
+        sb.append(ExamplesTableStringBuilder.buildExamplesTableString(lastTableProperties(), getHeaders(),
+                tableRows.getRows()));
 
-        headers.forEach(header -> sb.append(getHeaderSeparator()).append(header));
-
-        sb.append(getHeaderSeparator()).append(lastTableProperties().getRowSeparator());
-        for (List<String> row : tableRows.getRows()) {
-            for (int i = 0, headersSize = headers.size(); i < headersSize; i++) {
-                sb.append(getValueSeparator()).append(i < row.size() ? row.get(i) : EMPTY_VALUE);
-            }
-            sb.append(getValueSeparator()).append(lastTableProperties().getRowSeparator());
-        }
         return sb.toString();
     }
 
@@ -418,6 +436,7 @@ public class ExamplesTable {
         private static final String IGNORABLE_SEPARATOR_KEY = "ignorableSeparator";
         private static final String COMMENT_SEPARATOR_KEY = "commentSeparator";
         private static final String NULL_PLACEHOLDER_KEY = "nullPlaceholder";
+        private static final String PROCESS_ESCAPE_SEQUENCES_KEY = "processEscapeSequences";
 
         private static final String ROW_SEPARATOR = "\n";
 
@@ -502,6 +521,23 @@ public class ExamplesTable {
 
         public Optional<String> getNullPlaceholder() {
             return Optional.ofNullable(properties.getProperty(NULL_PLACEHOLDER_KEY));
+        }
+
+        public boolean isProcessEscapeSequences() {
+            String processEscapeSequences = properties.getProperty(PROCESS_ESCAPE_SEQUENCES_KEY);
+            if (processEscapeSequences != null) {
+                String processEscapeSequencesTrimmed = processEscapeSequences.trim().toLowerCase(Locale.ENGLISH);
+                if ("true".equals(processEscapeSequencesTrimmed)) {
+                    return true;
+                }
+                if ("false".equals(processEscapeSequencesTrimmed)) {
+                    return false;
+                }
+                throw new IllegalArgumentException(
+                        "ExamplesTable property 'processEscapeSequences' contains invalid value: '"
+                                + processEscapeSequences + "', but allowed values are 'true' and 'false'");
+            }
+            return false;
         }
 
         void overrideSeparatorsFrom(TableProperties properties) {

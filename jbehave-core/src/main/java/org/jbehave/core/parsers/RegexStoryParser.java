@@ -67,11 +67,7 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
             }
         }
         List<Scenario> scenarios = parseScenariosFrom(storyAsText);
-        Story story = new Story(storyPath, description, meta, narrative, givenStories, lifecycle, scenarios);
-        if (storyPath != null) {
-            story.namedAs(new File(storyPath).getName());
-        }
-        return story;
+        return new Story(storyPath, description, meta, narrative, givenStories, lifecycle, scenarios);
     }
 
     private Description parseDescriptionFrom(String storyAsText) {

@@ -104,7 +104,7 @@ class StackTraceFormatterBehaviour {
         String expected = "java.lang.Exception: some cause\n"
                 + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:101)\n"
                 + "\t(reflection-invoke)\n"
-                + "\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)\n"
+                + "\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)\n"
                 + "...";
         assertThatTraceIs(trace, expected);
     }
