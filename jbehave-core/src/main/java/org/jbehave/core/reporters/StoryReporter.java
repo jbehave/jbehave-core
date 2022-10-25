@@ -13,6 +13,7 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -83,6 +84,14 @@ public interface StoryReporter {
 
     void comment(String step);
 
+    void pending(PendingStep step);
+
+    /**
+     * Report pending step
+     * @param step string representation of pending step
+     * @deprecated Use {@link #pending(PendingStep)}
+     */
+    @Deprecated
     void pending(String step);
 
     void notPerformed(String step);
@@ -97,5 +106,11 @@ public interface StoryReporter {
 
     void dryRun();
 
+    /**
+     * Report list of pending methods
+     * @param methods list of generated methods
+     * @deprecated pendingMethod info is added as a part of each pending step {@link #pending(PendingStep)}
+     */
+    @Deprecated
     void pendingMethods(List<String> methods);
 }

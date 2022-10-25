@@ -60,8 +60,8 @@ public abstract class AbstractOutputBehaviour {
 
     protected void assertJson(String expectedJsonFileName, String actualJson) throws IOException {
         String expected = getResourceAsString(expectedJsonFileName);
-        JsonObject expectedObject = JsonParser.parseString(actualJson).getAsJsonObject();
-        JsonObject actualObject = JsonParser.parseString(expected).getAsJsonObject();
+        JsonObject expectedObject = JsonParser.parseString(expected).getAsJsonObject();
+        JsonObject actualObject = JsonParser.parseString(actualJson).getAsJsonObject();
         assertThat(expectedObject, is(actualObject));
     }
 

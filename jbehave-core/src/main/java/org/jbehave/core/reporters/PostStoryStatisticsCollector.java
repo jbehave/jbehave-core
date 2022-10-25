@@ -17,6 +17,8 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -66,7 +68,7 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
     }
 
     @Override
-    public void pending(String step) {
+    public void pending(PendingStep step) {
         add("steps");
         add("stepsPending");
         add("currentScenarioSteps");

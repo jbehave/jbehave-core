@@ -54,7 +54,6 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("beforeStory", "<story id=\"{0}\" path=\"{2}\" title=\"{1}\">\n");
         patterns.setProperty("storyCancelled", "<cancelled keyword=\"{0}\" durationKeyword=\"{1}\" durationInSecs=\"{2}\"/>\n");
         patterns.setProperty("afterStory", "</story>\n");
-        patterns.setProperty("pendingMethod", "<pendingMethod>{0}</pendingMethod>\n");        
         patterns.setProperty("metaStart", "<meta>\n");
         patterns.setProperty("metaProperty", "<property keyword=\"{0}\" name=\"{1}\" value=\"{2}\"/>\n");        
         patterns.setProperty("metaEnd", "</meta>\n");
@@ -109,7 +108,7 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("successful", "<step outcome=\"successful\">{0}</step>\n");
         patterns.setProperty("ignorable", "<step outcome=\"ignorable\">{0}</step>\n");
         patterns.setProperty("comment", "<step outcome=\"comment\">{0}</step>\n");
-        patterns.setProperty("pending", "<step outcome=\"pending\" keyword=\"{1}\">{0}</step>\n");
+        patterns.setProperty("pending", "<step outcome=\"pending\" keyword=\"{1}\"><value>{0}</value><pendingMethod>{2}</pendingMethod></step>\n");
         patterns.setProperty("notPerformed", "<step outcome=\"notPerformed\" keyword=\"{1}\">{0}</step>\n");
         patterns.setProperty("failed", "<step outcome=\"failed\" keyword=\"{1}\">{0}<failure>{2}</failure></step>\n");
         patterns.setProperty("restarted", "<step outcome=\"restarted\">{0}<reason>{1}</reason></step>\n");

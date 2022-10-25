@@ -20,6 +20,7 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.StepCreator;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -167,7 +168,8 @@ class PostStoryStatisticsCollectorBehaviour {
 
         // 3rd scenario
         reporter.beforeScenario(new Scenario("A pending scenario", Meta.EMPTY));
-        reporter.pending("When I have some money");
+        reporter.pending((StepCreator.PendingStep) StepCreator
+                .createPendingStep("When I have some money", null));
         reporter.notPerformed("Then I should have $20");
         reporter.afterScenario(new Timing());
         

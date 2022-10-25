@@ -17,6 +17,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.StepCreator;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +56,9 @@ class StepFailureDecoratorBehaviour {
         decorator.ignorable("!-- Then ignore me");
         decorator.comment("!-- A comment");
         decorator.successful("Given step 1.1");
-        decorator.pending("When step 1.2");
+        StepCreator.PendingStep pendingStep = (StepCreator.PendingStep) StepCreator
+                .createPendingStep("When step 1.2", null);
+        decorator.pending(pendingStep);
         decorator.notPerformed("Then step 1.3");
         decorator.beforeExamples(steps, table);
         decorator.example(tableRow, 0);
@@ -72,7 +75,7 @@ class StepFailureDecoratorBehaviour {
         inOrder.verify(delegate).ignorable("!-- Then ignore me");
         inOrder.verify(delegate).comment("!-- A comment");
         inOrder.verify(delegate).successful("Given step 1.1");
-        inOrder.verify(delegate).pending("When step 1.2");
+        inOrder.verify(delegate).pending(pendingStep);
         inOrder.verify(delegate).notPerformed("Then step 1.3");
         inOrder.verify(delegate).beforeExamples(steps, table);
         inOrder.verify(delegate).example(tableRow, 0);

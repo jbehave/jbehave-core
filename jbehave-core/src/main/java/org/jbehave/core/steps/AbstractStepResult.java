@@ -8,6 +8,7 @@ import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 
 /**
  * Represents the possible step results:
@@ -55,17 +56,22 @@ public abstract class AbstractStepResult implements StepResult {
     }
 
     public static class Pending extends AbstractStepResult {
-        public Pending(String step) {
-            this(step, new PendingStepFound(step));
+        private PendingStep pendingStep;
+
+        public Pending(PendingStep step) {
+            this(step, new PendingStepFound(step.stepAsString()));
+            pendingStep = step;
         }
 
-        public Pending(String step, PendingStepFound e) {
-            super(step, Type.PENDING, e);
+        public Pending(PendingStep step, PendingStepFound e) {
+            super(step.getStepAsString(), Type.PENDING, e);
+            pendingStep = step;
         }
 
         @Override
         public void describeTo(StoryReporter reporter) {
             reporter.pending(parametrisedStep());
+            reporter.pending(pendingStep);
         }
     }
 
@@ -184,11 +190,11 @@ public abstract class AbstractStepResult implements StepResult {
         return new Comment(step);
     }
 
-    public static StepResult pending(String step) {
+    public static StepResult pending(PendingStep step) {
         return new Pending(step);
     }
 
-    public static StepResult pending(String step, PendingStepFound e) {
+    public static StepResult pending(PendingStep step, PendingStepFound e) {
         return new Pending(step, e);
     }
 

@@ -45,6 +45,7 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.Verbatim;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -188,8 +189,9 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void pending(String step) {
-        print(format("pending", "{0} ({1})\n", step, keywords.pending()));
+    public void pending(PendingStep step) {
+        print(format("pending", "{0} ({1})\n({2})\n", step.stepAsString(), keywords.pending(),
+                step.getPendingMethod()));
     }
 
     @Override
@@ -526,15 +528,6 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     @Override
     public void dryRun() {
         dryRun.set(true);
-    }
-
-    @Override
-    public void pendingMethods(List<String> methods) {
-        print(format("pendingMethodsStart", EMPTY));
-        for (String method : methods) {
-            print(format("pendingMethod", "{0}\n", method));
-        }
-        print(format("pendingMethodsEnd", EMPTY));
     }
 
     @Override

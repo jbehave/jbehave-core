@@ -13,6 +13,7 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -49,6 +50,11 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void pending(PendingStep step) {
+    }
+
+    @Override
+    @Deprecated
     public void pending(String step) {
     }
 

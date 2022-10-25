@@ -35,6 +35,7 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.Verbatim;
 import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 import freemarker.ext.beans.BeansWrapper;
@@ -55,6 +56,7 @@ public class TemplateableOutput extends NullStoryReporter {
     private OutputStory outputStory = new OutputStory();
     private OutputScenario outputScenario = new OutputScenario();
     private OutputStep failedStep;
+    private OutputStep pendingStep;
     private Scope scope;
     private StepCollector.Stage stage;
 
@@ -145,8 +147,10 @@ public class TemplateableOutput extends NullStoryReporter {
     }
 
     @Override
-    public void pending(String step) {
-        addStep(new OutputStep(step, "pending"));
+    public void pending(PendingStep step) {
+        this.pendingStep = new OutputStep(step.stepAsString(), "pending");
+        pendingStep.pendingMethod = step.getPendingMethod();
+        addStep(pendingStep);
     }
 
     @Override
@@ -672,6 +676,7 @@ public class TemplateableOutput extends NullStoryReporter {
         private ExamplesTable table;
         private String verbatimAsString;
         private Verbatim verbatim;
+        private String pendingMethod;
 
         public OutputStep(String step, String outcome) {
             this.step = step;
@@ -700,6 +705,10 @@ public class TemplateableOutput extends NullStoryReporter {
 
         public Throwable getFailure() {
             return failure;
+        }
+
+        public String getPendingMethod() {
+            return pendingMethod;
         }
 
         public String getFailureCause() {
