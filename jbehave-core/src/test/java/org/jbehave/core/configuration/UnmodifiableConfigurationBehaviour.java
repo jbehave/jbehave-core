@@ -18,6 +18,7 @@ import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.TableTransformerMonitor;
 import org.jbehave.core.parsers.AliasParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
@@ -59,6 +60,7 @@ class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.aliasParser(), is(delegate.aliasParser()));
         assertThat(unmodifiable.aliasPaths(), is(delegate.aliasPaths()));
         assertThat(unmodifiable.stepConditionMatcher(), is(delegate.stepConditionMatcher()));
+        assertThat(unmodifiable.tableTransformerMonitor(), is(delegate.tableTransformerMonitor()));
     }
 
     @Test
@@ -89,6 +91,7 @@ class UnmodifiableConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useAliasParser", AliasParser.class);
         assertThatNotAllowed(unmodifiable, "useAliasPaths", Set.class);
         assertThatNotAllowed(unmodifiable, "useStepConditionMatcher", StepConditionMatcher.class);
+        assertThatNotAllowed(unmodifiable, "useTableTransformerMonitor", TableTransformerMonitor.class);
     }
 
     private void assertThatNotAllowed(Configuration unmodifiable, String methodName, Class<?>... types)

@@ -27,8 +27,10 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.NullTableTransformerMonitor;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.TableParsers;
+import org.jbehave.core.model.TableTransformerMonitor;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.AliasParser;
 import org.jbehave.core.parsers.CompositeParser;
@@ -235,6 +237,11 @@ public abstract class Configuration {
      */
     protected StepConditionMatcher stepConditionMatcher;
 
+    /**
+     * Monitor events of example table transformers
+     */
+    protected TableTransformerMonitor tableTransformerMonitor;
+
     public Configuration() {
     }
 
@@ -294,7 +301,7 @@ public abstract class Configuration {
     public ExamplesTableFactory examplesTableFactory() {
         if (examplesTableFactory == null) {
             examplesTableFactory = new ExamplesTableFactory(keywords(), storyLoader(), parameterConverters(),
-                    parameterControls(), tableParsers(), tableTransformers());
+                    parameterControls(), tableParsers(), tableTransformers(), tableTransformerMonitor());
         }
         return examplesTableFactory;
     }
@@ -451,6 +458,13 @@ public abstract class Configuration {
         return stepConditionMatcher;
     }
 
+    public TableTransformerMonitor tableTransformerMonitor() {
+        if (tableTransformerMonitor == null) {
+            tableTransformerMonitor = new NullTableTransformerMonitor();
+        }
+        return tableTransformerMonitor;
+    }
+
     public Configuration useStepConditionMatcher(StepConditionMatcher stepConditionMatcher) {
         this.stepConditionMatcher = stepConditionMatcher;
         return this;
@@ -601,6 +615,11 @@ public abstract class Configuration {
 
     public Configuration useStepsContext(StepsContext stepsContext) {
         this.stepsContext = stepsContext;
+        return this;
+    }
+
+    public Configuration useTableTransformerMonitor(TableTransformerMonitor tableTransformerMonitor) {
+        this.tableTransformerMonitor = tableTransformerMonitor;
         return this;
     }
 }

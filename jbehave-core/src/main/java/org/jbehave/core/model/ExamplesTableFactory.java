@@ -38,6 +38,7 @@ public class ExamplesTableFactory {
     private final ParameterControls parameterControls;
     private final TableParsers tableParsers;
     private final TableTransformers tableTransformers;
+    private final TableTransformerMonitor tableTransformerMonitor;
 
     public ExamplesTableFactory(ResourceLoader resourceLoader, TableTransformers tableTransformers) {
         this(new LocalizedKeywords(), resourceLoader, tableTransformers);
@@ -57,12 +58,21 @@ public class ExamplesTableFactory {
     public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
                                 ParameterConverters parameterConverters, ParameterControls parameterControls,
                                 TableParsers tableParsers, TableTransformers tableTransformers) {
+        this(keywords, resourceLoader, parameterConverters, parameterControls, tableParsers, tableTransformers,
+                new NullTableTransformerMonitor());
+    }
+
+    public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
+                                ParameterConverters parameterConverters, ParameterControls parameterControls,
+                                TableParsers tableParsers, TableTransformers tableTransformers,
+                                TableTransformerMonitor tableTransformerMonitor) {
         this.keywords = keywords;
         this.resourceLoader = resourceLoader;
         this.parameterConverters = parameterConverters;
         this.parameterControls = parameterControls;
         this.tableParsers = tableParsers;
         this.tableTransformers = tableTransformers;
+        this.tableTransformerMonitor = tableTransformerMonitor;
     }
     
     public ExamplesTableFactory(Configuration configuration) {
@@ -72,6 +82,7 @@ public class ExamplesTableFactory {
         this.parameterControls = configuration.parameterControls();
         this.tableParsers = configuration.tableParsers();
         this.tableTransformers = configuration.tableTransformers();
+        this.tableTransformerMonitor = configuration.tableTransformerMonitor();
     }
 
     public ExamplesTable createExamplesTable(String input) {
@@ -88,7 +99,7 @@ public class ExamplesTableFactory {
         }
 
         return new ExamplesTable(tablePropertiesQueue, parameterConverters, parameterControls, tableParsers,
-                tableTransformers);
+                tableTransformers, tableTransformerMonitor);
     }
 
     protected boolean isTable(String table, TableProperties properties) {
