@@ -15,6 +15,7 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.TableTransformerMonitor;
 import org.jbehave.core.parsers.AliasParser;
 import org.jbehave.core.parsers.CompositeParser;
 import org.jbehave.core.parsers.StepPatternParser;
@@ -144,6 +145,11 @@ public class UnmodifiableConfiguration extends Configuration {
     }
 
     @Override
+    public TableTransformerMonitor tableTransformerMonitor() {
+        return delegate.tableTransformerMonitor();
+    }
+
+    @Override
     public Configuration useStepConditionMatcher(StepConditionMatcher stepConditionMatcher) {
         throw notAllowed();
     }
@@ -270,6 +276,11 @@ public class UnmodifiableConfiguration extends Configuration {
 
     @Override
     public Configuration useStoryExecutionComparator(Comparator<Story> storyExecutionComparator) {
+        throw notAllowed();
+    }
+
+    @Override
+    public Configuration useTableTransformerMonitor(TableTransformerMonitor tableTransformerMonitor) {
         throw notAllowed();
     }
 

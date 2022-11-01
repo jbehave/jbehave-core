@@ -166,6 +166,7 @@ public class ExamplesTable {
 
     private Map<String, String> namedParameters = Collections.emptyMap();
     private ParameterControls parameterControls;
+    private TableTransformerMonitor tableTransformerMonitor;
 
     public ExamplesTable(String tableAsString) {
         this(tableAsString, new TableTransformers());
@@ -184,15 +185,17 @@ public class ExamplesTable {
     private ExamplesTable(String tableAsString, ParameterConverters parameterConverters, TableParsers tableParsers,
             TableTransformers tableTransformers) {
         this(tableParsers.parseProperties(tableAsString), parameterConverters, new ParameterControls(), tableParsers,
-                tableTransformers);
+                tableTransformers, new NullTableTransformerMonitor());
     }
 
     ExamplesTable(TablePropertiesQueue tablePropertiesQueue, ParameterConverters parameterConverters,
-            ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers) {
+                  ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers,
+                  TableTransformerMonitor tableTransformerMonitor) {
         this.parameterConverters = parameterConverters;
         this.parameterControls = parameterControls;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
         this.tablePropertiesQueue.addAll(tablePropertiesQueue.getProperties());
+        this.tableTransformerMonitor = tableTransformerMonitor;
         String transformedTable = applyTransformers(tableTransformers, tablePropertiesQueue.getTable(), tableParsers);
         this.tableRows = tableParsers.parseRows(transformedTable, lastTableProperties());
     }
@@ -219,7 +222,9 @@ public class ExamplesTable {
                 if (previousProperties != null) {
                     properties.overrideSeparatorsFrom(previousProperties);
                 }
+                tableTransformerMonitor.beforeTransformerApplying(transformer, properties, tableAsString);
                 transformedTable = tableTransformers.transform(transformer, transformedTable, tableParsers, properties);
+                tableTransformerMonitor.afterTransformerApplying(transformer, properties, transformedTable);
             }
             previousProperties = properties;
         }
