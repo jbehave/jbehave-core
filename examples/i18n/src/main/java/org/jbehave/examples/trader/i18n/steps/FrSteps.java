@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.equalTo;
 import java.util.Locale;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
