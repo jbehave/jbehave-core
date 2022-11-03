@@ -20,6 +20,7 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -60,6 +61,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method ignorable;
     private static Method comment;
     private static Method pending;
+    private static Method pendingDeprecated;
     private static Method notPerformed;
     private static Method failed;
     private static Method failedOutcomes;
@@ -101,7 +103,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
             successful = StoryReporter.class.getMethod("successful", String.class);
             ignorable = StoryReporter.class.getMethod("ignorable", String.class);
             comment = StoryReporter.class.getMethod("comment", String.class);
-            pending = StoryReporter.class.getMethod("pending", String.class);
+            pending = StoryReporter.class.getMethod("pending", PendingStep.class);
+            pendingDeprecated = StoryReporter.class.getMethod("pending", String.class);
             notPerformed = StoryReporter.class.getMethod("notPerformed", String.class);
             failed = StoryReporter.class.getMethod("failed", String.class, Throwable.class);
             failedOutcomes = StoryReporter.class.getMethod("failedOutcomes", String.class, OutcomesTable.class);
@@ -281,8 +284,13 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
-    public void pending(String step) {
+    public void pending(PendingStep step) {
         perform(reporter ->  reporter.pending(step), pending, step);
+    }
+
+    @Override
+    public void pending(String step) {
+        perform(reporter ->  reporter.pending(step), pendingDeprecated, step);
     }
 
     @Override

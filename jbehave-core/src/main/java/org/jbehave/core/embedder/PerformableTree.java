@@ -21,6 +21,7 @@ import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.IgnoringStepsFailure;
+import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepsFound;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.RestartingStoryFailure;
@@ -360,24 +361,6 @@ public class PerformableTree {
         return !scenario.getExamplesTable().isEmpty() && !scenario.getGivenStories().requireParameters();
     }
 
-    static void generatePendingStepMethods(RunContext context, List<Step> steps) {
-        List<PendingStep> pendingSteps = new ArrayList<>();
-        for (Step step : steps) {
-            if (step instanceof PendingStep) {
-                pendingSteps.add((PendingStep) step);
-            }
-        }
-        if (!pendingSteps.isEmpty()) {
-            PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration().keywords());
-            List<String> methods = new ArrayList<>();
-            for (PendingStep pendingStep : pendingSteps) {
-                if (!pendingStep.annotated()) {
-                    methods.add(generator.generateMethod(pendingStep));
-                }
-            }
-        }
-    }
-
     public interface State {
 
         State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter);
@@ -400,6 +383,9 @@ public class PerformableTree {
             } catch (IgnoringStepsFailure e) {
                 result = AbstractStepResult.ignorable(step.asString(keywords));
                 state = new Ignoring(e);
+            } catch (PendingStepFound e) {
+                result = AbstractStepResult.pending((PendingStep) step);
+                state = new Pending(e);
             }
             indexOfResult = results.size();
             results.add(result);
@@ -469,6 +455,28 @@ public class PerformableTree {
 
         @Override
         public IgnoringStepsFailure getFailure() {
+            return failure;
+        }
+    }
+
+    private static final class Pending implements State {
+
+        private final PendingStepFound failure;
+
+        private Pending(PendingStepFound failure) {
+            this.failure = failure;
+        }
+
+        @Override
+        public State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter) {
+            StepResult result = AbstractStepResult.pending((PendingStep) step);
+            results.add(result);
+            result.describeTo(reporter);
+            return this;
+        }
+
+        @Override
+        public PendingStepFound getFailure() {
             return failure;
         }
     }
@@ -1471,7 +1479,9 @@ public class PerformableTree {
                 List<String> methods = new ArrayList<>();
                 for (PendingStep pendingStep : pendingSteps) {
                     if (!pendingStep.annotated()) {
-                        methods.add(generator.generateMethod(pendingStep));
+                        String generatedMethod = generator.generateMethod(pendingStep);
+                        pendingStep.setPendingMethod(generatedMethod);
+                        methods.add(generatedMethod);
                     }
                 }
                 context.reporter().pendingMethods(methods);

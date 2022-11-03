@@ -23,6 +23,7 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.BeforeEach;
@@ -527,7 +528,7 @@ class JUnit4StoryReporterBehaviour {
         reporter.usePendingStepStrategy(strategy);
 
         reportBefore();
-        reporter.pending("child1");
+        reporter.pending((StepCreator.PendingStep) StepCreator.createPendingStep("child1", null));
         reporter.failed("child2", new UUIDExceptionWrapper(new Exception("FAIL")));
         verifyStoryStarted();
         verifyScenarioStarted();
@@ -544,7 +545,7 @@ class JUnit4StoryReporterBehaviour {
         reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
 
         reportBefore();
-        reporter.pending("child");
+        reporter.pending((StepCreator.PendingStep) StepCreator.createPendingStep("child1", null));
         verifyStoryStarted();
         verifyScenarioStarted();
         verify(notifier, VerificationModeFactory.times(0)).fireTestStarted(

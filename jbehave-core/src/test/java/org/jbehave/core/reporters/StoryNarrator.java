@@ -35,6 +35,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
@@ -199,6 +200,10 @@ class StoryNarrator {
     private static void reportPendingStep(StoryReporter reporter, String step) {
         reporter.beforeStep(new Step(StepExecutionType.PENDING, step));
         reporter.pending(step);
+        StepCreator.PendingStep pendingStep = (StepCreator.PendingStep) StepCreator.createPendingStep(step, null);
+        PendingStepMethodGenerator generator = new PendingStepMethodGenerator(new LocalizedKeywords());
+        pendingStep.setPendingMethod(generator.generateMethod(pendingStep));
+        reporter.pending(pendingStep);
     }
 
     private static void reportSuccessfulStep(StoryReporter reporter, String step) {

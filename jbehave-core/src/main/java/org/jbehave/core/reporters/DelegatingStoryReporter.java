@@ -19,6 +19,7 @@ import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
 /**
@@ -192,6 +193,11 @@ public class DelegatingStoryReporter implements StoryReporter {
     @Override
     public void notPerformed(String step) {
         delegate(reporter -> reporter.notPerformed(step));
+    }
+
+    @Override
+    public void pending(PendingStep step) {
+        delegate(reporter -> reporter.pending(step));
     }
 
     @Override

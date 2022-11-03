@@ -131,16 +131,5 @@ Given an after story step
 AfterSystemStorySteps
 Given an after story step
 
-@When("something \"$param\"")
-@Pending
-public void whenSomething() {
-  // PENDING
-}
-
-@Then("something is <param1>")
-@Pending
-public void thenSomethingIsParam1() {
-  // PENDING
-}
 
 

@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -50,7 +51,10 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
+import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
@@ -500,15 +504,16 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         OutputStream stackTrace = new ByteArrayOutputStream();
         exception.getCause().printStackTrace(new PrintStream(stackTrace));
         OutputStream out = new ByteArrayOutputStream();
+        LocalizedKeywords keywords = new LocalizedKeywords();
         StoryReporter reporter = new TxtOutput(new PrintStream(out), new Properties(),
-                new LocalizedKeywords(), true);
+                keywords, true);
 
         // When
         reporter.beforeScenario(spyScenarioUuid(new Scenario("A title", Meta.EMPTY)));
         reporter.successful("Given I have a balance of $50");
         reporter.successful("When I request $20");
         reporter.failed("When I ask Liz for a loan of $100", exception);
-        reporter.pending("Then I should have a balance of $30");
+        reporter.pending(createPendingStep("Then I should have a balance of $30", keywords));
         reporter.notPerformed("Then I should have $20");
         reporter.afterScenario(getTiming());
 
@@ -519,6 +524,10 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 + "When I ask Liz for a loan of $100 (FAILED)\n"
                 + "(java.lang.RuntimeException: Leave my money alone!)\n"
                 + "Then I should have a balance of $30 (PENDING)\n"
+                + "(@Then(\"I should have a balance of $30\")\n"
+                + "@Pending\n"
+                + "public void thenIShouldHaveABalanceOf30() {\n"
+                + "  // PENDING\n}\n)\n"
                 + "Then I should have $20 (NOT PERFORMED)\n" 
                 + "\n";
         String actual = dos2unix(out.toString());
@@ -536,7 +545,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.successful("Given I have a balance of $50");
         reporter.successful("When I request $20");
         reporter.failed("When I ask Liz for a loan of $100", exception);
-        reporter.pending("Then I should have a balance of $30");
+        reporter.pending(createPendingStep("Then I should have a balance of $30", keywords));
         reporter.notPerformed("Then I should have $20");
         reporter.afterScenario(getTiming());
 
@@ -567,7 +576,7 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.successful("Dato che ho un saldo di $50");
         reporter.successful("Quando richiedo $20");
         reporter.failed("Quando chiedo a Liz un prestito di $100", exception);
-        reporter.pending("Allora dovrei avere un saldo di $30");
+        reporter.pending(createPendingStep("Allora dovrei avere un saldo di $30", keywords));
         reporter.notPerformed("Allora dovrei avere $20");
 
         // Then
@@ -576,6 +585,10 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 + "Quando chiedo a Liz un prestito di $100 (FALLITO)\n"
                 + "(java.lang.RuntimeException: Lasciate in pace i miei soldi!)\n"
                 + "Allora dovrei avere un saldo di $30 (IN SOSPESO)\n"
+                + "(@Then(\"dovrei avere un saldo di $30\")\n"
+                + "@Pending\n"
+                + "public void thenDovreiAvereUnSaldoDi30() {\n"
+                + "  // IN SOSPESO\n}\n)\n"
                 + "Allora dovrei avere $20 (NON ESEGUITO)\n";
 
         assertThat(dos2unix(out.toString()), equalTo(expected));
@@ -779,6 +792,13 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         Story spy = spy(story);
         when(spy.getId()).thenReturn("story-id");
         return spy;
+    }
+
+    private PendingStep createPendingStep(String step, Keywords keywords) {
+        StepCreator.PendingStep pendingStep = (StepCreator.PendingStep) StepCreator.createPendingStep(step, null);
+        PendingStepMethodGenerator generator = new PendingStepMethodGenerator(keywords);
+        pendingStep.setPendingMethod(generator.generateMethod(pendingStep));
+        return pendingStep;
     }
 
     @SuppressWarnings("serial")

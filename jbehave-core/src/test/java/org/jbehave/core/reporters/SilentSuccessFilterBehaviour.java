@@ -16,6 +16,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.StepCreator;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class SilentSuccessFilterBehaviour {
 
     private static final Timing TIMING = new Timing();
+    private static final StepCreator.PendingStep PENDING_STEP = (StepCreator.PendingStep) StepCreator
+            .createPendingStep("When step 2.2", null);
 
     @Mock
     private StoryReporter delegate;
@@ -63,7 +66,7 @@ class SilentSuccessFilterBehaviour {
         filter.givenStories(givenStories);
         filter.givenStories(givenStoryPaths);        
         filter.successful("Given step 2.1");
-        filter.pending("When step 2.2");
+        filter.pending(PENDING_STEP);
         filter.notPerformed("Then step 2.3");
         filter.afterScenario(TIMING);
 
@@ -111,7 +114,7 @@ class SilentSuccessFilterBehaviour {
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).successful("Given step 2.1");
-        inOrder.verify(delegate).pending("When step 2.2");
+        inOrder.verify(delegate).pending(PENDING_STEP);
         inOrder.verify(delegate).notPerformed("Then step 2.3");
         inOrder.verify(delegate).afterScenario(TIMING);
 
@@ -156,7 +159,7 @@ class SilentSuccessFilterBehaviour {
         filter.givenStories(givenStories);
         filter.givenStories(givenStoryPaths);
         filter.successful("Given step 2.1");
-        filter.pending("When step 2.2");
+        filter.pending(PENDING_STEP);
         filter.notPerformed("Then step 2.3");
         filter.afterScenario(TIMING);
 
@@ -206,7 +209,7 @@ class SilentSuccessFilterBehaviour {
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).successful("Given step 2.1");
-        inOrder.verify(delegate).pending("When step 2.2");
+        inOrder.verify(delegate).pending(PENDING_STEP);
         inOrder.verify(delegate).notPerformed("Then step 2.3");
         inOrder.verify(delegate).afterScenario(TIMING);
 
