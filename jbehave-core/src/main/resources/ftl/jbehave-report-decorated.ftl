@@ -10,7 +10,7 @@
 <#if format == "html">
 ${body}
 <#else>
-<#assign brushFormat = format> <#if format == "stats"><#assign brushFormat = "plain"> </#if>
+<#assign brushFormat = format> <#if format == "stats" || format == "json"><#assign brushFormat = "plain"> </#if>
 <script type="syntaxhighlighter" class="brush: ${brushFormat}"><#if format != "txt" || !body.contains("</script>")><![CDATA[
 ${body}
 ]]><#else>

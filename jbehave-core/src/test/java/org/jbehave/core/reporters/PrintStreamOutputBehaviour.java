@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.JSON;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -759,6 +760,30 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         // Then
         assertJson("story-empty-scenario-with-lifecycle.json", out.toString());
+    }
+
+    @Test
+    //https://github.com/syntaxhighlighter/syntaxhighlighter/issues/418
+    void jsonFormatShouldRenderAsPlainBrush() throws IOException {
+        final String storyPath = storyPath(MyStory.class);
+        File outputDirectory = new File("target/output");
+        StoryReporter reporter = new StoryReporterBuilder()
+                .withRelativeDirectory(outputDirectory.getName())
+                .withFormats(HTML, JSON)
+                .build(storyPath);
+
+        // When
+        StoryNarrator.narrateAnInterestingStory(reporter, false);
+        ViewGenerator viewGenerator = new FreemarkerViewGenerator();
+        Properties viewProperties = new Properties();
+        viewGenerator.generateReportsView(outputDirectory, asList("html", "json"), viewProperties);
+
+        // Then
+        ensureFileExists(new File(outputDirectory, "view/index.html"));
+        ensureFileExists(new File(outputDirectory, "view/org.jbehave.core.reporters.my_story.json.html"));
+        assertThat(
+                fileContent(new File(outputDirectory, "view/org.jbehave.core.reporters.my_story.json.html")),
+                containsString("brush: plain"));
     }
 
     private void reportScenarioStep(StoryReporter reporter, String step, Stage stage, Lifecycle.ExecutionType type) {
