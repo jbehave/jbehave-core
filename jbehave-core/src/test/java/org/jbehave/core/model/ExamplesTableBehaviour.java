@@ -711,8 +711,10 @@ public class ExamplesTableBehaviour {
         String transformerName = "ANY_TRANSFORMER";
         String propertiesAsString = String.format("transformer=%s, property=any_property", transformerName);
 
+        TableTransformers transformers = new TableTransformers();
+        transformers.useTransformer(transformerName, (input, parser, props) -> input);
         TableTransformerMonitor tableTransformerMonitor = mock(TableTransformerMonitor.class);
-        ExamplesTableFactory factory = createFactory(new TableTransformers(), tableTransformerMonitor);
+        ExamplesTableFactory factory = createFactory(transformers, tableTransformerMonitor);
         factory.createExamplesTable(String.format("{%s}\n%s", propertiesAsString, table));
 
         verify(tableTransformerMonitor).beforeTransformerApplying(eq(transformerName), argThat(

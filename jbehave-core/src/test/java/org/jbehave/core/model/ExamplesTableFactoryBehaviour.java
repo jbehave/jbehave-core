@@ -113,7 +113,10 @@ class ExamplesTableFactoryBehaviour {
     void shouldTestTransformersOrderForExamplesTableFromResourceInput() {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
-        ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
+        TableTransformers tableTransformers = new TableTransformers();
+        tableTransformers.useTransformer("CUSTOM_TRANSFORMER1", (input, parser, props) -> input);
+        tableTransformers.useTransformer("CUSTOM_TRANSFORMER2", (input, parser, props) -> input);
+        ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, tableTransformers);
         String transformers = "{transformer=CUSTOM_TRANSFORMER1}\n{transformer=CUSTOM_TRANSFORMER2}\n";
 
         // When

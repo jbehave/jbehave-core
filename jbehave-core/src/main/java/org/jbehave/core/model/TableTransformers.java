@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -55,11 +56,9 @@ public class TableTransformers {
 
     public String transform(String transformerName, String tableAsString, TableParsers tableParsers,
             TableProperties properties) {
-        TableTransformer transformer = transformers.get(transformerName);
-        if (transformer != null) {
-            return transformer.transform(tableAsString, tableParsers, properties);
-        }
-        return tableAsString;
+        return Optional.ofNullable(transformers.get(transformerName))
+                       .map(t -> t.transform(tableAsString, tableParsers, properties))
+                       .orElseThrow(() -> new TransformerNotFountException(transformerName));
     }
 
     public void useTransformer(String name, TableTransformer transformer) {
@@ -288,6 +287,14 @@ public class TableTransformers {
                 namedRows.add(namedRow);
             }
             return namedRows;
+        }
+    }
+
+    public class TransformerNotFountException extends RuntimeException {
+        private static final long serialVersionUID = 3742264745351414296L;
+
+        public TransformerNotFountException(String transformerName) {
+            super(String.format("Table transformer '%s' does not exist", transformerName));
         }
     }
 }
