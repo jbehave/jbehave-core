@@ -11,7 +11,7 @@
 
     <properties>
         <spring.version>5.3.22</spring.version>
-        <aspectj.version>1.9.9.1</aspectj.version>
+        <aspectj.version>1.9.19</aspectj.version>
     </properties>
 
     <dependencies>
