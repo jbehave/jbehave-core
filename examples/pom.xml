@@ -13,6 +13,7 @@
   <properties>
     <jbehave.version>${project.version}</jbehave.version>
     <jbehave.site.version>3.5</jbehave.site.version>
+    <spring.version>5.3.25</spring.version>
   </properties>
 
   <modules>
