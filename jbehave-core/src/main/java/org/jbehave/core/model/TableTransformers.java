@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -56,9 +55,16 @@ public class TableTransformers {
 
     public String transform(String transformerName, String tableAsString, TableParsers tableParsers,
             TableProperties properties) {
-        return Optional.ofNullable(transformers.get(transformerName))
-                       .map(t -> t.transform(tableAsString, tableParsers, properties))
-                       .orElseThrow(() -> new TransformerNotFountException(transformerName));
+        TableTransformer tableTransformer = transformers.get(transformerName);
+        if (tableTransformer == null) {
+            throw new TransformerNotFountException(transformerName);
+        }
+        String result = tableTransformer.transform(tableAsString, tableParsers, properties);
+        if (result == null) {
+            throw new InvalidTransformationResultException(
+                    String.format("Table transformation using transformer '%s' resulted in 'null'", transformerName));
+        }
+        return result;
     }
 
     public void useTransformer(String name, TableTransformer transformer) {
@@ -295,6 +301,14 @@ public class TableTransformers {
 
         public TransformerNotFountException(String transformerName) {
             super(String.format("Table transformer '%s' does not exist", transformerName));
+        }
+    }
+
+    public static class InvalidTransformationResultException extends RuntimeException {
+        private static final long serialVersionUID = -1242448321325167977L;
+
+        public InvalidTransformationResultException(String message) {
+            super(message);
         }
     }
 }
