@@ -296,7 +296,7 @@ public class TableTransformers {
         }
     }
 
-    public class TransformerNotFoundException extends RuntimeException {
+    public static class TransformerNotFoundException extends RuntimeException {
         private static final long serialVersionUID = 3742264745351414296L;
 
         public TransformerNotFoundException(String transformerName) {
