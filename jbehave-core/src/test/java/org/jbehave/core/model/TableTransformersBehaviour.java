@@ -12,7 +12,7 @@ import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.model.TableTransformers.InvalidTransformationResultException;
 import org.jbehave.core.model.TableTransformers.ResolvingSelfReferences;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
-import org.jbehave.core.model.TableTransformers.TransformerNotFountException;
+import org.jbehave.core.model.TableTransformers.TransformerNotFoundException;
 import org.jbehave.core.steps.ParameterControls;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,7 +38,7 @@ class TableTransformersBehaviour {
 
     @Test
     void shouldNotTransformTableIfTransformerNotFound() {
-        TransformerNotFountException thrown = assertThrows(TransformerNotFountException.class,
+        TransformerNotFoundException thrown = assertThrows(TransformerNotFoundException.class,
             () -> tableTransformers.transform("inexistentTransformer", TABLE_AS_STRING, TABLE_PARSERS, PROPERTIES));
         assertEquals("Table transformer 'inexistentTransformer' does not exist", thrown.getMessage());
     }

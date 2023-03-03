@@ -57,7 +57,7 @@ public class TableTransformers {
             TableProperties properties) {
         TableTransformer tableTransformer = transformers.get(transformerName);
         if (tableTransformer == null) {
-            throw new TransformerNotFountException(transformerName);
+            throw new TransformerNotFoundException(transformerName);
         }
         String result = tableTransformer.transform(tableAsString, tableParsers, properties);
         if (result == null) {
@@ -296,10 +296,10 @@ public class TableTransformers {
         }
     }
 
-    public class TransformerNotFountException extends RuntimeException {
+    public class TransformerNotFoundException extends RuntimeException {
         private static final long serialVersionUID = 3742264745351414296L;
 
-        public TransformerNotFountException(String transformerName) {
+        public TransformerNotFoundException(String transformerName) {
             super(String.format("Table transformer '%s' does not exist", transformerName));
         }
     }
