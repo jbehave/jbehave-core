@@ -4,10 +4,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable.TableProperties;
+import org.jbehave.core.model.TableTransformers.InvalidTransformationResultException;
 import org.jbehave.core.model.TableTransformers.ResolvingSelfReferences;
+import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.jbehave.core.model.TableTransformers.TransformerNotFountException;
 import org.jbehave.core.steps.ParameterControls;
 import org.junit.jupiter.api.Test;
@@ -37,6 +41,17 @@ class TableTransformersBehaviour {
         TransformerNotFountException thrown = assertThrows(TransformerNotFountException.class,
             () -> tableTransformers.transform("inexistentTransformer", TABLE_AS_STRING, TABLE_PARSERS, PROPERTIES));
         assertEquals("Table transformer 'inexistentTransformer' does not exist", thrown.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionIfTableTransformationResultIsNull() {
+        TableTransformer transformer = mock();
+        when(transformer.transform(TABLE_AS_STRING, TABLE_PARSERS, PROPERTIES)).thenReturn(null);
+        String transformerName = "invalid";
+        tableTransformers.useTransformer(transformerName, transformer);
+        InvalidTransformationResultException thrown = assertThrows(InvalidTransformationResultException.class,
+                () -> tableTransformers.transform(transformerName, TABLE_AS_STRING, TABLE_PARSERS, PROPERTIES));
+        assertEquals("Table transformation using transformer 'invalid' resulted in 'null'", thrown.getMessage());
     }
 
     @Test
