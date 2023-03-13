@@ -324,4 +324,9 @@
     <!-- Make the @SuppressWarnings annotations available to Checkstyle -->
     <module name="SuppressWarningsHolder"/>
   </module>
+
+  <module name="SuppressWithPlainTextCommentFilter">
+    <property name="offCommentFormat" value="CHECKSTYLE\:OFF.*"/>
+    <property name="onCommentFormat" value="CHECKSTYLE\:ON.*"/>
+  </module>
 </module>
