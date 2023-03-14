@@ -5,6 +5,7 @@ import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.removeStart;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,7 +63,12 @@ public class RegexCompositeParser extends AbstractRegexParser implements Composi
     // Regex Patterns
     private Pattern findingCompositePattern() {
         String startingWords = concatenateStartingWords();
-        return compile(keywords().composite() + "(.*?)\\s*(?:\n\\s*" + keywords().priority() + "\\s*(\\d+)\\s*)?"
-                + "(" + startingWords + ".*|\\s*$)", DOTALL);
+        String startingCompositeStepWords = concatenateWithOr("\\s*", Arrays.asList(
+                keywords().given(),
+                keywords().when(),
+                keywords().then()
+        ));
+        return compile(keywords().composite() + "\n(" + startingCompositeStepWords + "\\s.*?)\\s*(?:\n\\s*"
+                + keywords().priority() + "\\s*(\\d+)" + "\\s*)?" + "(" + startingWords + ".*|\\s*$)", DOTALL);
     }
 }

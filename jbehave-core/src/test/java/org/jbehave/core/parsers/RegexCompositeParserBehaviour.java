@@ -13,13 +13,15 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Composite;
 import org.jbehave.core.steps.StepType;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class RegexCompositeParserBehaviour {
 
     private static final String NL = "\n";
     private static final String CRLF = "\r\n";
 
-    private CompositeParser parser = new RegexCompositeParser();
+    private final CompositeParser parser = new RegexCompositeParser();
 
     @Test
     void shouldParseEmptySteps() {
@@ -27,27 +29,14 @@ class RegexCompositeParserBehaviour {
         assertThat(composites, equalTo(Collections.<Composite>emptyList()));
     }
 
-    @Test
-    void shouldParseCompositeStepWithEmptyComposedSteps() {
-        String compositesAsText = "Composite: Given an empty composite step";
-        List<Composite> composites = parser.parseComposites(compositesAsText);
-        assertThat(composites.size(), equalTo(1));
-        assertCompositeStep(composites.get(0), StepType.GIVEN, "an empty composite step", 0, Collections.emptyList());
-    }
-
-    @Test
-    void shouldParseCompositeStepWithEmptyComposedStepsEndingWithLineBreak() {
-        String compositesAsText = "Composite: Given an empty composite step" + NL;
-        List<Composite> composites = parser.parseComposites(compositesAsText);
-        assertThat(composites.size(), equalTo(1));
-        assertCompositeStep(composites.get(0), StepType.GIVEN, "an empty composite step", 0, Collections.emptyList());
-    }
-
-    @Test
-    void shouldParseCompositeStepWithEmptyComposedStepsEndingWithSpaceAndLineBreaks() {
-        String compositesAsText = "Composite: Given an empty composite step "
-                + NL + " "
-                + NL;
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "Composite: Given an empty composite step",
+        "Composite:Given an empty composite step",
+        "Composite: Given an empty composite step" + NL,
+        "Composite: Given an empty composite step " + NL + " " + NL
+    })
+    void shouldParseCompositeStepWithEmptyComposedSteps(String compositesAsText) {
         List<Composite> composites = parser.parseComposites(compositesAsText);
         assertThat(composites.size(), equalTo(1));
         assertCompositeStep(composites.get(0), StepType.GIVEN, "an empty composite step", 0, Collections.emptyList());
