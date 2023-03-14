@@ -17,9 +17,10 @@ public class ConditionalStepCandidate extends StepCandidate {
 
     private ConditionalStepCandidate(String patternAsString, int priority, StepType stepType,
             Map<Method, StepCreator> stepCreators, Keywords keywords, StepMatcher stepMatcher,
-            String parameterPrefixString, StepCreator stepCreator, StepConditionMatcher stepConditionMatcher) {
+            String parameterPrefixString, StepCreator stepCreator, StepConditionMatcher stepConditionMatcher,
+            StepMonitor stepMonitor) {
         super(patternAsString, priority, stepType, null, null, null, keywords, stepMatcher, parameterPrefixString,
-                stepCreator);
+                stepCreator, null, stepMonitor);
         this.stepCreators = stepCreators;
         this.stepConditionMatcher = stepConditionMatcher;
     }
@@ -46,11 +47,9 @@ public class ConditionalStepCandidate extends StepCandidate {
 
         StepCandidate baseCandidate = conditionalCandidates.get(0);
 
-        StepCandidate candidate = new ConditionalStepCandidate(baseCandidate.getPatternAsString(),
-                baseCandidate.getPriority(), baseCandidate.getStepType(), stepCreators,
-                baseCandidate.getKeywords(), baseCandidate.getStepMatcher(),
-                baseCandidate.getParameterPrefix(), baseCandidate.getStepCreator(), stepConditionMatcher);
-        candidate.useStepMonitor(baseCandidate.getStepMonitor());
-        return candidate;
+        return new ConditionalStepCandidate(baseCandidate.getPatternAsString(), baseCandidate.getPriority(),
+                baseCandidate.getStepType(), stepCreators, baseCandidate.getKeywords(),
+                baseCandidate.getStepMatcher(), baseCandidate.getParameterPrefix(), baseCandidate.getStepCreator(),
+                stepConditionMatcher, baseCandidate.getStepMonitor());
     }
 }

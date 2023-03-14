@@ -19,8 +19,6 @@ import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.parsers.StepMatcher;
-import org.jbehave.core.parsers.StepPatternParser;
-import org.jbehave.core.steps.context.StepsContext;
 
 /**
  * A StepCandidate is associated to a Java method annotated with {@link Given},
@@ -43,30 +41,12 @@ public class StepCandidate {
     private final StepMatcher stepMatcher;
     private final StepCreator stepCreator;
     private final String parameterPrefix;
-    private String[] composedSteps;
-    private StepMonitor stepMonitor = new SilentStepMonitor();
-
-    public StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Class<?> stepsType,
-            InjectableStepsFactory stepsFactory, StepsContext stepsContext, Keywords keywords,
-            StepPatternParser stepPatternParser, ParameterConverters parameterConverters,
-            ParameterControls parameterControls) {
-        this(patternAsString, priority, stepType, method, stepsType, stepsFactory, stepsContext, keywords,
-                stepPatternParser.parseStep(stepType, patternAsString), stepPatternParser.getPrefix(),
-                parameterConverters, parameterControls);
-    }
-
-    private StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Class<?> stepsType,
-            InjectableStepsFactory stepsFactory, StepsContext stepsContext, Keywords keywords,
-            StepMatcher stepMatcher, String parameterPrefixString, ParameterConverters parameterConverters,
-            ParameterControls parameterControls) {
-        this(patternAsString, priority, stepType, method, stepsType, stepsFactory, keywords, stepMatcher,
-                parameterPrefixString, new StepCreator(stepsType, stepsFactory, stepsContext, parameterConverters,
-                        parameterControls, stepMatcher, new SilentStepMonitor()));
-    }
+    private final String[] composedSteps;
+    private StepMonitor stepMonitor;
 
     public StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Class<?> stepsType,
             InjectableStepsFactory stepsFactory, Keywords keywords, StepMatcher stepMatcher,
-            String parameterPrefixString, StepCreator stepCreator) {
+            String parameterPrefixString, StepCreator stepCreator, String[] steps, StepMonitor stepMonitor) {
         this.patternAsString = patternAsString;
         this.priority = priority;
         this.stepType = stepType;
@@ -77,6 +57,8 @@ public class StepCandidate {
         this.stepMatcher = stepMatcher;
         this.stepCreator = stepCreator;
         this.parameterPrefix = parameterPrefixString;
+        this.composedSteps = steps;
+        this.stepMonitor = stepMonitor;
     }
 
     public Method getMethod() {
@@ -120,16 +102,8 @@ public class StepCandidate {
         this.stepCreator.useStepMonitor(stepMonitor);
     }
 
-    public void doDryRun(boolean dryRun) {
-        this.stepCreator.doDryRun(dryRun);
-    }
-
     public void useParanamer(Paranamer paranamer) {
         this.stepCreator.useParanamer(paranamer);
-    }
-
-    public void composedOf(String[] steps) {
-        this.composedSteps = steps;
     }
 
     public boolean isComposite() {

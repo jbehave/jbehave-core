@@ -862,8 +862,8 @@ class StepCreatorBehaviour {
             Configuration configuration) {
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(configuration, stepsInstance);
         return new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext,
-                configuration.parameterConverters(), configuration.parameterControls(), stepMatcher,
-                new SilentStepMonitor());
+                configuration.parameterConverters(), configuration.expressionResolver(),
+                configuration.parameterControls(), stepMatcher, new SilentStepMonitor(), configuration.dryRun());
     }
 
     private void setupContext() {

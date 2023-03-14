@@ -5,8 +5,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
-import static org.jbehave.core.annotations.AfterScenario.Outcome.FAILURE;
-import static org.jbehave.core.annotations.AfterScenario.Outcome.SUCCESS;
 import static org.jbehave.core.steps.StepType.GIVEN;
 import static org.jbehave.core.steps.StepType.THEN;
 import static org.jbehave.core.steps.StepType.WHEN;
@@ -20,10 +18,10 @@ import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -110,7 +108,6 @@ public class Steps extends AbstractCandidateSteps {
 
     private final Class<?> type;
     private final InjectableStepsFactory stepsFactory;
-    private final StepCreator stepCreator;
 
     /**
      * Creates Steps with default configuration for a class extending this
@@ -130,15 +127,12 @@ public class Steps extends AbstractCandidateSteps {
         super(configuration);
         this.type = this.getClass();
         this.stepsFactory = new InstanceStepsFactory(configuration, this);
-        stepCreator = new StepCreator(type, stepsFactory, configuration().stepsContext(),
-                configuration().parameterConverters(), configuration().parameterControls(), null,
-                configuration().stepMonitor());
     }
 
     /**
      * Creates Steps with given custom configuration and a steps instance
      * containing the candidate step methods
-     * 
+     *
      * @param configuration the Configuration
      * @param instance the steps instance
      */
@@ -150,7 +144,7 @@ public class Steps extends AbstractCandidateSteps {
      * Creates Steps with given custom configuration and a steps instance type
      * containing the candidate step methods. The steps instance is created
      * using the steps instance factory provided.
-     * 
+     *
      * @param configuration the Configuration
      * @param type the steps instance type
      * @param stepsFactory the {@link InjectableStepsFactory}
@@ -159,9 +153,6 @@ public class Steps extends AbstractCandidateSteps {
         super(configuration);
         this.type = type;
         this.stepsFactory = stepsFactory;
-        stepCreator = new StepCreator(type, stepsFactory, configuration().stepsContext(),
-                configuration().parameterConverters(), configuration().parameterControls(), null,
-                configuration().stepMonitor());
     }
 
     public Class<?> type() {
@@ -234,10 +225,9 @@ public class Steps extends AbstractCandidateSteps {
 
     private void addCandidatesFromVariants(List<StepCandidate> candidates, Method method, StepType stepType,
             String value, int priority) {
-        PatternVariantBuilder b = new PatternVariantBuilder(value);
-        for (String variant : b.allVariants()) {
-            addCandidate(candidates, method, stepType, variant, priority);
-        }
+        String[] composedSteps = method.isAnnotationPresent(Composite.class)
+                ? method.getAnnotation(Composite.class).steps() : new String[0];
+        addCandidatesFromVariants(candidates, method, stepType, value, priority, type, stepsFactory, composedSteps);
     }
 
     private void addCandidatesFromAliases(List<StepCandidate> candidates, Method method, StepType stepType,
@@ -254,79 +244,69 @@ public class Steps extends AbstractCandidateSteps {
         }
     }
 
-    private void addCandidate(List<StepCandidate> candidates, Method method, StepType stepType,
-            String stepPatternAsString, int priority) {
-        StepCandidate candidate = createCandidate(stepPatternAsString, priority, stepType, method, type, stepsFactory);
-        if (method.isAnnotationPresent(Composite.class)) {
-            candidate.composedOf(method.getAnnotation(Composite.class).steps());
-        }
-        candidates.add(candidate);
-    }
-
     @Override
     public List<BeforeOrAfterStep> listBeforeStories() {
-        return listSteps(BeforeStories.class, v -> true, BeforeStories::order);
+        return listSteps(BeforeStories.class, a -> true, BeforeStories::order);
     }
 
     @Override
     public List<BeforeOrAfterStep> listAfterStories() {
-        return listSteps(AfterStories.class, v -> true, AfterStories::order);
+        return listSteps(AfterStories.class, a -> true, AfterStories::order);
     }
 
     @Override
     public List<BeforeOrAfterStep> listBeforeStory(boolean givenStory) {
-        return listSteps(BeforeStory.class, v -> v.uponGivenStory() == givenStory, BeforeStory::order);
+        return listSteps(BeforeStory.class, a -> a.uponGivenStory() == givenStory, BeforeStory::order);
     }
 
     @Override
     public List<BeforeOrAfterStep> listAfterStory(boolean givenStory) {
-        return listSteps(AfterStory.class, v -> v.uponGivenStory() == givenStory, AfterStory::order);
+        return listSteps(AfterStory.class, a -> a.uponGivenStory() == givenStory, AfterStory::order);
     }
 
     @Override
     public Map<ScenarioType, List<BeforeOrAfterStep>> listBeforeScenario() {
-        Map<Method, BeforeScenario> beforeScenarioMethods = methodsAnnotatedWith(BeforeScenario.class);
-        Map<ScenarioType, List<BeforeOrAfterStep>> stepsPerType = new EnumMap<>(ScenarioType.class);
-        for (ScenarioType scenarioType : ScenarioType.values()) {
-            stepsPerType.put(scenarioType,
-                    listSteps(beforeScenarioMethods, v -> v.uponType() == scenarioType, BeforeScenario::order));
-        }
-        return stepsPerType;
+        return listBeforeOrAfterScenarioSteps(BeforeScenario.class, (a, scenarioType) -> a.uponType() == scenarioType,
+                BeforeScenario::order, a -> ANY);
     }
 
     @Override
     public Map<ScenarioType, List<BeforeOrAfterStep>> listAfterScenario() {
-        Map<Method, AfterScenario> afterScenarioMethods = methodsAnnotatedWith(AfterScenario.class);
+        return listBeforeOrAfterScenarioSteps(AfterScenario.class, (a, scenarioType) -> a.uponType() == scenarioType,
+                AfterScenario::order, AfterScenario::uponOutcome);
+    }
+
+    public <T extends Annotation> Map<ScenarioType, List<BeforeOrAfterStep>> listBeforeOrAfterScenarioSteps(
+            Class<T> annotationClass, BiPredicate<T, ScenarioType> predicate, ToIntFunction<T> order,
+            Function<T, Outcome> outcome) {
+        StepCreator stepCreator = createStepCreator(type, stepsFactory);
+        Map<Method, T> methods = methodsAnnotatedWith(annotationClass);
         Map<ScenarioType, List<BeforeOrAfterStep>> stepsPerType = new EnumMap<>(ScenarioType.class);
         for (ScenarioType scenarioType : ScenarioType.values()) {
-            List<BeforeOrAfterStep> steps = new ArrayList<>();
-            for (Outcome outcome : new Outcome[] { ANY, SUCCESS, FAILURE }) {
-                steps.addAll(listSteps(afterScenarioMethods,
-                        v -> v.uponType() == scenarioType && v.uponOutcome() == outcome,
-                        (m, a) -> new BeforeOrAfterStep(m, a.order(), outcome, stepCreator)));
-            }
-            stepsPerType.put(scenarioType, steps);
+            stepsPerType.put(scenarioType, listSteps(methods, a -> predicate.test(a, scenarioType), order, outcome,
+                    stepCreator));
         }
         return stepsPerType;
     }
 
-    private <T extends Annotation> List<BeforeOrAfterStep> listSteps(Class<T> type, Predicate<T> predicate,
+    private <T extends Annotation> List<BeforeOrAfterStep> listSteps(Class<T> annotationClass, Predicate<T> predicate,
             ToIntFunction<T> order) {
-        return listSteps(methodsAnnotatedWith(type), predicate, order);
+        StepCreator stepCreator = createStepCreator(type, stepsFactory);
+        return listSteps(methodsAnnotatedWith(annotationClass), predicate, order, a -> ANY, stepCreator);
     }
 
     private <T extends Annotation> List<BeforeOrAfterStep> listSteps(Map<Method, T> methods, Predicate<T> predicate,
-            ToIntFunction<T> order) {
-        return listSteps(methods, predicate, (m, a) -> new BeforeOrAfterStep(m, order.applyAsInt(a), stepCreator));
-    }
-
-    private <T extends Annotation> List<BeforeOrAfterStep> listSteps(Map<Method, T> methods,
-            Predicate<T> predicate, BiFunction<Method, T, BeforeOrAfterStep> factory) {
+            ToIntFunction<T> order, Function<T, Outcome> outcome, StepCreator stepCreator) {
         return methods.entrySet()
                 .stream()
                 .filter(e -> predicate.test(e.getValue()))
-                .map(e -> factory.apply(e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
+                .map(e -> {
+                    Method method = e.getKey();
+                    T annotation = e.getValue();
+                    return new BeforeOrAfterStep(method, order.applyAsInt(annotation), outcome.apply(annotation),
+                            stepCreator);
+                })
+                .collect(toList());
     }
 
     private Method[] allMethods() {

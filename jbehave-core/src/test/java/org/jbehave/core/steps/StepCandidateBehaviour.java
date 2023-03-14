@@ -56,18 +56,16 @@ import org.jbehave.core.embedder.AllStepCandidates;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
-import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
+import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.AbstractStepResult.Successful;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
-import org.jbehave.core.steps.context.StepsContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 
@@ -81,14 +79,20 @@ class StepCandidateBehaviour {
         return candidateWith(patternAsString, stepType, method, instance, new ParameterControls());
     }
 
-    private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance,
+    private StepCandidate candidateWith(String stepPatternAsString, StepType stepType, Method method, Object instance,
             ParameterControls parameterControls) {
-        Class<?> stepsType = instance.getClass();
+        Class<?> type = instance.getClass();
         MostUsefulConfiguration configuration = new MostUsefulConfiguration();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(configuration, instance);
-        return new StepCandidate(patternAsString, 0, stepType, method, stepsType, stepsFactory, new StepsContext(),
-                keywords, new RegexPrefixCapturingPatternParser(), configuration.parameterConverters(),
-                parameterControls);
+        StepPatternParser stepPatternParser = new RegexPrefixCapturingPatternParser();
+        StepCreator stepCreator = new StepCreator(type, stepsFactory, configuration.stepsContext(),
+                configuration.parameterConverters(), configuration.expressionResolver(), parameterControls,
+                stepPatternParser.parseStep(stepType, stepPatternAsString), configuration.stepMonitor(),
+                configuration.dryRun());
+        stepCreator.useParanamer(configuration.paranamer());
+        return new StepCandidate(stepPatternAsString, 0, stepType, method, type, stepsFactory, keywords,
+                stepPatternParser.parseStep(stepType, stepPatternAsString), stepPatternParser.getPrefix(),
+                stepCreator, null, configuration.stepMonitor());
     }
     
     @Test
@@ -172,11 +176,21 @@ class StepCandidateBehaviour {
             }
             
         };
-        ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath(),
-                new TableTransformers());
-        StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, null,
-                new StepsContext(), keywords, new RegexPrefixCapturingPatternParser(), parameterConverters,
-                new ParameterControls());
+        String stepPatternAsString = "windows on the $nth floor";
+        StepPatternParser stepPatternParser = new RegexPrefixCapturingPatternParser();
+        StepType stepType = WHEN;
+
+        MostUsefulConfiguration configuration = new MostUsefulConfiguration();
+
+        StepCreator stepCreator = new StepCreator(null, null, configuration.stepsContext(),
+                configuration.parameterConverters(), configuration.expressionResolver(),
+                configuration.parameterControls(), stepPatternParser.parseStep(stepType, stepPatternAsString),
+                configuration.stepMonitor(), configuration.dryRun());
+        stepCreator.useParanamer(configuration.paranamer());
+        StepCandidate candidate = new StepCandidate(stepPatternAsString, 0, stepType, method, null, null, keywords,
+                stepPatternParser.parseStep(stepType, stepPatternAsString), stepPatternParser.getPrefix(),
+                stepCreator, null, configuration.stepMonitor());
+
         assertThat(candidate.matches("When windows on the 1st floor"), is(false));
         assertThat(candidate.ignore("!-- windows on the 1st floor"), is(false));
     }
