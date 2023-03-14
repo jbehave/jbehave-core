@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.condition.StepConditionMatcher;
 import org.jbehave.core.embedder.StoryControls;
+import org.jbehave.core.expressions.ExpressionResolver;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
@@ -87,6 +88,11 @@ public class UnmodifiableConfiguration extends Configuration {
     @Override
     public ParameterConverters parameterConverters() {
         return delegate.parameterConverters();
+    }
+
+    @Override
+    public ExpressionResolver expressionResolver() {
+        return delegate.expressionResolver();
     }
 
     @Override
@@ -228,7 +234,12 @@ public class UnmodifiableConfiguration extends Configuration {
     public Configuration useParameterConverters(ParameterConverters parameterConverters) {
         throw notAllowed();
     }
-    
+
+    @Override
+    public Configuration useExpressionResolver(ExpressionResolver expressionResolver) {
+        throw notAllowed();
+    }
+
     @Override
     public Configuration useParameterControls(ParameterControls parameterControls) {
         throw notAllowed();

@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -40,6 +41,7 @@ import org.jbehave.core.annotations.ToContext;
 import org.jbehave.core.condition.StepConditionMatchException;
 import org.jbehave.core.condition.StepConditionMatcher;
 import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.expressions.ExpressionResolver;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.IgnoringStepsFailure;
 import org.jbehave.core.failures.RestartingScenarioFailure;
@@ -69,26 +71,29 @@ public class StepCreator {
     private final Class<?> stepsType;
     private final InjectableStepsFactory stepsFactory;
     private final ParameterConverters parameterConverters;
+    private final ExpressionResolver expressionResolver;
     private final ParameterControls parameterControls;
     private final Pattern delimitedNamePattern;
     private final StepMatcher stepMatcher;
     private final StepsContext stepsContext;
+    private final boolean dryRun;
     private StepMonitor stepMonitor;
     private Paranamer paranamer = new NullParanamer();
-    private boolean dryRun = false;
 
-    public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory,
-            StepsContext stepsContext, ParameterConverters parameterConverters, ParameterControls parameterControls,
-            StepMatcher stepMatcher, StepMonitor stepMonitor) {
+    public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory, StepsContext stepsContext,
+            ParameterConverters parameterConverters, ExpressionResolver expressionResolver,
+            ParameterControls parameterControls, StepMatcher stepMatcher, StepMonitor stepMonitor, boolean dryRun) {
         this.stepsType = stepsType;
         this.stepsFactory = stepsFactory;
         this.stepsContext = stepsContext;
         this.parameterConverters = parameterConverters;
+        this.expressionResolver = expressionResolver;
         this.parameterControls = parameterControls;
         this.stepMatcher = stepMatcher;
         this.stepMonitor = stepMonitor;
         this.delimitedNamePattern = Pattern.compile(parameterControls.nameDelimiterLeft() + "([\\w\\-\\h.]+?)"
                 + parameterControls.nameDelimiterRight(), Pattern.DOTALL);
+        this.dryRun = dryRun;
     }
 
     public void useStepMonitor(StepMonitor stepMonitor) {
@@ -97,10 +102,6 @@ public class StepCreator {
 
     public void useParanamer(Paranamer paranamer) {
         this.paranamer = paranamer;
-    }
-
-    public void doDryRun(boolean dryRun) {
-        this.dryRun = dryRun;
     }
 
     public Object stepsInstance() {
@@ -393,18 +394,6 @@ public class StepCreator {
         for (int position = 0; position < types.length; position++) {
             parameters[position] = parameterForPosition(matcher, position, names, namedParameters,
                     overrideWithTableParameters);
-        }
-        return parameters;
-    }
-
-    private Object[] convertParameterValues(String[] valuesAsString, Type[] types, ParameterName[] names) {
-        final Object[] parameters = new Object[valuesAsString.length];
-        for (int position = 0; position < valuesAsString.length; position++) {
-            if (names[position].fromContext) {
-                parameters[position] = stepsContext.get(valuesAsString[position]);
-            } else {
-                parameters[position] = parameterConverters.convert(valuesAsString[position], types[position]);
-            }
         }
         return parameters;
     }
@@ -874,7 +863,6 @@ public class StepCreator {
     }
 
     public class ParametrisedStep extends ReportingAbstractStep {
-        private Object[] convertedParameters;
         private String parametrisedStep;
         private final Method method;
         private final String stepWithoutStartingWord;
@@ -900,7 +888,7 @@ public class StepCreator {
             String stepAsString = getStepAsString();
             Timer timer = new Timer().start();
             try {
-                parametriseStep();
+                Object[] convertedParameters = parametriseStep();
                 stepMonitor.beforePerforming(parametrisedStep, dryRun, method);
                 if (!dryRun && method != null) {
                     Object outputObject = method.invoke(stepsInstance(), convertedParameters);
@@ -953,24 +941,43 @@ public class StepCreator {
             return parametrisedStep;
         }
 
-        private void parametriseStep() {
+        private Object[] parametriseStep() {
             Matcher matcher = stepMatcher.matcher(stepWithoutStartingWord);
             matcher.find();
             ParameterName[] names = parameterNames(method);
             Type[] types = parameterTypes(method, names);
             String[] parameterValues = parameterValuesForStep(matcher, namedParameters, types, names, true);
-            convertedParameters = method == null ? parameterValues
-                    : convertParameterValues(parameterValues, types, names);
-            addNamedParametersToExamplesTables();
+            Object[] convertedParameters;
+            if (method == null) {
+                convertedParameters = parameterValues;
+            } else {
+                convertedParameters = convertParameterValues(parameterValues, types, names);
+            }
+            addNamedParametersToExamplesTables(convertedParameters);
             parametrisedStep = parametrisedStep(getStepAsString(), namedParameters, types, parameterValues);
+            return convertedParameters;
         }
 
-        private void addNamedParametersToExamplesTables() {
-            for (Object object : convertedParameters) {
-                if (object instanceof ExamplesTable) {
-                    ((ExamplesTable) object).withNamedParameters(namedParameters);
+        private Object[] convertParameterValues(String[] parameterValues, Type[] types, ParameterName[] names) {
+            final Object[] parameters = new Object[parameterValues.length];
+            for (int i = 0; i < parameterValues.length; i++) {
+                String parameterValue = parameterValues[i];
+                if (names[i].fromContext) {
+                    parameters[i] = stepsContext.get(parameterValue);
+                } else {
+                    String expressionEvaluationResult = parameterValue != null
+                            ? String.valueOf(expressionResolver.resolveExpressions(dryRun, parameterValue)) : null;
+                    parameters[i] = parameterConverters.convert(expressionEvaluationResult, types[i]);
                 }
             }
+            return parameters;
+        }
+
+        private void addNamedParametersToExamplesTables(Object[] convertedParameters) {
+            Stream.of(convertedParameters)
+                    .filter(ExamplesTable.class::isInstance)
+                    .map(ExamplesTable.class::cast)
+                    .forEach(examplesTable -> examplesTable.withNamedParameters(namedParameters));
         }
     }
 

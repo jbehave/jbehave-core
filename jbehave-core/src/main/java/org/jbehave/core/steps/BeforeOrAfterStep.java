@@ -24,11 +24,6 @@ public class BeforeOrAfterStep {
     private final int order;
     private final StepCreator stepCreator;
     private final Outcome outcome;
-    private StepMonitor stepMonitor = new SilentStepMonitor();
-
-    public BeforeOrAfterStep(Method method, int order, StepCreator stepCreator) {
-        this(method, order, Outcome.ANY, stepCreator);
-    }
 
     public BeforeOrAfterStep(Method method, int order, Outcome outcome, StepCreator stepCreator) {
         this.method = method;
@@ -57,14 +52,12 @@ public class BeforeOrAfterStep {
         return stepCreator.createAfterStepUponOutcome(method, outcome, storyAndScenarioMeta);
     }
 
-    public void useStepMonitor(StepMonitor stepMonitor) {
-        this.stepMonitor = stepMonitor;
-        this.stepCreator.useStepMonitor(stepMonitor);
-    }
-
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(method).append(order).append(outcome)
-                .append(stepMonitor).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append(method)
+                .append(order)
+                .append(outcome)
+                .toString();
     }
 }

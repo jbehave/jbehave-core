@@ -434,9 +434,9 @@ class JUnit4DescriptionGeneratorBehaviour {
         Method method = new Object() {}.getClass().getEnclosingMethod();
         for (ScenarioType scenarioType : scenarioTypes) {
             lenient().when(allStepCandidates.getBeforeScenarioSteps(scenarioType)).thenReturn(
-                    singletonList(new BeforeOrAfterStep(method, 0, null)));
+                    singletonList(new BeforeOrAfterStep(method, 0, Outcome.ANY, null)));
             lenient().when(allStepCandidates.getAfterScenarioSteps(scenarioType)).thenReturn(
-                    singletonList(new BeforeOrAfterStep(method, 0, null)));
+                    singletonList(new BeforeOrAfterStep(method, 0, Outcome.ANY, null)));
         }
     }
 

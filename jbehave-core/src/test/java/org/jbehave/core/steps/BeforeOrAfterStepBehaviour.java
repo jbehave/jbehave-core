@@ -16,7 +16,7 @@ class BeforeOrAfterStepBehaviour {
         StepCreator stepCreator = mock(StepCreator.class);
 
         Method method = methodFor("methodWith");
-        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(method, 0, stepCreator);
+        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(method, 0, AfterScenario.Outcome.ANY, stepCreator);
 
         Meta meta = mock(Meta.class);
         beforeOrAfterStep.createStepWith(meta);
@@ -29,7 +29,7 @@ class BeforeOrAfterStepBehaviour {
         StepCreator stepCreator = mock(StepCreator.class);
 
         Method method = methodFor("methodWith");
-        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(method, 0, stepCreator);
+        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(method, 0, AfterScenario.Outcome.ANY, stepCreator);
 
         Meta meta = mock(Meta.class);
         beforeOrAfterStep.createStepUponOutcome(meta);

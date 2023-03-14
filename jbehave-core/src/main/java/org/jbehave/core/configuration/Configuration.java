@@ -13,6 +13,8 @@ import org.jbehave.core.condition.ReflectionBasedStepConditionMatcher;
 import org.jbehave.core.condition.StepConditionMatcher;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryControls;
+import org.jbehave.core.expressions.ExpressionResolver;
+import org.jbehave.core.expressions.NullExpressionResolverMonitor;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PassingUponPendingStep;
@@ -186,6 +188,11 @@ public abstract class Configuration {
      * Use default built-in parameter converters
      */
     protected ParameterConverters parameterConverters;
+
+    /**
+     * Use default built-in expression resolver
+     */
+    protected ExpressionResolver expressionResolver;
 
     /**
      * Use default built-in ExamplesTable parsers
@@ -409,6 +416,13 @@ public abstract class Configuration {
         return parameterConverters;
     }
 
+    public ExpressionResolver expressionResolver() {
+        if (expressionResolver == null) {
+            expressionResolver = new ExpressionResolver(Collections.emptySet(), new NullExpressionResolverMonitor());
+        }
+        return expressionResolver;
+    }
+
     public TableParsers tableParsers() {
         if (tableParsers == null) {
             tableParsers = new TableParsers(keywords(), parameterConverters(), Optional.empty());
@@ -577,6 +591,11 @@ public abstract class Configuration {
 
     public Configuration useParameterConverters(ParameterConverters parameterConverters) {
         this.parameterConverters = parameterConverters;
+        return this;
+    }
+
+    public Configuration useExpressionResolver(ExpressionResolver expressionResolver) {
+        this.expressionResolver = expressionResolver;
         return this;
     }
 
