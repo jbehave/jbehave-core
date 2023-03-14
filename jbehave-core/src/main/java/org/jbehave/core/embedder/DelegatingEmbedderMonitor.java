@@ -1,6 +1,9 @@
 package org.jbehave.core.embedder;
 
+import static java.util.Arrays.asList;
+
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -14,161 +17,179 @@ import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 
 /**
- * <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">Null Object
- * Pattern</a> implementation of {@link EmbedderMonitor}. Can be extended to
- * override only the methods of interest.
+ * Monitor which collects other {@link EmbedderMonitor}s and delegates all invocations to the collected monitors.
  */
-public class NullEmbedderMonitor implements EmbedderMonitor {
+public class DelegatingEmbedderMonitor implements EmbedderMonitor {
+
+    private final Collection<EmbedderMonitor> delegates;
+
+    /**
+     * Creates {@link DelegatingEmbedderMonitor} with a given collections of delegates
+     *
+     * @param delegates the {@link EmbedderMonitor}-s to delegate to
+     */
+    public DelegatingEmbedderMonitor(Collection<EmbedderMonitor> delegates) {
+        this.delegates = delegates;
+    }
+
+    /**
+     * Creates {@link DelegatingEmbedderMonitor} with a given varargs of delegates
+     *
+     * @param delegates the {@link EmbedderMonitor}-s to delegate to
+     */
+    public DelegatingEmbedderMonitor(EmbedderMonitor... delegates) {
+        this(asList(delegates));
+    }
 
     @Override
     public void runningEmbeddable(String name) {
-        // Do nothing by default
+        delegates.forEach(d -> d.runningEmbeddable(name));
     }
 
     @Override
     public void embeddableFailed(String name, Throwable cause) {
-        // Do nothing by default
+        delegates.forEach(d -> d.embeddableFailed(name, cause));
     }
 
     @Override
     public void embeddableNotConfigurable(String name) {
-        // Do nothing by default
+        delegates.forEach(d -> d.embeddableNotConfigurable(name));
     }
 
     @Override
     public void embeddablesSkipped(List<String> classNames) {
-        // Do nothing by default
+        delegates.forEach(d -> d.embeddablesSkipped(classNames));
     }
 
     @Override
     public void metaExcluded(Meta meta, MetaFilter filter) {
-        // Do nothing by default
+        delegates.forEach(d -> d.metaExcluded(meta, filter));
     }
 
     @Override
     public void runningStory(String path) {
-        // Do nothing by default
+        delegates.forEach(d -> d.runningStory(path));
     }
 
     @Override
     public void storyFailed(String path, Throwable cause) {
-        // Do nothing by default
+        delegates.forEach(d -> d.storyFailed(path, cause));
     }
 
     @Override
     public void storiesSkipped(List<String> storyPaths) {
-        // Do nothing by default
+        delegates.forEach(d -> d.storiesSkipped(storyPaths));
     }
 
     @Override
     public void storiesExcluded(List<Story> excluded, MetaFilter filter, boolean verbose) {
-        // Do nothing by default
+        delegates.forEach(d -> d.storiesExcluded(excluded, filter, verbose));
     }
 
     @Override
     public void scenarioExcluded(Scenario scenario, MetaFilter filter) {
-        // Do nothing by default
+        delegates.forEach(d -> d.scenarioExcluded(scenario, filter));
     }
 
     @Override
     public void batchFailed(BatchFailures failures) {
-        // Do nothing by default
+        delegates.forEach(d -> d.batchFailed(failures));
     }
 
     @Override
     public void beforeOrAfterStoriesFailed() {
-        // Do nothing by default
+        delegates.forEach(EmbedderMonitor::beforeOrAfterStoriesFailed);
     }
 
     @Override
     public void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
-        // Do nothing by default
+        delegates.forEach(d -> d.generatingReportsView(outputDirectory, formats, viewProperties));
     }
 
     @Override
     public void reportsViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
             Throwable cause) {
-        // Do nothing by default
+        delegates.forEach(d -> d.reportsViewGenerationFailed(outputDirectory, formats, viewProperties, cause));
     }
 
     @Override
     public void reportsViewGenerated(ReportsCount count) {
-        // Do nothing by default
+        delegates.forEach(d -> d.reportsViewGenerated(count));
     }
 
     @Override
     public void reportsViewFailures(ReportsCount count) {
-        // Do nothing by default
+        delegates.forEach(d -> d.reportsViewFailures(count));
     }
 
     @Override
     public void reportsViewNotGenerated() {
-        // Do nothing by default
+        delegates.forEach(EmbedderMonitor::reportsViewNotGenerated);
     }
 
     @Override
     public void runningWithAnnotatedEmbedderRunner(String className) {
-        // Do nothing by default
+        delegates.forEach(d -> d.runningWithAnnotatedEmbedderRunner(className));
     }
 
     @Override
     public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
-        // Do nothing by default
+        delegates.forEach(d -> d.annotatedInstanceNotOfType(annotatedInstance, type));
     }
 
     @Override
     public void mappingStory(String storyPath, List<String> metaFilters) {
-        // Do nothing by default
+        delegates.forEach(d -> d.mappingStory(storyPath, metaFilters));
     }
 
     @Override
     public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
-        // Do nothing by default
+        delegates.forEach(d -> d.generatingMapsView(outputDirectory, storyMaps, viewProperties));
     }
 
     @Override
     public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
             Throwable cause) {
-        // Do nothing by default
+        delegates.forEach(d -> d.mapsViewGenerationFailed(outputDirectory, storyMaps, viewProperties, cause));
     }
 
     @Override
     public void processingSystemProperties(Properties properties) {
-        // Do nothing by default
+        delegates.forEach(d -> d.processingSystemProperties(properties));
     }
 
     @Override
     public void systemPropertySet(String name, String value) {
-        // Do nothing by default
+        delegates.forEach(d -> d.systemPropertySet(name, value));
     }
 
     @Override
     public void storyTimeout(Story story, StoryDuration storyDuration) {
-        // Do nothing by default
+        delegates.forEach(d -> d.storyTimeout(story, storyDuration));
     }
 
     @Override
     public void usingThreads(int threads) {
-        // Do nothing by default
+        delegates.forEach(d -> d.usingThreads(threads));
     }
 
     @Override
     public void usingExecutorService(ExecutorService executorService) {
-        // Do nothing by default
+        delegates.forEach(d -> d.usingExecutorService(executorService));
     }
 
     @Override
     public void usingControls(EmbedderControls embedderControls) {
-        // Do nothing by default
+        delegates.forEach(d -> d.usingControls(embedderControls));
     }
 
     @Override
     public void invalidTimeoutFormat(String path) {
-        // Do nothing by default
+        delegates.forEach(d -> d.invalidTimeoutFormat(path));
     }
 
     @Override
     public void usingTimeout(String path, long timeout) {
-        // Do nothing by default
+        delegates.forEach(d -> d.usingTimeout(path, timeout));
     }
 }

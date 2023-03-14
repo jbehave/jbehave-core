@@ -11,10 +11,11 @@ public class NullAnnotationMonitor implements AnnotationMonitor {
 
     @Override
     public void elementCreationFailed(Class<?> elementClass, Exception cause) {
+        // Do nothing by default
     }
 
     @Override
     public void annotationNotFound(Class<? extends Annotation> annotation, Object annotatedInstance) {
+        // Do nothing by default
     }
-
 }

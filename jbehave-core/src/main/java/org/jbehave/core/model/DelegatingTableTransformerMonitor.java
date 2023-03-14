@@ -16,7 +16,7 @@ public class DelegatingTableTransformerMonitor implements TableTransformerMonito
     /**
      * Creates DelegatingTableTransformerMonitor with a given collections of delegates
      *
-     * @param delegates the TableTransformerMonitor-s to delegate to
+     * @param delegates the {@link TableTransformerMonitor}-s to delegate to
      */
     public DelegatingTableTransformerMonitor(Collection<TableTransformerMonitor> delegates) {
         this.delegates = delegates;

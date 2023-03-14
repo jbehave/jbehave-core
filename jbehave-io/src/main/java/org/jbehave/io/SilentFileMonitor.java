@@ -1,11 +1,14 @@
 package org.jbehave.io;
 
-import java.io.PrintStream;
-
 public class SilentFileMonitor extends PrintStreamFileMonitor {
 
-    protected void print(PrintStream output, String message, Exception cause) {
+    @Override
+    protected void print(String format, Object... args) {
         // print nothing
     }
-    
+
+    @Override
+    protected void printStackTrace(Throwable e) {
+        // print nothing
+    }
 }

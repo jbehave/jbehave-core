@@ -14,50 +14,62 @@ public class NullStepMonitor implements StepMonitor {
     @Override
     public void stepMatchesType(String stepAsString, String previousAsString, boolean matchesType, StepType stepType,
             Method method, Object stepsInstance) {
+        // Do nothing by default
     }
 
     @Override
     public void stepMatchesPattern(String step, boolean matches, StepPattern pattern, Method method,
             Object stepsInstance) {
+        // Do nothing by default
     }
 
     @Override
     public void convertedValueOfType(String value, Type type, Object converted, Queue<Class<?>> converterClasses) {
+        // Do nothing by default
     }
 
     @Override
     public void beforePerforming(String step, boolean dryRun, Method method) {
+        // Do nothing by default
     }
 
     @Override
     public void afterPerforming(String step, boolean dryRun, Method method) {
+        // Do nothing by default
     }
 
     @Override
     public void usingAnnotatedNameForParameter(String name, int position) {
+        // Do nothing by default
     }
 
     @Override
     public void usingParameterNameForParameter(String name, int position) {
+        // Do nothing by default
     }
 
     @Override
     public void usingTableAnnotatedNameForParameter(String name, int position) {
+        // Do nothing by default
     }
 
     @Override
     public void usingTableParameterNameForParameter(String name, int position) {
+        // Do nothing by default
     }
 
     @Override
     public void usingNaturalOrderForParameter(int position) {
+        // Do nothing by default
     }
 
     @Override
     public void foundParameter(String parameter, int position) {
+        // Do nothing by default
     }
 
     @Override
     public void usingStepsContextParameter(String parameter) {
+        // Do nothing by default
     }
 }

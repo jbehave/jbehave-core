@@ -19,7 +19,7 @@ import org.jbehave.core.reporters.ReportsCount;
 /**
  * Abstract monitor that reports to output which should be defined in child implementations.
  */
-public abstract class PrintingEmbedderMonitor extends NullEmbedderMonitor {
+public abstract class PrintingEmbedderMonitor implements EmbedderMonitor {
 
     @Override
     public void batchFailed(BatchFailures failures) {

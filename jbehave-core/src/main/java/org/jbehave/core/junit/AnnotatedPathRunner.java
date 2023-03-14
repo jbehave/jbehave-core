@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.jbehave.core.annotations.UsingPaths;
 import org.jbehave.core.configuration.AnnotationBuilder;
+import org.jbehave.core.embedder.DelegatingEmbedderMonitor;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderMonitor;
-import org.jbehave.core.embedder.EmbedderMonitorDecorator;
 import org.jbehave.core.io.StoryNameResolver;
 import org.jbehave.core.io.UnderscoredToCapitalized;
 import org.junit.runner.Description;
@@ -88,7 +88,7 @@ public class AnnotatedPathRunner extends AnnotatedEmbedderRunner {
      * {@link EmbedderMonitor} that reports story updates to a
      * {@link RunNotifier}.
      */
-    private final class NotifierEmbedderMonitor extends EmbedderMonitorDecorator {
+    private final class NotifierEmbedderMonitor extends DelegatingEmbedderMonitor {
         private final RunNotifier notifier;
         private Description currentStory;
 

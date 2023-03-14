@@ -4,6 +4,9 @@ import java.io.PrintStream;
 
 import org.jbehave.core.reporters.Format;
 
+/**
+ * Monitor that reports to a {@link PrintStream}, defaulting to {@link System#out}
+ */
 public class PrintStreamAnnotationMonitor extends PrintingAnnotationMonitor {
 
     private final PrintStream output;

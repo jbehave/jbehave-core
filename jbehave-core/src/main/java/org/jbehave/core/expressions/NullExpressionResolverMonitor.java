@@ -5,7 +5,9 @@ package org.jbehave.core.expressions;
  * implementation of {@link ExpressionResolverMonitor}. Can be extended to override only the methods of interest.
  */
 public class NullExpressionResolverMonitor implements ExpressionResolverMonitor {
+
     @Override
     public void onExpressionProcessingError(String stringWithExpressions, RuntimeException error) {
+        // Do nothing by default
     }
 }

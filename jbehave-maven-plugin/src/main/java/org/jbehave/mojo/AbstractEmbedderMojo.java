@@ -19,7 +19,6 @@ import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.MetaFilter;
-import org.jbehave.core.embedder.NullEmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.embedder.executors.ExecutorServiceFactory;
 import org.jbehave.core.failures.BatchFailures;
@@ -334,7 +333,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         return new UnmodifiableEmbedderControls(embedderControls);
     }
 
-    protected class MavenEmbedderMonitor extends NullEmbedderMonitor {
+    protected class MavenEmbedderMonitor implements EmbedderMonitor {
 
         @Override
         public void batchFailed(BatchFailures failures) {

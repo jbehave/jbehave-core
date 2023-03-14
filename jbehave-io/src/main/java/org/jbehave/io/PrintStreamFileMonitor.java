@@ -18,42 +18,44 @@ public class PrintStreamFileMonitor implements FileMonitor {
         this.output = output;
     }
 
-    protected void print(PrintStream output, String message) {
-        print(output, message, null);
+    protected void print(String format, Object... args) {
+        output.printf(format + "%n", args);
     }
 
-    protected void print(PrintStream output, String message, Exception cause) {
-        output.println(message);
-        if (cause != null) {
-            cause.printStackTrace(output);
-        }
+    protected void printStackTrace(Throwable e) {
+        e.printStackTrace(output);
     }
 
-    public void contentListed(String path, File directory,
-            boolean relativePaths, List<File> content) {
-        print(output, "Listed content of path " + path + " from directory "
-                + directory + " using " + (relativePaths ? "relative" : "full")
-                + " paths: " + content);
+    @Override
+    public void contentListed(String path, File directory, boolean relativePaths, List<File> content) {
+        print("Listed content of path %s from directory %s using %s paths: %s", path, directory, relativePaths
+                ? "relative" : "full", content);
     }
 
+    @Override
     public void fileDeleted(File file) {
-        print(output, "Deleted file " + file);
+        print("Deleted file %s", file);
     }
 
+    @Override
     public void fileUnarchived(File file, File directory) {
-        print(output, "Unarchived file " + file + " to directory " + directory);
+        print("Unarchived file %s to directory %s", file, directory);
     }
 
+    @Override
     public void fileUploaded(File file) {
-        print(output, "Uploaded file " + file);
+        print("Uploaded file %s", file);
     }
 
+    @Override
     public void fileUploadFailed(FileItem item, Exception cause) {
-        print(output, "File upload of " + item + " failed: ", cause);
+        print("File upload of %s failed: ", item);
+        printStackTrace(cause);
     }
 
+    @Override
     public void filesListed(File uploadDirectory, List<File> files) {
-        print(output, "Listed files from upload directory " + uploadDirectory + ": " + files);
+        print("Listed files from upload directory %s: %s", uploadDirectory, files);
     }
 
 }
