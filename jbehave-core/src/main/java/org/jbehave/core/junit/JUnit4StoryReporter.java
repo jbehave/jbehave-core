@@ -75,6 +75,7 @@ public class JUnit4StoryReporter extends NullStoryReporter {
     public void afterStoriesSteps(StepCollector.Stage stage) {
         TestState testState = this.testState.get();
         notifier.fireTestFinished(testState.currentStoryDescription);
+        testState.currentStepStatus = StepStatus.FINISHED;
         if (stage == StepCollector.Stage.AFTER) {
             Result result = new Result();
             notifier.fireTestRunFinished(result);

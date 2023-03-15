@@ -44,6 +44,9 @@ class JUnit4StoryReporterBehaviour {
 
     private static final String NAME_SCENARIO = "scenario";
     private static final String NAME_STORY = "story";
+    private static final String ROOT = "root";
+    private static final String BEFORE_STORIES = "BeforeStories";
+    private static final String AFTER_STORIES = "AfterStories";
 
     @Mock
     private RunNotifier notifier;
@@ -53,7 +56,7 @@ class JUnit4StoryReporterBehaviour {
             return JUnit4Test.class;
         }
     };
-    private Description rootDescription = Description.createSuiteDescription("root");
+    private Description rootDescription = Description.createSuiteDescription(ROOT);
     private Description storyDescription = Description.createSuiteDescription(NAME_STORY);
     private final Description scenarioDescription = Description.createTestDescription(getClass(), NAME_SCENARIO);
     private final Story story = new Story();
@@ -127,7 +130,7 @@ class JUnit4StoryReporterBehaviour {
 
     @Test
     void failureInBeforeStoriesShouldCountOnce() {
-        Description beforeStories = Description.createTestDescription(Object.class, "BeforeStories");
+        Description beforeStories = Description.createTestDescription(Object.class, BEFORE_STORIES);
         rootDescription.addChild(beforeStories);
 
         reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
@@ -135,7 +138,7 @@ class JUnit4StoryReporterBehaviour {
         reporter.beforeStoriesSteps(StepCollector.Stage.BEFORE);
         verifyTestRunStarted();
 
-        reporter.failed("BeforeStories", new RuntimeException("..."));
+        reporter.failed(BEFORE_STORIES, new RuntimeException("..."));
 
         reporter.afterStoriesSteps(StepCollector.Stage.BEFORE);
         verify(notifier).fireTestStarted(beforeStories);
@@ -145,13 +148,13 @@ class JUnit4StoryReporterBehaviour {
 
     @Test
     void shouldNotifyAboutBeforeAndAfterStories() {
-        Description beforeStories = Description.createTestDescription(Object.class, "BeforeStories");
+        Description beforeStories = Description.createTestDescription(Object.class, BEFORE_STORIES);
         rootDescription.addChild(beforeStories);
 
         Description step = createTest("child");
         scenarioDescription.addChild(step);
 
-        Description afterStories = Description.createTestDescription(Object.class, "AfterStories");
+        Description afterStories = Description.createTestDescription(Object.class, AFTER_STORIES);
         rootDescription.addChild(afterStories);
 
         reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
@@ -177,6 +180,36 @@ class JUnit4StoryReporterBehaviour {
 
         reporter.beforeStoriesSteps(StepCollector.Stage.AFTER);
         verify(notifier).fireTestStarted(afterStories);
+
+        reporter.afterStoriesSteps(StepCollector.Stage.AFTER);
+        verify(notifier).fireTestFinished(afterStories);
+        verifyTestRunFinished();
+    }
+
+    @Test
+    void shouldNotifyBeforeAndAfterStoriesInEmptySuite() {
+        rootDescription = Description.createSuiteDescription(ROOT);
+
+        Description beforeStories = Description.createTestDescription(Object.class, BEFORE_STORIES);
+        rootDescription.addChild(beforeStories);
+
+        Description afterStories = Description.createTestDescription(Object.class, AFTER_STORIES);
+        rootDescription.addChild(afterStories);
+
+        reporter = new JUnit4StoryReporter(notifier, rootDescription, keywords);
+
+        reporter.beforeStoriesSteps(StepCollector.Stage.BEFORE);
+        verifyTestRunStarted();
+
+        reportStepSuccess(reporter, "beforeStoriesStep");
+
+        reporter.afterStoriesSteps(StepCollector.Stage.BEFORE);
+        verifyStepSuccess(beforeStories);
+
+        reporter.beforeStoriesSteps(StepCollector.Stage.AFTER);
+        verify(notifier).fireTestStarted(afterStories);
+
+        reportStepSuccess(reporter, "afterStoriesStep");
 
         reporter.afterStoriesSteps(StepCollector.Stage.AFTER);
         verify(notifier).fireTestFinished(afterStories);
