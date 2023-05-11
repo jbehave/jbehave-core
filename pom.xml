@@ -7,7 +7,7 @@
   </parent>
   <artifactId>jbehave</artifactId>
   <packaging>pom</packaging>
-  <version>5.1.1</version>
+  <version>5.2-SNAPSHOT</version>
   <name>JBehave</name>
   <description>JBehave Core provides the core functionality enabling Behaviour-Driven Development in a JVM.
   </description>
@@ -390,7 +390,7 @@
     <connection>scm:git:git://bitbucket.org/jbehave/jbehave-core.git</connection>
     <developerConnection>scm:git:ssh://git@bitbucket.org/jbehave/jbehave-core.git</developerConnection>
     <url>http://bitbucket.org/jbehave/jbehave-core</url>
-    <tag>jbehave-5.1.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
 </project>
