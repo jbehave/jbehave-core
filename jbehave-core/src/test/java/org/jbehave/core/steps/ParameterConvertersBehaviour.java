@@ -896,6 +896,19 @@ class ParameterConvertersBehaviour {
     }
 
     @Test
+    void shouldConvertFromExampleTableToTargetObject() {
+        ParameterConverters converters = new ParameterConverters();
+        converters.addConverters(new FirstParameterConverter());
+
+        String input = "|key|\n|value|";
+        ExamplesTable table = (ExamplesTable) converters.convert(input, ExamplesTable.class);
+
+        FirstConverterOutput output = (FirstConverterOutput) converters.convert(table, ExamplesTable.class,
+                FirstConverterOutput.class);
+        assertThat(output.getOutput(), is(input + "\nfirst"));
+    }
+
+    @Test
     void shouldConvertToOptionalViaChainOfConverters() {
         ParameterConverters converters = new ParameterConverters();
         converters.addConverters(new FirstParameterConverter(), new SecondParameterConverter(),

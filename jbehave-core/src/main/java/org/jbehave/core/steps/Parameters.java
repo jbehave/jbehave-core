@@ -9,6 +9,14 @@ import java.util.Map;
 public interface Parameters extends Row {
 
     /**
+     * Converts the parameters object to the specified type
+     *
+     * @param type the Type or Class of type &lt;T&gt; to convert to
+     * @return The value of type &lt;T&gt;
+     */
+    <T> T as(Type type);
+
+    /**
      * Returns the value of a named parameter as a given type
      * 
      * @param type the Type or Class of type &lt;T&gt; to convert to
@@ -29,7 +37,7 @@ public interface Parameters extends Row {
     <T> T valueAs(String name, Type type, T defaultValue);
 
     /**
-     * Maps parameters to the specified type
+     * Maps parameters fields to the fields of specified type
      *
      * @param type The target type
      * @return The object of type &lt;T&gt;
@@ -37,7 +45,7 @@ public interface Parameters extends Row {
     <T> T mapTo(Class<T> type);
 
     /**
-     * Maps parameters to the specified type
+     * Maps parameters fields to the fields of specified type
      *
      * @param type The target type
      * @param fieldNameMapping The field mapping between parameters and target type fields

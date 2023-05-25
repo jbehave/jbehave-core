@@ -46,6 +46,12 @@ public class ConvertedParameters implements Parameters {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <T> T as(Type type) {
+        return (T) parameterConverters.convert(this, Parameters.class, type);
+    }
+
+    @Override
     public <T> T valueAs(String name, Type type) {
         return convert(valueFor(name), type);
     }

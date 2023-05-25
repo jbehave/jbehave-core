@@ -191,6 +191,53 @@ that any existing value in the row map of data will not be overridden.</p>
     }
 </script>
 
+<h2>Convert row to type using custom converter</h2>
+
+<p>It may sometime be useful to map the whole row to a custom object using custom converter rather than relying on field to field mapping</p>
+
+<p>Given the following class that we want to convert from <a
+    href="javadoc/core/org/jbehave/core/annotations/Parameter.html">Parameter</a></p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    public class Person {
+        private int age;
+        private String name;
+
+        ...
+    }
+ ]]>
+</script>
+
+<p>Create parameter converter for the Person class, please do not forget to register converter in <a
+    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.html">ParameterConverters</a></p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    public class PersonConverter extends AbstractParameterConverter<Parameters, Person> {
+        @Override
+        public Person convertValue(Parameters value, Type type) {
+            Person person = new Person();
+            ...
+            return person;
+        }
+    }
+    ]]>
+</script>
+
+<p>Use <a href="javadoc/core/org/jbehave/core/steps/Parameters.html#as(java.lang.reflect.Type)">as(java.lang.reflect.Type)</a> method to perform the conversion</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Then("the person age is greater than 18: $activityTable")
+    public void thePersonAge(ExamplesTable activityTable) {
+        Parameters row = activityTable.getRowAsParameters(0);
+        Person person = row.as(Person.class);
+        System.out.println("Age allowed: " + person.getAge() > 18);
+    }
+]]>
+</script>
+
 <h2>Preserving whitespace</h2>
 
 <p>By default, value in the table are trimmed, i.e. any preceding
