@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.jbehave.core.annotations.Parameter;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.ConvertedParameters.ParametersNotMappableToType;
+import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 import org.junit.jupiter.api.Test;
 
 class ConvertedParametersBehaviour {
@@ -111,12 +113,42 @@ class ConvertedParametersBehaviour {
                 + "org.jbehave.core.steps.ConvertedParametersBehaviour$Identifier"));
     }
 
+    @Test
+    void shouldConvertParametersToPersonType() {
+        Map<String, String> row = new HashMap<>();
+        row.put("years", "38");
+        row.put("firstName", "Din");
+        row.put("l_name", "Djarin");
+
+        converters.addConverters(new ParametersToPersonConverter());
+        Parameters parameters = new ConvertedParameters(row, converters);
+
+        Person person = parameters.as(Person.class);
+
+        assertThat(person.getAge(), is(38));
+        assertThat(person.getFirstName(), is("Din"));
+        assertThat(person.getLastName(), is("Djarin"));
+    }
+
     public static class Identifier {
 
         private String identifier;
 
         public String getIdentifier() {
             return identifier;
+        }
+
+    }
+
+    public static final class ParametersToPersonConverter extends AbstractParameterConverter<Parameters, Person> {
+
+        @Override
+        public Person convertValue(Parameters value, Type type) {
+            Person person = new Person();
+            person.setAge(value.valueAs("years", int.class));
+            person.setFirstName(value.valueAs("firstName", String.class));
+            person.setLastName(value.valueAs("l_name", String.class));
+            return person;
         }
 
     }
@@ -132,12 +164,24 @@ class ConvertedParametersBehaviour {
             return age;
         }
 
+        public void setAge(int age) {
+            this.age = age;
+        }
+
         public String getFirstName() {
             return firstName;
         }
 
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
         public String getLastName() {
             return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
         }
 
     }

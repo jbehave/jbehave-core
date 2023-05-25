@@ -59,6 +59,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -344,8 +345,9 @@ public class ParameterConverters {
         return this;
     }
 
-    private static boolean isChainComplete(Queue<ParameterConverter> convertersChain) {
-        return !convertersChain.isEmpty() && isBaseType(convertersChain.peek().getSourceType());
+    private static boolean isChainComplete(Queue<ParameterConverter> convertersChain,
+            Predicate<Type> sourceTypePredicate) {
+        return !convertersChain.isEmpty() && sourceTypePredicate.test(convertersChain.peek().getSourceType());
     }
 
     private static Object applyConverters(Object value, Type basicType, Queue<ParameterConverter> convertersChain) {
@@ -354,20 +356,25 @@ public class ParameterConverters {
                 (v, c) -> c.convertValue(v, c.getTargetType()), (l, r) -> l);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Object convert(String value, Type type) {
-        Queue<ParameterConverter> converters = findConverters(type);
-        if (isChainComplete(converters)) {
+        return convert(value, String.class, type);
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public Object convert(Object value, Class<?> source, Type type) {
+        Predicate<Type> sourceTypePredicate = t -> source.isAssignableFrom((Class<?>) t);
+        Queue<ParameterConverter> converters = findConverters(type, sourceTypePredicate);
+        if (isChainComplete(converters, sourceTypePredicate)) {
             Object converted = applyConverters(value, type, converters);
             Queue<Class<?>> classes = converters.stream().map(ParameterConverter::getClass)
                     .collect(Collectors.toCollection(LinkedList::new));
-            monitor.convertedValueOfType(value, type, converted, classes);
+            monitor.convertedValueOfType(String.valueOf(value), type, converted, classes);
             return converted;
         }
 
         if (isAssignableFromRawType(Optional.class, type)) {
             Type elementType = argumentType(type);
-            return Optional.of(convert(value, elementType));
+            return Optional.of(convert(value, source, elementType));
         }
 
         if (isAssignableFromRawType(Collection.class, type)) {
@@ -375,13 +382,14 @@ public class ParameterConverters {
             Collection collection = createCollection(rawClass(type));
 
             if (collection != null) {
-                Queue<ParameterConverter> typeConverters = findConverters(elementType);
+                Queue<ParameterConverter> typeConverters = findConverters(elementType, sourceTypePredicate);
 
                 if (!typeConverters.isEmpty()) {
                     Type sourceType = typeConverters.peek().getSourceType();
 
-                    if (isBaseType(sourceType)) {
-                        fillCollection(value, escapedCollectionSeparator, typeConverters, elementType, collection);
+                    if (String.class.isAssignableFrom((Class<?>) sourceType)) {
+                        fillCollection((String) value, escapedCollectionSeparator, typeConverters, elementType,
+                                collection);
                     } else if (isAssignableFrom(Parameters.class, sourceType)) {
                         ExamplesTable table = (ExamplesTable) findBaseConverter(ExamplesTable.class).convertValue(value,
                                 String.class);
@@ -396,7 +404,7 @@ public class ParameterConverters {
         if (type instanceof Class) {
             Class clazz = (Class) type;
             if (clazz.isArray()) {
-                String[] elements = parseElements(value, escapedCollectionSeparator);
+                String[] elements = parseElements((String) value, escapedCollectionSeparator);
                 Class elementType = clazz.getComponentType();
                 ParameterConverter elementConverter = findBaseConverter(elementType);
                 Object array = createArray(elementType, elements.length);
@@ -420,27 +428,24 @@ public class ParameterConverters {
         return null;
     }
 
-    private Queue<ParameterConverter> findConverters(Type type) {
+    private Queue<ParameterConverter> findConverters(Type type, Predicate<Type> sourceTypePredicate) {
         LinkedList<ParameterConverter> convertersChain = new LinkedList<>();
-        putConverters(type, convertersChain);
+        putConverters(type, convertersChain, sourceTypePredicate);
         return convertersChain;
     }
 
-    private void putConverters(Type type, LinkedList<ParameterConverter> container) {
+    private void putConverters(Type type, LinkedList<ParameterConverter> container,
+            Predicate<Type> sourceTypePredicate) {
         for (ParameterConverter converter : converters) {
             if (converter.canConvertTo(type)) {
                 container.addFirst(converter);
                 Type sourceType = converter.getSourceType();
-                if (isBaseType(sourceType)) {
+                if (sourceTypePredicate.test(sourceType)) {
                     break;
                 }
-                putConverters(sourceType, container);
+                putConverters(sourceType, container, sourceTypePredicate);
             }
         }
-    }
-
-    private static boolean isBaseType(Type type) {
-        return String.class.isAssignableFrom((Class<?>) type);
     }
 
     private static boolean isAssignableFrom(Class<?> clazz, Type type) {
