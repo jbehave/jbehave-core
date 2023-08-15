@@ -125,7 +125,6 @@
             <includes>
               <include>**/*Behaviour.java</include>
             </includes>
-            <forkMode>once</forkMode>
             <printSummary>true</printSummary>
             <useFile>true</useFile>
             <systemPropertyVariables>
