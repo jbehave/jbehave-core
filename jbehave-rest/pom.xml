@@ -11,7 +11,7 @@
   <description>Extension of JBehave Core that supports REST APIs to access stories resources</description>
 
   <properties>
-    <jersey.version>3.0.8</jersey.version>
+    <jersey.version>3.0.11</jersey.version>
   </properties>
   <dependencies>
     <dependency>
