@@ -40,11 +40,11 @@ GivenStories:= "GivenStories:" (StoryPath ','?)+ ;
 ; It is followed by the lifecycle elements
 Lifecycle:= "Lifecycle:" LifecycleBefore? LifecycleAfter? Examples?
 
-; The before lifecyle element identified by keyword "Before:" (or equivalent in I18n-ed locale), 
+; The before lifecycle element identified by keyword "Before:" (or equivalent in I18n-ed locale),
 ; followed by one or more steps
 LifecycleBefore:= "Before:" Step+
 
-; The after lifecyle element identified by keyword "After:" (or equivalent in I18n-ed locale), 
+; The after lifecycle element identified by keyword "After:" (or equivalent in I18n-ed locale),
 ; followed by one or more sets of outcome, meta filter and steps
 LifecycleAfter:= "After:" (Outcome? MetaFilter? Step+)+
 
