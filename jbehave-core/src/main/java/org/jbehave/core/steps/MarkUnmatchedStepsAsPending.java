@@ -2,7 +2,6 @@ package org.jbehave.core.steps;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,13 +63,12 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 
     @Override
     public Map<Stage, List<Step>> collectLifecycleSteps(List<StepCandidate> stepCandidates, Lifecycle lifecycle,
-            Meta storyAndScenarioMeta, Scope scope, StepMonitor stepMonitor) {
-        Map<String, String> namedParameters = new HashMap<>();
-        List<Step> beforeSteps = collectMatchedSteps(lifecycle.getBeforeSteps(scope), namedParameters, stepCandidates,
+            Meta storyAndScenarioMeta, Scope scope, Map<String, String> parameters, StepMonitor stepMonitor) {
+        List<Step> beforeSteps = collectMatchedSteps(lifecycle.getBeforeSteps(scope), parameters, stepCandidates,
                 null, stepMonitor);
         List<Step> afterSteps = Stream.of(Outcome.values())
                 .map(outcome -> collectMatchedSteps(lifecycle.getAfterSteps(scope, outcome, storyAndScenarioMeta),
-                        namedParameters, stepCandidates, outcome, stepMonitor))
+                        parameters, stepCandidates, outcome, stepMonitor))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 

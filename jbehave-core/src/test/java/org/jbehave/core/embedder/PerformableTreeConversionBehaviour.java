@@ -5,6 +5,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -36,9 +38,11 @@ import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepMonitor;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 class PerformableTreeConversionBehaviour {
 
+    @SuppressWarnings("unchecked")
     @Test
     void shouldConvertParameters() {
         SharpParameterConverters sharpParameterConverters = new SharpParameterConverters();
@@ -71,16 +75,19 @@ class PerformableTreeConversionBehaviour {
         ExamplesTable storyExamplesTable = ExamplesTable.empty().withRows(
                 asList(storyExampleFirstRow, storyExampleSecondRow));
 
-        Lifecycle lifecycle = mock(Lifecycle.class);
-        when(lifecycle.getExamplesTable()).thenReturn(storyExamplesTable);
+        Lifecycle lifecycle = new Lifecycle(storyExamplesTable, new ArrayList<>(), new ArrayList<>());
 
         Map<Stage, List<Step>> lifecycleSteps = new EnumMap<>(Stage.class);
         lifecycleSteps.put(Stage.BEFORE, emptyList());
         lifecycleSteps.put(Stage.AFTER, emptyList());
+
+        ArgumentCaptor<Map<String, String>> storyParametersCaptor = ArgumentCaptor.forClass(Map.class);
         when(stepCollector.collectLifecycleSteps(eq(emptyList()), eq(lifecycle), isEmptyMeta(), eq(Scope.STORY),
-                any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
+                storyParametersCaptor.capture(), any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
+
+        ArgumentCaptor<Map<String, String>> scenarioParametersCaptor = ArgumentCaptor.forClass(Map.class);
         when(stepCollector.collectLifecycleSteps(eq(emptyList()), eq(lifecycle), isEmptyMeta(), eq(Scope.SCENARIO),
-                any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
+                scenarioParametersCaptor.capture(), any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
 
         Map<String,String> scenarioExample = new HashMap<>();
         scenarioExample.put("var1","#E");
@@ -129,6 +136,17 @@ class PerformableTreeConversionBehaviour {
         assertThatAreEqual("gddGdD", examplePerformableScenarios.get(1).getParameters().get("var1"));
         assertThatAreEqual("dD", examplePerformableScenarios.get(1).getParameters().get("var2"));
         assertThatAreEqual("hH", examplePerformableScenarios.get(1).getParameters().get("var3"));
+
+        List<Map<String, String>> storyParameters = new ArrayList<>();
+        storyParameters.add(new HashMap<>());
+        assertEquals(storyParameters, storyParametersCaptor.getAllValues());
+
+        List<Map<String, String>> scenarioParameters = new ArrayList<>();
+        scenarioParameters.add(performableScenarios.get(0).getExamples().get(0).getParameters());
+        scenarioParameters.add(performableScenarios.get(0).getExamples().get(1).getParameters());
+        scenarioParameters.add(performableScenarios.get(1).getExamples().get(0).getParameters());
+        scenarioParameters.add(performableScenarios.get(1).getExamples().get(1).getParameters());
+        assertEquals(scenarioParameters, scenarioParametersCaptor.getAllValues());
     }
 
     private PerformableTree.RunContext spyRunContext(PerformableTree performableTree, Configuration configuration) {

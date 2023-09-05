@@ -95,7 +95,7 @@ public class PerformableTree {
         if (!storyExcluded) {
 
             Map<Stage, PerformableSteps> lifecycleSteps = context.lifecycleSteps(story.getLifecycle(), storyMeta,
-                    Scope.STORY);
+                    Scope.STORY, new HashMap<>()); // TODO: Rework to use ExamplesTable row here
 
             performableStory.addBeforeSteps(ExecutionType.SYSTEM, context.beforeStorySteps(storyMeta));
             performableStory.addBeforeSteps(ExecutionType.USER, lifecycleSteps.get(Stage.BEFORE));
@@ -266,7 +266,7 @@ public class PerformableTree {
     private void addStepsWithLifecycle(AbstractPerformableScenario performableScenario, RunContext context,
             Lifecycle lifecycle, Map<String, String> parameters, Scenario scenario, Meta storyAndScenarioMeta) {
         Map<Stage, PerformableSteps> lifecycleSteps = context.lifecycleSteps(lifecycle, storyAndScenarioMeta,
-                Scope.SCENARIO);
+                Scope.SCENARIO, parameters);
 
         performableScenario.addBeforeSteps(ExecutionType.SYSTEM,
                 context.beforeScenarioSteps(storyAndScenarioMeta, ScenarioType.ANY));
@@ -679,10 +679,11 @@ public class PerformableTree {
                     .collectAfterScenarioSteps(allStepCandidates.getAfterScenarioSteps(type), storyAndScenarioMeta));
         }
 
-        private Map<Stage, PerformableSteps> lifecycleSteps(Lifecycle lifecycle, Meta meta, Scope scope) {
+        private Map<Stage, PerformableSteps> lifecycleSteps(Lifecycle lifecycle, Meta meta, Scope scope,
+                Map<String, String> parameters) {
             MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
             Map<Stage, List<Step>> steps = configuration.stepCollector().collectLifecycleSteps(
-                    allStepCandidates.getRegularSteps(), lifecycle, meta, scope, monitor);
+                    allStepCandidates.getRegularSteps(), lifecycle, meta, scope, parameters, monitor);
             Map<Stage, PerformableSteps> performableSteps = new EnumMap<>(Stage.class);
             for (Map.Entry<Stage, List<Step>> entry : steps.entrySet()) {
                 performableSteps.put(entry.getKey(), new PerformableSteps(entry.getValue(), monitor.matched()));
@@ -695,7 +696,7 @@ public class PerformableTree {
             MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
             StepCollector stepCollector = configuration.stepCollector();
             Map<Stage, List<Step>> beforeOrAfterStepSteps = stepCollector.collectLifecycleSteps(
-                    allStepCandidates.getRegularSteps(), lifecycle, meta, Scope.STEP, monitor);
+                    allStepCandidates.getRegularSteps(), lifecycle, meta, Scope.STEP, parameters, monitor);
             List<Step> steps = new LinkedList<>();
             for (Step step : stepCollector.collectScenarioSteps(allStepCandidates.getRegularSteps(), scenario,
                     parameters, monitor)) {

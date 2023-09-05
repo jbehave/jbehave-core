@@ -59,11 +59,12 @@ public interface StepCollector {
      * @param lifecycle the {@link Lifecycle}
      * @param storyAndScenarioMeta the story and scenario {@link Meta} parameters
      * @param scope the {@link Scope} of the lifecycle steps
+     * @param parameters the parameters
      * @param stepMonitor the {@link StepMonitor}
      * @return A List of executable {@link Step}s
      */
     Map<Stage, List<Step>> collectLifecycleSteps(List<StepCandidate> stepCandidates, Lifecycle lifecycle,
-            Meta storyAndScenarioMeta, Scope scope, StepMonitor stepMonitor);
+            Meta storyAndScenarioMeta, Scope scope, Map<String, String> parameters, StepMonitor stepMonitor);
 
     /**
      * Collects all of the {@link Step}s to execute for a scenario.

@@ -126,7 +126,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         // When
         List<Step> executableSteps = stepCollector.collectLifecycleSteps(
                 asList(anyCandidate, successCandidate, failureCandidate), lifecycle, Meta.EMPTY, Scope.SCENARIO,
-                new MatchingStepMonitor()).get(Stage.AFTER);
+                new HashMap<>(), new MatchingStepMonitor()).get(Stage.AFTER);
 
         // Then
         assertThat(executableSteps.size(), equalTo(3));
@@ -169,7 +169,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
         // When
         List<Step> executableSteps = stepCollector.collectLifecycleSteps(
                 asList(anyCandidate, successCandidate, failureCandidate), lifecycle, Meta.EMPTY, scope,
-                new MatchingStepMonitor()).get(Stage.AFTER);
+                new HashMap<>(), new MatchingStepMonitor()).get(Stage.AFTER);
 
         // Then
         assertThat(executableSteps.size(), equalTo(3));

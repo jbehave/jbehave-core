@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -72,6 +73,7 @@ import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.Timing;
 import org.jbehave.core.steps.context.StepsContext;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 class PerformableTreeBehaviour {
@@ -112,7 +114,7 @@ class PerformableTreeBehaviour {
         lifecycleSteps.put(Stage.BEFORE, emptyList());
         lifecycleSteps.put(Stage.AFTER, emptyList());
         when(stepCollector.collectLifecycleSteps(eq(stepCandidates), eq(story.getLifecycle()), eq(storyMeta),
-                eq(Scope.STORY), any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
+                eq(Scope.STORY), eq(new HashMap<>()), any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
 
         PerformableTree performableTree = new PerformableTree();
         PerformableTree.RunContext runContext = performableTree.newRunContext(configuration, allStepCandidates,
@@ -124,7 +126,7 @@ class PerformableTreeBehaviour {
         InOrder ordered = inOrder(stepCollector);
         ordered.verify(stepCollector).collectBeforeOrAfterStoriesSteps(beforeStories);
         ordered.verify(stepCollector).collectLifecycleSteps(eq(stepCandidates), eq(story.getLifecycle()),
-                eq(storyMeta), eq(Scope.STORY), any(MatchingStepMonitor.class));
+                eq(storyMeta), eq(Scope.STORY), eq(new HashMap<>()), any(MatchingStepMonitor.class));
         ordered.verify(stepCollector).collectBeforeOrAfterStorySteps(beforeStory, storyMeta);
         ordered.verify(stepCollector).collectBeforeOrAfterStorySteps(afterStory, storyMeta);
         ordered.verify(stepCollector).collectBeforeOrAfterStoriesSteps(afterStories);
@@ -172,6 +174,7 @@ class PerformableTreeBehaviour {
         assertThat(storyControls.skipScenariosAfterFailure(), is(false));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void shouldReplaceParameters() {
         ParameterControls parameterControls = new ParameterControls();
@@ -216,14 +219,17 @@ class PerformableTreeBehaviour {
         Map<Stage, List<Step>> lifecycleSteps = new EnumMap<>(Stage.class);
         lifecycleSteps.put(Stage.BEFORE, emptyList());
         lifecycleSteps.put(Stage.AFTER, emptyList());
+
+        ArgumentCaptor<Map<String, String>> storyParametersCaptor = ArgumentCaptor.forClass(Map.class);
         when(stepCollector.collectLifecycleSteps(eq(emptyList()), eq(lifecycle), isEmptyMeta(), eq(Scope.STORY),
-                any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
+                storyParametersCaptor.capture(), any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
+
+        ArgumentCaptor<Map<String, String>> scenarioParametersCaptor = ArgumentCaptor.forClass(Map.class);
         when(stepCollector.collectLifecycleSteps(eq(emptyList()), eq(lifecycle), isEmptyMeta(), eq(Scope.SCENARIO),
-                any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
+                scenarioParametersCaptor.capture(), any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
 
         PerformableTree performableTree = new PerformableTree();
-        RunContext context = createRunContext(configuration, performableTree, mock(BatchFailures.class),
-                singletonList(story));
+        createRunContext(configuration, performableTree, mock(BatchFailures.class), singletonList(story));
         List<PerformableTree.PerformableScenario> performableScenarios = performableTree.getRoot().getStories().get(0)
                 .getScenarios();
 
@@ -250,6 +256,17 @@ class PerformableTreeBehaviour {
         assertThat(examplePerformableScenarios.get(1).getParameters().get("var1"), is("Gd"));
         assertThat(examplePerformableScenarios.get(1).getParameters().get("var2"), is("d"));
         assertThat(examplePerformableScenarios.get(1).getParameters().get("var3"), is("d"));
+
+        List<Map<String, String>> storyParameters = new ArrayList<>();
+        storyParameters.add(new HashMap<>());
+        assertEquals(storyParameters, storyParametersCaptor.getAllValues());
+
+        List<Map<String, String>> scenarioParameters = new ArrayList<>();
+        scenarioParameters.add(performableScenarios.get(0).getExamples().get(0).getParameters());
+        scenarioParameters.add(performableScenarios.get(0).getExamples().get(1).getParameters());
+        scenarioParameters.add(performableScenarios.get(1).getExamples().get(0).getParameters());
+        scenarioParameters.add(performableScenarios.get(1).getExamples().get(1).getParameters());
+        assertEquals(scenarioParameters, scenarioParametersCaptor.getAllValues());
     }
 
     private Map<String, String> createExamplesRow(String key1, String value1, String key2, String value2) {

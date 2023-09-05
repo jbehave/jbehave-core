@@ -17,19 +17,19 @@ import org.jbehave.core.steps.Parameters;
 
 @SuppressWarnings("checkstyle:MemberName")
 public class ExampleSteps {
-    private int x;
+    private long x;
     private Map<String, Integer> variables;
     private int result;
 
     @Given("a variable x with value $value")
     @Alias("ist die Variable x mit dem Wert $value")
-    public void givenXValue(@Named("value") int value) {
+    public void givenXValue(@Named("value") long value) {
         x = value;
     }
 
     @When("I multiply x by $value")
     @Alias("ich x mit $value multipliziere")
-    public void whenImultiplyXBy(@Named("value") int value) {
+    public void whenImultiplyXBy(@Named("value") long value) {
         x = x * value;
     }
 
@@ -44,7 +44,7 @@ public class ExampleSteps {
 
     @Then("x should equal $value")
     @Alias("ist x gleich $value")
-    public void thenXshouldBe(@Named("value") int value) {
+    public void thenXshouldBe(@Named("value") long value) {
         assertEquals(value, x);
     }
 
