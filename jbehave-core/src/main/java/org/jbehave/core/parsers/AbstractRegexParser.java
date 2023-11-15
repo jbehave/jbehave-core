@@ -89,7 +89,7 @@ abstract class AbstractRegexParser {
     private Pattern findingSteps() {
         String startingWords = concatenateStartingWords();
         return compile(
-                "((" + startingWords + ")(.*?))(\\Z|" + startingWords + "|\\n" + keywords().examplesTable() + ")",
+                "((" + startingWords + ")(.*?))(\\Z|" + startingWords + "|" + CRLF + keywords().examplesTable() + ")",
                 DOTALL);
     }
 

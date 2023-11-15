@@ -2,6 +2,7 @@ package org.jbehave.core.parsers;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -36,6 +37,8 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.TableTransformers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class RegexStoryParserBehaviour {
 
@@ -537,6 +540,31 @@ class RegexStoryParserBehaviour {
                 "|one|two|three|"
                         + NL + "|11|12|13|"
                         + NL + "|21|22|23|"
+                        + NL));
+        Scenario scenario = story.getScenarios().get(0);
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {NL, "\r\n"})
+    void shouldParseStoryWithLifecycleStepsAndExamples(String lineEnding) {
+        String wholeStory = "Lifecycle: "
+                + lineEnding + "Before:"
+                + lineEnding + "Scope: STORY"
+                + lineEnding + "Given a step before story"
+                + lineEnding + "Examples:"
+                + lineEnding + "|header|"
+                + lineEnding + "|value|"
+                + lineEnding + "Scenario:"
+                + lineEnding + "Given a scenario";
+        Story story = parser.parseStory(wholeStory, storyPath);
+        Lifecycle lifecycle = story.getLifecycle();
+        assertThat(lifecycle.getBeforeSteps(Scope.STORY), equalTo(singletonList("Given a step before story")));
+        ExamplesTable table = lifecycle.getExamplesTable();
+        assertThat(table.asString(), equalTo(
+                "|header|"
+                        + NL + "|value|"
                         + NL));
         Scenario scenario = story.getScenarios().get(0);
         List<String> steps = scenario.getSteps();
