@@ -7,14 +7,14 @@
 pipelines:
   default:
     - step:
-        image: maven:3.9.3-eclipse-temurin-11
+        image: maven:3.9.5-eclipse-temurin-11
         script:
           - mvn clean install -s settings.xml -Pexamples
     - step:
-        image: maven:3.9.3-eclipse-temurin-17
+        image: maven:3.9.5-eclipse-temurin-17
         script:
           - mvn clean install -s settings.xml -Pexamples
     - step:
-        image: maven:3.9.3-eclipse-temurin-20
+        image: maven:3.9.5-eclipse-temurin-21
         script:
           - mvn clean install -s settings.xml -Pexamples
