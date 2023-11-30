@@ -503,12 +503,13 @@ class StepCreatorBehaviour {
 
     @ParameterizedTest
     @CsvSource({
-        "param,  value",
-        "pa-ram, value",
-        "pa.ram, value",
-        "pa ram, value",
-        "param,  ",
-        "param,  ''"
+        "param,     value",
+        "pa-ram,    value",
+        "pa.ram,    value",
+        "pa ram,    value",
+        "ernährung, Ernährung",
+        "param,     ",
+        "param,     ''"
     })
     void shouldMatchParametersByDelimitedNameWithNoNamedAnnotations(String parameterName, String parameterValue)
             throws IntrospectionException {
