@@ -91,7 +91,8 @@ public class StepCreator {
         this.parameterControls = parameterControls;
         this.stepMatcher = stepMatcher;
         this.stepMonitor = stepMonitor;
-        this.delimitedNamePattern = Pattern.compile(parameterControls.nameDelimiterLeft() + "([\\w\\-\\h.]+?)"
+        this.delimitedNamePattern = Pattern.compile(parameterControls.nameDelimiterLeft() + "([^"
+                + Pattern.quote(parameterControls.nameDelimiterLeft() + parameterControls.nameDelimiterRight()) + "]+?)"
                 + parameterControls.nameDelimiterRight(), Pattern.DOTALL);
         this.dryRun = dryRun;
     }
