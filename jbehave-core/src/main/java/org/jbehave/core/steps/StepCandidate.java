@@ -10,7 +10,6 @@ import java.util.Map;
 
 import com.thoughtworks.paranamer.Paranamer;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Pending;
@@ -164,7 +163,9 @@ public class StepCandidate {
                 }
             }
             stepMonitor.stepMatchesType(step, previousNonAndStep, matchesType, stepType, method, stepsType);
-            boolean matchesPattern = stepMatcher.matcher(stripStartingWord(step)).matches();
+            String stepWithoutStartingWord = stripStartingWord(step);
+            boolean matchesPattern = stepWithoutStartingWord.equals(patternAsString)
+                    || stepMatcher.matcher(stepWithoutStartingWord).matches();
             stepMonitor.stepMatchesPattern(step, matchesPattern, stepMatcher.pattern(), method, stepsType);
             // must match both type and pattern
             return matchesType && matchesPattern;
@@ -239,8 +240,7 @@ public class StepCandidate {
             stepType = keywords.stepTypeFor(composedStep);
         }
         for (StepCandidate candidate : allCandidates) {
-            if (stepType == candidate.getStepType() && (StringUtils.endsWith(composedStep,
-                    candidate.getPatternAsString()) || candidate.matches(composedStep, previousNonAndStep))) {
+            if (stepType == candidate.getStepType() && candidate.matches(composedStep, previousNonAndStep)) {
                 return candidate;
             }
         }
