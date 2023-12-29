@@ -188,7 +188,7 @@ independently, it is good practice to collect the configuration that
 applies to all stories in an abstract (i.e. not runnable) base class:</p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JUnit4StoryRunner.class)
 public abstract class TraderStory extends JUnitStory {
 
     public TraderStory() {
@@ -255,7 +255,7 @@ another subclass of ConfigurableEmbdder, <a
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JUnit4StoryRunner.class)
 public class TraderStories extends JUnitStories {
 
     public TraderStories() {

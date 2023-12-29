@@ -9,7 +9,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.ParanamerConfiguration;
 import org.jbehave.core.configuration.groovy.GroovyContext;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.JUnitReportingRunner;
+import org.jbehave.core.junit.JUnit4StoryRunner;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -25,7 +25,7 @@ import static org.jbehave.core.reporters.Format.HTML;
  * {@link Embeddable} class to run multiple textual stories using steps written in Groovy.
  * </p>
  */
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JUnit4StoryRunner.class)
 public class GroovyStories extends JUnitStories {
 
     @Override

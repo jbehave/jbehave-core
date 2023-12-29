@@ -142,14 +142,14 @@ via several Embeddables implementations:</p>
     specified by overriding the <b>storyPaths()</b> method.</li>
 </ul>
 
-<p><a href="javadoc/core/org/jbehave/core/junit/JUnitReportingRunner.html">JUnitReportingRunner</a> can be used
+<p><a href="javadoc/core/org/jbehave/core/junit/JUnit4StoryRunner.html">JUnit4StoryRunner</a> can be used
     to visualize the structure and the successes/failures</p>
 
 <p>In the case of one-to-one mapping, our abstract base TraderStory
 would look like:</p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JUnit4StoryRunner.class)
 public abstract class TraderStory extends JUnitStory {
 
     public TraderStory() {
@@ -207,7 +207,7 @@ story in same package.</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JUnit4StoryRunner.class)
 public class TraderStories extends JUnitStories {
 
     public TraderStories() {
@@ -262,11 +262,11 @@ public class TraderStories extends JUnitStories {
 </script>
 
 <p>Usually, this is everything you have to do. If you want to, you can use a little helper method to configure
-    the configured Embedder so that it works nicely together with the <a href="javadoc/core/org/jbehave/core/junit/JUnitReportingRunner.html">JUnitReportingRunner</a>.</p>
+    the configured Embedder so that it works nicely together with the <a href="javadoc/core/org/jbehave/core/junit/JUnit4StoryRunner.html">JUnit4StoryRunner</a>.</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-JUnitReportingRunner.recommendedControls(configuredEmbedder());
+JUnit4StoryRunner.recommendedControls(configuredEmbedder());
 ]]>
 </script>
 
