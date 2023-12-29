@@ -8,6 +8,7 @@ import static org.jbehave.core.io.rest.filesystem.FilesystemUtils.normalisedPath
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +93,7 @@ public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
             return EMPTY;
         }
         try {
-            return FileUtils.readFileToString(file);
+            return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(
                     "Failed to read content of file " + file, e);

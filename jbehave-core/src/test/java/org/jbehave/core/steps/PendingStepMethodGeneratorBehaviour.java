@@ -1,6 +1,6 @@
 package org.jbehave.core.steps;
 
-import static org.apache.commons.lang3.StringEscapeUtils.escapeJava;
+import static org.apache.commons.text.StringEscapeUtils.escapeJava;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 

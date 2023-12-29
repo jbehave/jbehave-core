@@ -38,7 +38,8 @@ import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.Timing;
 
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.BeansWrapperBuilder;
+import freemarker.template.Configuration;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModelException;
 
@@ -237,7 +238,8 @@ public class TemplateableOutput extends NullStoryReporter {
             model.put("story", outputStory);
             model.put("keywords", new OutputKeywords(keywords));
 
-            TemplateHashModel enumModels = BeansWrapper.getDefaultInstance().getEnumModels();
+            TemplateHashModel enumModels =
+                    new BeansWrapperBuilder(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS).build().getEnumModels();
             TemplateHashModel escapeEnums;
             try {
                 String escapeModeEnum = EscapeMode.class.getCanonicalName();
