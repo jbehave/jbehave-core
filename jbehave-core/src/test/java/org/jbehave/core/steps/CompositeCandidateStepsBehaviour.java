@@ -5,7 +5,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.jbehave.core.steps.StepCandidateBehaviour.candidateMatchingStep;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +35,23 @@ class CompositeCandidateStepsBehaviour {
     void shouldMatchCompositesFromClassAndCreateComposedStepsUsingMatchedParameters() {
         CandidateSteps compositeSteps = new SimpleCompositeSteps();
         shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters(compositeSteps);
+    }
+
+    @Test
+    void shouldMatchInnerCompositeStepWithoutParamsAndMonitorIt() {
+        StepMonitor monitor = mock(StepMonitor.class);
+        CompositeStepsWithParameterMissing steps = new CompositeStepsWithParameterMissing();
+        String outerCompositeStep = "Given I am logged in as USER";
+        String innerCompositeStep = "Given I log in";
+        List<StepCandidate> listCandidates = steps.listCandidates();
+
+        StepCandidate outerCompositeCandidate = candidateMatchingStep(listCandidates, outerCompositeStep);
+        StepCandidate innerCompositeCandidate = candidateMatchingStep(listCandidates, innerCompositeStep);
+        innerCompositeCandidate.useStepMonitor(monitor);
+
+        outerCompositeCandidate.addComposedSteps(new ArrayList<>(), outerCompositeStep, new HashMap<>(),
+                listCandidates);
+        verify(monitor).stepMatchesPattern(eq(innerCompositeStep), eq(true), any(), any(), any());
     }
 
     @Test
