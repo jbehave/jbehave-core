@@ -22,7 +22,7 @@ that build a Surefire XML report of stories being executed during the run.
 <p>The SurefireReporter instance needs to configured in the <a
     href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>:</p>
 <pre class="brush: java">
-@RunWith(JUnitReportingRunner.class)
+@RunWith(JUnit4StoryRunner.class)
 public class CoreStories extends JUnitStories {
     
     @Override
