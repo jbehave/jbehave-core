@@ -35,7 +35,6 @@ public class SurefireReporter {
     private static final String XML = ".xml";
     private static final String DOT = ".";
     private static final String HYPHEN = "-";
-    private static final String SLASH = "/";
 
     private final Class<?> embeddableClass;
     private final TestCaseNamingStrategy namingStrategy;
@@ -118,7 +117,7 @@ public class SurefireReporter {
     }
 
     private String reportName(String path) {
-        return reportName + HYPHEN + StringUtils.replaceAll(StringUtils.substringBefore(path, DOT), SLASH, DOT);
+        return reportName + HYPHEN + StringUtils.substringBefore(path, DOT).replace('/', '.');
     }
 
     private void generateReport(List<PerformableStory> stories, File file) {

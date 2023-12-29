@@ -21,7 +21,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.reflections.Reflections;
 import org.reflections.ReflectionsException;
-import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.Scanners;
 
 /**
  * An {@link InjectableStepsFactory} that scans for classes in the classpath.
@@ -62,8 +62,7 @@ public class ScanningStepsFactory extends AbstractStepsFactory {
     }
 
     private Set<Class<?>> scanTypes(String packageName) {
-        Reflections reflections = new Reflections(packageName,
-                new MethodAnnotationsScanner());
+        Reflections reflections = new Reflections(packageName, Scanners.MethodsAnnotated);
         Set<Class<?>> types = new HashSet<>();
         types.addAll(typesAnnotatedWith(reflections, Given.class));
         types.addAll(typesAnnotatedWith(reflections, When.class));

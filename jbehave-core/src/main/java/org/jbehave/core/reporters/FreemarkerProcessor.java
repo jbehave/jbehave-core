@@ -3,8 +3,9 @@ package org.jbehave.core.reporters;
 import java.io.Writer;
 import java.util.Map;
 
+import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
-import freemarker.template.ObjectWrapper;
+import freemarker.template.Version;
 
 public class FreemarkerProcessor implements TemplateProcessor {
     private ClassLoader templateLoadingFrom;
@@ -32,9 +33,10 @@ public class FreemarkerProcessor implements TemplateProcessor {
     }
 
     public Configuration configuration() {
-        Configuration configuration = new Configuration();
+        Version incompatibleImprovementsVersion = Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS;
+        Configuration configuration = new Configuration(incompatibleImprovementsVersion);
         configuration.setClassLoaderForTemplateLoading(templateLoadingFrom, "/");
-        configuration.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
+        configuration.setObjectWrapper(new BeansWrapperBuilder(incompatibleImprovementsVersion).build());
         return configuration;
     }
 

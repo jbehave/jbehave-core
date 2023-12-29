@@ -62,7 +62,7 @@ public class IndexFromRedmine extends IndexWithBreadcrumbs {
     }
 
     private String jsonMember(String entity, String memberName) {
-        return new JsonParser().parse(entity).getAsJsonObject().get(memberName).toString();
+        return JsonParser.parseString(entity).getAsJsonObject().get(memberName).toString();
     }
 
     private static class Page {
