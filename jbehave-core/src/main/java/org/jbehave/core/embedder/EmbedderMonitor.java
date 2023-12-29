@@ -73,8 +73,6 @@ public interface EmbedderMonitor {
 
     void usingControls(EmbedderControls embedderControls);
     
-    void invalidTimeoutFormat(String path);
-    
     void usingTimeout(String path, long timeout);
 
 }

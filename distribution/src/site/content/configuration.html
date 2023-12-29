@@ -50,7 +50,7 @@ configuration of the Embedded via annotations is:</p>
 @Configure(storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, verboseFailures = true,
-                storyTimeoutInSecs = 100, threads = 2, metaFilters = "-skip")
+                storyTimeouts = "100", threads = 2, metaFilters = "-skip")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 public class AnnotatedTraderEmbedder extends InjectableEmbedder {
@@ -119,7 +119,7 @@ example would become:</p>
 @Configure(storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, verboseFailures = true,
-                storyTimeoutInSecs = 100, threads = 2, metaFilters = "-skip")
+                storyTimeouts = "100", threads = 2, metaFilters = "-skip")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class })
 public class TraderAnnotatedEmbedder {
@@ -193,7 +193,7 @@ public abstract class TraderStory extends JUnitStory {
 
     public TraderStory() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(60);
+                .doIgnoreFailureInView(true).useThreads(2).useStoryTimeouts("60");
         // Uncomment to set meta filter, which can also be set via Maven
         // configuredEmbedder().useMetaFilters(Arrays.asList("+theme parametrisation"));
     }

@@ -50,11 +50,10 @@ goals:</p>
     <li>ignoreFailureInStories: [true|false], defaults to <b>false</b></li>
     <li>ignoreFailureInView: [true|false], defaults to <b>false</b></li>
     <li>generateViewAfterStories: [true|false], defaults to <b>true</b></li>
-    <li>storyTimeoutInSecs: defaults to <b>300</b></li>
-    <li>storyTimeoutInSecsByPath: defaults to <b>300 (the default of storyTimeoutInSecs)</b></li>
+    <li>storyTimeouts: defaults to <b>300</b></li>
         <ul>
-            <li>Overrides the default value in storyTimeoutInSecs, and can be expressed as a CSV of regex
-            <br>expressions matching story paths. E.g. "*/long/.story:5000,*/short/.story:200,*/medium/m_story.story:1000"</br></li>
+            <li>Can be expressed as a CSV of regex expressions matching story paths. E.g.
+                "*/long/.story:5000,*/short/.story:200,*/medium/m_story.story:1000"</li>
         </ul>
     <li>failOnStoryTimeout: [true|false], defaults to <b>false</b></li>
     <li>threads: defaults to <b>1</b></li>
@@ -65,10 +64,8 @@ goals:</p>
         href="javadoc/core/org/jbehave/core/io/StoryFinder.html">StoryFinder</a></li>
 </ul>
 
-<span class="followup">Performance Testing: You can make use of
-<b>storyTimeoutInSecs</b> and <b>storyTimeoutInSecsByPath</b> to ensure
-tests run under the time(s) specified
-</span>
+<span class="followup">Performance Testing: You can make use of <b>storyTimeouts</b> to ensure tests run under the
+    time(s) specified</span>
 
 <p>In addition, the <b>unpack-view-resources</b> goal supports the properties:</p>
 

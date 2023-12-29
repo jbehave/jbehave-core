@@ -184,11 +184,6 @@ public class DelegatingEmbedderMonitor implements EmbedderMonitor {
     }
 
     @Override
-    public void invalidTimeoutFormat(String path) {
-        delegates.forEach(d -> d.invalidTimeoutFormat(path));
-    }
-
-    @Override
     public void usingTimeout(String path, long timeout) {
         delegates.forEach(d -> d.usingTimeout(path, timeout));
     }

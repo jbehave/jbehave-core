@@ -163,11 +163,6 @@ public class NullEmbedderMonitor implements EmbedderMonitor {
     }
 
     @Override
-    public void invalidTimeoutFormat(String path) {
-        // Do nothing by default
-    }
-
-    @Override
     public void usingTimeout(String path, long timeout) {
         // Do nothing by default
     }
