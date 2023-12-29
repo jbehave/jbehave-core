@@ -182,15 +182,6 @@ public abstract class PrintingEmbedderMonitor implements EmbedderMonitor {
     public void usingControls(EmbedderControls embedderControls) {
         print("Using controls %s", embedderControls);
     }
-    
-    
-    @Override
-    public void invalidTimeoutFormat(String path) {
-        print("Failed to set specific story timeout for story %s because 'storyTimeoutInSecsByPath' has incorrect "
-                + "format", path);
-        print("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*"
-                + ".story:5000,*/short/*.story:200\"");
-    }
 
     @Override
     public void usingTimeout(String path, long timeout) {

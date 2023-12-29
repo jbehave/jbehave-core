@@ -501,14 +501,6 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         public void usingControls(EmbedderControls embedderControls) {
             getLog().info("Using controls " + embedderControls);
         }
-        
-        @Override
-        public void invalidTimeoutFormat(String path) {
-            getLog().warn("Failed to set specific story timeout for story " + path
-                    + " because 'storyTimeoutInSecsByPath' has incorrect format");
-            getLog().warn("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. "
-                    + "E.g. \"*/long/*.story:5000,*/short/*.story:200\"");
-        }
 
         @Override
         public void usingTimeout(String path, long timeout) {

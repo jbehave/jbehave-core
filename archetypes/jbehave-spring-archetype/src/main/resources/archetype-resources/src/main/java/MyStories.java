@@ -53,7 +53,7 @@ public class MyStories extends JUnitStories {
     
     public MyStories() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(60);
+                .doIgnoreFailureInView(true).useThreads(2).useStoryTimeouts("60");
     }
 
     @Override
