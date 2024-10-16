@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -132,7 +132,7 @@ public class AllStepCandidates {
 
     private static Collector<StepCandidate, Map<String, List<StepCandidate>>, Map<String, List<StepCandidate>>>
         stepCandidateCollector() {
-        return Collector.of(HashMap::new, (map, candidate) -> {
+        return Collector.of(LinkedHashMap::new, (map, candidate) -> {
 
             String candidateWording = candidate.getStartingWord() + " " + candidate.getPatternAsString();
 

@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Conditional;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.condition.ReflectionBasedStepConditionMatcher;
@@ -99,11 +100,22 @@ class AllStepCandidatesBehaviour {
         List<CandidateSteps> candidates = new ArrayList<>();
         candidates.add(new StepsWithParameters());
         List<StepCandidate> steps = new AllStepCandidates(matcher, candidates).getRegularSteps();
+        steps.sort(Comparator.comparing(StepCandidate::getPatternAsString));
         assertThat(steps, hasSize(2));
         assertStepCandidate(steps.get(0), StepCandidate.class, StepType.GIVEN,
                 "a given param '$givenParameter' and '$secondParam'");
         assertStepCandidate(steps.get(1), StepCandidate.class, StepType.GIVEN,
                 "a given param '$someParameterName'");
+    }
+
+    @Test
+    void shouldCollectStepWithItsAliasInCorrectOrder() {
+        List<CandidateSteps> candidates = new ArrayList<>();
+        candidates.add(new StepWithAlias());
+        List<StepCandidate> steps = new AllStepCandidates(matcher, candidates).getRegularSteps();
+        assertThat(steps, hasSize(2));
+        assertStepCandidate(steps.get(0), StepCandidate.class, StepType.GIVEN, "step with Alias");
+        assertStepCandidate(steps.get(1), StepCandidate.class, StepType.GIVEN, "Alias step");
     }
 
     private static void assertStepCandidate(StepCandidate candidate, java.lang.Class<?> clazz, StepType type,
@@ -130,6 +142,14 @@ class AllStepCandidatesBehaviour {
 
         @Given("a given param '$givenParameter' and '$secondParam'")
         public void duplicateGiven(String givenParameter, String secondParam) {
+        }
+    }
+
+    static class StepWithAlias extends Steps {
+
+        @Given("step with Alias")
+        @Alias("Alias step")
+        public void given() {
         }
     }
 
