@@ -1,0 +1,6 @@
+{transformer=REPLACING, replacing=11.0, replacement=10.0, headerSeparator=!, valueSeparator=!}
+{transformer=FROM_LANDSCAPE, headerSeparator=!, valueSeparator=!}
+!symbol   !STK1!STK1!STK1!
+!threshold!15.0!15.0!15.0!
+!price    !5.0 !11.0!16.0!
+!status   !OFF !OFF !ON  !

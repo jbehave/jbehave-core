@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.Validate.isTrue;
 
 import java.util.Deque;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -104,9 +105,19 @@ public class ExamplesTableFactory {
                 loadedTable = TableTransformersExecutor.applyTransformers(tableTransformers,
                         tablePropertiesQueue.getTable(), tableParsers, target, tableTransformerMonitor);
                 tablePropertiesQueue = tableParsers.parseProperties(loadedTable);
-                target = tablePropertiesQueue.getProperties();
+                TableProperties parsedProperties = tablePropertiesQueue.getProperties().getFirst();
+                if (StringUtils.isEmpty(parsedProperties.getPropertiesAsString())) {
+                    TableProperties newProperties = new TableProperties("", keywords, parameterConverters);
+                    newProperties.overrideSeparatorsFrom(target.peekLast());
+                    target.clear();
+                    target.addFirst(newProperties);
+                } else {
+                    target = tablePropertiesQueue.getProperties();
+                }
             }
             properties.descendingIterator().forEachRemaining(target::addFirst);
+
+            tablePropertiesQueue = new TablePropertiesQueue(tablePropertiesQueue.getTable(), target);
         }
 
         return new ExamplesTable(tablePropertiesQueue, parameterConverters, parameterControls, tableParsers,
