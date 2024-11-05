@@ -110,20 +110,36 @@ class ExamplesTableFactoryBehaviour {
     }
 
     @Test
-    void shouldTestTransformersOrderForExamplesTableFromResourceInput() {
+    void shouldLoadAndProperlyApplyTransformersForExamplesTableFromResourceInput() {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
+        String lineFromFirstOuterTransformer = "|one|two|";
+        String lineFromSecondOuterTransformer = "\n|11|12|";
+        String lineFromFirstInnerTransformer = "\n|13|14|";
+        String lineFromSecondInnerTransformer = "\n|15|16|\n";
         TableTransformers tableTransformers = new TableTransformers();
-        tableTransformers.useTransformer("CUSTOM_TRANSFORMER1", (input, parser, props) -> input);
-        tableTransformers.useTransformer("CUSTOM_TRANSFORMER2", (input, parser, props) -> input);
+        tableTransformers.useTransformer("CUSTOM_TRANSFORMER1", (input, parser, props) ->
+                input + lineFromFirstOuterTransformer);
+        tableTransformers.useTransformer("CUSTOM_TRANSFORMER2", (input, parser, props) ->
+                input + lineFromSecondOuterTransformer);
+        tableTransformers.useTransformer("CUSTOM_TRANSFORMER3", (input, parser, props) ->
+                input + lineFromFirstInnerTransformer);
+        tableTransformers.useTransformer("CUSTOM_TRANSFORMER4", (input, parser, props) ->
+                input + lineFromSecondInnerTransformer);
         ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, tableTransformers);
-        String transformers = "{transformer=CUSTOM_TRANSFORMER1}\n{transformer=CUSTOM_TRANSFORMER2}\n";
+        String outerTransformers = "{transformer=CUSTOM_TRANSFORMER1}\n{transformer=CUSTOM_TRANSFORMER2}\n";
+        String innerTransformers = "{transformer=CUSTOM_TRANSFORMER3}\n{transformer=CUSTOM_TRANSFORMER4}\n";
 
         // When
-        when(resourceLoader.loadResourceAsText(RESOURCE_PATH)).thenReturn(TABLE_AS_STRING);
-        ExamplesTable examplesTable = factory.createExamplesTable(transformers + RESOURCE_PATH);
+        when(resourceLoader.loadResourceAsText(RESOURCE_PATH)).thenReturn(outerTransformers);
+        ExamplesTable examplesTable = factory.createExamplesTable(innerTransformers + RESOURCE_PATH);
 
         // Then
-        assertThat(examplesTable.asString(), equalTo(transformers + TABLE_AS_STRING));
+        assertThat(examplesTable.asString(), equalTo(
+                          innerTransformers
+                        + lineFromFirstOuterTransformer
+                        + lineFromSecondOuterTransformer
+                        + lineFromFirstInnerTransformer
+                        + lineFromSecondInnerTransformer));
     }
 }

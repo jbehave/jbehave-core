@@ -12,10 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -329,7 +325,7 @@ public class ExamplesTableBehaviour {
             properties.getProperties().setProperty("valueSeparator", "!");
             return tableAsString.replace('|', '!');
         });
-        ExamplesTableFactory factory = createFactory(tableTransformers, new NullTableTransformerMonitor());
+        ExamplesTableFactory factory = createFactory(tableTransformers);
         ExamplesTable table = factory.createExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
         assertThat(properties.getProperty("transformer"), equalTo("FROM_LANDSCAPE"));
@@ -705,32 +701,12 @@ public class ExamplesTableBehaviour {
         assertEquals(expected, table.getRow(1));
     }
 
-    @Test
-    void shouldUseCustomTableTransformerMonitor() {
-        String table = "|key|\n|value|";
-        String transformerName = "ANY_TRANSFORMER";
-        String propertiesAsString = String.format("transformer=%s, property=any_property", transformerName);
-
-        TableTransformers transformers = new TableTransformers();
-        transformers.useTransformer(transformerName, (input, parser, props) -> input);
-        TableTransformerMonitor tableTransformerMonitor = mock(TableTransformerMonitor.class);
-        ExamplesTableFactory factory = createFactory(transformers, tableTransformerMonitor);
-        factory.createExamplesTable(String.format("{%s}\n%s", propertiesAsString, table));
-
-        verify(tableTransformerMonitor).beforeTransformerApplying(eq(transformerName), argThat(
-                p -> p.getPropertiesAsString().equals(propertiesAsString)), eq(table));
-        verify(tableTransformerMonitor).afterTransformerApplying(eq(transformerName), argThat(
-                p -> p.getPropertiesAsString().equals(propertiesAsString)), eq(table));
-    }
-
     private ExamplesTableFactory createFactory(ParameterConverter... converters) {
         TableTransformers tableTransformers = new TableTransformers();
-        return createFactory(tableTransformers, new NullTableTransformerMonitor(), converters);
+        return createFactory(tableTransformers, converters);
     }
 
-    private ExamplesTableFactory createFactory(TableTransformers tableTransformers,
-                                               TableTransformerMonitor transformerMonitor,
-                                               ParameterConverter... converters) {
+    private ExamplesTableFactory createFactory(TableTransformers tableTransformers, ParameterConverter... converters) {
         LoadFromClasspath resourceLoader = new LoadFromClasspath();
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, parameterControls,
@@ -739,7 +715,7 @@ public class ExamplesTableBehaviour {
         TableParsers tableParsers = new TableParsers(keywords, parameterConverters);
         parameterConverters.addConverters(converters);
         return new ExamplesTableFactory(keywords, resourceLoader, parameterConverters, parameterControls, tableParsers,
-                tableTransformers, transformerMonitor);
+                tableTransformers, new NullTableTransformerMonitor());
     }
 
     private void assertTableAsString(String tableAsString, String expectedTableAsString) {
