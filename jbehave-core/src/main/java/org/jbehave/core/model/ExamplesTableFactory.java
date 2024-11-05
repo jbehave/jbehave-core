@@ -1,5 +1,7 @@
 package org.jbehave.core.model;
 
+import static org.apache.commons.lang3.Validate.isTrue;
+
 import java.util.Deque;
 
 import org.jbehave.core.configuration.Configuration;
@@ -92,6 +94,7 @@ public class ExamplesTableFactory {
         Deque<TableProperties> properties = tablePropertiesQueue.getProperties();
 
         if (!isTable(tableAsString, properties.peekFirst()) && !tableAsString.isEmpty()) {
+            checkResourceProperties(input, properties.peekFirst());
             String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());
             tablePropertiesQueue = tableParsers.parseProperties(loadedTable);
             Deque<TableProperties> target = tablePropertiesQueue.getProperties();
@@ -108,6 +111,14 @@ public class ExamplesTableFactory {
 
         return new ExamplesTable(tablePropertiesQueue, parameterConverters, parameterControls, tableParsers,
                 tableTransformers, tableTransformerMonitor);
+    }
+
+    private void checkResourceProperties(String table, TableProperties properties) {
+        isTrue(keywords.examplesTableHeaderSeparator().equals(properties.getHeaderSeparator())
+                && keywords.examplesTableValueSeparator().equals(properties.getValueSeparator()) 
+                && keywords.examplesTableIgnorableSeparator().equals(properties.getIgnorableSeparator()),
+                "Examples table parsing separators are not allowed to be applied outside of external table they "
+                        + "belong to:%n%s", table);
     }
 
     protected boolean isTable(String table, TableProperties properties) {

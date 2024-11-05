@@ -2,12 +2,16 @@ package org.jbehave.core.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.ResourceLoader;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ExamplesTableFactoryBehaviour {
 
@@ -141,5 +145,26 @@ class ExamplesTableFactoryBehaviour {
                         + lineFromSecondOuterTransformer
                         + lineFromFirstInnerTransformer
                         + lineFromSecondInnerTransformer));
+    }
+
+    @ValueSource(strings = {
+        "headerSeparator",
+        "valueSeparator",
+        "ignorableSeparator"
+    })
+    @ParameterizedTest
+    void shouldFailIfExamplesTableParsingSeparatorsArePlacesOutsideOfExternalTableTheyBelongTo(String separator) {
+        // Given
+        ExamplesTableFactory factory = new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers());
+
+        // When
+        String tableAsString = String.format("{%s=!}\ndata.table", separator);
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+                () -> factory.createExamplesTable(tableAsString));
+
+        // Then
+        String message = String.format("Examples table parsing separators are not allowed to be applied outside of "
+                + "external table they belong to:%n{%s=!}\ndata.table", separator);
+        assertEquals(message, thrown.getMessage());
     }
 }
