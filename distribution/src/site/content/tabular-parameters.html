@@ -372,15 +372,26 @@ Given the traders: org/jbehave/examples/trader/stories/traders.table
 </script>
 
 <p>Inlined properties can be applied to the tabular parameter loaded from an external
-resource</p>
+resource, though keep in mind that parsing related properties like <b>headerSeparator</b>, 
+<b>valueSeparator</b> and <b>ignorableSeparator</b> must be placed inside the external 
+resource they belong to.</p>
 <script type="syntaxhighlighter" class="brush: bdd">
 <![CDATA[
 Given that Larry has done <trades> trades
 Examples:
-{headerSeparator=!,valueSeparator=!}
+{transformer=FROM_LANDSCAPE}
 org/jbehave/examples/trader/stories/traders.table
 ]]>
 </script>
+
+<h2>org/jbehave/examples/trader/stories/traders.table</h2>
+<pre class="brush: plain">
+{headerSeparator=!,valueSeparator=!}
+!name !rank    !
+!Larry!Stooge 3!
+!Moe  !Stooge 1!
+!Curly!Stooge 2!
+</pre>
 
 <p>If the external tabular parameters contains <a href="#transformers">transformers</a>, they will be applied immediately after the resource is loaded. Consequently, transformers from the current story/scenario will be applied subsequently.</p>
 Scenario:
@@ -395,7 +406,6 @@ Examples:
 {transformer=REPLACING, replacing=url1, replacement=url2}
 |urls                 |
 |https://www.url1.com |
-</pre>
 
 <p>We need to enable theExamplesTable parameter converter to find
 the resource with the appropriate resource loader configured via the <a
