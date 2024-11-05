@@ -95,6 +95,14 @@ public class ExamplesTableFactory {
             String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());
             tablePropertiesQueue = tableParsers.parseProperties(loadedTable);
             Deque<TableProperties> target = tablePropertiesQueue.getProperties();
+
+            boolean hasTransformers = target.getFirst().getTransformer() != null;
+            if (hasTransformers) {
+                loadedTable = TableTransformersExecutor.applyTransformers(tableTransformers,
+                        tablePropertiesQueue.getTable(), tableParsers, target, tableTransformerMonitor);
+                tablePropertiesQueue = tableParsers.parseProperties(loadedTable);
+                target = tablePropertiesQueue.getProperties();
+            }
             properties.descendingIterator().forEachRemaining(target::addFirst);
         }
 

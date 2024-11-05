@@ -310,7 +310,7 @@ It’s <code>false</code> by default (no property is declared explicitly). The a
 </pre>
 </p>
 
-<h2>Using table transformers</h2>
+<h2 id="transformers">Using table transformers</h2>
 
 <p>
 Table transformers allow the table to be transformed via an inlined property.  E.g. to transform from a landscape table form we can to use the pre-registered transformer:
@@ -381,6 +381,21 @@ Examples:
 org/jbehave/examples/trader/stories/traders.table
 ]]>
 </script>
+
+<p>If the external tabular parameters contains <a href="#transformers">transformers</a>, they will be applied immediately after the resource is loaded. Consequently, transformers from the current story/scenario will be applied subsequently.</p>
+Scenario:
+<pre class="brush: bdd">
+Then `https://www.url3.com` is equal to `&lt;urls&gt;`
+Examples:
+{transformer=REPLACING, replacing=url2, replacement=url3}
+/data/links.table
+</pre>
+<b>links.table</b> file:
+<pre class="brush: plain">
+{transformer=REPLACING, replacing=url1, replacement=url2}
+|urls                 |
+|https://www.url1.com |
+</pre>
 
 <p>We need to enable theExamplesTable parameter converter to find
 the resource with the appropriate resource loader configured via the <a
