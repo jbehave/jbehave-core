@@ -99,6 +99,11 @@ public class ExamplesTableFactory {
             String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());
             tablePropertiesQueue = tableParsers.parseProperties(loadedTable);
             Deque<TableProperties> target = tablePropertiesQueue.getProperties();
+            TableProperties headProperties = target.peekFirst();
+            for (TableProperties outerProperties : properties) {
+                outerProperties.overrideSeparatorsFrom(headProperties);
+                target.addLast(outerProperties);
+            }
 
             boolean hasTransformers = target.getFirst().getTransformer() != null;
             if (hasTransformers) {
@@ -115,7 +120,6 @@ public class ExamplesTableFactory {
                     target = tablePropertiesQueue.getProperties();
                 }
             }
-            properties.descendingIterator().forEachRemaining(target::addFirst);
 
             tablePropertiesQueue = new TablePropertiesQueue(tablePropertiesQueue.getTable(), target);
         }
