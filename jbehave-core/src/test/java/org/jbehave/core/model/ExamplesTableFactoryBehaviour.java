@@ -145,8 +145,7 @@ class ExamplesTableFactoryBehaviour {
 
         // Then
         assertThat(examplesTable.asString(), equalTo(
-                          innerTransformers
-                        + lineFromFirstOuterTransformer
+                          lineFromFirstOuterTransformer
                         + lineFromSecondOuterTransformer
                         + lineFromFirstInnerTransformer
                         + lineFromSecondInnerTransformer));
@@ -179,7 +178,7 @@ class ExamplesTableFactoryBehaviour {
         ExamplesTableFactory factory = new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers());
 
         // When
-        ExamplesTable table = factory.createExamplesTable("data.table");
+        ExamplesTable table = factory.createExamplesTable("{transformer=FORMATTING}\ndata.table");
 
         // Then
         assertThat(table.getHeaders(), equalTo(asList("symbol", "threshold", "price", "status")));
