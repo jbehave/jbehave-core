@@ -372,7 +372,7 @@ public class ExamplesTable {
         for (TableProperties properties : tablePropertiesQueue) {
             String propertiesAsString = properties.getPropertiesAsString();
             if (!propertiesAsString.isEmpty()) {
-                sb.append("{").append(propertiesAsString).append("}").append(lastTableProperties().getRowSeparator());
+                sb.append(properties.asString()).append(lastTableProperties().getRowSeparator());
             }
         }
         sb.append(ExamplesTableStringBuilder.buildExamplesTableString(lastTableProperties(), getHeaders(),
@@ -474,6 +474,10 @@ public class ExamplesTable {
                 default:
                     return value.trim();
             }
+        }
+
+        public String asString() {
+            return String.format("{%s}", propertiesAsString);
         }
 
         @SuppressWarnings("unchecked")

@@ -189,6 +189,25 @@ class ExamplesTableFactoryBehaviour {
         ensureRowContentIs(rows, 2, asList("STK1", "15.0", "16.0", "ON"));
     }
 
+    @Test
+    void shouldLoadTableFromAnotherTableContainingTableReference() {
+        // Given
+        ExamplesTableFactory factory = new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers());
+
+        // When
+        ExamplesTable table = factory.createExamplesTable("{transformer=REPLACING, replacing=STK1, replacement=STK2}"
+                + System.lineSeparator() + "{transformer=REPLACING, replacing=price, replacement=cost}"
+                + System.lineSeparator() + "data-reference.table");
+
+        // Then
+        assertThat(table.getHeaders(), equalTo(asList("symbol", "threshold", "cost", "status")));
+        List<Map<String, String>> rows = table.getRows();
+        assertThat(rows.size(), equalTo(3));
+        ensureRowContentIs(rows, 0, asList("STK2", "17.0", "5.0", "OFF"));
+        ensureRowContentIs(rows, 1, asList("STK2", "17.0", "10.0", "OFF"));
+        ensureRowContentIs(rows, 2, asList("STK2", "17.0", "16.0", "ON"));
+    }
+
     private void ensureRowContentIs(List<Map<String, String>> rows, int row, List<String> expected) {
         assertThat(new ArrayList<>(rows.get(row).values()), equalTo(expected));
     }
