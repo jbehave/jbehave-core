@@ -3,6 +3,7 @@ package org.jbehave.core.model;
 import static org.apache.commons.lang3.Validate.isTrue;
 
 import java.util.Deque;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Configuration;
@@ -94,7 +95,7 @@ public class ExamplesTableFactory {
         String tableAsString = tablePropertiesQueue.getTable().trim();
         Deque<TableProperties> properties = tablePropertiesQueue.getProperties();
 
-        if (!isTable(tableAsString, properties.peekFirst()) && !tableAsString.isEmpty()) {
+        if (isExternal(tableAsString, properties.peekFirst())) {
             checkResourceProperties(input, properties.peekFirst());
             String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());
             tablePropertiesQueue = tableParsers.parseProperties(loadedTable);
@@ -103,6 +104,16 @@ public class ExamplesTableFactory {
             for (TableProperties outerProperties : properties) {
                 outerProperties.overrideSeparatorsFrom(headProperties);
                 target.addLast(outerProperties);
+            }
+
+            String table = tablePropertiesQueue.getTable();
+            if (isExternal(tablePropertiesQueue.getTable(), headProperties)) {
+                table = target.stream().map(TableProperties::asString)
+                                       .collect(Collectors.joining(
+                                               System.lineSeparator(),
+                                               "",
+                                               System.lineSeparator() + table));
+                return createExamplesTable(table);
             }
 
             boolean hasTransformers = target.getFirst().getTransformer() != null;
@@ -126,6 +137,10 @@ public class ExamplesTableFactory {
 
         return new ExamplesTable(tablePropertiesQueue, parameterConverters, parameterControls, tableParsers,
                 tableTransformers, tableTransformerMonitor);
+    }
+
+    private boolean isExternal(String tableAsString, TableProperties properties) {
+        return !isTable(tableAsString, properties) && !tableAsString.isEmpty();
     }
 
     private void checkResourceProperties(String table, TableProperties properties) {
