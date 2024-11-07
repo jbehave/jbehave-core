@@ -108,7 +108,8 @@ public class ExamplesTableFactory {
 
             String table = tablePropertiesQueue.getTable();
             if (isExternal(tablePropertiesQueue.getTable(), headProperties)) {
-                table = target.stream().map(TableProperties::asString)
+                table = target.stream().filter(t -> !t.isEmpty())
+                                       .map(TableProperties::asString)
                                        .collect(Collectors.joining(
                                                System.lineSeparator(),
                                                "",
