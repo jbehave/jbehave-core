@@ -208,6 +208,20 @@ class ExamplesTableFactoryBehaviour {
         ensureRowContentIs(rows, 2, asList("STK2", "17.0", "16.0", "ON"));
     }
 
+    @Test
+    void shouldLoadTableFromAnotherTableContainingTableReferenceAndNoTableProperties() {
+        // Given
+        ExamplesTableFactory factory = new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers());
+        // When
+        ExamplesTable table = factory.createExamplesTable("data-simple-reference.table");
+
+        // Then
+        assertThat(table.getHeaders(), equalTo(asList("Language")));
+        List<Map<String, String>> rows = table.getRows();
+        assertThat(rows.size(), equalTo(1));
+        ensureRowContentIs(rows, 0, asList("Java"));
+    }
+
     private void ensureRowContentIs(List<Map<String, String>> rows, int row, List<String> expected) {
         assertThat(new ArrayList<>(rows.get(row).values()), equalTo(expected));
     }

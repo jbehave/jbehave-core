@@ -369,12 +369,10 @@ public class ExamplesTable {
             return EMPTY_VALUE;
         }
         StringBuilder sb = new StringBuilder();
-        for (TableProperties properties : tablePropertiesQueue) {
-            String propertiesAsString = properties.getPropertiesAsString();
-            if (!propertiesAsString.isEmpty()) {
-                sb.append(properties.asString()).append(lastTableProperties().getRowSeparator());
-            }
-        }
+        tablePropertiesQueue.stream().filter(t -> !t.isEmpty())
+                                     .map(TableProperties::asString)
+                                     .forEach(props -> sb.append(props)
+                                                         .append(lastTableProperties().getRowSeparator()));
         sb.append(ExamplesTableStringBuilder.buildExamplesTableString(lastTableProperties(), getHeaders(),
                 tableRows.getRows()));
 
@@ -557,6 +555,10 @@ public class ExamplesTable {
 
         public String getPropertiesAsString() {
             return propertiesAsString;
+        }
+
+        public boolean isEmpty() {
+            return getPropertiesAsString().trim().isEmpty();
         }
     }
 
