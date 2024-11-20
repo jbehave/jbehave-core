@@ -186,7 +186,7 @@ public class StepCandidate {
     }
 
     public void addComposedSteps(List<Step> steps, String stepAsString, Map<String, String> namedParameters,
-            List<StepCandidate> allCandidates) {
+            List<StepCandidate> allCandidates, Outcome outcome) {
         Map<String, String> matchedParameters = stepCreator.matchedParameters(method,
                 keywords.stepWithoutStartingWord(stepAsString), namedParameters);
 
@@ -195,7 +195,7 @@ public class StepCandidate {
 
         String previousNonAndStep = null;
         for (String composedStep : composedSteps) {
-            addComposedStep(steps, composedStep, previousNonAndStep, mergedParameters, allCandidates);
+            addComposedStep(steps, composedStep, previousNonAndStep, mergedParameters, allCandidates, outcome);
             if (!(keywords.isAndStep(composedStep) || keywords.isIgnorableStep(composedStep))) {
                 // only update previous step if not AND or IGNORABLE step
                 previousNonAndStep = composedStep;
@@ -204,7 +204,7 @@ public class StepCandidate {
     }
 
     private void addComposedStep(List<Step> steps, String composedStep, String previousNonAndStep,
-            Map<String, String> matchedParameters, List<StepCandidate> allCandidates) {
+            Map<String, String> matchedParameters, List<StepCandidate> allCandidates, Outcome outcome) {
         if (ignore(composedStep)) {
             // ignorable steps are added so they can be reported
             steps.add(StepCreator.createIgnorableStep(composedStep));
@@ -217,9 +217,11 @@ public class StepCandidate {
                 List<Step> composedSteps = new ArrayList<>();
                 if (candidate.isComposite()) {
                     // candidate is itself composite: recursively add composed steps
-                    candidate.addComposedSteps(composedSteps, composedStep, matchedParameters, allCandidates);
+                    candidate.addComposedSteps(composedSteps, composedStep, matchedParameters, allCandidates, outcome);
                 }
-                steps.add(candidate.createMatchedStep(composedStep, matchedParameters, composedSteps));
+                steps.add(outcome != null
+                    ? candidate.createMatchedStepUponOutcome(composedStep, matchedParameters, composedSteps, outcome)
+                    : candidate.createMatchedStep(composedStep, matchedParameters, composedSteps));
             } else {
                 steps.add(StepCreator.createPendingStep(composedStep, previousNonAndStep));
             }

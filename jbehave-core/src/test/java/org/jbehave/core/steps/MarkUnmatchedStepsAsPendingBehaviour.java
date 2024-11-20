@@ -201,7 +201,7 @@ class MarkUnmatchedStepsAsPendingBehaviour {
 
         // Then
         verify(compositeCandidate, times(1)).addComposedSteps(new ArrayList<>(), compositeAsText, parameters,
-                asList(compositeCandidate, composedCandidate1, composedCandidate2));
+                asList(compositeCandidate, composedCandidate1, composedCandidate2), null);
     }
 
     @Test

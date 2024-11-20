@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.jbehave.core.steps.StepCandidateBehaviour.candidateMatchingStep;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 
+import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -50,7 +52,7 @@ class CompositeCandidateStepsBehaviour {
         innerCompositeCandidate.useStepMonitor(monitor);
 
         outerCompositeCandidate.addComposedSteps(new ArrayList<>(), outerCompositeStep, new HashMap<>(),
-                listCandidates);
+                listCandidates, null);
         verify(monitor).stepMatchesPattern(eq(innerCompositeStep), eq(true), any(), any(), any());
     }
 
@@ -72,9 +74,10 @@ class CompositeCandidateStepsBehaviour {
         namedParameters.put("customer", "Ms Smith");
         List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "Given Mr Jones has previously bought a ticket", namedParameters,
-                candidates);
+                candidates, null);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
+            assertEquals(StepCreator.ParametrisedStep.class, step.getClass());
             step.perform(mock(StoryReporter.class), null);
         }
         assertThat(steps.loggedIn, equalTo("Mr Jones"));
@@ -123,7 +126,7 @@ class CompositeCandidateStepsBehaviour {
         namedParameters.put("product", "ticket");
         List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "Given <customer> has previously bought a <product>", namedParameters,
-                candidates);
+                candidates, null);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform(mock(StoryReporter.class), null);
@@ -170,7 +173,7 @@ class CompositeCandidateStepsBehaviour {
         namedParameters.put("product", "ticket");
         List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "Given <customer> has previously bought a <product>", namedParameters,
-                candidates);
+                candidates, null);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform(mock(StoryReporter.class), null);
@@ -220,7 +223,7 @@ class CompositeCandidateStepsBehaviour {
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<>();
         List<Step> composedSteps = new ArrayList<>();
-        candidate.addComposedSteps(composedSteps, "Then all buttons are enabled", noNamedParameters, candidates);
+        candidate.addComposedSteps(composedSteps, "Then all buttons are enabled", noNamedParameters, candidates, null);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             StoryReporter storyReporter = mock(StoryReporter.class);
@@ -270,7 +273,7 @@ class CompositeCandidateStepsBehaviour {
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<>();
         List<Step> composedSteps = new ArrayList<>();
-        candidate.addComposedSteps(composedSteps, "When I login", noNamedParameters, candidates);
+        candidate.addComposedSteps(composedSteps, "When I login", noNamedParameters, candidates, null);
         assertThat(composedSteps.size(), equalTo(1));
         for (Step step : composedSteps) {
             step.perform(mock(StoryReporter.class), null);
@@ -304,7 +307,7 @@ class CompositeCandidateStepsBehaviour {
         Map<String, String> noNamedParameters = new HashMap<>();
         List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "Given I am logged in as someUserName", noNamedParameters,
-                candidates);
+                candidates, null);
         for (Step step : composedSteps) {
             step.perform(mock(StoryReporter.class), null);
         }
@@ -367,7 +370,7 @@ class CompositeCandidateStepsBehaviour {
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<>();
         List<Step> composedSteps = new ArrayList<>();
-        candidate.addComposedSteps(composedSteps, compositeName, noNamedParameters, candidates);
+        candidate.addComposedSteps(composedSteps, compositeName, noNamedParameters, candidates, null);
         StoryReporter reporter = mock(StoryReporter.class);
         for (Step step : composedSteps) {
             StepResult result = step.perform(reporter, null);
@@ -397,13 +400,26 @@ class CompositeCandidateStepsBehaviour {
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<>();
         List<Step> composedSteps = new ArrayList<>();
-        candidate.addComposedSteps(composedSteps, compositeName, noNamedParameters, candidates);
+        candidate.addComposedSteps(composedSteps, compositeName, noNamedParameters, candidates, null);
         StoryReporter reporter = mock(StoryReporter.class);
         for (Step step : composedSteps) {
             StepResult result = step.perform(reporter, null);
             result.describeTo(reporter);
         }
         Mockito.verify(reporter).comment("!-- comment");
+    }
+
+    @Test
+    void shouldWrapCompositeStepsUponOutcome() {
+        CompositeStepsWithParameterMissing steps = new CompositeStepsWithParameterMissing();
+        String compositeStep = "Given I am logged in as USER";
+        List<StepCandidate> listCandidates = steps.listCandidates();
+        StepCandidate candidate = candidateMatchingStep(listCandidates, compositeStep);
+        List<Step> compositeSteps = new ArrayList<>();
+
+        candidate.addComposedSteps(compositeSteps, compositeStep, new HashMap<>(),
+                listCandidates, AfterScenario.Outcome.ANY);
+        compositeSteps.forEach(s -> assertEquals(StepCreator.UponAnyStep.class, s.getClass()));
     }
 
     static class CompositeWithComment extends Steps {
