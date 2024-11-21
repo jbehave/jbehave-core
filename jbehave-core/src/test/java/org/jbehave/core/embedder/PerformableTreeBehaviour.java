@@ -3,6 +3,7 @@ package org.jbehave.core.embedder;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -42,6 +43,7 @@ import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.IgnoringStepsFailure;
@@ -267,6 +269,62 @@ class PerformableTreeBehaviour {
         scenarioParameters.add(performableScenarios.get(1).getExamples().get(0).getParameters());
         scenarioParameters.add(performableScenarios.get(1).getExamples().get(1).getParameters());
         assertEquals(scenarioParameters, scenarioParametersCaptor.getAllValues());
+    }
+    
+    @Test
+    void shouldRemoveMetaFromFinalScenarioParameters() {
+        ParameterControls parameterControls = new ParameterControls();
+        Configuration configuration = mock(Configuration.class);
+        when(configuration.storyControls()).thenReturn(new StoryControls());
+
+        StoryControls storyControls = mock(StoryControls.class);
+        when(configuration.storyControls()).thenReturn(storyControls);
+        when(storyControls.skipBeforeAndAfterScenarioStepsIfGivenStory()).thenReturn(false);
+        when(configuration.parameterConverters()).thenReturn(new DefaultParameterConverters());
+        when(configuration.parameterControls()).thenReturn(parameterControls);
+
+        when(configuration.keywords()).thenReturn(new Keywords());
+
+        StepMonitor stepMonitor = mock(StepMonitor.class);
+        when(configuration.stepMonitor()).thenReturn(stepMonitor);
+        StepCollector stepCollector = mock(StepCollector.class);
+        when(configuration.stepCollector()).thenReturn(stepCollector);
+
+        ExamplesTable scenarioExamplesTable = ExamplesTable.empty().withRows(asList(
+                createExamplesRow("Meta:", "@test", "value", "1")
+        ));
+
+        Scenario scenario = new Scenario("", new Meta(), GivenStories.EMPTY, scenarioExamplesTable,
+                emptyList());
+
+        Lifecycle lifecycle = mock(Lifecycle.class);
+        Story story = new Story(null, null, new Meta(), mock(Narrative.class), GivenStories.EMPTY, lifecycle,
+                singletonList(scenario));
+
+        when(lifecycle.getExamplesTable()).thenReturn(ExamplesTable.EMPTY);
+
+        Map<Stage, List<Step>> lifecycleSteps = new EnumMap<>(Stage.class);
+        lifecycleSteps.put(Stage.BEFORE, emptyList());
+        lifecycleSteps.put(Stage.AFTER, emptyList());
+
+        ArgumentCaptor<Map<String, String>> storyParametersCaptor = ArgumentCaptor.forClass(Map.class);
+        when(stepCollector.collectLifecycleSteps(eq(emptyList()), eq(lifecycle), isEmptyMeta(), eq(Scope.STORY),
+                storyParametersCaptor.capture(), any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
+
+        ArgumentCaptor<Map<String, String>> scenarioParametersCaptor = ArgumentCaptor.forClass(Map.class);
+        when(stepCollector.collectLifecycleSteps(eq(emptyList()), eq(lifecycle), isEmptyMeta(), eq(Scope.SCENARIO),
+                scenarioParametersCaptor.capture(), any(MatchingStepMonitor.class))).thenReturn(lifecycleSteps);
+
+        PerformableTree performableTree = new PerformableTree();
+        createRunContext(configuration, performableTree, mock(BatchFailures.class), singletonList(story));
+        List<PerformableTree.PerformableScenario> performableScenarios = performableTree.getRoot().getStories().get(0)
+                .getScenarios();
+
+        assertThat(performableScenarios.size(), is(1));
+        List<ExamplePerformableScenario> exampleScenarios = performableScenarios.get(0).getExamples();
+        assertThat(exampleScenarios.size(), is(1));
+        assertThat(singletonMap("value", "1"), equalTo(exampleScenarios.get(0).getParameters()));
+
     }
 
     private Map<String, String> createExamplesRow(String key1, String value1, String key2, String value2) {

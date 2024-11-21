@@ -259,6 +259,7 @@ public class PerformableTree {
         String metaText = keywords.meta();
         if (parameters.containsKey(metaText)) {
             meta = Meta.createMeta(parameters.get(metaText), keywords);
+            parameters.remove(metaText);
         }
         return meta;
     }
