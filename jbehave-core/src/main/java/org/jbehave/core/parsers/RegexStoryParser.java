@@ -402,9 +402,8 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
 
     private Pattern findingScenarioMeta() {
         String startingWords = concatenateStartingWords();
-        return compile(
-                ".*" + keywords().meta() + "(.*?)\\s*(" + keywords().givenStories() + "|" + startingWords + "|$).*",
-                DOTALL);
+        return compile(".*^\\s*" + keywords().meta() + "(.*?)\\s*(" + keywords().givenStories() + "|" + startingWords
+                + "|$).*", DOTALL);
     }
 
     private Pattern findingScenarioGivenStories() {

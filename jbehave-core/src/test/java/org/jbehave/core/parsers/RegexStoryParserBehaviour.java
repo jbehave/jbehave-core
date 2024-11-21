@@ -305,7 +305,29 @@ class RegexStoryParserBehaviour {
                             + NL + "|Dado que|Quando|Então|E|"
                             + NL));
     }
-    
+
+    @Test
+    void shouldNotParseExamplesTableMetaAsScenarioMeta() {
+        String wholeStory = "Scenario: Scenario with examples table containing meta"
+                + NL + "Given a scenario Given"
+                + NL + "Examples:"
+                + NL + "|Meta:    |value|"
+                + NL + "|@number 1|one  |"
+                + NL + "|@number 2|two  |" + NL;
+        Story story = parser.parseStory(wholeStory, storyPath);
+
+        Scenario scenario = story.getScenarios().get(0);
+        assertThat(scenario.getTitle(), equalTo("Scenario with examples table containing meta"));
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario Given"));
+        assertThat(scenario.getExamplesTable().asString(),
+                    equalTo("|Meta:|value|"
+                            + NL + "|@number 1|one|"
+                            + NL + "|@number 2|two|"
+                            + NL));
+        assertThat(scenario.getMeta().isEmpty(), is(true));
+    }
+
     @Test
     void shouldParseStoryWithLifecycle() {
         String wholeStory = "Lifecycle: "
