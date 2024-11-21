@@ -424,6 +424,15 @@ public class PerformableTree {
         @Override
         public State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter) {
             StepResult result = step.doNotPerform(reporter, getFailure());
+
+            List<Step> composedSteps = step.getComposedSteps();
+            if (!composedSteps.isEmpty()) {
+                reporter.beforeComposedSteps();
+                for (Step composedStep : composedSteps) {
+                    run(composedStep, results, keywords, reporter);
+                }
+                reporter.afterComposedSteps();
+            }
             results.add(result);
             result.describeTo(reporter);
             return this;
