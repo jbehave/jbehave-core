@@ -137,23 +137,33 @@ class PerformableTreeBehaviour {
 
     @Test
     void shouldNotSkipStoryWhenGivenStoryIsFailed() {
-        RunContext context = performStoryRun(false, GIVEN_SCENARIO_FAIL);
+        RunContext context = performStoryRun(new StoryControls().doSkipStoryIfGivenStoryFailed(false),
+                GIVEN_SCENARIO_FAIL);
         assertThat(context.failureOccurred(), is(false));
         assertThat(context.configuration().storyControls().skipStoryIfGivenStoryFailed(), is(false));
     }
 
     @Test
     void shouldSkipStoryWhenGivenStoryIsFailed() {
-        RunContext context = performStoryRun(true, GIVEN_SCENARIO_FAIL);
+        RunContext context = performStoryRun(new StoryControls().doSkipStoryIfGivenStoryFailed(true),
+                GIVEN_SCENARIO_FAIL);
         assertThat(context.failureOccurred(), is(true));
         assertThat(context.configuration().storyControls().skipStoryIfGivenStoryFailed(), is(true));
     }
 
     @Test
     void shouldNotSkipStoryWhenGivenStoryIsPassed() {
-        RunContext context = performStoryRun(true, "Scenario: given scenario title");
+        RunContext context = performStoryRun(new StoryControls().doSkipStoryIfGivenStoryFailed(true),
+                "Scenario: given scenario title");
         assertThat(context.failureOccurred(), is(false));
         assertThat(context.configuration().storyControls().skipStoryIfGivenStoryFailed(), is(true));
+    }
+
+    @Test
+    void shouldResetCurrentStoryControlsOnlyForRootStory() {
+        StoryControls storyControls = mock(StoryControls.class);
+        performStoryRun(storyControls, GIVEN_SCENARIO_FAIL);
+        verify(storyControls).resetCurrentStoryControls();
     }
 
     @Test
@@ -334,14 +344,13 @@ class PerformableTreeBehaviour {
         return storyExampleFirstRow;
     }
 
-    private RunContext performStoryRun(boolean skipScenariosAfterGivenStoriesFailure, String givenStoryAsString) {
+    private RunContext performStoryRun(StoryControls storyControls, String givenStoryAsString) {
         String givenStoryPath = "given/path";
         Scenario scenario = new Scenario("base scenario title", Meta.EMPTY);
         Story story = new Story(STORY_PATH, null, null, null, new GivenStories(givenStoryPath),
                 singletonList(scenario));
 
-        Configuration configuration = new MostUsefulConfiguration().useStoryControls(
-                new StoryControls().doSkipStoryIfGivenStoryFailed(skipScenariosAfterGivenStoriesFailure));
+        Configuration configuration = new MostUsefulConfiguration().useStoryControls(storyControls);
         StoryLoader storyLoader = mock(StoryLoader.class);
         configuration.useStoryLoader(storyLoader);
         when(storyLoader.loadStoryAsText(givenStoryPath)).thenReturn(givenStoryAsString);
