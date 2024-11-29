@@ -1108,7 +1108,9 @@ public class PerformableTree {
                     }
                 );
 
-                context.configuration().storyControls().resetCurrentStoryControls();
+                if (!givenStory) {
+                    context.configuration().storyControls().resetCurrentStoryControls();
+                }
                 if (context.restartStory()) {
                     context.reporter().afterStory(true);
                 } else {
