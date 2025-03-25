@@ -1,4 +1,5 @@
 [![Build Status](https://github.com/jbehave/jbehave-core/workflows/JBehave%20CI/badge.svg)](https://github.com/jbehave/jbehave-core/actions?query=workflow%3A%22JBehave+CI%22)
+[![libs.tech recommends](https://libs.tech/project/330458458/badge.svg)](https://libs.tech/project/330458458/jbehave-core)
 
 
 # JBehave
