@@ -89,6 +89,7 @@ class ConvertedParametersBehaviour {
         row.put("firstName", "Boba");
         row.put("l_name", "Fett");
         row.put("identifier", "boba-fett-clone");
+        row.put("idx", "1");
 
         Parameters parameters = new ConvertedParameters(row, converters);
 
@@ -100,6 +101,7 @@ class ConvertedParametersBehaviour {
         assertThat(person.getAge(), is(53));
         assertThat(person.getFirstName(), is("Boba"));
         assertThat(person.getLastName(), is("Fett"));
+        assertThat(person.getIndex(), is(1));
     }
 
     @Test
@@ -119,6 +121,7 @@ class ConvertedParametersBehaviour {
         row.put("years", "38");
         row.put("firstName", "Din");
         row.put("l_name", "Djarin");
+        row.put("idx", "1");
 
         converters.addConverters(new ParametersToPersonConverter());
         Parameters parameters = new ConvertedParameters(row, converters);
@@ -128,16 +131,26 @@ class ConvertedParametersBehaviour {
         assertThat(person.getAge(), is(38));
         assertThat(person.getFirstName(), is("Din"));
         assertThat(person.getLastName(), is("Djarin"));
+        assertThat(person.getIndex(), is(1));
     }
 
     public static class Identifier {
 
         private String identifier;
+        @Parameter(name = "idx")
+        private int index;
 
         public String getIdentifier() {
             return identifier;
         }
 
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
     }
 
     public static final class ParametersToPersonConverter extends AbstractParameterConverter<Parameters, Person> {
@@ -148,6 +161,7 @@ class ConvertedParametersBehaviour {
             person.setAge(value.valueAs("years", int.class));
             person.setFirstName(value.valueAs("firstName", String.class));
             person.setLastName(value.valueAs("l_name", String.class));
+            person.setIndex(value.valueAs("idx", Integer.class));
             return person;
         }
 

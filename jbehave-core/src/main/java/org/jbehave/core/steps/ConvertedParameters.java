@@ -115,7 +115,7 @@ public class ConvertedParameters implements Parameters {
         String mapping = fieldNameMapping.get(name);
         String fieldName = mapping == null ? name : mapping;
 
-        Optional<Field> field = Stream.of(type.getDeclaredFields())
+        Optional<Field> field = getAllFields(type)
                                       .filter(f -> f.isAnnotationPresent(Parameter.class))
                                       .filter(f -> fieldName.equals(f.getAnnotation(Parameter.class).name()))
                                       .findFirst();
@@ -135,6 +135,16 @@ public class ConvertedParameters implements Parameters {
         }
 
         return Optional.empty();
+    }
+
+    private static Stream<Field> getAllFields(Class<?> type) {
+        if (type == Object.class) {
+            return Stream.empty();
+        }
+        return Stream.concat(
+                Stream.of(type.getDeclaredFields()),
+                getAllFields(type.getSuperclass())
+        );
     }
 
     @SuppressWarnings("unchecked")
