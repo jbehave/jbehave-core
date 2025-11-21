@@ -163,6 +163,7 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat(pendingStep.asString(new Keywords()), equalTo(stepAsString));
+        assertThat(pendingStep.asPlainString(new Keywords()), equalTo(stepAsString));
         assertThat(executor.apply(pendingStep, storyReporter), instanceOf(Pending.class));
         verifyBeforeStep(storyReporter, StepExecutionType.PENDING, stepAsString);
         verifyNoMoreInteractions(storyReporter);
@@ -180,6 +181,7 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat(ignorableStep.asString(new Keywords()), equalTo(stepAsString));
+        assertThat(ignorableStep.asPlainString(new Keywords()), equalTo(stepAsString));
         assertThat(executor.apply(ignorableStep, storyReporter), instanceOf(Ignorable.class));
         verifyBeforeStep(storyReporter, StepExecutionType.IGNORABLE, stepAsString);
         verifyNoMoreInteractions(storyReporter);
@@ -197,6 +199,7 @@ class StepCreatorBehaviour {
 
         // Then
         assertThat(comment.asString(new Keywords()), equalTo(stepAsString));
+        assertThat(comment.asPlainString(new Keywords()), equalTo(stepAsString));
         assertThat(executor.apply(comment, storyReporter), instanceOf(Comment.class));
         verifyBeforeStep(storyReporter, StepExecutionType.COMMENT, stepAsString);
         verifyNoMoreInteractions(storyReporter);
@@ -221,14 +224,17 @@ class StepCreatorBehaviour {
 
         // When
         String stepAsString = "When I use parameters " + firstParameterValue + " and " + secondParameterValue;
-        StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithANamedParameter"),
-                stepAsString, stepAsString, parameters, Collections.emptyList()).perform(storyReporter, null);
+        Step parameterisedStep = stepCreator.createParametrisedStep(SomeSteps.methodFor("methodWithANamedParameter"),
+                stepAsString, stepAsString, parameters, Collections.emptyList());
+        StepResult stepResult = parameterisedStep.perform(storyReporter, null);
 
         // Then
         assertThat(stepResult, instanceOf(Successful.class));
         String expected = "When I use parameters " + PARAMETER_VALUE_START + firstParameterValue + PARAMETER_VALUE_END
                 + " and " + PARAMETER_VALUE_START + secondParameterValue + PARAMETER_VALUE_END;
         assertThat(stepResult.parametrisedStep(), equalTo(expected));
+        assertThat(parameterisedStep.asString(null), equalTo(expected));
+        assertThat(parameterisedStep.asPlainString(null), equalTo(stepAsString));
         verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, stepAsString);
     }
 

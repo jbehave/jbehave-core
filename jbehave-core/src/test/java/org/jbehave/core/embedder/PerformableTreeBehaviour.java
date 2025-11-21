@@ -66,6 +66,7 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.FromStringParameterConverter;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCandidate;
 import org.jbehave.core.steps.StepCollector;
@@ -463,6 +464,10 @@ class PerformableTreeBehaviour {
             ordered.verify(storyReporter).beforeStep(argThat(step -> "When I ignore".equals(step.getStepAsString())
                     && StepExecutionType.EXECUTABLE == step.getExecutionType()));
             ordered.verify(storyReporter).ignorable("When I ignore");
+            ordered.verify(storyReporter)
+                    .beforeStep(argThat(step -> "When I convert param".equals(step.getStepAsString())
+                            && StepExecutionType.IGNORABLE == step.getExecutionType()));
+            ordered.verify(storyReporter).ignorable("When I convert param");
             ordered.verify(storyReporter).afterComposedSteps();
             ordered.verify(storyReporter).ignorable(step1);
         });
@@ -479,6 +484,7 @@ class PerformableTreeBehaviour {
         StoryReporterBuilder storyReporterBuilder = mock(StoryReporterBuilder.class);
         when(storyReporterBuilder.build(STORY_PATH)).thenReturn(storyReporter);
         Configuration configuration = new MostUsefulConfiguration().useStoryReporterBuilder(storyReporterBuilder);
+        configuration.parameterConverters().addConverters(new DummyParameterConverter());
 
         PerformableTree performableTree = new PerformableTree();
         RunContext runContext = createRunContext(configuration, performableTree, mock(BatchFailures.class),
@@ -669,8 +675,12 @@ class PerformableTreeBehaviour {
             throw new IgnoringStepsFailure("next steps in the scenario should be ignored");
         }
 
+        @When("I convert $param")
+        public void convertParam(Dummy dummy) {
+        }
+
         @When("I ignore from composed step")
-        @Composite(steps = { "When I ignore" })
+        @Composite(steps = { "When I ignore", "When I convert param" })
         public void ignoreFromComposite() {
         }
 
@@ -692,5 +702,15 @@ class PerformableTreeBehaviour {
         public void executeStep3() {
             this.step3Invoked = true;
         }
+    }
+
+    private static class DummyParameterConverter extends FromStringParameterConverter<Dummy> {
+        @Override
+        public Dummy convertValue(String value, Type type) {
+            throw new RuntimeException("conversion failed");
+        }
+    }
+
+    static class Dummy {
     }
 }

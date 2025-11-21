@@ -613,6 +613,11 @@ public class StepCreator {
         }
 
         @Override
+        public String asPlainString(Keywords keywords) {
+            return toString();
+        }
+
+        @Override
         public String toString() {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
         }
@@ -643,7 +648,12 @@ public class StepCreator {
 
         @Override
         public String asString(Keywords keywords) {
-            return stepAsString;
+            return getStepAsString();
+        }
+
+        @Override
+        public String asPlainString(Keywords keywords) {
+            return getStepAsString();
         }
 
         protected String getStepAsString() {
@@ -671,6 +681,11 @@ public class StepCreator {
         @Override
         public String asString(Keywords keywords) {
             return step.asString(keywords);
+        }
+
+        @Override
+        public String asPlainString(Keywords keywords) {
+            return step.asPlainString(keywords);
         }
 
         @Override
@@ -740,6 +755,11 @@ public class StepCreator {
 
         @Override
         public String asString(Keywords keywords) {
+            return asPlainString(keywords);
+        }
+
+        @Override
+        public String asPlainString(Keywords keywords) {
             return method.getName() + ";" + meta.asString(keywords);
         }
     }
@@ -940,6 +960,11 @@ public class StepCreator {
                 parametriseStep();
             }
             return parametrisedStep;
+        }
+
+        @Override
+        public String asPlainString(Keywords keywords) {
+            return getStepAsString();
         }
 
         private Object[] parametriseStep() {

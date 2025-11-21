@@ -455,7 +455,7 @@ public class PerformableTree {
 
         @Override
         public State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter) {
-            String stepAsString = step.asString(keywords);
+            String stepAsString = step.asPlainString(keywords);
             reporter.beforeStep(new org.jbehave.core.model.Step(StepExecutionType.IGNORABLE, stepAsString));
             StepResult result = AbstractStepResult.ignorable(stepAsString);
             results.add(result);
