@@ -12,8 +12,11 @@ import static org.jbehave.core.steps.ParameterConverters.ExamplesTableParameters
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +31,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.base.Defaults;
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
@@ -137,14 +141,13 @@ public class StepCreator {
             }
         }
         // else return empty map
-        return matchedParameters; 
+        return matchedParameters;
     }
 
     /**
      * Returns the {@link ParameterName} representations for the method,
      * providing an abstraction that supports both annotated and non-annotated
      * parameters.
-     * 
      * @param method the Method
      * @return The array of {@link ParameterName}s
      */
@@ -153,7 +156,7 @@ public class StepCreator {
         if (method != null) {
             String[] annotatedNames = annotatedParameterNames(method);
             String[] paranamerNames = paranamerParameterNames(method);
-            String[] contextNames = contextParameterNames(method);
+            ContextParameterName[] contextNames = contextParameterNames(method);
 
             parameterNames = new ParameterName[annotatedNames.length];
             for (int i = 0; i < annotatedNames.length; i++) {
@@ -163,20 +166,24 @@ public class StepCreator {
             String[] stepMatcherParameterNames = stepMatcher.parameterNames();
             parameterNames = new ParameterName[stepMatcherParameterNames.length];
             for (int i = 0; i < stepMatcherParameterNames.length; i++) {
-                parameterNames[i] = new ParameterName(stepMatcherParameterNames[i], false, false);
+                parameterNames[i] = new ParameterName(stepMatcherParameterNames[i], false, false, true);
             }
         }
         return parameterNames;
     }
 
-    private ParameterName parameterName(String[] annotatedNames, String[] paranamerNames, String[] contextNames,
-            int i) {
+    private ParameterName parameterName(String[] annotatedNames, String[] paranamerNames,
+            ContextParameterName[] contextNames, int i) {
         boolean annotated = true;
         boolean fromContext = false;
+        boolean required = true;
 
-        String name = contextNames[i];
-        if (name != null) {
+        String name;
+        ContextParameterName contextName = contextNames[i];
+        if (contextName != null) {
             fromContext = true;
+            name = contextName.name;
+            required = contextName.required;
         } else {
             name = annotatedNames[i];
             if (name == null) {
@@ -184,12 +191,11 @@ public class StepCreator {
                 annotated = false;
             }
         }
-        return new ParameterName(name, annotated, fromContext);
+        return new ParameterName(name, annotated, fromContext, required);
     }
 
     /**
      * Extract parameter names using {@link Named}-annotated parameters
-     * 
      * @param method the Method with {@link Named}-annotated parameters
      * @return An array of annotated parameter names, which <b>may</b> include
      *         <code>null</code> values for parameters that are not annotated
@@ -204,17 +210,16 @@ public class StepCreator {
         }
         return names;
     }
-    
+
     /**
      * Extract parameter names using {@link FromContext}-annotated parameters
-     * 
      * @param method the Method with {@link FromContext}-annotated parameters
      * @return An array of annotated parameter names, which <b>may</b> include
      *         <code>null</code> values for parameters that are not annotated
      */
-    private String[] contextParameterNames(Method method) {
+    private ContextParameterName[] contextParameterNames(Method method) {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        String[] names = new String[parameterAnnotations.length];
+        ContextParameterName[] names = new ContextParameterName[parameterAnnotations.length];
         for (int i = 0; i < parameterAnnotations.length; i++) {
             for (Annotation annotation : parameterAnnotations[i]) {
                 names[i] = contextName(annotation);
@@ -226,7 +231,6 @@ public class StepCreator {
     /**
      * Returns either the value of the annotation, either {@link Named} or
      * "javax.inject.Named".
-     * 
      * @param annotation the Annotation
      * @return The annotated value or <code>null</code> if no annotation is
      *         found
@@ -243,14 +247,14 @@ public class StepCreator {
 
     /**
      * Returns the value of the annotation {@link FromContext}.
-     * 
      * @param annotation the Annotation
      * @return The annotated value or <code>null</code> if no annotation is
      *         found
      */
-    private String contextName(Annotation annotation) {
+    private ContextParameterName contextName(Annotation annotation) {
         if (annotation.annotationType().isAssignableFrom(FromContext.class)) {
-            return ((FromContext) annotation).value();
+            FromContext context = (FromContext) annotation;
+            return new ContextParameterName(context.value(), context.required());
         } else {
             return null;
         }
@@ -259,7 +263,6 @@ public class StepCreator {
     /**
      * Extract parameter names using
      * {@link Paranamer#lookupParameterNames(AccessibleObject, boolean)}
-     * 
      * @param method the Method inspected by Paranamer
      * @return An array of parameter names looked up by Paranamer
      */
@@ -427,10 +430,9 @@ public class StepCreator {
             } else if (overrideWithTableParameters && namedParameters.containsKey(name)) {
                 parameter = namedParameters.get(name);
                 if (parameter != null) {
-                    monitorUsingTableNameForParameter(name, position, annotated); 
+                    monitorUsingTableNameForParameter(name, position, annotated);
                 }
             }
-            
             if (fromContext && parameter == null) {
                 parameter = name;
                 stepMonitor.usingStepsContextParameter(parameter);
@@ -487,7 +489,6 @@ public class StepCreator {
                 number++;
             }
         }
-        
         return number;
     }
 
@@ -987,9 +988,15 @@ public class StepCreator {
         private Object[] convertParameterValues(String[] parameterValues, Type[] types, ParameterName[] names) {
             final Object[] parameters = new Object[parameterValues.length];
             for (int i = 0; i < parameterValues.length; i++) {
+                ParameterName parameterName = names[i];
                 String parameterValue = parameterValues[i];
-                if (names[i].fromContext) {
-                    parameters[i] = stepsContext.get(parameterValue);
+                if (parameterName.fromContext) {
+                    if (parameterName.required) {
+                        parameters[i] = stepsContext.get(parameterValue);
+                    } else {
+                        Object defaultValue = defaultValueFor(types[i]);
+                        parameters[i] = stepsContext.getOrDefault(parameterValue, defaultValue);
+                    }
                 } else {
                     String expressionEvaluationResult = parameterValue != null
                             ? String.valueOf(expressionResolver.resolveExpressions(dryRun, parameterValue)) : null;
@@ -1004,6 +1011,29 @@ public class StepCreator {
                     .filter(ExamplesTable.class::isInstance)
                     .map(ExamplesTable.class::cast)
                     .forEach(examplesTable -> examplesTable.withNamedParameters(namedParameters));
+        }
+        
+        private Object defaultValueFor(Type type) {
+            Class<?> raw = rawClass(type);
+            return Defaults.defaultValue(raw);
+        }
+
+        private Class<?> rawClass(Type type) {
+            if (type instanceof Class) {
+                return (Class<?>) type;
+            }
+            
+            if (type instanceof ParameterizedType) {
+                return (Class<?>) ((ParameterizedType) type).getRawType();
+            }
+            
+            if (type instanceof GenericArrayType) {
+                Type comp = ((GenericArrayType) type).getGenericComponentType();
+                Class<?> compClass = rawClass(comp);
+                return Array.newInstance(compClass, 0).getClass();
+            }
+            
+            return Object.class; // TypeVariable or WildcardType
         }
     }
 
@@ -1100,7 +1130,7 @@ public class StepCreator {
         private final Paranamer paranamer;
         private final Meta meta;
         private final Type[] parameterTypes;
-        
+
         public MethodInvoker(Method method, ParameterConverters parameterConverters, Paranamer paranamer, Meta meta) {
             this.method = method;
             this.parameterConverters = parameterConverters;
@@ -1173,11 +1203,23 @@ public class StepCreator {
         private String name;
         private boolean annotated;
         private boolean fromContext;
+        private boolean required;
 
-        private ParameterName(String name, boolean annotated, boolean fromContext) {
+        private ParameterName(String name, boolean annotated, boolean fromContext, boolean required) {
             this.name = name;
             this.annotated = annotated;
             this.fromContext = fromContext;
+            this.required = required;
+        }
+    }
+
+    private static class ContextParameterName {
+        private String name;
+        private boolean required;
+
+        private ContextParameterName(String name, boolean required) {
+            this.name = name;
+            this.required = required;
         }
     }
 }

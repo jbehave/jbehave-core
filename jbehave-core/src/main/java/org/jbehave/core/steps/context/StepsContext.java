@@ -58,6 +58,11 @@ public class StepsContext {
         return object;
     }
 
+    public Object getOrDefault(String key, Object defaultValue) {
+        Set<String> keys = keysStored.get();
+        return keys.contains(key) ? get(key) : defaultValue;
+    }
+
     private Map<String, Object> getExampleObjects() {
         Map<String, Object> objects = exampleObjects.get();
         if (objects == null) {

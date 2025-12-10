@@ -13,4 +13,5 @@ public @interface FromContext {
 
     String value();
 
+    boolean required() default true;
 }

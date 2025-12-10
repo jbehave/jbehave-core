@@ -56,6 +56,7 @@ import org.jbehave.core.steps.context.StepsContext.ObjectNotStoredException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -791,6 +792,42 @@ class StepCreatorBehaviour {
     void shouldHandleObjectAlreadyStoredFailureInDifferentLevel() throws IntrospectionException {
         Method method = SomeSteps.methodFor("methodStoringAStringInStory");
         shouldHandleObjectAlreadyStoredFailure(method);
+    }
+
+    @ParameterizedTest
+    @MethodSource("defaultValuesProvider")
+    void shouldNotHandleObjectNotStoredFailureWithNonRequiredParameters(Class<?> type, Object defaultValue)
+            throws NoSuchMethodException {
+        // Given
+        setupContext();
+        SomeSteps stepsInstance = new SomeSteps();
+        StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I read from context",
+                Pattern.compile("I read from context"), new String[]{});
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher);
+        StoryReporter storyReporter = mock(StoryReporter.class);
+
+        // When
+        Method methodRead = SomeSteps.class.getMethod("methodReadingDefaultValue", type);
+        String readStepAsString = "And I read from context";
+        StepResult stepResultRead = stepCreator.createParametrisedStep(methodRead, readStepAsString,
+                "I read from context", new HashMap<>(), Collections.emptyList()).perform(storyReporter, null);
+
+        // Then
+        assertThat(stepResultRead, instanceOf(Successful.class));
+        assertThat(stepsInstance.args, is(defaultValue));
+        verifyBeforeStep(storyReporter, StepExecutionType.EXECUTABLE, readStepAsString);
+    }
+
+    public static Stream<Arguments> defaultValuesProvider() {
+        return Stream.of(
+                Arguments.of(Integer.class, null),
+                Arguments.of(int.class, 0),
+                Arguments.of(boolean.class, false),
+                Arguments.of(double.class, 0.0),
+                Arguments.of(long.class, 0L),
+                Arguments.of(float.class, 0.0f),
+                Arguments.of(String.class, null)
+        );
     }
 
     private void shouldHandleObjectAlreadyStoredFailure(Method duplicateStoreMethod) throws IntrospectionException {
