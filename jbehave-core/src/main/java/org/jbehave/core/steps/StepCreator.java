@@ -148,6 +148,7 @@ public class StepCreator {
      * Returns the {@link ParameterName} representations for the method,
      * providing an abstraction that supports both annotated and non-annotated
      * parameters.
+     *
      * @param method the Method
      * @return The array of {@link ParameterName}s
      */
@@ -156,7 +157,7 @@ public class StepCreator {
         if (method != null) {
             String[] annotatedNames = annotatedParameterNames(method);
             String[] paranamerNames = paranamerParameterNames(method);
-            ContextParameterName[] contextNames = contextParameterNames(method);
+            ContextParameter[] contextNames = contextParameters(method);
 
             parameterNames = new ParameterName[annotatedNames.length];
             for (int i = 0; i < annotatedNames.length; i++) {
@@ -173,13 +174,13 @@ public class StepCreator {
     }
 
     private ParameterName parameterName(String[] annotatedNames, String[] paranamerNames,
-            ContextParameterName[] contextNames, int i) {
+             ContextParameter[] contextNames, int i) {
         boolean annotated = true;
         boolean fromContext = false;
         boolean required = true;
 
         String name;
-        ContextParameterName contextName = contextNames[i];
+        ContextParameter contextName = contextNames[i];
         if (contextName != null) {
             fromContext = true;
             name = contextName.name;
@@ -195,7 +196,8 @@ public class StepCreator {
     }
 
     /**
-     * Extract parameter names using {@link Named}-annotated parameters
+     * Extract parameter names using {@link Named}-annotated parameters.
+     *
      * @param method the Method with {@link Named}-annotated parameters
      * @return An array of annotated parameter names, which <b>may</b> include
      *         <code>null</code> values for parameters that are not annotated
@@ -212,14 +214,15 @@ public class StepCreator {
     }
 
     /**
-     * Extract parameter names using {@link FromContext}-annotated parameters
+     * Extract parameter names using {@link FromContext}-annotated parameters.
+     *
      * @param method the Method with {@link FromContext}-annotated parameters
      * @return An array of annotated parameter names, which <b>may</b> include
      *         <code>null</code> values for parameters that are not annotated
      */
-    private ContextParameterName[] contextParameterNames(Method method) {
+    private ContextParameter[] contextParameters(Method method) {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        ContextParameterName[] names = new ContextParameterName[parameterAnnotations.length];
+        ContextParameter[] names = new ContextParameter[parameterAnnotations.length];
         for (int i = 0; i < parameterAnnotations.length; i++) {
             for (Annotation annotation : parameterAnnotations[i]) {
                 names[i] = contextName(annotation);
@@ -231,6 +234,7 @@ public class StepCreator {
     /**
      * Returns either the value of the annotation, either {@link Named} or
      * "javax.inject.Named".
+     *
      * @param annotation the Annotation
      * @return The annotated value or <code>null</code> if no annotation is
      *         found
@@ -247,14 +251,15 @@ public class StepCreator {
 
     /**
      * Returns the value of the annotation {@link FromContext}.
+     *
      * @param annotation the Annotation
      * @return The annotated value or <code>null</code> if no annotation is
      *         found
      */
-    private ContextParameterName contextName(Annotation annotation) {
+    private ContextParameter contextName(Annotation annotation) {
         if (annotation.annotationType().isAssignableFrom(FromContext.class)) {
             FromContext context = (FromContext) annotation;
-            return new ContextParameterName(context.value(), context.required());
+            return new ContextParameter(context.value(), context.required());
         } else {
             return null;
         }
@@ -262,7 +267,8 @@ public class StepCreator {
 
     /**
      * Extract parameter names using
-     * {@link Paranamer#lookupParameterNames(AccessibleObject, boolean)}
+     * {@link Paranamer#lookupParameterNames(AccessibleObject, boolean)}.
+     *
      * @param method the Method inspected by Paranamer
      * @return An array of parameter names looked up by Paranamer
      */
@@ -1012,7 +1018,7 @@ public class StepCreator {
                     .map(ExamplesTable.class::cast)
                     .forEach(examplesTable -> examplesTable.withNamedParameters(namedParameters));
         }
-        
+
         private Object defaultValueFor(Type type) {
             Class<?> raw = rawClass(type);
             return Defaults.defaultValue(raw);
@@ -1022,17 +1028,17 @@ public class StepCreator {
             if (type instanceof Class) {
                 return (Class<?>) type;
             }
-            
+
             if (type instanceof ParameterizedType) {
                 return (Class<?>) ((ParameterizedType) type).getRawType();
             }
-            
+
             if (type instanceof GenericArrayType) {
                 Type comp = ((GenericArrayType) type).getGenericComponentType();
                 Class<?> compClass = rawClass(comp);
                 return Array.newInstance(compClass, 0).getClass();
             }
-            
+
             return Object.class; // TypeVariable or WildcardType
         }
     }
@@ -1213,11 +1219,11 @@ public class StepCreator {
         }
     }
 
-    private static class ContextParameterName {
+    private static class ContextParameter {
         private String name;
         private boolean required;
 
-        private ContextParameterName(String name, boolean required) {
+        private ContextParameter(String name, boolean required) {
             this.name = name;
             this.required = required;
         }
