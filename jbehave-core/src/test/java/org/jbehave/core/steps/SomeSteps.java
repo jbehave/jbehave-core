@@ -145,6 +145,34 @@ public class SomeSteps extends Steps {
         this.args = value;
     }
 
+    public void methodReadingDefaultValue(@FromContext(value = "someKey", required = false) String value) {
+        this.args = value;
+    }
+
+    public void methodReadingDefaultValue(@FromContext(value = "someKey", required = false) Integer value) {
+        this.args = value;
+    }
+
+    public void methodReadingDefaultValue(@FromContext(value = "someKey", required = false) int value) {
+        this.args = value;
+    }
+
+    public void methodReadingDefaultValue(@FromContext(value = "someKey", required = false) double value) {
+        this.args = value;
+    }
+
+    public void methodReadingDefaultValue(@FromContext(value = "someKey", required = false) long value) {
+        this.args = value;
+    }
+
+    public void methodReadingDefaultValue(@FromContext(value = "someKey", required = false) float value) {
+        this.args = value;
+    }
+
+    public void methodReadingDefaultValue(@FromContext(value = "someKey", required = false) boolean value) {
+        this.args = value;
+    }
+
     public static Method methodFor(String methodName) throws IntrospectionException {
         BeanInfo beanInfo = Introspector.getBeanInfo(SomeSteps.class);
         for (MethodDescriptor md : beanInfo.getMethodDescriptors()) {
