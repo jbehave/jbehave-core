@@ -104,6 +104,41 @@ class TemplateOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
+    void shouldOutputStoryWithStepAttributesToHtml() throws IOException {
+        String name = "template-story-with-attributes.html";
+        File file = newFile("target/" + name);
+        StoryReporter reporter = new HtmlTemplateOutput(file, new LocalizedKeywords());
+
+        StoryNarrator.narrateAStoryWithStepAttributes(reporter);
+
+        assertXml(name, file);
+    }
+
+    @Test
+    void shouldOutputStoryWithStepAttributesToJson() throws IOException, SAXException, ParserConfigurationException {
+        String name = "template-story-with-attributes.json";
+        File file = newFile("target/" + name);
+        StoryReporter reporter = new JsonTemplateOutput(file, new LocalizedKeywords());
+
+        StoryNarrator.narrateAStoryWithStepAttributes(reporter);
+
+        assertJson(name, fileContent(file));
+        validateFileOutput(file);
+    }
+
+    @Test
+    void shouldOutputStoryWithStepAttributesToXml() throws IOException, SAXException, ParserConfigurationException {
+        String name = "template-story-with-attributes.xml";
+        File file = newFile("target/" + name);
+        StoryReporter reporter = new XmlTemplateOutput(file, new LocalizedKeywords());
+
+        StoryNarrator.narrateAStoryWithStepAttributes(reporter);
+
+        assertXml(name, file);
+        validateFileOutput(file);
+    }
+
+    @Test
     void shouldNotGenerateViewWithInexistentTemplates() {
         // Given
         Properties templates = new Properties();

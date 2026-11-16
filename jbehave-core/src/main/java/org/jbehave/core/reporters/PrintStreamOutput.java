@@ -137,6 +137,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     private ThreadLocal<Boolean> compressFailureTrace = new ThreadLocal<>();
     private ThreadLocal<Throwable> cause = new ThreadLocal<>();
     private ThreadLocal<Boolean> dryRun = ThreadLocal.withInitial(() -> false);
+    private final ThreadLocal<Map<String, String>> pendingStepAttributes = new ThreadLocal<>();
 
     protected PrintStreamOutput(Format format, PrintStream output, Properties defaultPatterns,
             Properties outputPatterns, Keywords keywords) {
@@ -170,33 +171,39 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
 
     @Override
     public void beforeStep(Step step) {
+        pendingStepAttributes.remove();
         print(format("beforeStep", "{0}\n", step.getStepAsString()));
     }
 
     @Override
+    public void stepAttributes(Map<String, String> attributes) {
+        pendingStepAttributes.set(attributes);
+    }
+
+    @Override
     public void successful(String step) {
-        print(format("successful", "{0}\n", step));
+        print(format("successful", "{0}\n{1}", step, stepAttributesArg()));
     }
 
     @Override
     public void ignorable(String step) {
-        print(format("ignorable", "{0}\n", step));
+        print(format("ignorable", "{0}\n{1}", step, stepAttributesArg()));
     }
 
     @Override
     public void comment(String step) {
-        print(format("comment", "{0}\n", step));
+        print(format("comment", "{0}\n{1}", step, stepAttributesArg()));
     }
 
     @Override
     public void pending(PendingStep step) {
-        print(format("pending", "{0} ({1})\n({2})\n", step.stepAsString(), keywords.pending(),
-                step.getPendingMethod()));
+        print(format("pending", "{0} ({1})\n({2})\n{3}", step.stepAsString(), keywords.pending(),
+                step.getPendingMethod(), stepAttributesArg()));
     }
 
     @Override
     public void notPerformed(String step) {
-        print(format("notPerformed", "{0} ({1})\n", step, keywords.notPerformed()));
+        print(format("notPerformed", "{0} ({1})\n{2}", step, keywords.notPerformed(), stepAttributesArg()));
     }
 
     @Override
@@ -205,8 +212,8 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         // to have a {3} as WebDriverHtmlOutput (jbehave-web) does.
         if (storyFailure instanceof UUIDExceptionWrapper) {
             this.cause.set(storyFailure.getCause());
-            print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), storyFailure.getCause(),
-                    ((UUIDExceptionWrapper) storyFailure).getUUID()));
+            print(format("failed", "{0} ({1})\n({2})\n{4}", step, keywords.failed(), storyFailure.getCause(),
+                    ((UUIDExceptionWrapper) storyFailure).getUUID(), stepAttributesArg()));
         } else {
             throw new ClassCastException(storyFailure + " should be an instance of UUIDExceptionWrapper");
         }
@@ -605,8 +612,49 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
      * @return The cloned and escaped array of args
      */
     protected Object[] escape(final Format format, Object... args) {
-        // Transformer that escapes HTML,XML,JSON strings
-        return Stream.of(args).map(format::escapeValue).toArray();
+        // Transformer that escapes HTML, XML and JSON strings. An attributes block is already escaped and contains
+        // markup, so it is inserted as-is.
+        return Stream.of(args).map(arg -> arg instanceof Unescaped ? arg.toString() : format.escapeValue(arg))
+                .toArray();
+    }
+
+    private Object stepAttributesArg() {
+        Map<String, String> attributes = pendingStepAttributes.get();
+        pendingStepAttributes.remove();
+        return new Unescaped(attributes != null ? formatStepAttributes(attributes) : EMPTY);
+    }
+
+    /**
+     * Renders the attributes of a step. Names and values are escaped by the {@code stepAttribute} pattern; the
+     * returned block is inserted into the outcome without being escaped again.
+     *
+     * @param attributes the step attributes in insertion order
+     * @return the rendered attributes block
+     */
+    protected String formatStepAttributes(Map<String, String> attributes) {
+        StringBuilder block = new StringBuilder(format("stepAttributesStart", EMPTY));
+        boolean first = true;
+        for (Map.Entry<String, String> attribute : attributes.entrySet()) {
+            if (!first) {
+                block.append(format("stepAttributeSeparator", EMPTY));
+            }
+            block.append(format("stepAttribute", "    {0}: {1}\n", attribute.getKey(), attribute.getValue()));
+            first = false;
+        }
+        return block.append(format("stepAttributesEnd", EMPTY)).toString();
+    }
+
+    private static final class Unescaped {
+        private final String value;
+
+        private Unescaped(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 
     /**

@@ -181,6 +181,11 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void stepAttributes(Map<String, String> attributes) {
+        delegate(reporter -> reporter.stepAttributes(attributes));
+    }
+
+    @Override
     public void ignorable(String step) {
         delegate(reporter -> reporter.ignorable(step));
     }

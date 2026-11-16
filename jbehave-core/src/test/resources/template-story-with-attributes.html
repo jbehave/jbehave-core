@@ -1,0 +1,39 @@
+
+<html>
+<body>
+<div class="story"><h1>Step attributes</h1>
+<div class="path">/path/to/story</div>
+<div class="scenario"><h2>Scenario: Attributes</h2>
+ <!-- normal scenario steps -->
+<div class="step successful">When I succeed with two attributes<div class="attributes"><span class="attribute">first: one</span><span class="attribute">second: two</span></div></div>
+
+<div class="step successful">When I succeed without attributes</div>
+
+<div class="step ignorable">!-- Then ignore me<div class="attributes"><span class="attribute">kind: ignorable</span></div></div>
+
+<div class="step comment">!-- A comment<div class="attributes"><span class="attribute">kind: comment</span></div></div>
+
+<div class="step pending">When I am pending<span class="keyword pending">(PENDING)</span><div class="attributes"><span class="attribute">kind: pending</span></div></div>
+<pre class="pendingMethod">public void whenPending() { }</pre>
+<div class="step notPerformed">Then I am not performed<span class="keyword notPerformed">(NOT PERFORMED)</span><div class="attributes"><span class="attribute">kind: notPerformed</span></div></div>
+
+<div class="step failed">Then I fail<span class="keyword failed">(FAILED)</span><div class="attributes"><span class="attribute">kind: failed</span></div></div>
+<pre class="failure">java.lang.IllegalStateException: boom
+	at org.jbehave.core.reporters.StoryNarrator.narrateAStoryWithStepAttributes(StoryNarrator.java:314)
+	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryWithStepAttributesToHtml(TemplateOutputBehaviour.java:112)
+	(reflection-invoke)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:728)
+...</pre>
+<div class="step successful">When I perform an inner step<div class="attributes"><span class="attribute">child: value</span></div></div>
+
+<div class="step successful">When I perform a composite step<div class="attributes"><span class="attribute">parent: value</span></div></div>
+
+<div class="step successful">When I write special characters<div class="attributes"><span class="attribute">na&quot;me&lt;&amp;&gt;\
+ø: va&quot;lue&lt;&amp;&gt;\
+ø</span></div></div>
+
+</div> <!-- end scenario -->
+</div> <!-- end story -->
+</body>
+</html>
+

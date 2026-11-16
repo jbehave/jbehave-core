@@ -77,7 +77,17 @@ public interface StoryReporter {
     void afterExamples();
 
     void beforeStep(Step step);
-    
+
+    /**
+     * Reports the attributes set through {@link org.jbehave.core.steps.StepAttributes} while a step was running. Called
+     * after the step's composed steps have been reported and right before the step's outcome, and only if at least one
+     * attribute was set.
+     *
+     * @param attributes the step attributes in insertion order, never empty
+     */
+    default void stepAttributes(Map<String, String> attributes) {
+    }
+
     void successful(String step);
 
     void ignorable(String step);

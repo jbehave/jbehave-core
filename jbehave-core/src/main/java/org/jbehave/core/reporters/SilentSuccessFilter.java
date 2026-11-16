@@ -111,6 +111,11 @@ public class SilentSuccessFilter extends NullStoryReporter {
     }
 
     @Override
+    public void stepAttributes(Map<String, String> attributes) {
+        addScenarioTodo(() -> delegate.stepAttributes(attributes));
+    }
+
+    @Override
     public void successful(final String step) {
         addScenarioTodo(() -> delegate.successful(step));
     }

@@ -1,0 +1,22 @@
+<story id="story-id" path="/path/to/story" title="Step attributes">
+<scenario id="scenario-id" keyword="Scenario:" title="Attributes">
+<steps>
+<step outcome="successful">When I succeed with two attributes<attributes><attribute name="first">one</attribute><attribute name="second">two</attribute></attributes></step>
+<step outcome="successful">When I succeed without attributes</step>
+<step outcome="ignorable">!-- Then ignore me<attributes><attribute name="kind">ignorable</attribute></attributes></step>
+<step outcome="comment">!-- A comment<attributes><attribute name="kind">comment</attribute></attributes></step>
+<step outcome="pending" keyword="PENDING">When I am pending<pendingMethod>public void whenPending() { }</pendingMethod><attributes><attribute name="kind">pending</attribute></attributes></step>
+<step outcome="notPerformed" keyword="NOT PERFORMED">Then I am not performed<attributes><attribute name="kind">notPerformed</attribute></attributes></step>
+<step outcome="failed" keyword="FAILED">Then I fail<failure>java.lang.IllegalStateException: boom</failure><attributes><attribute name="kind">failed</attribute></attributes></step>
+<steps>
+<step outcome="successful">When I perform an inner step<attributes><attribute name="child">value</attribute></attributes></step>
+</steps>
+<step outcome="successful">When I perform a composite step<attributes><attribute name="parent">value</attribute></attributes></step>
+<step outcome="successful">When I write special characters<attributes><attribute name="na&quot;me&lt;&amp;&gt;\
+ø">va&quot;lue&lt;&amp;&gt;\
+ø</attribute></attributes></step>
+</steps>
+<timing phase="start">1</timing>
+<timing phase="end">2</timing>
+</scenario>
+</story>

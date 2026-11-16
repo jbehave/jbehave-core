@@ -19,6 +19,8 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -37,6 +39,7 @@ import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.annotations.When;
@@ -47,6 +50,7 @@ import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.IgnoringStepsFailure;
+import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.ExamplesTable;
@@ -68,9 +72,11 @@ import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.FromStringParameterConverter;
 import org.jbehave.core.steps.Step;
+import org.jbehave.core.steps.StepAttributes;
 import org.jbehave.core.steps.StepCandidate;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.Timing;
@@ -590,6 +596,103 @@ class PerformableTreeBehaviour {
         verifyNoMoreInteractions(storyReporter);
     }
 
+    @Test
+    void shouldReportAttributesSetByAStep() {
+        String step = "When I set attribute colour to blue";
+        StoryReporter storyReporter = runSteps(new Steps(), step);
+
+        InOrder ordered = inOrder(storyReporter);
+        ordered.verify(storyReporter).beforeStep(argThat(candidate -> step.equals(candidate.getStepAsString())));
+        ordered.verify(storyReporter).stepAttributes(singletonMap("colour", "blue"));
+        ordered.verify(storyReporter).successful(markedParameterStep(step, "colour", "blue"));
+    }
+
+    @Test
+    void shouldNotReportStepAttributesWhenNoneAreSet() {
+        StoryReporter storyReporter = runSteps(new Steps(), "When I execute step 1");
+
+        verify(storyReporter, never()).stepAttributes(any());
+    }
+
+    @Test
+    void shouldReportAttributesBeforeAFailedStep() {
+        String step = "When I fail after setting attribute colour to blue";
+        StoryReporter storyReporter = runSteps(new Steps(), step);
+
+        InOrder ordered = inOrder(storyReporter);
+        ordered.verify(storyReporter).beforeStep(argThat(candidate -> step.equals(candidate.getStepAsString())));
+        ordered.verify(storyReporter).stepAttributes(singletonMap("colour", "blue"));
+        ordered.verify(storyReporter).failed(eq(markedParameterStep(step, "colour", "blue")), any(Throwable.class));
+    }
+
+    @Test
+    void shouldReportAttributesOfAComposedStep() {
+        String parent = "When I compose a step that sets an attribute";
+        String child = "When I set attribute child to value";
+        StoryReporter storyReporter = runSteps(new Steps(), parent);
+
+        InOrder ordered = inOrder(storyReporter);
+        ordered.verify(storyReporter).beforeStep(argThat(candidate -> parent.equals(candidate.getStepAsString())));
+        ordered.verify(storyReporter).beforeComposedSteps();
+        ordered.verify(storyReporter).beforeStep(argThat(candidate -> child.equals(candidate.getStepAsString())));
+        ordered.verify(storyReporter).stepAttributes(singletonMap("child", "value"));
+        ordered.verify(storyReporter).successful(markedParameterStep(child, "child", "value"));
+        ordered.verify(storyReporter).afterComposedSteps();
+        ordered.verify(storyReporter).successful(parent);
+        verify(storyReporter, times(1)).stepAttributes(any());
+    }
+
+    @Test
+    void shouldReportAttributesSetByAnAfterScenarioStep() {
+        String step = "When I fail";
+        StoryReporter storyReporter = runSteps(new AfterFailureSteps(), step);
+
+        InOrder ordered = inOrder(storyReporter);
+        ordered.verify(storyReporter).beforeStep(argThat(candidate -> step.equals(candidate.getStepAsString())));
+        ordered.verify(storyReporter).failed(eq(step), any(Throwable.class));
+        ordered.verify(storyReporter)
+                .beforeStep(argThat(candidate -> "afterFailure".equals(candidate.getStepAsString())));
+        ordered.verify(storyReporter).stepAttributes(singletonMap("shot", "attachments/shot.png"));
+        ordered.verify(storyReporter).successful(argThat(reported -> reported.contains("afterFailure")));
+    }
+
+    @Test
+    void shouldNotReportAttributesWhenAStepRestartsTheScenario() {
+        String step = "When I restart after setting an attribute";
+        StoryReporter storyReporter = runSteps(new Steps(), step);
+
+        InOrder ordered = inOrder(storyReporter);
+        ordered.verify(storyReporter).beforeStep(argThat(candidate -> step.equals(candidate.getStepAsString())));
+        ordered.verify(storyReporter).restarted(eq(step), argThat(failure -> "again".equals(failure.getMessage())));
+        ordered.verify(storyReporter).beforeStep(argThat(candidate -> step.equals(candidate.getStepAsString())));
+        ordered.verify(storyReporter).successful(step);
+        verify(storyReporter, never()).stepAttributes(any());
+    }
+
+    private static String markedParameterStep(String step, String name, String value) {
+        return step.replace(name, StepCreator.PARAMETER_VALUE_START + name + StepCreator.PARAMETER_VALUE_END)
+                .replace(value, StepCreator.PARAMETER_VALUE_START + value + StepCreator.PARAMETER_VALUE_END);
+    }
+
+    private StoryReporter runSteps(Object steps, String... stepTexts) {
+        Scenario scenario = new Scenario("scenario with attributes", Meta.EMPTY, null, null, asList(stepTexts));
+        Narrative narrative = mock(Narrative.class);
+        Lifecycle lifecycle = new Lifecycle();
+        Story story = new Story(STORY_PATH, null, null, narrative, null, lifecycle, singletonList(scenario));
+
+        StoryReporter storyReporter = mock(StoryReporter.class);
+        StoryReporterBuilder storyReporterBuilder = mock(StoryReporterBuilder.class);
+        when(storyReporterBuilder.build(STORY_PATH)).thenReturn(storyReporter);
+        Configuration configuration = new MostUsefulConfiguration().useStoryReporterBuilder(storyReporterBuilder);
+
+        PerformableTree performableTree = new PerformableTree();
+        RunContext runContext = createRunContext(configuration, performableTree, mock(BatchFailures.class),
+                singletonList(story), steps);
+        performableTree.perform(runContext, story);
+        assertThat(new StepAttributes().isStepInProgress(), is(false));
+        return storyReporter;
+    }
+
     private RunContext runStoryInContext() {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useStoryLoader(mock(StoryLoader.class));
@@ -660,6 +763,7 @@ class PerformableTreeBehaviour {
         private boolean step1Invoked;
         private boolean step2Invoked;
         private boolean step3Invoked;
+        private boolean restarting = true;
 
         private RunContext runContext;
         private Story story;
@@ -701,6 +805,44 @@ class PerformableTreeBehaviour {
         @When("I execute step 3")
         public void executeStep3() {
             this.step3Invoked = true;
+        }
+
+        @When("I set attribute $name to $value")
+        public void setAttribute(String name, String value) {
+            new StepAttributes().put(name, value);
+        }
+
+        @When("I fail after setting attribute $name to $value")
+        public void failAfterSettingAttribute(String name, String value) {
+            new StepAttributes().put(name, value);
+            throw new RuntimeException("boom");
+        }
+
+        @When("I compose a step that sets an attribute")
+        @Composite(steps = { "When I set attribute child to value" })
+        public void composeStepThatSetsAttribute() {
+        }
+
+        @When("I restart after setting an attribute")
+        public void restartAfterSettingAttribute() {
+            if (restarting) {
+                new StepAttributes().put("name", "value");
+                restarting = false;
+                throw new RestartingScenarioFailure("again");
+            }
+        }
+    }
+
+    public static class AfterFailureSteps {
+
+        @When("I fail")
+        public void fail() {
+            throw new RuntimeException("boom");
+        }
+
+        @AfterScenario
+        public void afterFailure() {
+            new StepAttributes().put("shot", "attachments/shot.png");
         }
     }
 

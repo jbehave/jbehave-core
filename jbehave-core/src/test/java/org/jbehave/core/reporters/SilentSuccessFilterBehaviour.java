@@ -1,6 +1,7 @@
 package org.jbehave.core.reporters;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonMap;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -244,5 +245,45 @@ class SilentSuccessFilterBehaviour {
 
         inOrder.verify(delegate).storyExcluded(story, metaFilter);
         inOrder.verify(delegate).scenarioExcluded(scenario, metaFilter);
+    }
+
+    @Test
+    void shouldReportStepAttributesBeforeSuccessfulWhenScenarioFailsLater() {
+        Map<String, String> attributes = singletonMap("name", "value");
+        Story story = new Story();
+        Scenario scenario = new Scenario();
+        UUIDExceptionWrapper failure = new UUIDExceptionWrapper(new IllegalStateException("boom"));
+
+        filter.beforeStory(story, false);
+        filter.beforeScenario(scenario);
+        filter.stepAttributes(attributes);
+        filter.successful("Given step");
+        filter.failed("Then step", failure);
+        filter.afterScenario(TIMING);
+
+        InOrder inOrder = inOrder(delegate);
+        inOrder.verify(delegate).beforeStory(story, false);
+        inOrder.verify(delegate).beforeScenario(scenario);
+        inOrder.verify(delegate).stepAttributes(attributes);
+        inOrder.verify(delegate).successful("Given step");
+        inOrder.verify(delegate).failed("Then step", failure);
+        inOrder.verify(delegate).afterScenario(TIMING);
+    }
+
+    @Test
+    void shouldNotReportStepAttributesWhenScenarioPasses() {
+        Map<String, String> attributes = singletonMap("name", "value");
+        Scenario scenario = new Scenario();
+
+        filter.beforeStory(new Story(), false);
+        filter.beforeScenario(scenario);
+        filter.stepAttributes(attributes);
+        filter.successful("Given step");
+        filter.afterScenario(TIMING);
+        filter.afterStory(false);
+
+        verify(delegate, never()).stepAttributes(attributes);
+        verify(delegate, never()).successful("Given step");
+        verify(delegate, never()).beforeScenario(scenario);
     }
 }

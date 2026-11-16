@@ -1,0 +1,25 @@
+<div id="story-id" class="story">
+<h1>Step attributes</h1>
+<div class="path">/path/to/story</div>
+<div id="scenario-id" class="scenario">
+<h2>Scenario: Attributes</h2>
+<div class="steps">
+<div class="step successful">When I succeed with two attributes<div class="attributes"><span class="attribute">first: one</span><span class="attribute">second: two</span></div></div>
+<div class="step successful">When I succeed without attributes</div>
+<div class="step ignorable">!-- Then ignore me<div class="attributes"><span class="attribute">kind: ignorable</span></div></div>
+<div class="comment">!-- A comment<div class="attributes"><span class="attribute">kind: comment</span></div></div>
+<div class="step pending">When I am pending <span class="keyword pending">(PENDING)</span><pre class="pending">public void whenPending() { }</pre><div class="attributes"><span class="attribute">kind: pending</span></div></div>
+<div class="step notPerformed">Then I am not performed <span class="keyword notPerformed">(NOT PERFORMED)</span><div class="attributes"><span class="attribute">kind: notPerformed</span></div></div>
+<div class="step failed">Then I fail <span class="keyword failed">(FAILED)</span><br/><span class="message failed">java.lang.IllegalStateException: boom</span><div class="attributes"><span class="attribute">kind: failed</span></div></div>
+<div class="steps">
+<div class="step successful">When I perform an inner step<div class="attributes"><span class="attribute">child: value</span></div></div>
+</div>
+<div class="step successful">When I perform a composite step<div class="attributes"><span class="attribute">parent: value</span></div></div>
+<div class="step successful">When I write special characters<div class="attributes"><span class="attribute">na&quot;me&lt;&amp;&gt;\
+&oslash;: va&quot;lue&lt;&amp;&gt;\
+&oslash;</span></div></div>
+</div>
+<h3>start 1</h3>
+<h3>end 2</h3>
+</div>
+</div>
