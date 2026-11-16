@@ -1,0 +1,29 @@
+Step attributes
+(/path/to/story)
+Scenario: Attributes
+When I succeed with two attributes
+    first: one
+    second: two
+When I succeed without attributes
+!-- Then ignore me
+    kind: ignorable
+!-- A comment
+    kind: comment
+When I am pending (PENDING)
+(public void whenPending() { })
+    kind: pending
+Then I am not performed (NOT PERFORMED)
+    kind: notPerformed
+Then I fail (FAILED)
+(java.lang.IllegalStateException: boom)
+    kind: failed
+When I perform an inner step
+    child: value
+When I perform a composite step
+    parent: value
+When I write special characters
+    na"me<&>\
+ø: va"lue<&>\
+ø
+
+

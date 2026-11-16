@@ -41,6 +41,7 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult;
 import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.Step;
+import org.jbehave.core.steps.StepAttributes;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.PendingStep;
@@ -68,6 +69,7 @@ public class PerformableTree {
 
     private static final Map<String, String> NO_PARAMETERS = new HashMap<>();
 
+    private final StepAttributes stepAttributes = new StepAttributes();
     private PerformableRoot root = new PerformableRoot();
 
     public PerformableRoot getRoot() {
@@ -369,41 +371,61 @@ public class PerformableTree {
         RuntimeException getFailure();
     }
 
+    private static void reportStepAttributes(Map<String, String> attributes, StepResult result,
+            StoryReporter reporter) {
+        if (!attributes.isEmpty() && !(result instanceof AbstractStepResult.Skipped)) {
+            reporter.stepAttributes(attributes);
+        }
+    }
+
     private static final class FineSoFar implements State {
+
+        private final StepAttributes stepAttributes;
+
+        private FineSoFar(StepAttributes stepAttributes) {
+            this.stepAttributes = stepAttributes;
+        }
 
         @Override
         public State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter) {
             State state;
             StepResult result;
             int indexOfResult;
+            Map<String, String> attributes;
+            stepAttributes.startStep();
             try {
-                result = step.perform(reporter, getFailure());
+                try {
+                    result = step.perform(reporter, getFailure());
 
-                UUIDExceptionWrapper stepFailure = result.getFailure();
-                state = stepFailure == null ? this : new SomethingHappened(stepFailure);
-            } catch (IgnoringStepsFailure e) {
-                result = AbstractStepResult.ignorable(step.asString(keywords));
-                state = new Ignoring(e);
-            } catch (PendingStepFound e) {
-                result = AbstractStepResult.pending((PendingStep) step);
-                state = new Pending(e);
-            }
-            indexOfResult = results.size();
-            results.add(result);
-
-            List<Step> composedSteps = step.getComposedSteps();
-            if (!composedSteps.isEmpty()) {
-                reporter.beforeComposedSteps();
-                for (Step composedStep : composedSteps) {
-                    state = state.run(composedStep, results, keywords, reporter);
+                    UUIDExceptionWrapper stepFailure = result.getFailure();
+                    state = stepFailure == null ? this : new SomethingHappened(stepFailure, stepAttributes);
+                } catch (IgnoringStepsFailure e) {
+                    result = AbstractStepResult.ignorable(step.asString(keywords));
+                    state = new Ignoring(e);
+                } catch (PendingStepFound e) {
+                    result = AbstractStepResult.pending((PendingStep) step);
+                    state = new Pending(e);
                 }
-                reporter.afterComposedSteps();
+                indexOfResult = results.size();
+                results.add(result);
+
+                List<Step> composedSteps = step.getComposedSteps();
+                if (!composedSteps.isEmpty()) {
+                    reporter.beforeComposedSteps();
+                    for (Step composedStep : composedSteps) {
+                        state = state.run(composedStep, results, keywords, reporter);
+                    }
+                    reporter.afterComposedSteps();
+                }
+            } finally {
+                attributes = stepAttributes.finishStep();
             }
 
             if (state instanceof Ignoring) {
                 result = AbstractStepResult.ignorable(step.asString(keywords));
                 results.set(indexOfResult, result);
             }
+            reportStepAttributes(attributes, result, reporter);
             result.describeTo(reporter);
             return state;
         }
@@ -416,25 +438,35 @@ public class PerformableTree {
     }
 
     private static final class SomethingHappened implements State {
-        private UUIDExceptionWrapper failure;
+        private final UUIDExceptionWrapper failure;
+        private final StepAttributes stepAttributes;
 
-        public SomethingHappened(UUIDExceptionWrapper failure) {
+        private SomethingHappened(UUIDExceptionWrapper failure, StepAttributes stepAttributes) {
             this.failure = failure;
+            this.stepAttributes = stepAttributes;
         }
 
         @Override
         public State run(Step step, List<StepResult> results, Keywords keywords, StoryReporter reporter) {
-            StepResult result = step.doNotPerform(reporter, getFailure());
+            StepResult result;
+            Map<String, String> attributes;
+            stepAttributes.startStep();
+            try {
+                result = step.doNotPerform(reporter, getFailure());
 
-            List<Step> composedSteps = step.getComposedSteps();
-            if (!composedSteps.isEmpty()) {
-                reporter.beforeComposedSteps();
-                for (Step composedStep : composedSteps) {
-                    run(composedStep, results, keywords, reporter);
+                List<Step> composedSteps = step.getComposedSteps();
+                if (!composedSteps.isEmpty()) {
+                    reporter.beforeComposedSteps();
+                    for (Step composedStep : composedSteps) {
+                        run(composedStep, results, keywords, reporter);
+                    }
+                    reporter.afterComposedSteps();
                 }
-                reporter.afterComposedSteps();
+                results.add(result);
+            } finally {
+                attributes = stepAttributes.finishStep();
             }
-            results.add(result);
+            reportStepAttributes(attributes, result, reporter);
             result.describeTo(reporter);
             return this;
         }
@@ -575,17 +607,19 @@ public class PerformableTree {
         private final MetaFilter filter;
         private final BatchFailures failures;
         private final StepsContext stepsContext;
+        private final StepAttributes stepAttributes;
         private final Map<Story, StoryDuration> cancelledStories = new HashMap<>();
         private final Map<String, List<PendingStep>> pendingStories = new HashMap<>();
-        private final ThreadLocal<StoryRunContext> storyRunContext = ThreadLocal.withInitial(StoryRunContext::new);
+        private final ThreadLocal<StoryRunContext> storyRunContext;
 
         public RunContext(Configuration configuration, AllStepCandidates allStepCandidates,
                 EmbedderMonitor embedderMonitor, MetaFilter filter, BatchFailures failures) {
-            this(configuration, allStepCandidates, embedderMonitor, filter, failures, false);
+            this(configuration, allStepCandidates, embedderMonitor, filter, failures, false, new StepAttributes());
         }
 
         private RunContext(Configuration configuration, AllStepCandidates allStepCandidates,
-                EmbedderMonitor embedderMonitor, MetaFilter filter, BatchFailures failures, boolean givenStory) {
+                EmbedderMonitor embedderMonitor, MetaFilter filter, BatchFailures failures, boolean givenStory,
+                StepAttributes stepAttributes) {
             this.configuration = configuration;
             this.givenStory = givenStory;
             this.allStepCandidates = allStepCandidates;
@@ -593,6 +627,8 @@ public class PerformableTree {
             this.filter = filter;
             this.failures = failures;
             this.stepsContext = configuration.stepsContext();
+            this.stepAttributes = stepAttributes;
+            this.storyRunContext = ThreadLocal.withInitial(() -> new StoryRunContext(stepAttributes));
             resetState();
         }
 
@@ -719,7 +755,7 @@ public class PerformableTree {
 
         public RunContext childContextFor(GivenStory givenStory) {
             RunContext child = new RunContext(configuration, allStepCandidates, embedderMonitor, filter,
-                    failures, true);
+                    failures, true, stepAttributes);
             child.currentRunContext().pathIs(configuration.pathCalculator().calculate(path(), givenStory.getPath()));
             return child;
         }
@@ -849,9 +885,14 @@ public class PerformableTree {
     }
 
     private static class StoryRunContext {
+        private final StepAttributes stepAttributes;
         private State state;
         private String path;
         private StoryReporter reporter;
+
+        private StoryRunContext(StepAttributes stepAttributes) {
+            this.stepAttributes = stepAttributes;
+        }
 
         private State state() {
             return state;
@@ -862,7 +903,7 @@ public class PerformableTree {
         }
 
         private void resetState() {
-            this.state = new FineSoFar();
+            this.state = new FineSoFar(stepAttributes);
         }
 
         private String path() {
@@ -1513,6 +1554,7 @@ public class PerformableTree {
 
     public RunContext newRunContext(Configuration configuration, AllStepCandidates allStepCandidates,
             EmbedderMonitor embedderMonitor, MetaFilter filter, BatchFailures failures) {
-        return new RunContext(configuration, allStepCandidates, embedderMonitor, filter, failures);
+        return new RunContext(configuration, allStepCandidates, embedderMonitor, filter, failures, false,
+                stepAttributes);
     }
 }

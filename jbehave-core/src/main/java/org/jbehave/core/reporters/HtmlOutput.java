@@ -103,12 +103,19 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("givenStoriesStart", "<div class=\"givenStories\">{0}\n");
         patterns.setProperty("givenStory", "<div class=\"givenStory\">{0} {1}</div>\n");
         patterns.setProperty("givenStoriesEnd", "</div>\n");
-        patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
-        patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
-        patterns.setProperty("comment", "<div class=\"comment\">{0}</div>\n");
-        patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span><pre class=\"pending\">{2}</pre></div>\n");
-        patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
-        patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
+        patterns.setProperty("successful", "<div class=\"step successful\">{0}{1}</div>\n");
+        patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}{1}</div>\n");
+        patterns.setProperty("comment", "<div class=\"comment\">{0}{1}</div>\n");
+        patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span>"
+                + "<pre class=\"pending\">{2}</pre>{3}</div>\n");
+        patterns.setProperty("notPerformed",
+                "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span>{2}</div>\n");
+        patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span>"
+                + "<br/><span class=\"message failed\">{2}</span>{4}</div>\n");
+        patterns.setProperty("stepAttributesStart", "<div class=\"attributes\">");
+        patterns.setProperty("stepAttribute", "<span class=\"attribute\">{0}: {1}</span>");
+        patterns.setProperty("stepAttributeSeparator", "");
+        patterns.setProperty("stepAttributesEnd", "</div>");
         patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
         patterns.setProperty("restartedStory", "<div class=\"story restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
         patterns.setProperty("outcomesTableStart", "<div class=\"outcomes\"><table>\n");

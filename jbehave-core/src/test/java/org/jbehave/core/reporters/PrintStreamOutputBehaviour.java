@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.KnownFailure;
@@ -59,6 +60,7 @@ import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
@@ -216,6 +218,81 @@ class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         // Then
         assertJson(name, fileContent(file));
+    }
+
+    @Test
+    void shouldOutputStepAttributesToTxt() throws IOException {
+        String name = "stream-story-with-attributes.txt";
+        File file = newFile("target/" + name);
+        StoryReporter reporter = new TxtOutput(createPrintStream(file));
+
+        StoryNarrator.narrateAStoryWithStepAttributes(reporter);
+
+        assertFileOutputIsSameAs(file, name);
+    }
+
+    @Test
+    void shouldOutputStepAttributesToHtml() throws IOException {
+        String name = "stream-story-with-attributes.html";
+        File file = newFile("target/" + name);
+        StoryReporter reporter = new HtmlOutput(createPrintStream(file));
+
+        StoryNarrator.narrateAStoryWithStepAttributes(reporter);
+
+        assertFileOutputIsSameAs(file, name);
+    }
+
+    @Test
+    void shouldOutputStepAttributesToXml() throws IOException, SAXException, ParserConfigurationException {
+        String name = "stream-story-with-attributes.xml";
+        File file = newFile("target/" + name);
+        StoryReporter reporter = new XmlOutput(createPrintStream(file));
+
+        StoryNarrator.narrateAStoryWithStepAttributes(reporter);
+
+        assertXml(name, file);
+        validateFileOutput(file);
+    }
+
+    @Test
+    void shouldOutputStepAttributesToJson() throws IOException, SAXException, ParserConfigurationException {
+        String name = "stream-story-with-attributes.json";
+        File file = new File("target/" + name);
+        StoryReporter reporter = new JsonOutput(new FilePrintStreamFactory.FilePrintStream(file, false),
+                new LocalizedKeywords());
+
+        StoryNarrator.narrateAStoryWithStepAttributes(reporter);
+
+        assertJson(name, fileContent(file));
+        validateFileOutput(file);
+    }
+
+    @Test
+    void shouldIgnoreStepAttributesWhenSuccessfulPatternOmitsThem() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Properties patterns = new Properties();
+        patterns.setProperty("successful", "{0}\n");
+        StoryReporter reporter = new TxtOutput(new PrintStream(out), patterns);
+
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, "When I succeed"));
+        reporter.stepAttributes(singletonMap("name", "value"));
+        reporter.successful("When I succeed");
+
+        assertThat(out.toString(), equalTo("When I succeed\n"));
+    }
+
+    @Test
+    void shouldOutputDelayedStepAttributesToTxt() throws IOException {
+        String name = "stream-story-with-attributes.txt";
+        File file = newFile("target/" + name);
+        StoryReporter output = new TxtOutput(createPrintStream(file));
+        ConcurrentStoryReporter reporter = new ConcurrentStoryReporter(new NullStoryReporter(),
+                singletonList(output), true);
+
+        StoryNarrator.narrateAStoryWithStepAttributes(reporter);
+        reporter.invokeDelayed();
+
+        assertFileOutputIsSameAs(file, name);
     }
 
     @Test

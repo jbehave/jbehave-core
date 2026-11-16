@@ -1,0 +1,35 @@
+{
+"path": "/path/to/story",
+"title": "Step attributes"
+
+
+
+,"scenarios": [
+{"keyword": "Scenario:", "title": "Attributes"
+
+
+,"steps": [
+{"outcome": "successful", "step": "When I succeed with two attributes", "attributes": {"first": "one", "second": "two"}}
+,
+{"outcome": "successful", "step": "When I succeed without attributes"}
+,
+{"outcome": "ignorable", "step": "!-- Then ignore me", "attributes": {"kind": "ignorable"}}
+,
+{"outcome": "comment", "step": "!-- A comment", "attributes": {"kind": "comment"}}
+,
+{"outcome": "pending", "step": "When I am pending", "pendingMethod": "public void whenPending() { }", "attributes": {"kind": "pending"}}
+,
+{"outcome": "notPerformed", "step": "Then I am not performed", "attributes": {"kind": "notPerformed"}}
+,
+{"outcome": "failed", "step": "Then I fail", "failure": "java.lang.IllegalStateException: boom\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAStoryWithStepAttributes(StoryNarrator.java:314)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryWithStepAttributesToJson(TemplateOutputBehaviour.java:123)\n\t(reflection-invoke)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:728)\n...", "attributes": {"kind": "failed"}}
+,
+{"outcome": "successful", "step": "When I perform an inner step", "attributes": {"child": "value"}}
+,
+{"outcome": "successful", "step": "When I perform a composite step", "attributes": {"parent": "value"}}
+,
+{"outcome": "successful", "step": "When I write special characters", "attributes": {"na\"me<&>\\\nø": "va\"lue<&>\\\nø"}}
+
+]
+}
+]
+}

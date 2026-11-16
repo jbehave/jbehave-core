@@ -54,6 +54,7 @@ import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.PrintStreamStepMonitor;
 import org.jbehave.core.steps.SilentStepMonitor;
+import org.jbehave.core.steps.StepAttributes;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
@@ -151,6 +152,11 @@ public abstract class Configuration {
      * The steps context
      */
     protected StepsContext stepsContext;
+
+    /**
+     * The step attributes
+     */
+    protected StepAttributes stepAttributes;
 
     /**
      * Finder of matching candidate steps
@@ -357,6 +363,13 @@ public abstract class Configuration {
             stepsContext = new StepsContext();
         }
         return stepsContext;
+    }
+
+    public StepAttributes stepAttributes() {
+        if (stepAttributes == null) {
+            stepAttributes = new StepAttributes();
+        }
+        return stepAttributes;
     }
 
     public StepCollector stepCollector() {

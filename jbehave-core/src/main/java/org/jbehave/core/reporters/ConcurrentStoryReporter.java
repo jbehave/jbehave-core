@@ -57,6 +57,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method example;
     private static Method afterExamples;
     private static Method beforeStep;
+    private static Method stepAttributes;
     private static Method successful;
     private static Method ignorable;
     private static Method comment;
@@ -100,6 +101,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
             example = StoryReporter.class.getMethod("example", Map.class, int.class);
             afterExamples = StoryReporter.class.getMethod("afterExamples");
             beforeStep = StoryReporter.class.getMethod("beforeStep", Step.class);
+            stepAttributes = StoryReporter.class.getMethod("stepAttributes", Map.class);
             successful = StoryReporter.class.getMethod("successful", String.class);
             ignorable = StoryReporter.class.getMethod("ignorable", String.class);
             comment = StoryReporter.class.getMethod("comment", String.class);
@@ -266,6 +268,11 @@ public class ConcurrentStoryReporter implements StoryReporter {
     @Override
     public void beforeStep(Step step) {
         perform(reporter ->  reporter.beforeStep(step), beforeStep, step);
+    }
+
+    @Override
+    public void stepAttributes(Map<String, String> attributes) {
+        perform(reporter -> reporter.stepAttributes(attributes), stepAttributes, attributes);
     }
 
     @Override

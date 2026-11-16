@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.Verbatim;
@@ -60,6 +62,7 @@ public class TemplateableOutput extends NullStoryReporter {
     private OutputStep pendingStep;
     private Scope scope;
     private StepCollector.Stage stage;
+    private Map<String, String> pendingStepAttributes = Collections.emptyMap();
 
     public TemplateableOutput(File file, Keywords keywords, TemplateProcessor processor, String templatePath) {
         this.file = file;
@@ -120,7 +123,19 @@ public class TemplateableOutput extends NullStoryReporter {
         }
     }
 
+    @Override
+    public void beforeStep(Step step) {
+        pendingStepAttributes = Collections.emptyMap();
+    }
+
+    @Override
+    public void stepAttributes(Map<String, String> attributes) {
+        pendingStepAttributes = attributes;
+    }
+
     private void addStep(OutputStep outputStep) {
+        outputStep.attributes = pendingStepAttributes;
+        pendingStepAttributes = Collections.emptyMap();
         if (scope == Scope.STORY) {
             if (stage == StepCollector.Stage.BEFORE) {
                 this.outputStory.addBeforeStep(outputStep);
@@ -679,6 +694,7 @@ public class TemplateableOutput extends NullStoryReporter {
         private String verbatimAsString;
         private Verbatim verbatim;
         private String pendingMethod;
+        private Map<String, String> attributes = Collections.emptyMap();
 
         public OutputStep(String step, String outcome) {
             this.step = step;
@@ -711,6 +727,10 @@ public class TemplateableOutput extends NullStoryReporter {
 
         public String getPendingMethod() {
             return pendingMethod;
+        }
+
+        public Map<String, String> getAttributes() {
+            return attributes;
         }
 
         public String getFailureCause() {

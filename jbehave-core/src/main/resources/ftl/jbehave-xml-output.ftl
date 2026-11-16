@@ -115,7 +115,7 @@
 <#assign formattedStep = step.getFormattedStep(EscapeMode.XML, "<parameter>{0}</parameter>")>
 <step outcome="${step.outcome}">
 ${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()/></parameter></#if><#if step.getVerbatim()??> <parameter><@renderVerbatim step.getVerbatim()/></parameter></#if>
-<#if step.getFailure()??> <failure>${step.failureCause?xml}</failure></#if><#if step.getPendingMethod()??> <pendingMethod>${step.pendingMethod?xml}</pendingMethod></#if><#if step.getOutcomes()??><@renderOutcomes step.getOutcomes()/></#if></step>
+<#if step.getFailure()??> <failure>${step.failureCause?xml}</failure></#if><#if step.getPendingMethod()??> <pendingMethod>${step.pendingMethod?xml}</pendingMethod></#if><#if step.getOutcomes()??><@renderOutcomes step.getOutcomes()/></#if><#if !step.getAttributes().isEmpty()><attributes><#list step.getAttributes().entrySet() as attribute><attribute name="${attribute.key?xml}">${attribute.value?xml}</attribute></#list></attributes></#if></step>
 </#macro>
 
 <story path="${story.path}" title="${story.description?xml}">

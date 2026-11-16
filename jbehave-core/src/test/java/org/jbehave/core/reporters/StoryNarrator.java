@@ -279,6 +279,77 @@ class StoryNarrator {
         reporter.afterStory(false);
     }
 
+    static void narrateAStoryWithStepAttributes(StoryReporter reporter) {
+        Story story = spyStoryUuid(new Story("/path/to/story", new Description("Step attributes"), Meta.EMPTY,
+                Narrative.EMPTY, new ArrayList<Scenario>()));
+        Scenario scenario = spyScenarioUuid(new Scenario("Attributes", Meta.EMPTY));
+        reporter.beforeStory(story, false);
+        reporter.beforeScenarios();
+        reporter.beforeScenario(scenario);
+        reporter.beforeScenarioSteps(null, null);
+
+        reportAttributedStep(reporter, StepExecutionType.EXECUTABLE, "When I succeed with two attributes",
+                attributes("first", "one", "second", "two"));
+        reporter.successful("When I succeed with two attributes");
+        reportAttributedStep(reporter, StepExecutionType.EXECUTABLE, "When I succeed without attributes", null);
+        reporter.successful("When I succeed without attributes");
+        reportAttributedStep(reporter, StepExecutionType.IGNORABLE, "!-- Then ignore me",
+                attributes("kind", "ignorable"));
+        reporter.ignorable("!-- Then ignore me");
+        reportAttributedStep(reporter, StepExecutionType.COMMENT, "!-- A comment", attributes("kind", "comment"));
+        reporter.comment("!-- A comment");
+
+        String pending = "When I am pending";
+        StepCreator.PendingStep pendingStep = (StepCreator.PendingStep) StepCreator.createPendingStep(pending, null);
+        pendingStep.setPendingMethod("public void whenPending() { }");
+        reportAttributedStep(reporter, StepExecutionType.PENDING, pending, attributes("kind", "pending"));
+        reporter.pending(pendingStep);
+
+        String notPerformed = "Then I am not performed";
+        reportAttributedStep(reporter, StepExecutionType.EXECUTABLE, notPerformed, attributes("kind", "notPerformed"));
+        reporter.notPerformed(notPerformed);
+
+        String failed = "Then I fail";
+        reportAttributedStep(reporter, StepExecutionType.EXECUTABLE, failed, attributes("kind", "failed"));
+        reporter.failed(failed, new UUIDExceptionWrapper(new IllegalStateException("boom")));
+
+        String parent = "When I perform a composite step";
+        String child = "When I perform an inner step";
+        reporter.beforeStep(new Step(StepExecutionType.EXECUTABLE, parent));
+        reporter.beforeComposedSteps();
+        reportAttributedStep(reporter, StepExecutionType.EXECUTABLE, child, attributes("child", "value"));
+        reporter.successful(child);
+        reporter.afterComposedSteps();
+        reporter.stepAttributes(attributes("parent", "value"));
+        reporter.successful(parent);
+
+        String special = "When I write special characters";
+        reportAttributedStep(reporter, StepExecutionType.EXECUTABLE, special,
+                attributes("na\"me<&>\\\nø", "va\"lue<&>\\\nø"));
+        reporter.successful(special);
+
+        reporter.afterScenarioSteps(null, null);
+        reporter.afterScenario(getTiming());
+        reporter.afterScenarios();
+        reporter.afterStory(false);
+    }
+
+    private static void reportAttributedStep(StoryReporter reporter, StepExecutionType type, String step,
+            Map<String, String> stepAttributes) {
+        reporter.beforeStep(new Step(type, step));
+        if (stepAttributes != null) {
+            reporter.stepAttributes(stepAttributes);
+        }
+    }
+
+    private static Map<String, String> attributes(String... namesAndValues) {
+        Map<String, String> stepAttributes = new java.util.LinkedHashMap<>();
+        for (int i = 0; i < namesAndValues.length; i += 2) {
+            stepAttributes.put(namesAndValues[i], namesAndValues[i + 1]);
+        }
+        return stepAttributes;
+    }
+
     private static Scenario spyScenarioUuid(Scenario scenario) {
         Scenario spy = spy(scenario);
         when(spy.getId()).thenReturn("scenario-id");

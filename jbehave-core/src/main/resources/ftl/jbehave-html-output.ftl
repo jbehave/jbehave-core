@@ -119,7 +119,7 @@ ${keywords.outcome} ${outcome}
 <#macro renderOutcomeValue value table><#if value?is_date><#assign format=table.getFormat('java.util.Date')>${value?string(format)}<#elseif value?is_number><#assign format=table.getFormat('java.lang.Number')><#setting number_format="${format}">${value?c}<#elseif value?is_boolean><#assign format=table.getFormat('java.lang.Boolean')><#setting boolean_format="${format}">${value?c}<#else>${value?html}</#if></#macro>
 <#macro renderStep step>
 <#assign formattedStep = step.getFormattedStep(EscapeMode.HTML, "<span class=\"step parameter\">{0}</span>")>
-<div class="step ${step.outcome}">${formattedStep}<#if step.getTable()??> <span class="step parameter"><@renderTable step.getTable()/></span></#if><#if step.getVerbatim()??> <span class="step parameter"><@renderVerbatim step.getVerbatim()/></span></#if><@renderStepOutcome step.getOutcome()/></div>
+<div class="step ${step.outcome}">${formattedStep}<#if step.getTable()??> <span class="step parameter"><@renderTable step.getTable()/></span></#if><#if step.getVerbatim()??> <span class="step parameter"><@renderVerbatim step.getVerbatim()/></span></#if><@renderStepOutcome step.getOutcome()/><#if !step.getAttributes().isEmpty()><div class="attributes"><#list step.getAttributes().entrySet() as attribute><span class="attribute">${attribute.key?html}: ${attribute.value?html}</span></#list></div></#if></div>
 <#if step.getFailure()??><pre class="failure">${step.failureCause?html}</pre></#if><#if step.getPendingMethod()??><pre class="pendingMethod">${step.pendingMethod?html}</pre></#if>
 <#if step.getOutcomes()??>
 <div class="outcomes"><@renderOutcomes step.getOutcomes()/>

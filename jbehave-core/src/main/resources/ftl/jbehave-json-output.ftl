@@ -114,7 +114,7 @@
 </#macro>
 <#macro renderOutcomeValue value table><#if value?is_date><#assign format=table.getFormat('java.util.Date')>${value?string(format)}<#elseif value?is_number><#assign format=table.getFormat('java.lang.Number')><#setting number_format="${format}">${value?c}<#elseif value?is_boolean><#assign format=table.getFormat('java.lang.Boolean')><#setting boolean_format="${format}">${value?c}<#else>${value?json_string}</#if></#macro>
 <#macro renderStep step><#assign formattedStep = step.getFormattedStep(EscapeMode.JSON, "(({0}))")>
-{"outcome": "${step.outcome}", "step": "${formattedStep}"<#if step.getTable()??>, "parameter": <@renderTable step.getTable()/></#if><#if step.getVerbatim()??>, "parameter": <@renderVerbatim step.getVerbatim()/></#if><#if step.getFailure()??>, "failure": "${step.failureCause?json_string}"</#if><#if step.getPendingMethod()??>, "pendingMethod": "${step.pendingMethod?json_string}"</#if><#if step.getOutcomes()??>,<@renderOutcomes step.getOutcomes()/></#if>}
+{"outcome": "${step.outcome}", "step": "${formattedStep}"<#if step.getTable()??>, "parameter": <@renderTable step.getTable()/></#if><#if step.getVerbatim()??>, "parameter": <@renderVerbatim step.getVerbatim()/></#if><#if step.getFailure()??>, "failure": "${step.failureCause?json_string}"</#if><#if step.getPendingMethod()??>, "pendingMethod": "${step.pendingMethod?json_string}"</#if><#if step.getOutcomes()??>,<@renderOutcomes step.getOutcomes()/></#if><#if !step.getAttributes().isEmpty()>, "attributes": {<#list step.getAttributes().entrySet() as attribute>"${attribute.key?json_string}": "${attribute.value?json_string}"<#if attribute_has_next>, </#if></#list>}</#if>}
 </#macro>
 {
 "path": "${story.path}",

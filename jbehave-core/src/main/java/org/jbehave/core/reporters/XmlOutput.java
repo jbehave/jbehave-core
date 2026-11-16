@@ -105,12 +105,18 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("givenStoriesStart", "<givenStories keyword=\"{0}\">\n");
         patterns.setProperty("givenStory", "<givenStory parameters=\"{1}\">{0}</givenStory>\n");
         patterns.setProperty("givenStoriesEnd", "</givenStories>\n");
-        patterns.setProperty("successful", "<step outcome=\"successful\">{0}</step>\n");
-        patterns.setProperty("ignorable", "<step outcome=\"ignorable\">{0}</step>\n");
-        patterns.setProperty("comment", "<step outcome=\"comment\">{0}</step>\n");
-        patterns.setProperty("pending", "<step outcome=\"pending\" keyword=\"{1}\">{0}<pendingMethod>{2}</pendingMethod></step>\n");
-        patterns.setProperty("notPerformed", "<step outcome=\"notPerformed\" keyword=\"{1}\">{0}</step>\n");
-        patterns.setProperty("failed", "<step outcome=\"failed\" keyword=\"{1}\">{0}<failure>{2}</failure></step>\n");
+        patterns.setProperty("successful", "<step outcome=\"successful\">{0}{1}</step>\n");
+        patterns.setProperty("ignorable", "<step outcome=\"ignorable\">{0}{1}</step>\n");
+        patterns.setProperty("comment", "<step outcome=\"comment\">{0}{1}</step>\n");
+        patterns.setProperty("pending",
+                "<step outcome=\"pending\" keyword=\"{1}\">{0}<pendingMethod>{2}</pendingMethod>{3}</step>\n");
+        patterns.setProperty("notPerformed", "<step outcome=\"notPerformed\" keyword=\"{1}\">{0}{2}</step>\n");
+        patterns.setProperty("failed",
+                "<step outcome=\"failed\" keyword=\"{1}\">{0}<failure>{2}</failure>{4}</step>\n");
+        patterns.setProperty("stepAttributesStart", "<attributes>");
+        patterns.setProperty("stepAttribute", "<attribute name=\"{0}\">{1}</attribute>");
+        patterns.setProperty("stepAttributeSeparator", "");
+        patterns.setProperty("stepAttributesEnd", "</attributes>");
         patterns.setProperty("restarted", "<step outcome=\"restarted\">{0}<reason>{1}</reason></step>\n");
         patterns.setProperty("restartedStory", "<story outcome=\"restartedStory\">{0}<reason>{1}</reason></story>\n");
         patterns.setProperty("outcomesTableStart", "<outcomes>\n");

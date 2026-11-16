@@ -6,7 +6,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -14,10 +16,12 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Lifecycle.ExecutionType;
 import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Step;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator;
 import org.jbehave.core.steps.StepCreator.PendingStep;
+import org.jbehave.core.steps.StepCreator.StepExecutionType;
 import org.jbehave.core.steps.Timing;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -53,6 +57,10 @@ class DelegatingStoryReporterBehaviour {
         delegator.givenStories(givenStoryPaths);
         delegator.givenStories(givenStories);
         delegator.beforeScenarioSteps(null, null);
+        Step givenStep = new Step(StepExecutionType.EXECUTABLE, "Given step 1.1");
+        Map<String, String> attributes = Collections.singletonMap("name", "value");
+        delegator.beforeStep(givenStep);
+        delegator.stepAttributes(attributes);
         delegator.successful("Given step 1.1");
         delegator.ignorable("!-- Then ignore me");
         delegator.comment("!-- comment");
@@ -102,6 +110,8 @@ class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).beforeScenarioSteps(null, null);
+        inOrder.verify(delegate).beforeStep(givenStep);
+        inOrder.verify(delegate).stepAttributes(attributes);
         inOrder.verify(delegate).successful("Given step 1.1");
         inOrder.verify(delegate).ignorable("!-- Then ignore me");
         inOrder.verify(delegate).comment("!-- comment");
